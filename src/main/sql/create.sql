@@ -261,3 +261,54 @@ CREATE TABLE semester_report_mark
     CONSTRAINT fk_semester_report_mark_semester_report FOREIGN KEY (semester_report_year, semester_report_student_id, semester_report_first_semester) REFERENCES semester_report(first_semester, student_id, year),
     CONSTRAINT fk_semester_report_mark_subject FOREIGN KEY (subject_title) REFERENCES subject(title)
 );
+
+CREATE TABLE class_timetable
+(
+    id SERIAL,
+    school_class_id SERIAL NOT NULL,
+    expected_hours SMALLINT DEFAULT 27 NOT NULL CHECK (expected_hours >= 0 AND  expected_hours <= 40),
+    start_validity DATE NOT NULL DEFAULT now(),
+    end_validity DATE CHECK (end_validity is NULL OR end_validity > start_validity),
+
+    CONSTRAINT pk_class_timetable PRIMARY KEY (id),
+    CONSTRAINT fk_class_timetable_school_class FOREIGN KEY (school_class_id) REFERENCES school_class(id)
+);
+
+CREATE TABLE reception_timetable
+(
+    id SERIAL,
+    teacher_id SERIAL NOT NULL,
+    text_info_reception TEXT,
+    start_validity DATE NOT NULL DEFAULT now(),
+    end_validity DATE CHECK (end_validity is NULL OR end_validity > start_validity),
+
+    CONSTRAINT pk_class_timetable PRIMARY KEY (id),
+    CONSTRAINT fk_class_timetable_teacher FOREIGN KEY (teacher_id) REFERENCES teacher(id)
+);
+
+CREATE TYPE WEEK_DAY AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
+
+CREATE TABLE teaching_timeslot
+(
+
+    id SERIAL,
+    class_timetable_id SERIAL NOT NULL,
+    hour SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
+    day  WEEK_DAY NOT NULL,
+
+    CONSTRAINT pk_teaching_timeslot PRIMARY KEY (id),
+    CONSTRAINT uk_teaching_timeslot UNIQUE (class_timetable_id, hour, day),
+    CONSTRAINT fk_teaching_timeslot_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable(id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE signed_hour
+(
+    teaching_timeslot_id SERIAL,
+    date DATE NOT NULL,
+    time_sign TIMESTAMP DEFAULT now() NOT NULL,
+    substitution BOOL DEFAULT FALSE NOT NULL,
+
+    CONSTRAINT pk_signed_hour PRIMARY KEY (teaching_timeslot_id, date),
+    CONSTRAINT fk_signed_hour_teaching_timeslot FOREIGN KEY (teaching_timeslot_id) REFERENCES teaching_timeslot(id)
+);
+
