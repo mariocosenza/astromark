@@ -5,7 +5,8 @@ CREATE OR REPLACE FUNCTION check_single_role(
     p_teacher_id UUID,
     p_parent_id UUID,
     p_secretary_id UUID
-) RETURNS BOOLEAN AS $$
+) RETURNS BOOLEAN AS
+$$
 DECLARE
     non_null_count INTEGER := 0;
 BEGIN
@@ -29,9 +30,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION check_ticket_or_homework_chat_id_valid(
-    p_ticket_id INTEGER,
-    p_homework_chat_id INTEGER
-) RETURNS BOOLEAN AS $$
+    p_ticket_id UUID,
+    p_homework_chat_id UUID
+) RETURNS BOOLEAN AS
+$$
 DECLARE
     non_null_count INTEGER := 0;
 BEGIN
@@ -50,14 +52,16 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION calculate_booking_order(
     p_reception_timeslot_id INTEGER
-) RETURNS SMALLINT AS $$
+) RETURNS SMALLINT AS
+$$
 DECLARE
-    cap SMALLINT;
-    book SMALLINT;
+    cap       SMALLINT;
+    book      SMALLINT;
     order_val SMALLINT;
 BEGIN
     -- Retrieve capacity and booked from reception_timeslot
-    SELECT capacity, booked INTO cap, book
+    SELECT capacity, booked
+    INTO cap, book
     FROM reception_timeslot
     WHERE id = p_reception_timeslot_id;
 
@@ -80,8 +84,8 @@ $$ LANGUAGE plpgsql;
 
 
 ALTER TABLE astromark.message
-ADD CONSTRAINT ck_message_role CHECK (check_single_role(student_id, teacher_id, parent_id, secretary_id));
+    ADD CONSTRAINT ck_message_role CHECK (check_single_role(student_id, teacher_id, parent_id, secretary_id));
 
 ALTER TABLE astromark.message
-ADD CONSTRAINT ck_chat_type CHECK (check_ticket_or_homework_chat_id_valid(ticket_id, homework_chat_id));
+    ADD CONSTRAINT ck_chat_type CHECK (check_ticket_or_homework_chat_id_valid(ticket_id, homework_chat_id));
 
