@@ -4,7 +4,7 @@ SET SCHEMA 'astromark';
 
 CREATE TABLE school
 (
-    code                       CHARACTER(7) CHECK (code ~ '^SS\d{5}$'),
+    code                       VARCHAR(7) CHECK (code ~ '^SS\d{5}$'),
     phone_number               INT          NOT NULL,
     address                    VARCHAR(512) NOT NULL,
     name                       VARCHAR(256),
@@ -17,10 +17,10 @@ CREATE TABLE school
 CREATE TABLE school_class
 (
     id          SERIAL,
-    school_code CHARACTER(7) NOT NULL,
-    number      SMALLINT     NOT NULL,
-    letter      CHARACTER(2) NOT NULL, -- allowed combination like 'BS'
-    year        INT          NOT NULL,
+    school_code VARCHAR(7) NOT NULL,
+    number      SMALLINT   NOT NULL,
+    letter      VARCHAR(2) NOT NULL, -- allowed combination like 'BS'
+    year        INT        NOT NULL,
 
     CONSTRAINT pk_school_class PRIMARY KEY (id),
     CONSTRAINT fk_school_class_school FOREIGN KEY (school_code) REFERENCES school (code) ON UPDATE CASCADE ON DELETE CASCADE
@@ -49,7 +49,7 @@ CREATE TABLE subject
 CREATE TABLE study_plan
 (
     school_class_id SERIAL,
-    title           VARCHAR(64),
+    title           VARCHAR(64) NOT NULL,
 
     CONSTRAINT pk_study_plan PRIMARY KEY (school_class_id),
     CONSTRAINT fk_study_plan_school_class FOREIGN KEY (school_class_id) REFERENCES school_class (id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -57,7 +57,7 @@ CREATE TABLE study_plan
 
 CREATE TABLE study_plan_subject
 (
-    subject_title              VARCHAR(64),
+    subject_title              VARCHAR(255),
     study_plan_school_class_id SERIAL,
 
     CONSTRAINT pk_study_plan_subject PRIMARY KEY (subject_title, study_plan_school_class_id),
@@ -67,69 +67,69 @@ CREATE TABLE study_plan_subject
 
 
 
-CREATE TYPE PENDING_STATE AS ENUM ('FIRST_LOGIN', 'NORMAL', 'REMOVE');
+CREATE TYPE PENDINGSTATE AS ENUM ('FIRST_LOGIN', 'NORMAL', 'REMOVE');
 
 
 
 CREATE TABLE parent
 (
-    id                  UUID          DEFAULT GEN_RANDOM_UUID(),
-    school_code         CHARACTER(7) NOT NULL,
+    id                  UUID         DEFAULT GEN_RANDOM_UUID(),
+    school_code         VARCHAR(7)   NOT NULL,
     username            VARCHAR(256) NOT NULL,
     email               VARCHAR(256) NOT NULL,
     password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
-    tax_id              CHARACTER(16),
+    tax_id              VARCHAR(16),
     birth_date          DATE         NOT NULL, -- should be at least eighteen years old
     residential_address VARCHAR(512) NOT NULL,
-    gender              BOOL          DEFAULT FALSE,
-    legal_guardian      BOOL          DEFAULT FALSE,
-    pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
+    gender              BOOL         DEFAULT FALSE,
+    legal_guardian      BOOL         DEFAULT FALSE,
+    PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_parent PRIMARY KEY (id),
     CONSTRAINT uk_parent_tax_id UNIQUE (tax_id),
-    CONSTRAINT fk_parent_school FOREIGN KEY (school_code) REFERENCES school(code)
+    CONSTRAINT fk_parent_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
 CREATE TABLE secretary
 (
-    id                  UUID          DEFAULT GEN_RANDOM_UUID(),
-    school_code         CHARACTER(7) NOT NULL,
+    id                  UUID         DEFAULT GEN_RANDOM_UUID(),
+    school_code         VARCHAR(7)   NOT NULL,
     username            VARCHAR(256) NOT NULL,
     email               VARCHAR(256) NOT NULL,
     password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
-    tax_id              CHARACTER(16),
+    tax_id              VARCHAR(16),
     birth_date          DATE         NOT NULL, -- should be at least eighteen years old
     residential_address VARCHAR(512) NOT NULL,
-    gender              BOOL          DEFAULT FALSE,
-    pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
+    gender              BOOL         DEFAULT FALSE,
+    PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_secretary PRIMARY KEY (id),
     CONSTRAINT uk_secretary_tax_id UNIQUE (tax_id),
-    CONSTRAINT fk_secretary_school FOREIGN KEY (school_code) REFERENCES school(code)
+    CONSTRAINT fk_secretary_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
 CREATE TABLE teacher
 (
-    id                  UUID          DEFAULT GEN_RANDOM_UUID(),
-    school_code         CHARACTER(7) NOT NULL,
+    id                  UUID         DEFAULT GEN_RANDOM_UUID(),
+    school_code         VARCHAR(7)   NOT NULL,
     username            VARCHAR(256) NOT NULL,
     email               VARCHAR(256) NOT NULL,
     password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
-    tax_id              CHARACTER(16),
+    tax_id              VARCHAR(16),
     birth_date          DATE         NOT NULL, -- should be at least eighteen years old
     residential_address VARCHAR(512) NOT NULL,
-    gender              BOOL          DEFAULT FALSE,
-    pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
+    gender              BOOL         DEFAULT FALSE,
+    PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_teacher PRIMARY KEY (id),
     CONSTRAINT uk_teacher_tax_id UNIQUE (tax_id),
-    CONSTRAINT fk_teacher_school FOREIGN KEY (school_code) REFERENCES school(code)
+    CONSTRAINT fk_teacher_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
 
@@ -147,7 +147,7 @@ CREATE TABLE teacher_class
 
 CREATE TABLE teaching
 (
-    subject_title    VARCHAR(64),
+    subject_title    VARCHAR(255),
     teacher_id       UUID,
     type_of_activity VARCHAR(64) NOT NULL,
 
@@ -158,25 +158,25 @@ CREATE TABLE teaching
 
 CREATE TABLE student
 (
-    id                  UUID          DEFAULT GEN_RANDOM_UUID(),
-    school_code         CHARACTER(7) NOT NULL,
+    id                  UUID         DEFAULT GEN_RANDOM_UUID(),
+    school_code         VARCHAR(7)   NOT NULL,
     username            VARCHAR(256) NOT NULL,
     email               VARCHAR(256) NOT NULL,
     password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
-    tax_id              CHARACTER(16),
+    tax_id              VARCHAR(16),
     birth_date          DATE         NOT NULL, -- should be at least ten years old
     residential_address VARCHAR(512) NOT NULL,
     attitude            TEXT,
     graduation_mark     SMALLINT CHECK (graduation_mark >= 60 AND graduation_mark <= 100),
     latest_school_class BIGINT,
-    gender              BOOL          DEFAULT FALSE,
-    pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
+    gender              BOOL         DEFAULT FALSE,
+    PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_student PRIMARY KEY (id),
     CONSTRAINT uk_student_tax_id UNIQUE (tax_id),
-    CONSTRAINT fk_student_school FOREIGN KEY (school_code) REFERENCES school(code)
+    CONSTRAINT fk_student_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
 CREATE TABLE delay
@@ -217,16 +217,16 @@ CREATE TABLE note
     CONSTRAINT fk_note_student FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TYPE MARK_TYPE AS ENUM ('ORAL', 'WRITTEN', 'LABORATORY');
+CREATE TYPE MARKTYPE AS ENUM ('ORAL', 'WRITTEN', 'LABORATORY');
 
 CREATE TABLE mark
 (
     id                     SERIAL,
-    student_id             UUID                        NOT NULL,
-    teaching_subject_title VARCHAR(64)                 NOT NULL,
-    teaching_teacher_id    UUID                        NOT NULL,
-    date                   DATE                        NOT NULL,
-    type                   MARK_TYPE DEFAULT 'WRITTEN' NOT NULL,
+    student_id             UUID                       NOT NULL,
+    teaching_subject_title VARCHAR(255)               NOT NULL,
+    teaching_teacher_id    UUID                       NOT NULL,
+    date                   DATE                       NOT NULL,
+    type                   MARKTYPE DEFAULT 'WRITTEN' NOT NULL,
     description            VARCHAR(512),
     mark                   DOUBLE PRECISION CHECK (mark >= 0 AND mark <= 10),
 
@@ -239,6 +239,7 @@ CREATE TABLE mark
 
 CREATE TABLE semester_report
 (
+    id             SERIAL,
     first_semester BOOL DEFAULT TRUE  NOT NULL,
     public         BOOL DEFAULT FALSE NOT NULL,
     passed         BOOL DEFAULT FALSE NOT NULL,
@@ -246,31 +247,28 @@ CREATE TABLE semester_report
     year           SMALLINT CHECK (year >= 2000), -- year at least 2000
     student_id     UUID,
 
-    CONSTRAINT pk_semester_report PRIMARY KEY (first_semester, year, student_id),
+    CONSTRAINT pk_semester_report PRIMARY KEY (id),
+    CONSTRAINT uk_semester_report UNIQUE (first_semester, year, student_id),
     CONSTRAINT fk_semester_report_student FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
 CREATE TABLE semester_report_mark
 (
-    id                             SERIAL,
-    subject_title                  VARCHAR(64) NOT NULL,
-    semester_report_year           SMALLINT    NOT NULL,
-    semester_report_student_id     UUID        NOT NULL,
-    semester_report_first_semester BOOL        NOT NULL,
-    mark                           SMALLINT    NOT NULL CHECK (mark >= 0 AND mark <= 10),
+    id            SERIAL,
+    subject_title VARCHAR(64) NOT NULL,
+    semester_id   SERIAL      NOT NULL,
+    mark          SMALLINT    NOT NULL CHECK (mark >= 0 AND mark <= 10),
 
     CONSTRAINT pk_semester_report_mark PRIMARY KEY (id),
-    CONSTRAINT uk_semester_report_mark UNIQUE (subject_title, semester_report_first_semester,
-                                               semester_report_student_id, semester_report_year),
-    CONSTRAINT fk_semester_report_mark_semester_report FOREIGN KEY (semester_report_year, semester_report_student_id,
-                                                                    semester_report_first_semester) REFERENCES semester_report (year, student_id, first_semester),
+    CONSTRAINT uk_semester_report_mark UNIQUE (subject_title, semester_id),
+    CONSTRAINT fk_semester_report_mark_semester_report FOREIGN KEY (semester_id) REFERENCES semester_report (id),
     CONSTRAINT fk_semester_report_mark_subject FOREIGN KEY (subject_title) REFERENCES subject (title)
 );
 
 CREATE TABLE class_timetable
 (
-    id              SERIAL,
+    id              INT GENERATED ALWAYS AS IDENTITY,
     school_class_id SERIAL NOT NULL,
     expected_hours  SMALLINT        DEFAULT 27 NOT NULL CHECK (expected_hours >= 0 AND expected_hours <= 40),
     start_validity  DATE   NOT NULL DEFAULT NOW(),
@@ -282,7 +280,7 @@ CREATE TABLE class_timetable
 
 CREATE TABLE reception_timetable
 (
-    id                  SERIAL,
+    id                  INT GENERATED ALWAYS AS IDENTITY,
     teacher_id          UUID NOT NULL,
     text_info_reception TEXT,
     start_validity      DATE NOT NULL DEFAULT NOW(),
@@ -296,8 +294,8 @@ CREATE TABLE reception_timetable
 CREATE TABLE teaching_timeslot
 (
 
-    id                 SERIAL,
-    class_timetable_id SERIAL                                   NOT NULL,
+    id                 INT GENERATED ALWAYS AS IDENTITY,
+    class_timetable_id INT                                      NOT NULL,
     hour               SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
     date               DATE                                     NOT NULL,
 
@@ -310,7 +308,7 @@ CREATE TABLE teaching_timeslot
 
 CREATE TABLE signed_hour
 (
-    teaching_timeslot_id SERIAL,
+    teaching_timeslot_id INT,
     teacher_id           UUID                    NOT NULL,
     time_sign            TIMESTAMP DEFAULT NOW() NOT NULL,
     substitution         BOOL      DEFAULT FALSE NOT NULL,
@@ -325,11 +323,11 @@ CREATE TABLE signed_hour
 CREATE TABLE reception_timeslot
 (
 
-    id                     SERIAL,
-    reception_timetable_id SERIAL                                   NOT NULL,
+    id                     INT GENERATED ALWAYS AS IDENTITY,
+    reception_timetable_id INT                                      NOT NULL,
     hour                   SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
     date                   DATE                                     NOT NULL,
-    capacity               SMALLINT                                 NOT NULL CHECK (capacity > 0)       DEFAULT 6,
+    capacity               SMALLINT                                 NOT NULL CHECK (capacity > 0)                       DEFAULT 6,
     booked                 SMALLINT                                 NOT NULL CHECK (booked <= capacity AND booked >= 0) DEFAULT 0,
     mode                   VARCHAR(128)                             NOT NULL,
 
@@ -342,10 +340,10 @@ CREATE TABLE reception_timeslot
 CREATE TABLE reception_booking
 (
     parent_id             UUID,
-    reception_timeslot_id SERIAL,
+    reception_timeslot_id INT,
     booking_order         SMALLINT CHECK (booking_order >= 1) NOT NULL,
-    confirmed             BOOLEAN                             DEFAULT FALSE NOT NULL,
-    refused               BOOLEAN                             DEFAULT FALSE NOT NULL,
+    confirmed             BOOLEAN DEFAULT FALSE               NOT NULL,
+    refused               BOOLEAN DEFAULT FALSE               NOT NULL,
 
     CONSTRAINT pk_reception_booking PRIMARY KEY (parent_id, reception_timeslot_id),
     CONSTRAINT fk_reception_booking_parent FOREIGN KEY (parent_id) REFERENCES parent (id),
@@ -375,7 +373,7 @@ CREATE TABLE homework
 
 CREATE TABLE homework_chat
 (
-    id                                        SERIAL,
+    id                                        UUID DEFAULT gen_random_uuid(),
     homework_signed_hour_teaching_timeslot_id SERIAL             NOT NULL,
     title                                     VARCHAR(128)       NOT NULL,
     student_id                                UUID               NOT NULL,
@@ -389,7 +387,7 @@ CREATE TABLE homework_chat
 
 CREATE TABLE ticket
 (
-    id         SERIAL,
+    id         UUID DEFAULT gen_random_uuid(),
     parent_id  UUID,
     teacher_id UUID CHECK ((parent_id ISNULL AND teacher_id IS NOT NULL) OR
                            (parent_id IS NOT NULL AND teacher_id ISNULL)),
@@ -406,16 +404,16 @@ CREATE TABLE ticket
 
 CREATE TABLE message
 (
-    id                  UUID      DEFAULT gen_random_uuid(),
-    ticket_id           SERIAL,
-    homework_chat_id    SERIAL,
-    parent_id           UUID,
-    secretary_id        UUID,
-    student_id          UUID,
-    teacher_id          UUID,
-    date_time           TIMESTAMP DEFAULT NOW() NOT NULL,
-    text                TEXT,
-    attachment          VARCHAR(1024),
+    id               UUID      DEFAULT gen_random_uuid(),
+    ticket_id        UUID,
+    homework_chat_id UUID,
+    parent_id        UUID,
+    secretary_id     UUID,
+    student_id       UUID,
+    teacher_id       UUID,
+    date_time        TIMESTAMP DEFAULT NOW() NOT NULL,
+    text             TEXT,
+    attachment       VARCHAR(1024),
 
 
     CONSTRAINT pk_message PRIMARY KEY (id),
@@ -428,6 +426,24 @@ CREATE TABLE message
 );
 
 
+CREATE TABLE student_parent
+(
+    student_id UUID DEFAULT gen_random_uuid(),
+    parent_id  UUID DEFAULT gen_random_uuid(),
+
+    CONSTRAINT pk_student_parent PRIMARY KEY (student_id, parent_id),
+    CONSTRAINT fk_student_parent_student FOREIGN KEY (student_id) REFERENCES student (id),
+    CONSTRAINT fk_student_parent_parent FOREIGN KEY (parent_id) REFERENCES parent (id)
+
+);
 
 
+CREATE TABLE red_date
+(
+    date               DATE NOT NULL,
+    class_timetable_id SERIAL,
 
+    CONSTRAINT pk_red_date PRIMARY KEY (class_timetable_id, date),
+    CONSTRAINT fk_red_date_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id)
+
+);
