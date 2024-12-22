@@ -1,3 +1,5 @@
+name: Run Spring and Vite
+
 on:
   push:
     branches:
