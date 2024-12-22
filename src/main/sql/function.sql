@@ -1,86 +1,87 @@
 SET SCHEMA 'astromark';
 
-CREATE OR REPLACE FUNCTION is_signed_hour_day_valid(
-    p_teaching_timeslot_id INTEGER,
-    p_date DATE
+CREATE OR REPLACE FUNCTION check_single_role(
+    p_student_id UUID,
+    p_teacher_id UUID,
+    p_parent_id UUID,
+    p_secretary_id UUID
 ) RETURNS BOOLEAN AS $$
 DECLARE
-    expected_day WEEK_DAY;
-    actual_day WEEK_DAY;
+    non_null_count INTEGER := 0;
 BEGIN
-    -- Get the expected day from teaching_timeslot
-    SELECT day INTO expected_day
-    FROM teaching_timeslot
-    WHERE id = p_teaching_timeslot_id;
-
-     -- If teaching_timeslot_id does not exist, return FALSE
-    IF NOT FOUND THEN
-        RETURN FALSE;
+    -- Increment the count for each non-null ID
+    IF p_student_id IS NOT NULL THEN
+        non_null_count := non_null_count + 1;
+    END IF;
+    IF p_teacher_id IS NOT NULL THEN
+        non_null_count := non_null_count + 1;
+    END IF;
+    IF p_parent_id IS NOT NULL THEN
+        non_null_count := non_null_count + 1;
+    END IF;
+    IF p_secretary_id IS NOT NULL THEN
+        non_null_count := non_null_count + 1;
     END IF;
 
-    -- Find the week day from given date
-    actual_day :=
-            CASE EXTRACT(ISODOW FROM p_date)
-                WHEN 1 THEN 'MONDAY'
-                WHEN 2 THEN 'TUESDAY'
-                WHEN 3 THEN 'WEDNESDAY'
-                WHEN 4 THEN 'THURSDAY'
-                WHEN 5 THEN 'FRIDAY'
-                WHEN 6 THEN 'SATURDAY'
-                WHEN 7 THEN 'SUNDAY'
-                END;
-
-    -- Compare effective day with expected day
-    IF actual_day = expected_day THEN
-        RETURN TRUE;
-    ELSE
-        RETURN FALSE;
-    END IF;
+    -- Return TRUE if exactly one ID is not null
+    RETURN (non_null_count = 1);
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE FUNCTION is_reception_booking_day_valid(
-    p_reception_timeslot_id INTEGER,
-    p_date DATE
+CREATE OR REPLACE FUNCTION check_ticket_or_homework_chat_id_valid(
+    p_ticket_id INTEGER,
+    p_homework_chat_id INTEGER
 ) RETURNS BOOLEAN AS $$
 DECLARE
-    expected_day WEEK_DAY;
-    actual_day WEEK_DAY;
+    non_null_count INTEGER := 0;
 BEGIN
-    -- Get the expected day from reception_timeslot
-    SELECT day INTO expected_day
+    -- Increment count for each non-null ID
+    IF p_ticket_id IS NOT NULL THEN
+        non_null_count := non_null_count + 1;
+    END IF;
+    IF p_homework_chat_id IS NOT NULL THEN
+        non_null_count := non_null_count + 1;
+    END IF;
+
+    -- Return TRUE if exactly one ID is not null
+    RETURN (non_null_count = 1);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION calculate_booking_order(
+    p_reception_timeslot_id INTEGER
+) RETURNS SMALLINT AS $$
+DECLARE
+    cap SMALLINT;
+    book SMALLINT;
+    order_val SMALLINT;
+BEGIN
+    -- Retrieve capacity and booked from reception_timeslot
+    SELECT capacity, booked INTO cap, book
     FROM reception_timeslot
     WHERE id = p_reception_timeslot_id;
 
-    -- If reception_timeslot_id does not exist, return FALSE
+    -- Raise an error if the reception_timeslot_id does not exist
     IF NOT FOUND THEN
-        RETURN FALSE;
+        RAISE EXCEPTION 'reception_timeslot_id % does not exist in reception_timeslot table.', p_reception_timeslot_id;
     END IF;
 
-    -- Find the week day from given date
-    actual_day :=
-            CASE EXTRACT(ISODOW FROM p_date)
-                WHEN 1 THEN 'MONDAY'
-                WHEN 2 THEN 'TUESDAY'
-                WHEN 3 THEN 'WEDNESDAY'
-                WHEN 4 THEN 'THURSDAY'
-                WHEN 5 THEN 'FRIDAY'
-                WHEN 6 THEN 'SATURDAY'
-                WHEN 7 THEN 'SUNDAY'
-                END;
+    -- Calculate booking_order as capacity - booked
+    order_val := cap - book;
 
-    -- Compare effective day with expected day
-    IF actual_day = expected_day THEN
-        RETURN TRUE;
-    ELSE
-        RETURN FALSE;
+    -- Ensure booking_order is at least 1
+    IF order_val < 1 THEN
+        RAISE EXCEPTION 'No available bookings for reception_timeslot_id %.', p_reception_timeslot_id;
     END IF;
+
+    RETURN order_val;
 END;
 $$ LANGUAGE plpgsql;
 
-ALTER TABLE signed_hour
-ADD CONSTRAINT ck_signed_hour_day CHECK (is_signed_hour_day_valid(teaching_timeslot_id, date));
 
-ALTER TABLE reception_booking
-ADD CONSTRAINT ck_signed_hour_day CHECK (is_reception_booking_day_valid(reception_timeslot_id, date));
+ALTER TABLE astromark.message
+ADD CONSTRAINT ck_message_role CHECK (check_single_role(student_id, teacher_id, parent_id, secretary_id));
+
+ALTER TABLE astromark.message
+ADD CONSTRAINT ck_chat_type CHECK (check_ticket_or_homework_chat_id_valid(ticket_id, homework_chat_id));
+
