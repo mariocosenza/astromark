@@ -77,7 +77,7 @@ CREATE TABLE parent
     school_code         CHARACTER(7) NOT NULL,
     username            VARCHAR(256) NOT NULL,
     email               VARCHAR(256) NOT NULL,
-    password            VARCHAR(512) NOT NULL CHECK (length(password) >= 8),
+    password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
     tax_id              CHARACTER(16),
@@ -88,7 +88,8 @@ CREATE TABLE parent
     pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_parent PRIMARY KEY (id),
-    CONSTRAINT uk_parent_tax_id UNIQUE (tax_id)
+    CONSTRAINT uk_parent_tax_id UNIQUE (tax_id),
+    CONSTRAINT fk_parent_school FOREIGN KEY (school_code) REFERENCES school(code)
 );
 
 CREATE TABLE secretary
@@ -101,13 +102,14 @@ CREATE TABLE secretary
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
     tax_id              CHARACTER(16),
-    birth_date          DATE         NOT NULL,  -- should be at least eighteen years old
+    birth_date          DATE         NOT NULL, -- should be at least eighteen years old
     residential_address VARCHAR(512) NOT NULL,
     gender              BOOL          DEFAULT FALSE,
     pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_secretary PRIMARY KEY (id),
-    CONSTRAINT uk_secretary_tax_id UNIQUE (tax_id)
+    CONSTRAINT uk_secretary_tax_id UNIQUE (tax_id),
+    CONSTRAINT fk_secretary_school FOREIGN KEY (school_code) REFERENCES school(code)
 );
 
 CREATE TABLE teacher
@@ -126,7 +128,8 @@ CREATE TABLE teacher
     pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_teacher PRIMARY KEY (id),
-    CONSTRAINT uk_teacher_tax_id UNIQUE (tax_id)
+    CONSTRAINT uk_teacher_tax_id UNIQUE (tax_id),
+    CONSTRAINT fk_teacher_school FOREIGN KEY (school_code) REFERENCES school(code)
 );
 
 
@@ -172,7 +175,8 @@ CREATE TABLE student
     pending_state       PENDING_STATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_student PRIMARY KEY (id),
-    CONSTRAINT uk_student_tax_id UNIQUE (tax_id)
+    CONSTRAINT uk_student_tax_id UNIQUE (tax_id),
+    CONSTRAINT fk_student_school FOREIGN KEY (school_code) REFERENCES school(code)
 );
 
 CREATE TABLE delay
@@ -281,14 +285,13 @@ CREATE TABLE reception_timetable
     id                  SERIAL,
     teacher_id          UUID NOT NULL,
     text_info_reception TEXT,
-    start_validity      DATE   NOT NULL DEFAULT NOW(),
+    start_validity      DATE NOT NULL DEFAULT NOW(),
     end_validity        DATE CHECK (end_validity IS NULL OR end_validity > start_validity),
 
     CONSTRAINT pk_reception_timetable PRIMARY KEY (id),
     CONSTRAINT fk_reception_timetable_teacher FOREIGN KEY (teacher_id) REFERENCES teacher (id)
 );
 
-CREATE TYPE WEEK_DAY AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY');
 
 CREATE TABLE teaching_timeslot
 (
@@ -296,10 +299,10 @@ CREATE TABLE teaching_timeslot
     id                 SERIAL,
     class_timetable_id SERIAL                                   NOT NULL,
     hour               SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
-    day                WEEK_DAY                                 NOT NULL,
+    date               DATE                                     NOT NULL,
 
     CONSTRAINT pk_teaching_timeslot PRIMARY KEY (id),
-    CONSTRAINT uk_teaching_timeslot UNIQUE (class_timetable_id, hour, day),
+    CONSTRAINT uk_teaching_timeslot UNIQUE (class_timetable_id, hour, date),
     CONSTRAINT fk_teaching_timeslot_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
@@ -308,12 +311,13 @@ CREATE TABLE teaching_timeslot
 CREATE TABLE signed_hour
 (
     teaching_timeslot_id SERIAL,
-    date                 DATE,
+    teacher_id           UUID                    NOT NULL,
     time_sign            TIMESTAMP DEFAULT NOW() NOT NULL,
     substitution         BOOL      DEFAULT FALSE NOT NULL,
 
-    CONSTRAINT pk_signed_hour PRIMARY KEY (teaching_timeslot_id, date),
-    CONSTRAINT fk_signed_hour_teaching_timeslot FOREIGN KEY (teaching_timeslot_id) REFERENCES teaching_timeslot (id)
+    CONSTRAINT pk_signed_hour PRIMARY KEY (teaching_timeslot_id),
+    CONSTRAINT fk_signed_hour_teaching_timeslot FOREIGN KEY (teaching_timeslot_id) REFERENCES teaching_timeslot (id),
+    CONSTRAINT fk_signed_hour_teacher FOREIGN KEY (teacher_id) REFERENCES teacher (id)
 );
 
 
@@ -324,12 +328,13 @@ CREATE TABLE reception_timeslot
     id                     SERIAL,
     reception_timetable_id SERIAL                                   NOT NULL,
     hour                   SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
-    day                    WEEK_DAY                                 NOT NULL,
-    capacity               SMALLINT                                 NOT NULL CHECK (capacity > 0) DEFAULT 6,
+    date                   DATE                                     NOT NULL,
+    capacity               SMALLINT                                 NOT NULL CHECK (capacity > 0)       DEFAULT 6,
+    booked                 SMALLINT                                 NOT NULL CHECK (booked <= capacity AND booked >= 0) DEFAULT 0,
     mode                   VARCHAR(128)                             NOT NULL,
 
     CONSTRAINT pk_reception_timeslot PRIMARY KEY (id),
-    CONSTRAINT uk_reception_timeslot UNIQUE (reception_timetable_id, hour, day),
+    CONSTRAINT uk_reception_timeslot UNIQUE (reception_timetable_id, hour, date),
     CONSTRAINT fk_reception_timeslot_reception_timetable FOREIGN KEY (reception_timetable_id) REFERENCES reception_timetable (id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
@@ -338,11 +343,11 @@ CREATE TABLE reception_booking
 (
     parent_id             UUID,
     reception_timeslot_id SERIAL,
-    date                  DATE,
-    confirmed             BOOLEAN DEFAULT FALSE NOT NULL,
-    refused               BOOLEAN DEFAULT FALSE NOT NULL,
+    booking_order         SMALLINT CHECK (booking_order >= 1) NOT NULL,
+    confirmed             BOOLEAN                             DEFAULT FALSE NOT NULL,
+    refused               BOOLEAN                             DEFAULT FALSE NOT NULL,
 
-    CONSTRAINT pk_reception_booking PRIMARY KEY (parent_id, date, reception_timeslot_id),
+    CONSTRAINT pk_reception_booking PRIMARY KEY (parent_id, reception_timeslot_id),
     CONSTRAINT fk_reception_booking_parent FOREIGN KEY (parent_id) REFERENCES parent (id),
     CONSTRAINT fk_reception_booking_reception_timeslot FOREIGN KEY (reception_timeslot_id) REFERENCES reception_timeslot (id)
 );
@@ -350,42 +355,36 @@ CREATE TABLE reception_booking
 CREATE TABLE class_activity
 (
     signed_hour_teaching_timeslot_id SERIAL,
-    signed_hour_date                 DATE,
     description                      TEXT,
     title                            VARCHAR(256) NOT NULL,
 
-    CONSTRAINT pk_class_activity PRIMARY KEY (signed_hour_date, signed_hour_teaching_timeslot_id),
-    CONSTRAINT fk_class_activity_signed_hour FOREIGN KEY (signed_hour_teaching_timeslot_id, signed_hour_date) REFERENCES signed_hour (teaching_timeslot_id, date)
+    CONSTRAINT pk_class_activity PRIMARY KEY (signed_hour_teaching_timeslot_id),
+    CONSTRAINT fk_class_activity_signed_hour FOREIGN KEY (signed_hour_teaching_timeslot_id) REFERENCES signed_hour (teaching_timeslot_id)
 );
 
 CREATE TABLE homework
 (
     signed_hour_teaching_timeslot_id SERIAL,
-    signed_hour_date                 DATE,
     due_date                         DATE         NOT NULL CHECK (due_date > NOW()),
     description                      TEXT,
     title                            VARCHAR(256) NOT NULL,
 
-    CONSTRAINT pk_homework PRIMARY KEY (signed_hour_date, signed_hour_teaching_timeslot_id),
-    CONSTRAINT fk_homework_signed_hour FOREIGN KEY (signed_hour_teaching_timeslot_id, signed_hour_date) REFERENCES signed_hour (teaching_timeslot_id, date)
+    CONSTRAINT pk_homework PRIMARY KEY (signed_hour_teaching_timeslot_id),
+    CONSTRAINT fk_homework_signed_hour FOREIGN KEY (signed_hour_teaching_timeslot_id) REFERENCES signed_hour (teaching_timeslot_id)
 );
 
-
-CREATE TYPE CHAT_TYPE AS ENUM ('HOMEWORK', 'TICKET');
-CREATE TYPE USER_ROLE AS ENUM ('STUDENT', 'TEACHER', 'SECRETARY', 'PARENT');
-
-CREATE TABLE message -- this table is not normalized to improve memory usage
+CREATE TABLE homework_chat
 (
-    id         UUID      DEFAULT gen_random_uuid(),
-    chat_id    SERIAL                  NOT NULL,
-    chat_type  CHAT_TYPE               NOT NULL,
-    user_id    UUID                    NOT NULL,
-    user_type  USER_ROLE               NOT NULL,
-    date_time  TIMESTAMP DEFAULT NOW() NOT NULL,
-    text       TEXT,
-    attachment VARCHAR(1024),
+    id                                        SERIAL,
+    homework_signed_hour_teaching_timeslot_id SERIAL             NOT NULL,
+    title                                     VARCHAR(128)       NOT NULL,
+    student_id                                UUID               NOT NULL,
+    completed                                 BOOL DEFAULT FALSE NOT NULL,
 
-    CONSTRAINT pk_message PRIMARY KEY (id)
+
+    CONSTRAINT pk_homework_chat PRIMARY KEY (id),
+    CONSTRAINT fk_homework_chat FOREIGN KEY (student_id) REFERENCES student (id),
+    CONSTRAINT fk_homework_chat_homework FOREIGN KEY (homework_signed_hour_teaching_timeslot_id) REFERENCES homework (signed_hour_teaching_timeslot_id)
 );
 
 CREATE TABLE ticket
@@ -405,18 +404,30 @@ CREATE TABLE ticket
     CONSTRAINT fk_ticket_teacher FOREIGN KEY (teacher_id) REFERENCES teacher (id)
 );
 
-CREATE TABLE homework_chat
+CREATE TABLE message
 (
-    id                                        SERIAL,
-    homework_signed_hour_teaching_timeslot_id SERIAL,
-    homework_signed_hour_date                 DATE,
-    title                                     VARCHAR(128)       NOT NULL,
-    student_id                                UUID               NOT NULL,
-    completed                                 BOOL DEFAULT FALSE NOT NULL,
+    id                  UUID      DEFAULT gen_random_uuid(),
+    ticket_id           SERIAL,
+    homework_chat_id    SERIAL,
+    parent_id           UUID,
+    secretary_id        UUID,
+    student_id          UUID,
+    teacher_id          UUID,
+    date_time           TIMESTAMP DEFAULT NOW() NOT NULL,
+    text                TEXT,
+    attachment          VARCHAR(1024),
 
 
-    CONSTRAINT pk_homework_chat PRIMARY KEY (id),
-    CONSTRAINT fk_homework_chat FOREIGN KEY (student_id) REFERENCES student (id),
-    CONSTRAINT fk_homework_chat_homework FOREIGN KEY (homework_signed_hour_date, homework_signed_hour_teaching_timeslot_id) REFERENCES homework (signed_hour_date, signed_hour_teaching_timeslot_id)
+    CONSTRAINT pk_message PRIMARY KEY (id),
+    CONSTRAINT fk_message_ticket FOREIGN KEY (ticket_id) REFERENCES ticket (id),
+    CONSTRAINT fk_message_homework_chat FOREIGN KEY (homework_chat_id) REFERENCES homework_chat (id),
+    CONSTRAINT fk_message_student FOREIGN KEY (student_id) REFERENCES student (id),
+    CONSTRAINT fk_message_parent FOREIGN KEY (parent_id) REFERENCES parent (id),
+    CONSTRAINT fk_message_secretary FOREIGN KEY (secretary_id) REFERENCES secretary (id),
+    CONSTRAINT fk_message_teacher FOREIGN KEY (teacher_id) REFERENCES teacher (id)
 );
+
+
+
+
 
