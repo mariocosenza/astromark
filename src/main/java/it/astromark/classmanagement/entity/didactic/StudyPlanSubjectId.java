@@ -9,12 +9,16 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Embeddable
-public class StudyPlanSubjectId implements java.io.Serializable {
+public class StudyPlanSubjectId implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 7884693267848906718L;
     @Size(max = 64)
     @NotNull
