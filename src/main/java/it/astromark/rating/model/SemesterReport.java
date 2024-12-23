@@ -3,6 +3,7 @@ package it.astromark.rating.model;
 import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -21,8 +25,8 @@ import org.hibernate.annotations.OnDeleteAction;
         schema = "astromark",
         uniqueConstraints = {@UniqueConstraint(name = "uk_semester_report", columnNames = {"first_semester", "year", "student_id"})}
 )
-
 public class SemesterReport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "semester_report_id_gen")
     @SequenceGenerator(name = "semester_report_id_gen", sequenceName = "semester_report_id_seq", allocationSize = 1)
@@ -53,6 +57,7 @@ public class SemesterReport {
     @Column(name = "viewed", nullable = false)
     private Boolean viewed = false;
 
+    @PositiveOrZero
     @Column(name = "year")
     private Short year;
 
@@ -60,5 +65,8 @@ public class SemesterReport {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "student_id")
     private Student student;
+
+    @OneToMany(mappedBy = "semester")
+    private Set<SemesterReportMark> semesterReportMarks = new LinkedHashSet<>();
 
 }
