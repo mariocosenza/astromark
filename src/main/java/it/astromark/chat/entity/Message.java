@@ -5,6 +5,7 @@ import it.astromark.user.secretary.entity.Secretary;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -57,6 +58,7 @@ public class Message {
     @Column(name = "date_time", nullable = false)
     private Instant dateTime;
 
+    @NotBlank
     @Column(name = "text", length = Integer.MAX_VALUE)
     private String text;
 

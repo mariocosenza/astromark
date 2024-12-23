@@ -2,6 +2,7 @@ package it.astromark.communication.entity;
 
 import it.astromark.classmanagement.entity.SchoolClass;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public class Communication {
     private SchoolClass schoolClass;
 
     @Size(max = 256)
-    @NotNull
+    @NotBlank
     @Column(name = "title", nullable = false, length = 256)
     private String title;
 

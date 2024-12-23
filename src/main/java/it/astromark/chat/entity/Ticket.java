@@ -3,6 +3,7 @@ package it.astromark.chat.entity;
 import it.astromark.user.parent.entity.Parent;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -27,6 +28,7 @@ public class Ticket extends Chat {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
+    @NotBlank
     @Size(max = 64)
     @Column(name = "category", length = 64)
     private String category;
