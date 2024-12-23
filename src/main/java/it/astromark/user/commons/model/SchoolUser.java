@@ -51,13 +51,13 @@ public abstract class SchoolUser {
 
     @Size(max = 64)
     @NotNull
-    @Pattern(regexp = "^[A-Za-z][A-Za-z'\\-]+([ A-Za-z][A-Za-z'\\-]+)*", message = "Invalid name format")
+    @Pattern(regexp = "^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$", message = "Invalid name format")
     @Column(name = "name", nullable = false, length = 64)
     private String name;
 
     @Size(max = 64)
     @NotNull
-    @Pattern(regexp = "^[A-Za-z][A-Za-z'\\-]+([ A-Za-z][A-Za-z'\\-]+)*", message = "Invalid surname format")
+    @Pattern(regexp = "^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$", message = "Invalid surname format")
     @Column(name = "surname", nullable = false, length = 64)
     private String surname;
 
