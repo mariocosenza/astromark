@@ -1,0 +1,15 @@
+# Minimal settings to update dependencies stored in one private registry
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "src/main/typescript"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "maven"
+    directory: "/"
+    # Check the maven registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
