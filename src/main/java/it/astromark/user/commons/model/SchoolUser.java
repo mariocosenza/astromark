@@ -2,8 +2,7 @@ package it.astromark.user.commons.model;
 
 import it.astromark.school.entity.School;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,44 +33,52 @@ public abstract class SchoolUser {
     private School schoolCode;
 
     @Size(max = 256)
-    @NotNull
+    @NotBlank
     @Column(name = "username", nullable = false, length = 256)
     private String username;
 
     @Size(max = 256)
     @NotNull
+    @Email
     @Column(name = "email", nullable = false, length = 256)
     private String email;
 
     @Size(max = 512)
     @NotNull
+    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     @Column(name = "password", nullable = false, length = 512)
     private String password;
 
     @Size(max = 64)
     @NotNull
+    @Pattern(regexp = "^[A-Za-z][A-Za-z'\\-]+([ A-Za-z][A-Za-z'\\-]+)*", message = "Invalid name format")
     @Column(name = "name", nullable = false, length = 64)
     private String name;
 
     @Size(max = 64)
     @NotNull
+    @Pattern(regexp = "^[A-Za-z][A-Za-z'\\-]+([ A-Za-z][A-Za-z'\\-]+)*", message = "Invalid surname format")
     @Column(name = "surname", nullable = false, length = 64)
     private String surname;
 
 
+    @Size(min = 16)
+    @Size(max = 16)
     @Column(name = "tax_id", length = 16)
     private String taxId;
 
     @NotNull
+    @Past(message = "Needs to be at least 10 year old")
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
     @ColumnDefault("false")
+    @NotNull
     @Column(name = "gender")
     private Boolean gender;
 
     @Size(max = 512)
-    @NotNull
+    @NotBlank
     @Column(name = "residential_address", nullable = false, length = 512)
     private String residentialAddress;
 

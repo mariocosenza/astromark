@@ -5,6 +5,7 @@ import it.astromark.chat.entity.Ticket;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
@@ -26,6 +27,7 @@ import java.util.Set;
 public class Parent extends SchoolUser {
 
     @ColumnDefault("false")
+    @NotNull
     @Column(name = "legal_guardian")
     private Boolean legalGuardian;
 

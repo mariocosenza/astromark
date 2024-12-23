@@ -4,37 +4,39 @@ import it.astromark.attendance.entity.Absence;
 import it.astromark.attendance.entity.Delay;
 import it.astromark.behavior.entity.Note;
 import it.astromark.chat.entity.HomeworkChat;
-import it.astromark.chat.entity.Message;
+import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.rating.model.Mark;
 import it.astromark.rating.model.SemesterReport;
 import it.astromark.user.commons.model.SchoolUser;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Entity
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Table(name = "student", schema = "astromark")
+@SuperBuilder
+@Entity
+@Table(
+        name = "student",
+        schema = "astromark",
+        uniqueConstraints = {@UniqueConstraint(name = "uk_student_tax_id", columnNames = "tax_id")}
+)
 public class Student extends SchoolUser {
 
     @Column(name = "attitude", length = Integer.MAX_VALUE)
     private String attitude;
 
+    @Max(100)
+    @Min(60) //null value are considered valid
     @Column(name = "graduation_mark")
     private Short graduationMark;
-
-    @Column(name = "latest_school_class")
-    private Long latestSchoolClass;
 
     @Builder.Default
     @OneToMany(mappedBy = "student")
@@ -52,9 +54,6 @@ public class Student extends SchoolUser {
     @OneToMany(mappedBy = "student")
     private Set<Mark> marks = new LinkedHashSet<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "student")
-    private Set<Message> messages = new LinkedHashSet<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "student")
@@ -63,5 +62,11 @@ public class Student extends SchoolUser {
     @Builder.Default
     @OneToMany(mappedBy = "student")
     private Set<SemesterReport> semesterReports = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "student_school_class",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "school_class_id"))
+    private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
 
 }
