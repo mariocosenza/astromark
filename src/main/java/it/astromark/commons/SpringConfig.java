@@ -24,9 +24,9 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Temporary bean to disable default http basic auth
-     * @param http
-     * @return
-     * @throws Exception
+     * @param http incoming request
+     * @return SecurityFilterChain bean
+     * @throws Exception generic exception
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +35,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Disable CORS for frontend page served in static folder
-     * @param registry
+     * @param registry map for cors policy
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -45,7 +45,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Add resource handler to serve web pages in static folder
-     * @param registry
+     * @param registry map for cors policy
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
