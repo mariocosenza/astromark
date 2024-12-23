@@ -4,6 +4,8 @@ import it.astromark.agenda.commons.entity.RedDate;
 import it.astromark.agenda.commons.entity.Timetable;
 import it.astromark.classmanagement.entity.SchoolClass;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +33,8 @@ public class ClassTimetable extends Timetable {
 
     @NotNull
     @ColumnDefault("27")
+    @Min(0)
+    @Max(40)
     @Column(name = "expected_hours", nullable = false)
     private Short expectedHours;
 

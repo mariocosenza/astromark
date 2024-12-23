@@ -15,7 +15,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "teaching_timeslot", schema = "astromark")
+@Table(
+        name = "teaching_timeslot",
+        schema = "astromark",
+        uniqueConstraints = {@UniqueConstraint(name = "uk_teaching_timeslot", columnNames = {"class_timetable_id", "hour", "date"})}
+)
 public class TeachingTimeslot extends Timeslot {
 
     @NotNull
