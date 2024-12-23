@@ -1,6 +1,8 @@
 package it.astromark.agenda.commons.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +23,8 @@ public abstract class Timeslot {
     private Integer id;
 
     @NotNull
+    @Min(value = 1, message = "Valid range 1 to 8")
+    @Max(value = 8, message = "Valid range 1 to 8")
     @Column(name = "hour", nullable = false)
     private Short hour;
 
