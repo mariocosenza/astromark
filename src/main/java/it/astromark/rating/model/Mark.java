@@ -1,10 +1,9 @@
 package it.astromark.rating.model;
 
-import it.astromark.classmanagement.entity.didactic.Teaching;
+import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,6 +50,10 @@ public class Mark {
     @Size(max = 512)
     @Column(name = "description", length = 512)
     private String description;
+
+    @NotNull
+    @Min(0)
+    @Max(10)
     @Column(name = "mark")
     private Double mark;
 

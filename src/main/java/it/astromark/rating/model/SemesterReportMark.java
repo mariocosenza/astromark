@@ -1,7 +1,9 @@
 package it.astromark.rating.model;
 
-import it.astromark.classmanagement.entity.didactic.Subject;
+import it.astromark.classmanagement.didactic.entity.Subject;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +16,11 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "semester_report_mark", schema = "astromark")
+@Table(
+        name = "semester_report_mark",
+        schema = "astromark",
+        uniqueConstraints = {@UniqueConstraint(name = "uk_semester_report_mark", columnNames = {"subject_title", "semester_id"})}
+)
 public class SemesterReportMark {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "semester_report_mark_id_gen")
@@ -34,6 +40,8 @@ public class SemesterReportMark {
     private SemesterReport semester;
 
     @NotNull
+    @Min(0)
+    @Max(10)
     @Column(name = "mark", nullable = false)
     private Short mark;
 
