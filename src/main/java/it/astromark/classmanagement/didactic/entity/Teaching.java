@@ -1,7 +1,8 @@
-package it.astromark.classmanagement.entity.didactic;
+package it.astromark.classmanagement.didactic.entity;
 
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class Teaching {
 
     @Size(max = 64)
     @NotNull
+    @NotBlank
     @Column(name = "type_of_activity", nullable = false, length = 64)
     private String typeOfActivity;
 

@@ -1,4 +1,4 @@
-package it.astromark.classmanagement.entity.didactic;
+package it.astromark.classmanagement.didactic.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

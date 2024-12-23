@@ -1,7 +1,8 @@
-package it.astromark.classmanagement.entity.didactic;
+package it.astromark.classmanagement.didactic.entity;
 
 import it.astromark.classmanagement.entity.SchoolClass;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -33,8 +37,15 @@ public class StudyPlan {
     private SchoolClass schoolClass;
 
     @Size(max = 64)
+    @NotBlank
     @NotNull
     @Column(name = "title", length = 64, nullable = false)
     private String title;
+
+    @ManyToMany
+    @JoinTable(name = "study_plan_subject",
+            joinColumns = @JoinColumn(name = "study_plan_school_class_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_title"))
+    private Set<Subject> subjects = new LinkedHashSet<>();
 
 }
