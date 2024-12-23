@@ -2,7 +2,7 @@ package it.astromark.classwork.entity;
 
 import it.astromark.agenda.schoolclass.entity.SignedHour;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class ClassActivity {
     private String description;
 
     @Size(max = 256)
-    @NotNull
+    @NotBlank
     @Column(name = "title", nullable = false, length = 256)
     private String title;
 
