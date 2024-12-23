@@ -61,7 +61,7 @@ CREATE TABLE study_plan_subject
     study_plan_school_class_id SERIAL,
 
     CONSTRAINT pk_study_plan_subject PRIMARY KEY (subject_title, study_plan_school_class_id),
-    CONSTRAINT fk_study_plan_subject_school_class FOREIGN KEY (study_plan_school_class_id) REFERENCES school_class (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_study_plan_subject_school_class FOREIGN KEY (study_plan_school_class_id) REFERENCES study_plan (school_class_id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_study_plan_subject_subject FOREIGN KEY (subject_title) REFERENCES subject (title) ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
@@ -170,7 +170,6 @@ CREATE TABLE student
     residential_address VARCHAR(512) NOT NULL,
     attitude            TEXT,
     graduation_mark     SMALLINT CHECK (graduation_mark >= 60 AND graduation_mark <= 100),
-    latest_school_class BIGINT,
     gender              BOOL         DEFAULT FALSE,
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
@@ -446,4 +445,14 @@ CREATE TABLE red_date
     CONSTRAINT pk_red_date PRIMARY KEY (class_timetable_id, date),
     CONSTRAINT fk_red_date_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id)
 
+);
+
+CREATE TABLE student_school_class
+(
+    school_class_id SERIAL,
+    student_id      UUID,
+
+    CONSTRAINT pk_student_school_class PRIMARY KEY (school_class_id, student_id),
+    CONSTRAINT fk_student_school_class_school_class FOREIGN KEY (school_class_id) REFERENCES school_class(id),
+    CONSTRAINT fk_student_school_class_student FOREIGN KEY (student_id) REFERENCES student(id)
 );
