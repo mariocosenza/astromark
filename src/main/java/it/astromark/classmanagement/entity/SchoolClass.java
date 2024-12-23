@@ -1,12 +1,11 @@
 package it.astromark.classmanagement.entity;
 
 import it.astromark.agenda.schoolclass.entity.ClassTimetable;
-import it.astromark.classmanagement.entity.didactic.StudyPlan;
+import it.astromark.classmanagement.didactic.entity.StudyPlan;
 import it.astromark.communication.entity.Communication;
 import it.astromark.school.entity.School;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,15 +36,18 @@ public class SchoolClass {
     private School schoolCode;
 
     @NotNull
+    @PositiveOrZero
     @Column(name = "number", nullable = false)
     private Short number;
 
     @Size(max = 2)
     @NotNull
+    @Pattern(regexp = "^[A-Z]{1,2}$", message = "One to two alphabet letter allowed")
     @Column(name = "letter", nullable = false, length = 2)
     private String letter;
 
     @NotNull
+    @Positive
     @Column(name = "year", nullable = false)
     private Integer year;
 

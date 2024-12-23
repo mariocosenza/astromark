@@ -6,7 +6,9 @@ import it.astromark.user.secretary.entity.Secretary;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,7 @@ import java.util.Set;
 public class School {
     @Id
     @Size(max = 7)
+    @Pattern(regexp = "^SS\\d{5}$")
     @SequenceGenerator(name = "school_id_gen", sequenceName = "school_class_id_seq", allocationSize = 1)
     @Column(name = "code", nullable = false, length = 7)
     private String code;
@@ -44,6 +47,7 @@ public class School {
 
     @Size(max = 256)
     @NotNull
+    @Email
     @Column(name = "email", nullable = false, length = 256)
     private String email;
 
