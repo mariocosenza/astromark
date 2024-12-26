@@ -56,3 +56,4 @@ node_modules
 dist
 dist-ssr
 *.local
+/src/main/resources/static/
