@@ -1,4 +1,4 @@
-package it.astromark.commons;
+package it.astromark.commons.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +24,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Temporary bean to disable default http basic auth
+     *
      * @param http incoming request
      * @return SecurityFilterChain bean
      * @throws Exception generic exception
@@ -35,6 +36,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Disable CORS for frontend page served in static folder
+     *
      * @param registry map for cors policy
      */
     @Override
@@ -45,6 +47,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Add resource handler to serve web pages in static folder
+     *
      * @param registry map for cors policy
      */
     @Override
