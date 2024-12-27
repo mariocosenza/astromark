@@ -18,7 +18,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({DataAccessException.class})
+    @ExceptionHandler(DataAccessException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleGlobalDataException(DataAccessException exception) {
         return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "DataAccess exception thrown " + exception.getLocalizedMessage());
