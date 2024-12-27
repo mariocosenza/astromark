@@ -11,6 +11,6 @@ spring:
       ddl-auto: validate
     properties:
         hibernate.default_schema: astromark
-    show-sql: false
+    show-sql: true
     open-in-view: false
     generate-ddl: true

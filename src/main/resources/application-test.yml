@@ -1,0 +1,14 @@
+spring:
+  application:
+      name: astromark
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+        hibernate.default_schema: astromark
+    show-sql: true
+    open-in-view: false
+    generate-ddl: true
+  sql:
+      init:
+        mode: always
