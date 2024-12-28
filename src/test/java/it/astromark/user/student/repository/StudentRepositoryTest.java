@@ -4,6 +4,9 @@ import it.astromark.school.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.student.entity.Student;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,14 +40,19 @@ class StudentRepositoryTest {
     @Autowired
     private SchoolRepository schoolRepository;
 
+    private static Validator validator;
+
     private static School school;
 
     @BeforeAll
     public static void setUp() {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            validator =  factory.getValidator();
+        }
         school = School.builder()
                 .code("SS23456")
                 .name("Liceo Severi")
-                .phoneNumber(34534646)
+                .phoneNumber(432435L)
                 .address("Viale L. D’Orsi, 5 80053 - Castellammare di Stabia (NA)")
                 .email("naps110002@istruzione.it").build();
     }
@@ -53,16 +62,21 @@ class StudentRepositoryTest {
     void save() {
         school = schoolRepository.save(school);
         var faker = new Faker();
+        var name = faker.name().firstName();
+        var surname = faker.name().lastName();
         var student = studentRepository.save(Student.builder()
                 .email(faker.internet().emailAddress())
-                .name(faker.name().fullName())
+                .name(name)
                 .pendingState(PendingState.FIRST_LOGIN)
-                .surname(faker.name().fullName())
+                .surname(surname)
+                .password(faker.internet().password(8, 16, true, true))
                 .residentialAddress(faker.address().fullAddress())
                 .gender(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
-                .schoolCode(school).build());
-        assertNotNull(student);
+                .username(name + "." + surname)
+                .school(school).build());
+        assertNotNull(studentRepository.findById(student.getId()));
+        assertTrue(validator.validate(student).isEmpty());
     }
 
 }
