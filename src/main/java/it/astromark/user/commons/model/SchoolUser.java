@@ -30,7 +30,7 @@ public abstract class SchoolUser {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
-    private School schoolCode;
+    private School school;
 
     @Size(max = 256)
     @NotBlank
