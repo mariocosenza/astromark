@@ -5,7 +5,7 @@ SET SCHEMA 'astromark';
 CREATE TABLE school
 (
     code                       VARCHAR(7) CHECK (code ~ '^SS\d{5}$'),
-    phone_number               INT          NOT NULL,
+    phone_number               BIGINT       NOT NULL,
     address                    VARCHAR(512) NOT NULL,
     name                       VARCHAR(256),
     email                      VARCHAR(256) NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE parent
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_parent PRIMARY KEY (id),
-    CONSTRAINT uk_parent_tax_id UNIQUE (tax_id),
+    CONSTRAINT uk_parent_username_code_tax_id UNIQUE (username, school_code, tax_id),
     CONSTRAINT fk_parent_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -101,14 +101,14 @@ CREATE TABLE secretary
     password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
-    tax_id              VARCHAR(16),
+    tax_id              VARCHAR(16)  NOT NULL,
     birth_date          DATE         NOT NULL, -- should be at least eighteen years old
     residential_address VARCHAR(512) NOT NULL,
     gender              BOOL         DEFAULT FALSE,
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_secretary PRIMARY KEY (id),
-    CONSTRAINT uk_secretary_tax_id UNIQUE (tax_id),
+    CONSTRAINT uk_secretary_username_code_tax_id UNIQUE (username, school_code, tax_id),
     CONSTRAINT fk_secretary_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -121,14 +121,14 @@ CREATE TABLE teacher
     password            VARCHAR(512) NOT NULL CHECK (LENGTH(password) >= 8),
     name                VARCHAR(64)  NOT NULL,
     surname             VARCHAR(64)  NOT NULL,
-    tax_id              VARCHAR(16),
+    tax_id              VARCHAR(16)  NOT NULL,
     birth_date          DATE         NOT NULL, -- should be at least eighteen years old
     residential_address VARCHAR(512) NOT NULL,
     gender              BOOL         DEFAULT FALSE,
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_teacher PRIMARY KEY (id),
-    CONSTRAINT uk_teacher_tax_id UNIQUE (tax_id),
+    CONSTRAINT uk_teacher_username_code_tax_id UNIQUE (username, school_code, tax_id),
     CONSTRAINT fk_teacher_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -174,7 +174,7 @@ CREATE TABLE student
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_student PRIMARY KEY (id),
-    CONSTRAINT uk_student_tax_id UNIQUE (tax_id),
+    CONSTRAINT uk_student_username_code_tax_id UNIQUE (username, school_code, tax_id),
     CONSTRAINT fk_student_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
