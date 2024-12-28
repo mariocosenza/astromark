@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
-    Teacher findByUsernameAndPasswordAndAndSchoolCode(String username , String password , School schoolCode);
+    Teacher findByUsernameAndSchoolCode(String username , School schoolCode);
 }

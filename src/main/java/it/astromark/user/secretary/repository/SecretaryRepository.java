@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface SecretaryRepository extends JpaRepository<Secretary, UUID> {
 
-    Secretary findByUsernameAndPasswordAndAndSchoolCode(String username , String password , School schoolCode);
+    Secretary findByUsernameAndSchoolCode(String username , School schoolCode);
 }

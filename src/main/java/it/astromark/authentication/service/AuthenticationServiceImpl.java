@@ -7,6 +7,7 @@ import it.astromark.user.secretary.repository.SecretaryRepository;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,21 +25,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SchoolUser login(String username, String password, School schoolCode) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        SchoolUser schoolUser;
+        // Cerca l'utente nei vari repository
+        SchoolUser schoolUser = findUserInRepositories(username, schoolCode);
 
-        if ((schoolUser = parentRepository.findByUsernameAndPasswordAndAndSchoolCode(username, password, schoolCode)) != null)
+        // Se l'utente esiste e la password corrisponde
+        if (schoolUser != null && encoder.matches(password, schoolUser.getPassword())) {
             return schoolUser;
+        }
 
-        else if ((schoolUser = secretaryRepository.findByUsernameAndPasswordAndAndSchoolCode(username, password, schoolCode)) != null)
-            return schoolUser;
-
-        else if ((schoolUser = studentRepository.findByUsernameAndPasswordAndAndSchoolCode(username, password, schoolCode)) != null)
-            return schoolUser;
-
-        else if ((schoolUser = teacherRepository.findByUsernameAndPasswordAndAndSchoolCode(username, password, schoolCode)) != null)
-            return schoolUser;
-
+        // Se nessun utente trovato o password non valida
         return null;
     }
+
+    private SchoolUser findUserInRepositories(String username, School schoolCode) {
+        // Cerca l'utente in ciascun repository
+        SchoolUser user = parentRepository.findByUsernameAndSchoolCode(username, schoolCode);
+        if (user != null) return user;
+
+        user = secretaryRepository.findByUsernameAndSchoolCode(username, schoolCode);
+        if (user != null) return user;
+
+        user = studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
+        if (user != null) return user;
+
+        user = teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);
+        if (user != null) return user;
+
+        return null; // Nessun utente trovato
+    }
+
 }
