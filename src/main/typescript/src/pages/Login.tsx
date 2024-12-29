@@ -22,7 +22,8 @@ const validationSchema = yup.object().shape({
         .minNumbers(0)
         .required("Password obbligatoria"),
     schoolCode: yup.string()
-        .matches(/^SS\\d{5}$/)
+        .strict(true)
+        .matches(/^SS\\d{5}$/, "Codice scuola errato")
         .required("Codice scuola obbligatorio")
 });
 
@@ -43,6 +44,7 @@ const initialValues: IFormValues = {
 export const Login = ()  => {
     const onSubmit = (values: IFormValues) => {
             console.log(values)
+
     };
 
     const validate = (values: IFormValues) => {

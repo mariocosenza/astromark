@@ -7,7 +7,7 @@ type PropsLogin = {
     showLogin: boolean
 }
 
-export const HomePageNavbar: React.FC<PropsLogin> = (props) => {
+export const HomePageNavbar: React.FC<PropsLogin> = ({showLogin}) => {
     return (
         <header>
             <Box sx={{flexGrow: 1, width: '100%'}}>
@@ -26,7 +26,7 @@ export const HomePageNavbar: React.FC<PropsLogin> = (props) => {
                         </Typography>
                         <HelpIcon/>
                         {
-                            props.showLogin && <div> <Link to="/login" className={'whiteLink'}>
+                            showLogin && <div> <Link to="/login" className={'whiteLink'}>
                                 <Button color="inherit">Accedi</Button>
                             </Link> </div>
                         }
