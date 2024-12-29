@@ -23,7 +23,7 @@ const validationSchema = yup.object().shape({
         .required("Password obbligatoria"),
     schoolCode: yup.string()
         .strict(true)
-        .matches(/^SS\\d{5}$/, "Codice scuola errato")
+        .matches(/^SS\d{5}$/, "Codice scuola errato")
         .required("Codice scuola obbligatorio")
 });
 
