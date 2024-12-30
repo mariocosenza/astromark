@@ -2,15 +2,15 @@ package it.astromark.agenda.commons.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor

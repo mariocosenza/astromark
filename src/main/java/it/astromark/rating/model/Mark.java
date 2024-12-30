@@ -4,10 +4,7 @@ import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -15,7 +12,9 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Builder
 @NoArgsConstructor

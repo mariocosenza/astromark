@@ -13,12 +13,13 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
 @Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(
         name = "parent",
         schema = "astromark",

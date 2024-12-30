@@ -17,8 +17,9 @@ import lombok.experimental.SuperBuilder;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder

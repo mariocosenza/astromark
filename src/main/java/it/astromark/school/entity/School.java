@@ -10,15 +10,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -56,23 +54,23 @@ public class School {
     private String schoolPrincipalFullName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "school")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
     private Set<Parent> parents = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "school")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "school")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
     private Set<Secretary> secretaries = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "school")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
     private Set<Student> students = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "school")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
     private Set<Teacher> teachers = new LinkedHashSet<>();
 
 }

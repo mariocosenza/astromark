@@ -4,13 +4,12 @@ import it.astromark.agenda.schoolclass.entity.SignedHour;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Builder
 @NoArgsConstructor

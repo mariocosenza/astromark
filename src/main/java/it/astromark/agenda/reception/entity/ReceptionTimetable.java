@@ -14,6 +14,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
