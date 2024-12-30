@@ -36,5 +36,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'src/main/typescript/package-lock.json'
 
+      - name: Update mail key
+        run: sed -i 's/${SPRING_MAIL_KEY}/${{ secrets.SPRING_MAIL_KEY }}/' src/main/resources/application.yml
+
+      - name: Update mail dev
+        run: sed -i 's/${SPRING_MAIL_KEY}/${{ secrets.SPRING_MAIL_KEY }}/' src/main/resources/application-dev.yml
+
+      - name: Update mail test
+        run: sed -i 's/${SPRING_MAIL_KEY}/${{ secrets.SPRING_MAIL_KEY }}/' src/main/resources/application-test.yml
+
       - name: 'Application :: Build'
         run: ./mvnw package -DskipTests
