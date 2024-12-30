@@ -1,5 +1,6 @@
 package it.astromark.authentication.service;
 
+import it.astromark.school.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.repository.ParentRepository;
@@ -13,22 +14,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    @Autowired
-    private ParentRepository parentRepository;
-    @Autowired
-    private SecretaryRepository secretaryRepository;
-    @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private final ParentRepository parentRepository;
+    private final SecretaryRepository secretaryRepository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
+    private final SchoolRepository schoolRepository;
 
+    @Autowired
+    public AuthenticationServiceImpl(ParentRepository parentRepository, SecretaryRepository secretaryRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, SchoolRepository schoolRepository) {
+        this.parentRepository = parentRepository;
+        this.secretaryRepository = secretaryRepository;
+        this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
+        this.schoolRepository = schoolRepository;
+    }
 
     @Override
-    public SchoolUser login(String username, String password, School schoolCode) {
+    public SchoolUser login(String username, String password, String schoolCode, String role) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
+        School school = schoolRepository.findByCode(schoolCode);
+
         // Cerca l'utente nei vari repository
-        SchoolUser schoolUser = findUserInRepositories(username, schoolCode);
+        SchoolUser schoolUser = findUserInRepositories(username, school, role);
 
         // Se l'utente esiste e la password corrisponde
         if (schoolUser != null && encoder.matches(password, schoolUser.getPassword())) {
@@ -39,21 +47,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-    private SchoolUser findUserInRepositories(String username, School schoolCode) {
+    @Override
+    public String schoolCode(SchoolUser schoolUser) {
+        return schoolUser.getSchoolCode().getCode();
+    }
+
+    private SchoolUser findUserInRepositories(String username, School schoolCode, String role) {
         // Cerca l'utente in ciascun repository
-        SchoolUser user = parentRepository.findByUsernameAndSchoolCode(username, schoolCode);
-        if (user != null) return user;
 
-        user = secretaryRepository.findByUsernameAndSchoolCode(username, schoolCode);
-        if (user != null) return user;
+        SchoolUser user = null;
 
-        user = studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
-        if (user != null) return user;
+        switch (role) {
+            case "student":
+                user = studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
+                break;
+            case "teacher":
+                user = teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);
+                break;
+            case "parent":
+                user = parentRepository.findByUsernameAndSchoolCode(username, schoolCode);
+                break;
+            case "secretary":
+                user = secretaryRepository.findByUsernameAndSchoolCode(username, schoolCode);
+                break;
 
-        user = teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);
-        if (user != null) return user;
-
-        return null; // Nessun utente trovato
+        }
+        return user; // Nessun utente trovato
     }
 
 }

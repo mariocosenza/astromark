@@ -1,33 +1,29 @@
 package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.authentication.service.UserLoginDTO;
 import it.astromark.school.SchoolRepository;
 import it.astromark.school.entity.School;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthController {
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+    private final SchoolRepository schoolRepository;
 
     @Autowired
-    private SchoolRepository schoolRepository;
+    public AuthController(AuthenticationService authenticationService , SchoolRepository schoolRepository) {
 
-
+        this.authenticationService = authenticationService;
+        this.schoolRepository = schoolRepository;
+    }
 
     @PostMapping("/login")
-    public String login(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("schoolCode") String code) {
-        School school = schoolRepository.findByCode(code);
-        if (school == null) {
-            return "School not found";
-        }
-        return authenticationService.login(username, password, school).toString();
+    public String login(@RequestBody UserLoginDTO user) {
+        return authenticationService.login(user.getPassword(), user.getPassword(), user.getSchoolCode() , user.getRole()).toString();
     }
 
     @GetMapping("/login")

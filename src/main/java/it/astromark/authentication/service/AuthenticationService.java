@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AuthenticationService  {
 
-    SchoolUser login(String username, String password , School schoolCode);
+    SchoolUser login(String username, String password , String schoolCode , String role);
+    String schoolCode(SchoolUser schoolUser);
+
 
 }
