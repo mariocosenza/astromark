@@ -33,7 +33,7 @@ public class SchoolClass {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "school_code", nullable = false)
-    private School schoolCode;
+    private School school;
 
     @NotNull
     @PositiveOrZero

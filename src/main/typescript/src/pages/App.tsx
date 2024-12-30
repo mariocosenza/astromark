@@ -1,92 +1,25 @@
 import React from "react";
-import mark from './assets/mark.png';
-import dashboard from './assets/dashboard.png';
-import HelpIcon from '@mui/icons-material/Help';
+import mark from '../assets/mark.png';
+import dashboard from '../assets/dashboard.png';
 import {
-    AppBar,
     Box,
-    Button,
-    Container,
-    IconButton,
     List,
     ListItem,
     ListItemText,
-    Stack,
-    Toolbar,
     Typography
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
-
-const HomePageNavbar: React.FC = () => {
-    return (
-        <header>
-            <Box sx={{flexGrow: 1, width: '100%'}}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{mr: 2}}
-                        >
-                        </IconButton>
-                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                            AstroMark
-                        </Typography>
-                        <HelpIcon/>
-                        <Button color="inherit">Accedi</Button>
-                    </Toolbar>
-                </AppBar>
-            </Box>
-        </header>
-    );
-};
-
-const HomePageFooter: React.FC = () => {
-    return (
-        <footer style={{backgroundColor: 'var(--md-sys-color-primary-container)'}}>
-            <Container maxWidth={false}>
-                <Stack useFlexGap direction="row" spacing={'20vw'} sx={{
-                    direction: "column",
-                    flexWrap: 'wrap',
-                    alignItems: "center",
-                    marginBottom: '2rem',
-                    justifyContent: "center",
-                    width: '100%',
-                }}>
-                    <Typography variant={"h3"}>
-                        Contatti
-                        <Typography variant={"body1"}>
-                            Paragrafo test
-                        </Typography>
-                    </Typography>
-                    <Typography variant={"h3"}>
-                        Link Utili
-                        <Typography variant={"body1"}>
-                            Paragrafo test
-                        </Typography>
-                    </Typography>
-                    <Typography variant={"h3"}>
-                        Copyright
-                        <Typography variant={"body1"}>
-                            Paragrafo test
-                        </Typography>
-                    </Typography>
-                </Stack>
-            </Container>
-        </footer>
-    );
-};
-
+import {HomePageFooter} from "../components/HomePageFooter.tsx";
+import {HomePageNavbar} from "../components/HomePageNavbar.tsx";
 
 
 export const App: React.FC = () => {
     return (
        <main style={{
+           height: '100vh',
            display: 'flex',
            flexDirection: 'column'}}>
-        <HomePageNavbar/>
+        <HomePageNavbar showLogin={true}/>
             <Box sx={{ height: '100%', width: '80vw', m: 'auto', flex: 1}}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mx='0%' mt='5%'>
                     <Grid size={6}>

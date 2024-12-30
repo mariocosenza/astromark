@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @Table(
         name = "secretary",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_secretary_tax_id", columnNames = "tax_id")}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_secretary_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
 )
 public class Secretary extends SchoolUser {
 

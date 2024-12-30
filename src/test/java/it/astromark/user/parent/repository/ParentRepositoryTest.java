@@ -1,4 +1,4 @@
-package it.astromark.user.student.repository;
+package it.astromark.user.parent.repository;
 
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
@@ -6,7 +6,7 @@ import it.astromark.commons.validator.SpringValidationConf;
 import it.astromark.school.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.PendingState;
-import it.astromark.user.student.entity.Student;
+import it.astromark.user.parent.entity.Parent;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
@@ -26,20 +26,19 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @DataJpaTest
 @Testcontainers
 @ActiveProfiles(value = "test")
 @Slf4j
 @Import({SpringTestConf.class, SpringValidationConf.class})
-class StudentRepositoryTest {
+class ParentRepositoryTest {
 
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
 
     @Autowired
-    private StudentRepository studentRepository;
+    private ParentRepository parentRepository;
 
     @Autowired
     private SchoolRepository schoolRepository;
@@ -68,19 +67,20 @@ class StudentRepositoryTest {
         school = schoolRepository.save(school);
         var name = faker.name().firstName();
         var surname = faker.name().lastName();
-        var student = studentRepository.save(Student.builder()
+        var parent = parentRepository.save(Parent.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .pendingState(PendingState.FIRST_LOGIN)
                 .surname(surname)
-                .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString()) //unsafe
+                .legalGuardian(false)
+                .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString())
                 .residentialAddress(faker.address().fullAddress())
                 .gender(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname)
                 .school(school).build());
-        assertNotNull(studentRepository.findById(student.getId()));
-        assertTrue(validator.validate(student).isEmpty());
+        assertNotNull(parentRepository.findById(parent.getId()));
+        assertTrue(validator.validate(parent).isEmpty());
     }
 
 }

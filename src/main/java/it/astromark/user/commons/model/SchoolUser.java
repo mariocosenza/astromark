@@ -30,7 +30,7 @@ public abstract class SchoolUser {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
-    private School schoolCode;
+    private School school;
 
     @Size(max = 256)
     @NotBlank
@@ -45,7 +45,6 @@ public abstract class SchoolUser {
 
     @Size(max = 512)
     @NotNull
-    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     @Column(name = "password", nullable = false, length = 512)
     private String password;
 

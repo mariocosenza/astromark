@@ -34,7 +34,7 @@ public class School {
 
     @NotNull
     @Column(name = "phone_number", nullable = false)
-    private Integer phoneNumber;
+    private Long phoneNumber;
 
     @Size(max = 512)
     @NotNull
@@ -56,23 +56,23 @@ public class School {
     private String schoolPrincipalFullName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(mappedBy = "school")
     private Set<Parent> parents = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(mappedBy = "school")
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(mappedBy = "school")
     private Set<Secretary> secretaries = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(mappedBy = "school")
     private Set<Student> students = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(mappedBy = "school")
     private Set<Teacher> teachers = new LinkedHashSet<>();
 
 }

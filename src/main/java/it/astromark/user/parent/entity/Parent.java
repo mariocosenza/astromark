@@ -22,7 +22,7 @@ import java.util.Set;
 @Table(
         name = "parent",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_parent_tax_id", columnNames = "tax_id")}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_parent_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
 )
 public class Parent extends SchoolUser {
 
