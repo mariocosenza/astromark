@@ -45,6 +45,9 @@ jobs:
       - name: Update mail test
         run: sed -i 's/${SPRING_MAIL_KEY}/${{ secrets.SPRING_MAIL_KEY }}/' src/main/resources/application-test.yml
 
+      - name: Build the stack
+        run: docker-compose up -d
+
       - name: 'Application :: Test'
         run: ./mvnw test
 
