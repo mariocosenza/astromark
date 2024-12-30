@@ -16,7 +16,7 @@ env:
 jobs:
   main-ci-cd:
     name: 'Main Pipeline'
-    runs-on: 'windows-latest'
+    runs-on: 'ubuntu-latest'
     steps:
       - name: 'Setup :: Checkout'
         uses: 'actions/checkout@v4'
@@ -45,7 +45,7 @@ jobs:
       - name: Update mail test
         run: sed -i 's/${SPRING_MAIL_KEY}/${{ secrets.SPRING_MAIL_KEY }}/' src/main/resources/application-test.yml
 
-      - name: Build the stack
+      - name: Docker compose up
         run: docker-compose up -d
 
       - name: 'Application :: Test'
