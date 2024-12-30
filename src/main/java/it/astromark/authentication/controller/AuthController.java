@@ -2,10 +2,7 @@ package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.UserLoginDTO;
-import it.astromark.school.SchoolRepository;
-import it.astromark.school.entity.School;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

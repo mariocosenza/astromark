@@ -1,6 +1,5 @@
 package it.astromark.authentication.service;
 
-import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.SchoolUser;
 import org.springframework.stereotype.Service;
 
