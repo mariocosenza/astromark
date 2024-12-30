@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String schoolCode(SchoolUser schoolUser) {
-        return schoolUser.getSchoolCode().getCode();
+        return schoolUser.getSchool().getCode();
     }
 
     private SchoolUser findUserInRepositories(String username, School schoolCode, String role) {
