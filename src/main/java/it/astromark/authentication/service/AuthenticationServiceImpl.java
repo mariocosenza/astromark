@@ -1,5 +1,6 @@
 package it.astromark.authentication.service;
 
+import it.astromark.authentication.utils.PasswordUtils;
 import it.astromark.school.repository.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.SchoolUser;
@@ -8,7 +9,6 @@ import it.astromark.user.secretary.repository.SecretaryRepository;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,30 +31,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 
         School school = schoolRepository.findByCode(schoolCode);
+        if(school == null) return null;
+        System.out.println("Scuola trovata");
 
         // Cerca l'utente nei vari repository
-        SchoolUser schoolUser = findUserInRepositories(username, school, role);
+        SchoolUser schoolUser = findUserInRepositories(username, school.getCode(), role);
+        if(schoolUser == null) return null;
+        System.out.println("User trovato");
 
-        // Se l'utente esiste e la password corrisponde
-        if (schoolUser != null && encoder.matches(password, schoolUser.getPassword())) {
-            return schoolUser;
-        }
+       String hashedPassword = PasswordUtils.hashPassword(password);
+       if(hashedPassword.equals(schoolUser.getPassword()))
+           return schoolUser;
 
         // Se nessun utente trovato o password non valida
         return null;
     }
+
 
     @Override
     public String schoolCode(SchoolUser schoolUser) {
         return schoolUser.getSchool().getCode();
     }
 
-    private SchoolUser findUserInRepositories(String username, School schoolCode, String role) {
+    private SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
         // Cerca l'utente in ciascun repository
 
+        System.out.println("Cerco nella scuola: " + username + " Questo ruolo "+ role + " Con il code " + schoolCode);
         return switch (role) {
             case "student" -> studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
             case "teacher" -> teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);

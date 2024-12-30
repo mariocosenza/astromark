@@ -3,6 +3,7 @@ package it.astromark.authentication.controller;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.UserLoginDTO;
 import it.astromark.school.repository.SchoolRepository;
+import it.astromark.user.commons.model.SchoolUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class AuthController {
     private final SchoolRepository schoolRepository;
 
     @Autowired
-    public AuthController(final AuthenticationService authenticationService , final SchoolRepository schoolRepository) {
+    public AuthController(final AuthenticationService authenticationService, final SchoolRepository schoolRepository) {
 
         this.authenticationService = authenticationService;
         this.schoolRepository = schoolRepository;
@@ -21,7 +22,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody UserLoginDTO user) {
-        return authenticationService.login(user.getPassword(), user.getPassword(), user.getSchoolCode() , user.getRole()).toString();
+        SchoolUser schoolUser=  authenticationService.login(user.getUsername(), user.getPassword(), user.getSchoolCode(), user.getRole());
+        if(schoolUser != null) {
+            return "Login successful";
+        }
+        else
+            return "Login failed";
     }
 
     @GetMapping("/login")
