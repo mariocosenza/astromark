@@ -12,13 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
-    private final SchoolRepository schoolRepository;
 
     @Autowired
-    public AuthController(AuthenticationService authenticationService , SchoolRepository schoolRepository) {
+    public AuthController(AuthenticationService authenticationService) {
 
         this.authenticationService = authenticationService;
-        this.schoolRepository = schoolRepository;
     }
 
     @PostMapping("/login")
