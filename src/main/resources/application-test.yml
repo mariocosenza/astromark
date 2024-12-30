@@ -12,6 +12,9 @@ spring:
   sql:
       init:
         mode: always
+  sendgrid:
+      api-key: ${SPRING_MAIL_KEY}
 logging:
   level:
     root: info
+
