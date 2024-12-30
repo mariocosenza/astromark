@@ -62,11 +62,11 @@ jobs:
       - name: Wait for containers to be healthy #Important to avoid race conditions
         run: docker compose ps --services --filter "status=healthy" --quiet
 
-      - name: 'Application :: Test'
-        run: ./mvnw test
-
       - name: 'Application :: Build'
         run: ./mvnw package -DskipTests
+
+      - name: 'Application :: Test'
+        run: ./mvnw test
 
       - name: Stop containers
         if: always()
