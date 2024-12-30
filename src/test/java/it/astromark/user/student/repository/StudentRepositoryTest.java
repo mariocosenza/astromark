@@ -3,7 +3,7 @@ package it.astromark.user.student.repository;
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
 import it.astromark.commons.validator.SpringValidationConf;
-import it.astromark.school.SchoolRepository;
+import it.astromark.school.repository.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.student.entity.Student;

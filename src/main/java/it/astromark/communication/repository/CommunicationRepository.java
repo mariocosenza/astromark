@@ -1,4 +1,4 @@
-package it.astromark.communication;
+package it.astromark.communication.repository;
 
 import it.astromark.communication.entity.Communication;
 import org.springframework.data.jpa.repository.JpaRepository;

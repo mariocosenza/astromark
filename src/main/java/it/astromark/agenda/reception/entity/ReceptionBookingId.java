@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.io.Serial;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 @Embeddable
 public class ReceptionBookingId implements Serializable {
     @Serial
