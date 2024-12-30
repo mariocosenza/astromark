@@ -54,23 +54,34 @@ public class School {
     private String schoolPrincipalFullName;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Parent> parents = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Secretary> secretaries = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Student> students = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Teacher> teachers = new LinkedHashSet<>();
 
+    @Override
+    public String toString() {
+        return "School{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                ", code='" + code + '\'' +
+                ", schoolPrincipalFullName='" + schoolPrincipalFullName + '\'' +
+                '}';
+    }
 }

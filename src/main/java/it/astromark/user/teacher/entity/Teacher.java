@@ -29,15 +29,19 @@ import java.util.Set;
 )
 public class Teacher extends SchoolUser {
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<ReceptionTimetable> receptionTimetables = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<TeacherClass> teacherClasses = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<Teaching> teachings = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<Ticket> tickets = new LinkedHashSet<>();
 

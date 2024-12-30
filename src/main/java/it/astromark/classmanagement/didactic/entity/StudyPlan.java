@@ -42,6 +42,7 @@ public class StudyPlan {
     private String title;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "study_plan_subject",
             joinColumns = @JoinColumn(name = "study_plan_school_class_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_title"))

@@ -65,6 +65,7 @@ public class Student extends SchoolUser {
     private Set<SemesterReport> semesterReports = new LinkedHashSet<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "student_school_class",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "school_class_id"))

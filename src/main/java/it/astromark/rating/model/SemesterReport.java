@@ -65,6 +65,7 @@ public class SemesterReport {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    @Builder.Default
     @OneToMany(mappedBy = "semester")
     private Set<SemesterReportMark> semesterReportMarks = new LinkedHashSet<>();
 
