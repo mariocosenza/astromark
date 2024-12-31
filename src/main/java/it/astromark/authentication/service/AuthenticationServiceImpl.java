@@ -32,15 +32,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
 
-
         School school = schoolRepository.findByCode(schoolCode);
         if(school == null) return null;
-        System.out.println("Scuola trovata");
 
         // Cerca l'utente nei vari repository
         SchoolUser schoolUser = findUserInRepositories(username, school.getCode(), role);
         if(schoolUser == null) return null;
-        System.out.println("User trovato");
+
 
        String hashedPassword = PasswordUtils.hashPassword(password);
        if(hashedPassword.equals(schoolUser.getPassword()))
@@ -55,11 +53,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String schoolCode(SchoolUser schoolUser) {
         return schoolUser.getSchool().getCode();
     }
-
     private SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
         // Cerca l'utente in ciascun repository
-
-        System.out.println("Cerco nella scuola: " + username + " Questo ruolo "+ role + " Con il code " + schoolCode);
         return switch (role) {
             case "student" -> studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
             case "teacher" -> teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);

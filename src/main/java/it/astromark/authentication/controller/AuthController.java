@@ -2,7 +2,6 @@ package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.UserLoginDTO;
-import it.astromark.school.repository.SchoolRepository;
 import it.astromark.user.commons.model.SchoolUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,28 +10,30 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
-    private final SchoolRepository schoolRepository;
 
     @Autowired
-    public AuthController(final AuthenticationService authenticationService, final SchoolRepository schoolRepository) {
+    public AuthController(final AuthenticationService authenticationService) {
 
         this.authenticationService = authenticationService;
-        this.schoolRepository = schoolRepository;
     }
 
     @PostMapping("/login")
     public String login(@RequestBody UserLoginDTO user) {
-        SchoolUser schoolUser=  authenticationService.login(user.getUsername(), user.getPassword(), user.getSchoolCode(), user.getRole());
+        SchoolUser schoolUser = authenticationService.login(user.getUsername(), user.getPassword(), user.getSchoolCode(), user.getRole());
+
         if(schoolUser != null) {
-            return "Login successful";
+            return switch (schoolUser.getPendingState()){
+                case FIRST_LOGIN -> "Must change password";
+                case NORMAL, REMOVE ->"Login successful";
+            };
         }
-        else
-            return "Login failed";
+
+        return "Login failed";
     }
 
-    @GetMapping("/login")
+    @PostMapping("/first-login")
     public String Hello() {
-        return schoolRepository.findByCode("SS12345").toString();
+        return "First login logic";
     }
 
 }
