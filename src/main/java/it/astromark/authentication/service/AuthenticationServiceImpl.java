@@ -13,9 +13,11 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -39,15 +41,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
 
-        School school = schoolRepository.findByCode(schoolCode);
+        var school = schoolRepository.findByCode(schoolCode);
         if (school == null) return null;
 
         // Cerca l'utente nei vari repository
-        SchoolUser schoolUser = findUserInRepositories(username, school.getCode(), role);
+        var schoolUser = findUserInRepositories(username, school.getCode(), role);
+
         if (schoolUser == null) return null;
 
 
-        String hashedPassword = PasswordUtils.hashPassword(password);
+        var hashedPassword = PasswordUtils.hashPassword(password);
         if (hashedPassword.equals(schoolUser.getPassword()))
             return schoolUser;
 
@@ -57,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public String verify(String username, String password, String schoolCode, String role) {
 
-        SchoolUser schoolUser = login(username, password, schoolCode, role);
+        var schoolUser = login(username, password, schoolCode, role);
         if (schoolUser != null)
             return jwtService.generateToken(schoolUser.getId() , getRole(schoolUser));
         else return null;
@@ -85,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
         // Cerca l'utente in ciascun repository
-        return switch (role) {
+        return switch (role.toLowerCase()) {
             case "student" -> studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
             case "teacher" -> teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);
             case "parent" -> parentRepository.findByUsernameAndSchoolCode(username, schoolCode);

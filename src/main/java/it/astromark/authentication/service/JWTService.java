@@ -6,7 +6,6 @@ import it.astromark.user.commons.model.Role;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -19,8 +18,8 @@ public class JWTService {
     public JWTService() {
 
         try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
+            var keyGen = KeyGenerator.getInstance("HmacSHA256");
+            var sk = keyGen.generateKey();
             secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -29,9 +28,8 @@ public class JWTService {
 
     public String generateToken(UUID id, Role role) {
 
-        Map<String, Object> claims = new HashMap<>();
+        var claims = new HashMap<String, Object>();
         claims.put("role", role);
-        System.out.println(id);
 
         return Jwts.builder()
                 .claims()
