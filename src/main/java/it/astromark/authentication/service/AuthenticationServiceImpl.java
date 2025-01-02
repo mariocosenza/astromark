@@ -2,7 +2,6 @@ package it.astromark.authentication.service;
 
 import it.astromark.authentication.utils.PasswordUtils;
 import it.astromark.school.repository.SchoolRepository;
-import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.Role;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.entity.Parent;
