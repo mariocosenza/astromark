@@ -14,3 +14,5 @@ spring:
     show-sql: true
     open-in-view: false
     generate-ddl: true
+  sendgrid:
+    api-key: ${SPRING_MAIL_KEY}

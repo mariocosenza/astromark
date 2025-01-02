@@ -38,7 +38,7 @@ public class SpringConfig implements WebMvcConfigurer {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("login")
+                        .requestMatchers("/api/login")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
