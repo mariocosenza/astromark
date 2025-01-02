@@ -1,5 +1,6 @@
 package it.astromark.rating.model;
 
+
 import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,11 +11,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "student")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -69,4 +71,14 @@ public class SemesterReport {
     @OneToMany(mappedBy = "semester")
     private Set<SemesterReportMark> semesterReportMarks = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SemesterReport that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

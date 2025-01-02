@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.Objects;
+
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"parent", "receptionTimeslot"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,4 +48,14 @@ public class ReceptionBooking {
     @Column(name = "refused", nullable = false)
     private Boolean refused = false;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ReceptionBooking that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

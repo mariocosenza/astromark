@@ -18,7 +18,6 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "reception_timetable", schema = "astromark")
 public class ReceptionTimetable extends Timetable {
 

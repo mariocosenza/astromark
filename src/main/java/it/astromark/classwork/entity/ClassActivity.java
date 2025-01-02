@@ -7,9 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.Objects;
+
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "signedHour")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -36,4 +38,14 @@ public class ClassActivity {
     @Column(name = "title", nullable = false, length = 256)
     private String title;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ClassActivity that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

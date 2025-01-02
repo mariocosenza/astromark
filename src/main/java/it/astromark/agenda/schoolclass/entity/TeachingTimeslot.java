@@ -11,7 +11,6 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @Setter
 @Entity
-@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor

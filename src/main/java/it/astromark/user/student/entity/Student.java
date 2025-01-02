@@ -19,7 +19,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -70,5 +69,6 @@ public class Student extends SchoolUser {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "school_class_id"))
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
+
 
 }

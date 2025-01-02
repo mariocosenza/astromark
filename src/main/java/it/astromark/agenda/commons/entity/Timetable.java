@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -30,4 +31,14 @@ public abstract class Timetable {
     @Column(name = "end_validity")
     private LocalDate endValidity;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Timetable timetable)) return false;
+        return Objects.equals(id, timetable.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

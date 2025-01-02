@@ -10,11 +10,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "student")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -47,4 +48,14 @@ public class Note {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Note note)) return false;
+        return Objects.equals(id, note.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

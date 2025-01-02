@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -83,5 +84,16 @@ public class School {
                 ", code='" + code + '\'' +
                 ", schoolPrincipalFullName='" + schoolPrincipalFullName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof School school)) return false;
+        return Objects.equals(code, school.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(code);
     }
 }
