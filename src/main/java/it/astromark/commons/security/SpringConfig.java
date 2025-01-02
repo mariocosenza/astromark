@@ -25,6 +25,7 @@ import static java.util.Objects.nonNull;
 public class SpringConfig implements WebMvcConfigurer {
 
 
+
     /**
      * Temporary bean to disable default http basic auth
      *
@@ -67,6 +68,9 @@ public class SpringConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         this.serveDirectory(registry, "/", "classpath:/static/");
     }
+
+
+
 
     private void serveDirectory(ResourceHandlerRegistry registry, String endpoint, String location) {
         String[] endpointPatterns = endpoint.endsWith("/")

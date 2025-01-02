@@ -24,14 +24,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final SchoolRepository schoolRepository;
+    private final JWTService jwtService;
 
     @Autowired
-    public AuthenticationServiceImpl(ParentRepository parentRepository, SecretaryRepository secretaryRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, SchoolRepository schoolRepository) {
+    public AuthenticationServiceImpl(ParentRepository parentRepository, SecretaryRepository secretaryRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, SchoolRepository schoolRepository, JWTService jwtService) {
         this.parentRepository = parentRepository;
         this.secretaryRepository = secretaryRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.schoolRepository = schoolRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -51,6 +53,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Se nessun utente trovato o password non valida
         return null;
+    }
+
+    public String verify(String username, String password, String schoolCode, String role) {
+
+        SchoolUser schoolUser = login(username, password, schoolCode, role);
+        if (schoolUser != null)
+            return jwtService.generateToken(schoolUser.getId() , getRole(schoolUser));
+        else return null;
     }
 
 

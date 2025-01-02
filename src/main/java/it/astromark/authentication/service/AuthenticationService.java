@@ -10,6 +10,8 @@ public interface AuthenticationService  {
     SchoolUser login(String username, String password , String schoolCode , String role);
     String schoolCode(SchoolUser schoolUser);
     Role getRole(SchoolUser user);
+    String verify(String username, String password, String schoolCode, String role);
+
 
 
 }

@@ -25,7 +25,7 @@ public class AuthController {
         if(schoolUser != null) {
             return switch (schoolUser.getPendingState()){
                 case FIRST_LOGIN -> "Must change password";
-                case NORMAL, REMOVE ->"Login successful";
+                case NORMAL, REMOVE -> authenticationService.verify(user.getUsername(), user.getPassword(), user.getSchoolCode(), user.getRole());
             };
         }
 
@@ -35,6 +35,12 @@ public class AuthController {
     @PostMapping("/first-login")
     public String Hello() {
         return "First login logic";
+    }
+
+    @GetMapping("/token")
+    public String sayHello(){
+        return "Hello";
+
     }
 
 }
