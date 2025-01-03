@@ -4,5 +4,5 @@ YupPassword(yup) // extend yup
 
 
 export const FirstLogin = () => {
-
+    return <h1>First Login</h1>
 }
