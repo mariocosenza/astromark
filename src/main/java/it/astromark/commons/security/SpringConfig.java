@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,8 +26,12 @@ import static java.util.Objects.nonNull;
 public class SpringConfig implements WebMvcConfigurer {
 
 
+    private final JwtFilter jwtFilter;
+
     @Autowired
-    private JwtFilter jwtFilter;
+    public SpringConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
 
 
     /**
@@ -40,23 +43,21 @@ public class SpringConfig implements WebMvcConfigurer {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/login", "/" , "/login").permitAll()
-                        .requestMatchers("/student").hasRole("student")
-                        .requestMatchers("/secretary").hasRole("secretary")
-                        .requestMatchers("/parent").hasRole("parent")
-                        .requestMatchers("/student").hasRole("student")
+                        .requestMatchers("/api/auth/login", "/api/auth/first-login").permitAll()
                         .requestMatchers("/api/auth/token").hasRole("parent")
-                        .anyRequest()
-                        .authenticated())
-                .httpBasic(Customizer.withDefaults())
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/", "/login").permitAll() // Grouped for conciseness
+                        .anyRequest().permitAll() // Important: Allow everything else
+                )
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter , UsernamePasswordAuthenticationFilter.class )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     /**
      * Disable CORS for frontend page served in static folder

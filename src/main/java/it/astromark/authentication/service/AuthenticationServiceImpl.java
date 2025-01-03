@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
         // Cerca l'utente in ciascun repository
-        return switch (role) {
+        return switch (role.toLowerCase()) {
             case "student" -> studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
             case "teacher" -> teacherRepository.findByUsernameAndSchoolCode(username, schoolCode);
             case "parent" -> parentRepository.findByUsernameAndSchoolCode(username, schoolCode);
