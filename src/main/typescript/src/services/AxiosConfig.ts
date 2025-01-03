@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {Env} from "../Env.ts";
+import {isExpired} from "./AuthService.ts";
 
 const axiosConfig = axios.create({
     baseURL: Env.API_BASE_URL, //replace with your BaseURL
@@ -13,7 +14,7 @@ export default axiosConfig;
 axiosConfig.interceptors.request.use(
     (config) => {
         const accessToken = localStorage.getItem('user'); // get stored access token
-        if (accessToken) {
+        if (accessToken && !isExpired()) {
             config.headers.Authorization = `Bearer ${accessToken}`; // set in header
         }
         return config;
