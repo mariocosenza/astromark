@@ -1,8 +1,6 @@
 package it.astromark.authentication.service;
 
 import it.astromark.authentication.utils.PasswordUtils;
-import it.astromark.school.repository.SchoolRepository;
-import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.Role;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.entity.Parent;
@@ -14,7 +12,11 @@ import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -23,27 +25,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final SecretaryRepository secretaryRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
-    private final SchoolRepository schoolRepository;
     private final JWTService jwtService;
 
     @Autowired
-    public AuthenticationServiceImpl(ParentRepository parentRepository, SecretaryRepository secretaryRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, SchoolRepository schoolRepository, JWTService jwtService) {
+    public AuthenticationServiceImpl(ParentRepository parentRepository, SecretaryRepository secretaryRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, JWTService jwtService) {
         this.parentRepository = parentRepository;
         this.secretaryRepository = secretaryRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
-        this.schoolRepository = schoolRepository;
         this.jwtService = jwtService;
     }
 
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
 
-        School school = schoolRepository.findByCode(schoolCode);
-        if (school == null) return null;
-
         // Cerca l'utente nei vari repository
-        SchoolUser schoolUser = findUserInRepositories(username, school.getCode(), role);
+        SchoolUser schoolUser = findUserInRepositories(username, schoolCode, role);
         if (schoolUser == null) return null;
 
 
@@ -55,11 +52,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
+    @Override
+    public SchoolUser getUser(UUID id, String role) {
+
+        return switch (role) {
+            case "ROLE_student" -> studentRepository.getReferenceById(id);
+            case "ROLE_teacher" -> teacherRepository.getReferenceById(id);
+            case "ROLE_parent" -> parentRepository.getReferenceById(id);
+            case "ROLE_secretary" -> secretaryRepository.getReferenceById(id);
+            default -> throw new RuntimeException("UUID not found in any repository: " + id);
+        };
+
+
+    }
+
+
     public String verify(String username, String password, String schoolCode, String role) {
 
         SchoolUser schoolUser = login(username, password, schoolCode, role);
         if (schoolUser != null)
-            return jwtService.generateToken(schoolUser.getId() , getRole(schoolUser));
+            return jwtService.generateToken(schoolUser.getId(), getRole(schoolUser));
         else return null;
     }
 
@@ -70,16 +82,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Role getRole(SchoolUser user) {
-        return switch (user) {
-            case null -> throw new IllegalArgumentException("User cannot be null");
-            case Parent ignored -> Role.PARENT;
-            case Teacher ignored -> Role.TEACHER;
-            case Student ignored -> Role.STUDENT;
-            case Secretary ignored -> Role.SECRETARY;
-            default -> throw new IllegalStateException("Unexpected user type: " + user.getClass());
-        };
+    public GrantedAuthority getRole(SchoolUser user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
 
+        return switch (user) {
+            case Parent ignored -> new SimpleGrantedAuthority("ROLE_" + Role.PARENT.toString().toLowerCase());
+            case Teacher ignored -> new SimpleGrantedAuthority("ROLE_" + Role.TEACHER.toString().toLowerCase());
+            case Student ignored -> new SimpleGrantedAuthority("ROLE_" + Role.STUDENT.toString().toLowerCase());
+            case Secretary ignored -> new SimpleGrantedAuthority("ROLE_" + Role.SECRETARY.toString().toLowerCase());
+            default ->
+                    throw new IllegalStateException("Unexpected user type: " + user.getClass().toString().toLowerCase());
+        };
     }
 
 

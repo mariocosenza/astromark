@@ -1,6 +1,7 @@
 package it.astromark.commons.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -24,6 +26,8 @@ import static java.util.Objects.nonNull;
 @EnableWebSecurity
 public class SpringConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private JwtFilter jwtFilter;
 
 
     /**
@@ -39,12 +43,13 @@ public class SpringConfig implements WebMvcConfigurer {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/login")
-                        .permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/token").hasRole("parent")
                         .anyRequest()
                         .authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter , UsernamePasswordAuthenticationFilter.class )
                 .build();
     }
 
@@ -68,7 +73,6 @@ public class SpringConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         this.serveDirectory(registry, "/", "classpath:/static/");
     }
-
 
 
 
