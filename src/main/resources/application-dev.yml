@@ -14,3 +14,7 @@ spring:
     show-sql: true
     open-in-view: false
     generate-ddl: true
+  sendgrid:
+    api-key: ${SPRING_MAIL_KEY}
+  jwt:
+    secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key

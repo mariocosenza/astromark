@@ -8,9 +8,24 @@ spring:
     password: astromark
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
         hibernate.default_schema: astromark
     show-sql: false
     open-in-view: false
     generate-ddl: true
+  sendgrid:
+        api-key: ${SPRING_MAIL_KEY}
+  jwt:
+    secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
+server:
+  error:
+    whitelabel:
+      enabled: false
+    include-binding-errors: never
+    include-message: never
+    include-stacktrace: never
+    include-exception: false
+
+
+

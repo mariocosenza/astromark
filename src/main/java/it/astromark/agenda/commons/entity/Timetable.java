@@ -2,15 +2,16 @@ package it.astromark.agenda.commons.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,4 +31,14 @@ public abstract class Timetable {
     @Column(name = "end_validity")
     private LocalDate endValidity;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Timetable timetable)) return false;
+        return Objects.equals(id, timetable.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

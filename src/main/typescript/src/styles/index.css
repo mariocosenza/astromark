@@ -103,18 +103,9 @@
   }
 }
 
-
-body,
-main,
-html {
-  width: 100%;
-  margin: 0;
-}
-
 html,
-main,
-body,
-#root {
+body {
+  margin: 0;
   width: 100%;
   height: 100vh;
 }
@@ -123,4 +114,17 @@ body,
 footer {
   background-color: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-on-background);
+}
+
+a.whiteLink {
+    color: #FFF;
+}
+
+form div.centerInForm {
+  margin-left: auto;
+  flex-direction: column;
+  flex-wrap: wrap;
+  overflow: hidden;
+  text-align: center;
+  justify-content: center;
 }

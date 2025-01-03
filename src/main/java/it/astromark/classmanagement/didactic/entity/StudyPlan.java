@@ -5,18 +5,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = "schoolClass")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -30,7 +30,7 @@ public class StudyPlan {
     private Integer id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ColumnDefault("nextval('astromark.study_plan_school_class_id_seq')")
     @JoinColumn(name = "school_class_id", nullable = false)
@@ -43,9 +43,20 @@ public class StudyPlan {
     private String title;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "study_plan_subject",
             joinColumns = @JoinColumn(name = "study_plan_school_class_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_title"))
     private Set<Subject> subjects = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof StudyPlan studyPlan)) return false;
+        return Objects.equals(id, studyPlan.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

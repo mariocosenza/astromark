@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
+@ToString
 @Entity
 @Builder
 @NoArgsConstructor
@@ -45,4 +46,15 @@ public class SemesterReportMark {
     @Column(name = "mark", nullable = false)
     private Short mark;
 
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof SemesterReportMark that)) return false;
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

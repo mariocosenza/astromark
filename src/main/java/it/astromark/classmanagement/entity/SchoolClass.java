@@ -6,17 +6,17 @@ import it.astromark.communication.entity.Communication;
 import it.astromark.school.entity.School;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -30,10 +30,10 @@ public class SchoolClass {
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "school_code", nullable = false)
-    private School schoolCode;
+    private School school;
 
     @NotNull
     @PositiveOrZero
@@ -68,4 +68,14 @@ public class SchoolClass {
     @OneToMany(mappedBy = "schoolClass")
     private Set<TeacherClass> teacherClasses = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SchoolClass that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

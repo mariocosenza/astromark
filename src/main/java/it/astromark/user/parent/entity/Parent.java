@@ -13,16 +13,17 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
 @Entity
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(
         name = "parent",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_parent_tax_id", columnNames = "tax_id")}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_parent_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
 )
 public class Parent extends SchoolUser {
 

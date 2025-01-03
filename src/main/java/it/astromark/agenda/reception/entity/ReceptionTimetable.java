@@ -14,10 +14,10 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "reception_timetable", schema = "astromark")
 public class ReceptionTimetable extends Timetable {
 

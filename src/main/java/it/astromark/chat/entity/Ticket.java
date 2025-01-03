@@ -11,12 +11,13 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"parent", "teacher"})
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "ticket", schema = "astromark")
 public class Ticket extends Chat {
 

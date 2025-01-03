@@ -10,12 +10,14 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
+@ToString(exclude = {"student", "homeworkSignedHourTeachingTimeslot"})
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "homework_chat", schema = "astromark")
 public class HomeworkChat extends Chat {
 

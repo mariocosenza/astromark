@@ -3,19 +3,20 @@ package it.astromark.user.commons.model;
 import it.astromark.school.entity.School;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @SuperBuilder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
@@ -30,7 +31,7 @@ public abstract class SchoolUser {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
-    private School schoolCode;
+    private School school;
 
     @Size(max = 256)
     @NotBlank
@@ -45,7 +46,6 @@ public abstract class SchoolUser {
 
     @Size(max = 512)
     @NotNull
-    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")
     @Column(name = "password", nullable = false, length = 512)
     private String password;
 
@@ -87,4 +87,15 @@ public abstract class SchoolUser {
     @Column(name = "PENDING_STATE", columnDefinition = "PendingState DEFAULT 'FIRST_LOGIN'")
     private PendingState pendingState;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SchoolUser that)) return false;
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

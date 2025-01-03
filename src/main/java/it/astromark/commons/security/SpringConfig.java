@@ -1,12 +1,16 @@
-package it.astromark.commons;
+package it.astromark.commons.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,19 +26,42 @@ import static java.util.Objects.nonNull;
 public class SpringConfig implements WebMvcConfigurer {
 
 
+    private final JwtFilter jwtFilter;
+
+    @Autowired
+    public SpringConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
+
     /**
      * Temporary bean to disable default http basic auth
+     *
      * @param http incoming request
      * @return SecurityFilterChain bean
      * @throws Exception generic exception
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests((auth) -> auth.anyRequest().permitAll()).build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/auth/login", "/api/auth/first-login").permitAll()
+                        .requestMatchers("/api/auth/token").hasRole("parent")
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/", "/login").permitAll() // Grouped for conciseness
+                        .anyRequest().permitAll() // Important: Allow everything else
+                )
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
+
 
     /**
      * Disable CORS for frontend page served in static folder
+     *
      * @param registry map for cors policy
      */
     @Override
@@ -45,12 +72,16 @@ public class SpringConfig implements WebMvcConfigurer {
 
     /**
      * Add resource handler to serve web pages in static folder
+     *
      * @param registry map for cors policy
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         this.serveDirectory(registry, "/", "classpath:/static/");
     }
+
+
+
 
     private void serveDirectory(ResourceHandlerRegistry registry, String endpoint, String location) {
         String[] endpointPatterns = endpoint.endsWith("/")

@@ -17,8 +17,8 @@ import lombok.experimental.SuperBuilder;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -26,7 +26,7 @@ import java.util.Set;
 @Table(
         name = "student",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_student_tax_id", columnNames = "tax_id")}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_student_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
 )
 public class Student extends SchoolUser {
 
@@ -64,9 +64,11 @@ public class Student extends SchoolUser {
     private Set<SemesterReport> semesterReports = new LinkedHashSet<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "student_school_class",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "school_class_id"))
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
+
 
 }

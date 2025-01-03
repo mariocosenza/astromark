@@ -4,18 +4,18 @@ import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = "student")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -48,4 +48,14 @@ public class Note {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Note note)) return false;
+        return Objects.equals(id, note.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

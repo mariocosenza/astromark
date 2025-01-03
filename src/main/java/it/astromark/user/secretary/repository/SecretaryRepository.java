@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface SecretaryRepository extends JpaRepository<Secretary, UUID> {
+
+    Secretary findByUsernameAndSchoolCode(String username , String schoolCode);
 }

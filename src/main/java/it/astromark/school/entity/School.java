@@ -10,15 +10,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -34,7 +33,7 @@ public class School {
 
     @NotNull
     @Column(name = "phone_number", nullable = false)
-    private Integer phoneNumber;
+    private Long phoneNumber;
 
     @Size(max = 512)
     @NotNull
@@ -56,23 +55,45 @@ public class School {
     private String schoolPrincipalFullName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Parent> parents = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Secretary> secretaries = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Student> students = new LinkedHashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolCode")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
     private Set<Teacher> teachers = new LinkedHashSet<>();
 
+    @Override
+    public String toString() {
+        return "School{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                ", code='" + code + '\'' +
+                ", schoolPrincipalFullName='" + schoolPrincipalFullName + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof School school)) return false;
+        return Objects.equals(code, school.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(code);
+    }
 }

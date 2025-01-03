@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,4 +32,15 @@ public abstract class Timeslot {
     @NotNull
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Timeslot timeslot)) return false;
+        return Objects.equals(id, timeslot.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

@@ -9,35 +9,38 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @Table(
         name = "teacher",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_teacher_tax_id", columnNames = "tax_id")}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_teacher_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
 )
 public class Teacher extends SchoolUser {
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<ReceptionTimetable> receptionTimetables = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<TeacherClass> teacherClasses = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<Teaching> teachings = new LinkedHashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "teacher")
     private Set<Ticket> tickets = new LinkedHashSet<>();
 

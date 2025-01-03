@@ -4,13 +4,14 @@ import it.astromark.agenda.schoolclass.entity.SignedHour;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
+@ToString(exclude = "signedHour")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -37,4 +38,14 @@ public class ClassActivity {
     @Column(name = "title", nullable = false, length = 256)
     private String title;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ClassActivity that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

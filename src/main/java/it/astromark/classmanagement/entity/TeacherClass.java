@@ -3,13 +3,12 @@ package it.astromark.classmanagement.entity;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -39,4 +38,14 @@ public class TeacherClass {
     @Column(name = "coordinator", nullable = false)
     private Boolean coordinator = false;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof TeacherClass that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

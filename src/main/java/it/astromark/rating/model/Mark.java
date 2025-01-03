@@ -4,20 +4,20 @@ import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
+@ToString(exclude = "student")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "mark", schema = "astromark")
@@ -62,4 +62,14 @@ public class Mark {
     @Column(name = "type", columnDefinition = "MarkType DEFAULT 'WRITTEN' NOT NULL")
     private MarkType type;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Mark mark)) return false;
+        return Objects.equals(id, mark.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

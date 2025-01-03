@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface ParentRepository extends JpaRepository<Parent, UUID> {
+
+    Parent findByUsernameAndSchoolCode(String username , String schoolCode);
 }

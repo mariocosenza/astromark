@@ -3,13 +3,14 @@ package it.astromark.agenda.reception.entity;
 import it.astromark.user.parent.entity.Parent;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
+@ToString(exclude = {"parent", "receptionTimeslot"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,4 +48,14 @@ public class ReceptionBooking {
     @Column(name = "refused", nullable = false)
     private Boolean refused = false;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ReceptionBooking that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
