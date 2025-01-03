@@ -1,5 +1,5 @@
 :root {
-  @media (prefers-color-scheme: light) {
+  @media (prefers-color-scheme: dark) {
     --md-sys-color-primary: rgb(66 94 145);
     --md-sys-color-surface-tint: rgb(66 94 145);
     --md-sys-color-on-primary: rgb(255 255 255);
@@ -50,7 +50,7 @@
     --md-sys-color-surface-container-high: rgb(231 232 238);
     --md-sys-color-surface-container-highest: rgb(225 226 233);
   }
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     --md-sys-color-primary: rgb(171 199 255);
     --md-sys-color-surface-tint: rgb(171 199 255);
     --md-sys-color-on-primary: rgb(13 47 95);
@@ -116,8 +116,21 @@ footer {
   color: var(--md-sys-color-on-background);
 }
 
+a {
+  text-decoration: none;
+}
+
 a.whiteLink {
     color: #FFF;
+}
+
+
+
+.drawer a {
+    color: var(--md-sys-color-on-background);
+}
+.drawer a.active {
+  color: var(--md-sys-color-on-error-container);
 }
 
 form div.centerInForm {

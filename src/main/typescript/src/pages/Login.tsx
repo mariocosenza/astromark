@@ -1,14 +1,14 @@
 import {HomePageFooter} from "../components/HomePageFooter.tsx";
 import {useFormik} from "formik";
-import {Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
+import {Alert, Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import * as yup from 'yup'
 import YupPassword from 'yup-password'
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {HomePageNavbar} from "../components/HomePageNavbar.tsx";
 import {Env} from "../Env.ts";
 import axios from "axios";
-import {JwtToken} from "../entities/JwtToken.ts";
-import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router";
+import {getRole, isLogged, replaceToken} from "../services/AuthService.ts";
 
 YupPassword(yup) // extend yup
 
@@ -48,23 +48,30 @@ const initialValues: IFormValues = {
 
 
 export const Login = () => {
-    const [role, setRole] = React.useState('student');
+    const navigator = useNavigate()
+    const [error, setError] = useState(false);
 
+    const [role, setRole] = React.useState('student');
     const onSubmit = async (values: IFormValues) => {
-        values.role = role
-        const response = await axios.post(Env.API_BASE_URL + '/auth/login', values)
-        if (response.status === 200) {
-            localStorage.setItem('user', JSON.stringify(response.data));
-            window.location.replace((jwtDecode(response.data) as JwtToken).role.toLowerCase() + "/dashboard")
-        } else if (response.status === 406) {
-            window.location.replace("/first-login")
-        } else {
-            console.log('Credenziali errate')
+
+        try {
+            values.role = role
+            const response = await axios.post(Env.API_BASE_URL + '/auth/login', values)
+            if (response.status === 200) {
+                replaceToken(JSON.stringify(response.data))
+                navigator("/" + getRole().toLowerCase() + "/dashboard")
+            } else if (response.status === 406) {
+                navigator("/first-login")
+            } else {
+                setError(true)
+            }
+        } catch (e) {
+            setError(true)
         }
     };
 
-    const validate = (values: IFormValues) => {
-        console.log(values)
+    const validate = () => {
+        setError(false)
     };
 
     const formik = useFormik<IFormValues>({
@@ -82,7 +89,15 @@ export const Login = () => {
         setRole(newRole);
     };
 
-    return (
+    useEffect(() => {
+        if (isLogged()) {
+            navigator("/" + getRole().toLowerCase() + "/dashboard")
+        }
+    });
+
+
+
+    return  (
         <main style={{
             height: '100vh',
             display: 'flex',
@@ -158,6 +173,9 @@ export const Login = () => {
                                 <ToggleButton value="secretary">Segreteria</ToggleButton>
                             </ToggleButtonGroup>
                         </div>
+                        {
+                            error && <Alert id="errorLogin" sx={{mb: '1rem'}} severity="error">Credenziali errate</Alert>
+                        }
                         <div className={'centerInForm'}>
                             <Button variant="contained" type="submit" size="large" disabled={!formik.isValid}>
                                 Accedi
@@ -170,4 +188,5 @@ export const Login = () => {
             <HomePageFooter/>
         </main>
     );
+
 };
