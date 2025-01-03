@@ -1,13 +1,15 @@
 package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.authentication.service.UserLoginDTO;
-import it.astromark.user.commons.model.SchoolUser;
+import it.astromark.authentication.dto.UserLoginDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationService authenticationService;
@@ -19,17 +21,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserLoginDTO user) {
-        SchoolUser schoolUser = authenticationService.login(user.getUsername(), user.getPassword(), user.getSchoolCode(), user.getRole());
-
+    public ResponseEntity<String> login(@RequestBody UserLoginDTO user) {
+        var schoolUser = authenticationService.login(user.username(), user.password(), user.schoolCode(), user.role());
         if(schoolUser != null) {
             return switch (schoolUser.getPendingState()){
-                case FIRST_LOGIN -> "Must change password";
-                case NORMAL, REMOVE -> authenticationService.verify(user.getUsername(), user.getPassword(), user.getSchoolCode(), user.getRole());
+                case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
+                case NORMAL, REMOVE -> new ResponseEntity<>(authenticationService.verify(user.username(), user.password(), user.schoolCode(), user.role()), HttpStatus.OK);
             };
         }
 
-        return "Login failed";
+        return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/first-login")

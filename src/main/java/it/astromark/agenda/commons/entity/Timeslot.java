@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -31,4 +32,15 @@ public abstract class Timeslot {
     @NotNull
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Timeslot timeslot)) return false;
+        return Objects.equals(id, timeslot.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

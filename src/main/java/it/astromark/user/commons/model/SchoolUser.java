@@ -10,11 +10,13 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
 @SuperBuilder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
@@ -85,4 +87,15 @@ public abstract class SchoolUser {
     @Column(name = "PENDING_STATE", columnDefinition = "PendingState DEFAULT 'FIRST_LOGIN'")
     private PendingState pendingState;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SchoolUser that)) return false;
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

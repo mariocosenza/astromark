@@ -11,10 +11,11 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "schoolClass")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -47,4 +48,14 @@ public class Communication {
     @Column(name = "date")
     private LocalDate date;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Communication that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

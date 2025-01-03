@@ -9,9 +9,11 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Objects;
+
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "teacher")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,4 +41,14 @@ public class Teaching {
     @Column(name = "type_of_activity", nullable = false, length = 64)
     private String typeOfActivity;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Teaching teaching)) return false;
+        return Objects.equals(id, teaching.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

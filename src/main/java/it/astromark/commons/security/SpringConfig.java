@@ -26,6 +26,7 @@ import static java.util.Objects.nonNull;
 @EnableWebSecurity
 public class SpringConfig implements WebMvcConfigurer {
 
+
     @Autowired
     private JwtFilter jwtFilter;
 
@@ -43,8 +44,8 @@ public class SpringConfig implements WebMvcConfigurer {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/login").permitAll()
-                        .requestMatchers("/api/token").hasRole("parent")
+                        .requestMatchers("/api/auth/login", "/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
                 .httpBasic(Customizer.withDefaults())
@@ -73,6 +74,7 @@ public class SpringConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         this.serveDirectory(registry, "/", "classpath:/static/");
     }
+
 
 
 

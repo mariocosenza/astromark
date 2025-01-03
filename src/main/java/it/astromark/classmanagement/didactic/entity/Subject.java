@@ -8,12 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "subject", schema = "astromark")
 public class Subject {
     @Id

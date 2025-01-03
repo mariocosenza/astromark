@@ -11,11 +11,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "schoolClass")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -48,4 +49,14 @@ public class StudyPlan {
             inverseJoinColumns = @JoinColumn(name = "subject_title"))
     private Set<Subject> subjects = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof StudyPlan studyPlan)) return false;
+        return Objects.equals(id, studyPlan.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

@@ -11,12 +11,12 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Builder
 @NoArgsConstructor
@@ -51,4 +51,14 @@ public class Homework {
     @OneToMany(mappedBy = "homeworkSignedHourTeachingTimeslot")
     private Set<HomeworkChat> homeworkChats = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Homework homework)) return false;
+        return Objects.equals(id, homework.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

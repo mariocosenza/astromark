@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"student", "homeworkSignedHourTeachingTimeslot"})
 @Entity
 @Builder
 @NoArgsConstructor

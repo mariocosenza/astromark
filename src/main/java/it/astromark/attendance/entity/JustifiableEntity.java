@@ -10,11 +10,12 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "student")
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -42,4 +43,15 @@ public abstract class JustifiableEntity {
     @Size(max = 512)
     @Column(name = "justification_text", length = 512)
     private String justificationText;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof JustifiableEntity that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

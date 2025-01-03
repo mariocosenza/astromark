@@ -39,12 +39,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
 
+
         // Cerca l'utente nei vari repository
-        SchoolUser schoolUser = findUserInRepositories(username, schoolCode, role);
+        var schoolUser = findUserInRepositories(username, schoolCode, role);
         if (schoolUser == null) return null;
 
 
-        String hashedPassword = PasswordUtils.hashPassword(password);
+        var hashedPassword = PasswordUtils.hashPassword(password);
         if (hashedPassword.equals(schoolUser.getPassword()))
             return schoolUser;
 
@@ -69,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public String verify(String username, String password, String schoolCode, String role) {
 
-        SchoolUser schoolUser = login(username, password, schoolCode, role);
+        var schoolUser = login(username, password, schoolCode, role);
         if (schoolUser != null)
             return jwtService.generateToken(schoolUser.getId(), getRole(schoolUser));
         else return null;
@@ -95,6 +96,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             default ->
                     throw new IllegalStateException("Unexpected user type: " + user.getClass().toString().toLowerCase());
         };
+
     }
 
 

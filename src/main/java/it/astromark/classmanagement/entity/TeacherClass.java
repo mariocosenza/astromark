@@ -8,9 +8,10 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Objects;
+
 @Getter
 @Setter
-@ToString
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,4 +38,14 @@ public class TeacherClass {
     @Column(name = "coordinator", nullable = false)
     private Boolean coordinator = false;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof TeacherClass that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

@@ -22,9 +22,8 @@ public class JWTService {
 
     public String generateToken(UUID id, GrantedAuthority role) {
 
-        Map<String, Object> claims = new HashMap<>();
+        var claims = new HashMap<String,Object>();
         claims.put("role", role.getAuthority());
-        System.out.println(id);
 
         return Jwts.builder()
                 .claims()

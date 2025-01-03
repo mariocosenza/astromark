@@ -11,12 +11,13 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Builder
+@ToString(exclude = "student")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "mark", schema = "astromark")
@@ -61,4 +62,14 @@ public class Mark {
     @Column(name = "type", columnDefinition = "MarkType DEFAULT 'WRITTEN' NOT NULL")
     private MarkType type;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Mark mark)) return false;
+        return Objects.equals(id, mark.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

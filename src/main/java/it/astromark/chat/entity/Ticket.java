@@ -13,7 +13,7 @@ import java.time.Instant;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"parent", "teacher"})
 @Entity
 @Builder
 @NoArgsConstructor

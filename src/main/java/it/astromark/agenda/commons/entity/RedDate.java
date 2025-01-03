@@ -4,9 +4,10 @@ import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -20,4 +21,22 @@ public class RedDate {
     @JoinColumn(name = "class_timetable_id", nullable = false)
     private ClassTimetable classTimetable;
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof RedDate redDate)) return false;
+
+        return Objects.equals(id, redDate.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "RedDate{" +
+                "id=" + id +
+                '}';
+    }
 }

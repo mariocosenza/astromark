@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "receptionTimetable")
 @Entity
 @SuperBuilder
 @NoArgsConstructor

@@ -11,12 +11,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Builder
 @NoArgsConstructor
@@ -68,4 +68,14 @@ public class SchoolClass {
     @OneToMany(mappedBy = "schoolClass")
     private Set<TeacherClass> teacherClasses = new LinkedHashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SchoolClass that)) return false;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
