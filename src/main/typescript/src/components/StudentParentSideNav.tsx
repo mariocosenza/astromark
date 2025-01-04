@@ -1,4 +1,4 @@
-import {Box, Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import ScoreOutlinedIcon from '@mui/icons-material/ScoreOutlined';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
@@ -8,6 +8,7 @@ import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import AddAlertOutlinedIcon from '@mui/icons-material/AddAlertOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
 import {useState} from "react";
 import {NavLink} from "react-router";
 
@@ -120,7 +121,7 @@ export const StudentParentSideNav = () => {
 
     return (
         <div>
-            <Button onClick={toggleDrawer(true)}>Open drawer</Button>
+            <DensityMediumOutlinedIcon onClick={toggleDrawer(true)}>Open drawer</DensityMediumOutlinedIcon>
             <Drawer open={open} onClose={toggleDrawer(false)}>
                 {DrawerList}
             </Drawer>
