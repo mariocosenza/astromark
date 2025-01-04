@@ -49,3 +49,7 @@ export function isExpired(): boolean {
     }
     return true;
 }
+
+export function isRole(role: string): boolean {
+    return getRole().toUpperCase() === role.toUpperCase();
+}
