@@ -8,7 +8,7 @@ import {HomePageNavbar} from "../components/HomePageNavbar.tsx";
 import {Env} from "../Env.ts";
 import axios from "axios";
 import {useNavigate} from "react-router";
-import {getRole, isLogged, replaceToken} from "../services/AuthService.ts";
+import {getRole, isExpired, isLogged, replaceToken} from "../services/AuthService.ts";
 
 YupPassword(yup) // extend yup
 
@@ -90,7 +90,7 @@ export const Login = () => {
     };
 
     useEffect(() => {
-        if (isLogged()) {
+        if (isLogged() && !isExpired()) {
             navigator("/" + getRole().toLowerCase() + "/dashboard")
         }
     });
