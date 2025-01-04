@@ -78,13 +78,11 @@ public class JWTService {
 
         // Ensure the token's subject matches the user's ID
         if (!tokenUUID.equals(schoolUser.getId())) {
-            System.out.println("Maccia");
             return false;
         }
 
         // Ensure the token's role matches the user's role
         if (!tokenRole.equalsIgnoreCase(Role.getRole(schoolUser))) {
-            System.out.println(tokenRole.equalsIgnoreCase(Role.getRole(schoolUser)));
             return false;
         }
 

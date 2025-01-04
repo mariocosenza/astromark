@@ -39,7 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
             jwtToken = authorizationHeader.substring(7);
             id = jwtService.extractUUID(jwtToken);
             role = jwtService.extractRole(jwtToken);
-            System.out.println(role + "Nel filtro");
 
         }
         if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
