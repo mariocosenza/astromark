@@ -1,9 +1,12 @@
-import {StudentParentSideNav} from "../../components/StudentParentSideNav.tsx";
+import {DashboardNavbar} from "../../components/DashboardNavbar.tsx";
+import React from "react";
+
 
 export const Dashboard: React.FC = () => {
     return (
         <div>
-            <StudentParentSideNav/>
+            <DashboardNavbar/>
+            <h1>Dashboard</h1>
         </div>
     );
 }
