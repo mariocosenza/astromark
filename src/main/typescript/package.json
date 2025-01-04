@@ -15,11 +15,13 @@
     "@fontsource/titillium-web": "^5.1.1",
     "@mui/icons-material": "^6.3.0",
     "@mui/material": "^6.3.0",
+    "@mui/x-charts": "^7.23.2",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-multi-date-picker": "^4.5.2",
     "react-router": "^7.1.1",
     "yup": "^1.6.1",
     "yup-password": "^0.4.0"
