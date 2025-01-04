@@ -11,12 +11,14 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -54,20 +56,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public SchoolUser getUser(UUID id, String role) {
+        Supplier<RuntimeException> exceptionSupplier = () -> new RuntimeException("UUID not found in any repository: " + id);
 
         return switch (role) {
-            case "ROLE_student" -> studentRepository.getReferenceById(id);
-            case "ROLE_teacher" -> teacherRepository.getReferenceById(id);
-            case "ROLE_parent" -> parentRepository.getReferenceById(id);
-            case "ROLE_secretary" -> secretaryRepository.getReferenceById(id);
-            default -> throw new RuntimeException("UUID not found in any repository: " + id);
+            case "ROLE_student" -> studentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_teacher" -> teacherRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_parent" -> parentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_secretary" -> secretaryRepository.findById(id).orElseThrow(exceptionSupplier);
+            default -> throw exceptionSupplier.get();
         };
-
-
     }
 
-
+    @Override
     public String verify(String username, String password, String schoolCode, String role) {
 
         var schoolUser = login(username, password, schoolCode, role);
