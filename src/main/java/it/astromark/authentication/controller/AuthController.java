@@ -3,15 +3,10 @@ package it.astromark.authentication.controller;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.dto.UserLoginDTO;
 import it.astromark.authentication.service.JWTService;
-import jakarta.mail.Header;
-import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 
 @RestController
@@ -57,7 +52,6 @@ public class AuthController {
     public String logout(@RequestHeader(name = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwtToken = authorizationHeader.substring(7); // Rimuove "Bearer "
-            System.out.println("JWT Token: " + jwtToken);
             jwtService.logOut(jwtToken);
             return "Logout successful";
         } else {
