@@ -1,3 +1,4 @@
+
 package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
@@ -6,6 +7,8 @@ import it.astromark.authentication.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,6 +30,8 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody UserLoginDTO user) {
         var schoolUser = authenticationService.login(user.username(), user.password(), user.schoolCode(), user.role());
         if (schoolUser != null) {
+
+
             return switch (schoolUser.getPendingState()) {
                 case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
                 case NORMAL, REMOVE ->
@@ -42,8 +47,11 @@ public class AuthController {
         return "First login logic";
     }
 
+    @PreAuthorize("hasRole('student')")
     @GetMapping("/token")
     public String sayHello() {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+
         return "Hello";
 
     }

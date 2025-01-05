@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,6 +24,7 @@ import static java.util.Objects.nonNull;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SpringConfig implements WebMvcConfigurer {
 
 
@@ -47,7 +49,6 @@ public class SpringConfig implements WebMvcConfigurer {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/auth/login", "/api/auth/first-login").permitAll()
-                        .requestMatchers("/api/auth/token").hasRole("parent")
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/", "/login").permitAll() // Grouped for conciseness
                         .anyRequest().permitAll() // Important: Allow everything else

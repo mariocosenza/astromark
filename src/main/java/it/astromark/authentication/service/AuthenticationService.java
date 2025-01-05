@@ -13,8 +13,6 @@ public interface AuthenticationService  {
     SchoolUser getUser(UUID id , String role);
     String verify(String username, String password, String schoolCode, String role);
 
-
-    String schoolCode(SchoolUser schoolUser);
     GrantedAuthority getRole(SchoolUser user);
 
 

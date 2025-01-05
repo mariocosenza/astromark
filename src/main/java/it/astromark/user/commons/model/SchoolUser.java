@@ -1,6 +1,10 @@
 package it.astromark.user.commons.model;
 
 import it.astromark.school.entity.School;
+import it.astromark.user.parent.entity.Parent;
+import it.astromark.user.secretary.entity.Secretary;
+import it.astromark.user.student.entity.Student;
+import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -10,8 +14,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -97,4 +100,37 @@ public abstract class SchoolUser {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public boolean isStudent() {
+        return this instanceof Student;
+    }
+
+    public boolean isTeacher() {
+        return this instanceof Teacher;
+    }
+
+    public boolean isParent() {
+        return this instanceof Parent;
+    }
+
+    public boolean isSecretary() {
+        return this instanceof Secretary;
+    }
+
+    public Optional<Parent> getParent() {
+        return isParent() ? Optional.of((Parent) this) : Optional.empty();
+    }
+
+    public Optional<Student> getStudent() {
+        return isStudent() ? Optional.of((Student) this) : Optional.empty();
+    }
+
+    public Optional<Teacher> getTeacher() {
+        return isTeacher() ? Optional.of((Teacher) this) : Optional.empty();
+    }
+
+    public Optional<Secretary> getSecretary() {
+        return isSecretary() ? Optional.of((Secretary) this) : Optional.empty();
+    }
+
 }

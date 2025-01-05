@@ -80,11 +80,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public String schoolCode(SchoolUser schoolUser) {
-        return schoolUser.getSchool().getCode();
-    }
-
-    @Override
     public GrantedAuthority getRole(SchoolUser user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");

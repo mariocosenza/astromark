@@ -2,6 +2,7 @@ package it.astromark.commons.security;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.JWTService;
+import it.astromark.user.commons.model.SchoolUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +44,8 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            var schoolUser = authenticationService.getUser(id, role);
+            SchoolUser schoolUser = authenticationService.getUser(id, role);
+
 
             if (jwtService.validateToken(jwtToken, schoolUser)) {
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(schoolUser, null, List.of(authenticationService.getRole(schoolUser)));
