@@ -89,18 +89,6 @@ public abstract class SchoolUser {
     @Column(name = "PENDING_STATE", columnDefinition = "PendingState DEFAULT 'FIRST_LOGIN'")
     private PendingState pendingState;
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof SchoolUser that)) return false;
-
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
     public boolean isStudent() {
         return this instanceof Student;
     }
@@ -132,5 +120,18 @@ public abstract class SchoolUser {
     public Optional<Secretary> getSecretary() {
         return isSecretary() ? Optional.of((Secretary) this) : Optional.empty();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SchoolUser that)) return false;
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
 
 }

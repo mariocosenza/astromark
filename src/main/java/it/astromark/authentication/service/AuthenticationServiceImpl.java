@@ -41,7 +41,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
 
-
         // Cerca l'utente nei vari repository
         var schoolUser = findUserInRepositories(username, schoolCode, role);
         if (schoolUser == null) return null;

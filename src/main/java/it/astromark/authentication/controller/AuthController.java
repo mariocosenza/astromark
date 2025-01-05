@@ -1,9 +1,9 @@
-
 package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.dto.UserLoginDTO;
 import it.astromark.authentication.service.JWTService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -50,20 +51,20 @@ public class AuthController {
     @PreAuthorize("hasRole('student')")
     @GetMapping("/token")
     public String sayHello() {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 
         return "Hello";
 
     }
 
     @PostMapping("/logout")
-    public String logout(@RequestHeader(name = "Authorization", required = false) String authorizationHeader) {
+    public ResponseEntity<String> logout(@RequestHeader(name = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwtToken = authorizationHeader.substring(7); // Rimuove "Bearer "
             jwtService.logOut(jwtToken);
-            return "Logout successful";
+            return new ResponseEntity<>("Logout successful", HttpStatus.OK);
         } else {
-            return "Logout Error: Authorization header missing or invalid";
+            return new ResponseEntity<>("Logout Error: Authorization header missing or invalid", HttpStatus.BAD_REQUEST);
 
         }
     }
