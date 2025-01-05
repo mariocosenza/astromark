@@ -9,6 +9,7 @@ import it.astromark.user.commons.model.SchoolUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
 import javax.crypto.SecretKey;
 import java.util.*;
 
@@ -18,11 +19,14 @@ public class JWTService {
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    public JWTService() {}
+    private final List<String> blacklist = new ArrayList<>();
+
+    public JWTService() {
+    }
 
     public String generateToken(UUID id, GrantedAuthority role) {
 
-        var claims = new HashMap<String,Object>();
+        var claims = new HashMap<String, Object>();
         claims.put("role", role.getAuthority());
 
         return Jwts.builder()
@@ -76,6 +80,11 @@ public class JWTService {
         String tokenRole = extractRole(jwtToken);
         Claims claims = extractAllClaims(jwtToken);
 
+
+        if (blacklist.contains(jwtToken)) {
+            return false;
+        }
+
         // Ensure the token's subject matches the user's ID
         if (!tokenUUID.equals(schoolUser.getId())) {
             return false;
@@ -102,5 +111,11 @@ public class JWTService {
                 .build()
                 .parseSignedClaims(jwtToken)
                 .getPayload();
+    }
+
+
+    public void logOut(String jwtToken) {
+        blacklist.add(jwtToken);
+
     }
 }

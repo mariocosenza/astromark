@@ -55,7 +55,7 @@ public class School {
     private String schoolPrincipalFullName;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "school")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "school")
     private Set<Parent> parents = new LinkedHashSet<>();
 
     @Builder.Default
