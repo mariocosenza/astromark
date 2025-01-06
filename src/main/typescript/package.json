@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.14.0",
     "@fontsource/titillium-web": "^5.1.1",
     "@mui/icons-material": "^6.3.0",
-    "@mui/material": "^6.3.0",
+    "@mui/material": "^6.3.1",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
