@@ -89,37 +89,6 @@ public abstract class SchoolUser {
     @Column(name = "PENDING_STATE", columnDefinition = "PendingState DEFAULT 'FIRST_LOGIN'")
     private PendingState pendingState;
 
-    public boolean isStudent() {
-        return this instanceof Student;
-    }
-
-    public boolean isTeacher() {
-        return this instanceof Teacher;
-    }
-
-    public boolean isParent() {
-        return this instanceof Parent;
-    }
-
-    public boolean isSecretary() {
-        return this instanceof Secretary;
-    }
-
-    public Optional<Parent> getParent() {
-        return isParent() ? Optional.of((Parent) this) : Optional.empty();
-    }
-
-    public Optional<Student> getStudent() {
-        return isStudent() ? Optional.of((Student) this) : Optional.empty();
-    }
-
-    public Optional<Teacher> getTeacher() {
-        return isTeacher() ? Optional.of((Teacher) this) : Optional.empty();
-    }
-
-    public Optional<Secretary> getSecretary() {
-        return isSecretary() ? Optional.of((Secretary) this) : Optional.empty();
-    }
 
     @Override
     public boolean equals(Object o) {
