@@ -3,6 +3,7 @@ package it.astromark.authentication.controller;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.dto.UserLoginDTO;
 import it.astromark.authentication.service.JWTService;
+import it.astromark.user.student.entity.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,6 @@ public class AuthController {
     @PreAuthorize("hasRole('student')")
     @GetMapping("/token")
     public String sayHello() {
-        log.info(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString());
 
         return "Hello";
 
