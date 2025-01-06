@@ -1,5 +1,5 @@
 import {DashboardNavbar} from "../../components/DashboardNavbar.tsx";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     CircularProgress,
@@ -16,6 +16,11 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import MenuItem from "@mui/material/MenuItem";
 import {deepOrange} from "@mui/material/colors";
 import {ListGeneric, ListItemProp} from "../../components/ListGeneric.tsx";
+import axiosConfig from "../../services/AxiosConfig.ts";
+import {getId} from "../../services/AuthService.ts";
+import {Env} from "../../Env.ts";
+import {MarkResponse} from "../../entities/MarkResponse.ts";
+import {AxiosResponse} from "axios";
 
 const SubjectSelect = () => {
     const [age, setAge] = React.useState('');
@@ -47,8 +52,32 @@ export const Mark: React.FC = () => {
         new DateObject().subtract(4, "days"),
         new DateObject().add(4, "days")
     ])
+    const [data, setData]  = useState<ListItemProp[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const testArray : ListItemProp[] = [{avatar: 'A', title: 'Title', description: 'Description', hexColor: deepOrange[500]}]
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            const response: AxiosResponse<MarkResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${getId()}/marks/2024`);
+            const re = response.data;
+            const correctedData: ListItemProp[] = re.map((mark: MarkResponse) => ({
+                avatar: mark.mark.toPrecision(2),
+                title: mark.title,
+                description: mark.description,
+                hexColor: deepOrange[500],
+            }));
+            setData(correctedData);
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
 
     return (
         <div>
@@ -89,7 +118,9 @@ export const Mark: React.FC = () => {
             </Stack>
             <Divider sx={{mt: '1rem'}}/>
             <div  style={{display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto', maxHeight: '66vh', marginTop: '1vh'}}>
-                    <ListGeneric list={testArray}/>
+                {
+                    loading? <CircularProgress/> : <ListGeneric list={data}/>
+                }
             </div>
         </div>
     );

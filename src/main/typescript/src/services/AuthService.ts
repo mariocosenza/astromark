@@ -53,3 +53,11 @@ export function isExpired(): boolean {
 export function isRole(role: string): boolean {
     return getRole().toUpperCase() === role.toUpperCase();
 }
+
+export function getId(): string {
+    const user = localStorage.getItem("user");
+    if (user === null) {
+        return "";
+    }
+    return (jwtDecode(user) as JwtToken).sub;
+}
