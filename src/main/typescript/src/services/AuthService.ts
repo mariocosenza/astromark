@@ -1,16 +1,28 @@
 import {jwtDecode} from "jwt-decode";
 import {JwtToken} from "../entities/JwtToken.ts";
+import axiosConfig from "./AxiosConfig.ts";
+import {Env} from "../Env.ts";
 
 export function isLogged(): boolean {
-    return localStorage.getItem("user") !== null;
+    return !isExpired();
 }
 
 export function logout(): void {
     try {
-        localStorage.removeItem("user");
+        if(localStorage.getItem("user") !== null) {
+            axiosConfig.post(Env.API_BASE_URL + "/auth/logout").then(_ => localStorage.removeItem("user"))
+        }
     } catch (e) {
         console.log("User not exist");
     }
+}
+
+export function getToken(): string {
+    const user = localStorage.getItem("user");
+    if (user === null) {
+        return "";
+    }
+    return user.replace("\"", "");
 }
 
 export function getRole(): string {
@@ -39,12 +51,8 @@ export function getCurrentUser(): JwtToken | null {
 }
 
 export function isExpired(): boolean {
-    if(isLogged()) {
-        const user = getCurrentUser()
-        if(user === null) {
-            return true;
-        }
-
+    const user = getCurrentUser();
+    if(user !== null) {
         return user.exp < Date.now() / 1000;
     }
     return true;
@@ -61,3 +69,5 @@ export function getId(): string {
     }
     return (jwtDecode(user) as JwtToken).sub;
 }
+
+
