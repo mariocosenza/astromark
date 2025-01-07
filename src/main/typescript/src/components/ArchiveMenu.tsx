@@ -3,16 +3,37 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import {IconButton} from "@mui/material";
+import {useEffect, useState} from "react";
+import {getStudentYears} from "../services/StudentService.ts";
+import {SelectedYear} from "../services/StateService.ts";
+
+
+
+
 
 export const ArchiveMenu: React.FC = () => {
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [data, setData]  = useState<number[]>([]);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
+        console.log(SelectedYear.year)
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            setData(getStudentYears.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <div>
@@ -36,9 +57,12 @@ export const ArchiveMenu: React.FC = () => {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                {
+                    data.map((year: number) => <MenuItem key={year} onClick={() => {
+                        SelectedYear.year = year
+                        handleClose()
+                    }}>{year}</MenuItem>)
+                }
             </Menu>
         </div>
     );

@@ -6,6 +6,7 @@ export type ListItemProp = {
     title: string
     description: string
     hexColor: string
+    date: Date
 }
 
 export type ListProp = {

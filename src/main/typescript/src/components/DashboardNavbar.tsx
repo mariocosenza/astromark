@@ -4,13 +4,14 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {StudentParentSideNav} from "./StudentParentSideNav.tsx";
 import {Role} from "./route/ProtectedRoute.tsx";
-import {isRole} from "../services/AuthService.ts";
+import {isRole, logout} from "../services/AuthService.ts";
 import {ArchiveMenu} from "./ArchiveMenu.tsx";
-import {NavLink} from "react-router";
+import {NavLink, useNavigate} from "react-router";
 
 
 
 export const DashboardNavbar: React.FC = () => {
+    const navigator = useNavigate()
     return (
         <header>
             <Box sx={{flexGrow: 1, width: '100%'}}>
@@ -26,7 +27,14 @@ export const DashboardNavbar: React.FC = () => {
                         {
                             isRole(Role.PARENT) && <div> <AccountCircleOutlinedIcon/></div>
                         }
-                        <LogoutOutlinedIcon sx={{ml: 1}}/>
+                        <LogoutOutlinedIcon
+                            sx={{ml: 1}}
+                            onClick={() => {
+                                logout()
+                                navigator('/')
+                            }
+                            }
+                        />
                     </Toolbar>
                 </AppBar>
             </Box>
