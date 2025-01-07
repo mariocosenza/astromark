@@ -26,4 +26,9 @@ public class MarkController {
         return markService.getMarkByYear(studentId, year);
     }
 
+    @GetMapping("/{studentId}/marks/{year}/averages")
+    public Double getAverage(@PathVariable Year year, @PathVariable UUID studentId) {
+        return markService.getAverage(studentId, year);
+    }
+
 }
