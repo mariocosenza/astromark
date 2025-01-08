@@ -12,7 +12,7 @@ import {getRole, isExpired, isLogged, replaceToken} from "../services/AuthServic
 
 YupPassword(yup) // extend yup
 
-const validationSchema = yup.object().shape({
+const validationSchemaNormal = yup.object().shape({
     username: yup.string()
         .strict(true)
         .min(3, 'Username troppo corto')
@@ -32,36 +32,87 @@ const validationSchema = yup.object().shape({
         .required("Codice scuola obbligatorio")
 });
 
+const validationSchemaFirstLogin = yup.object().shape({
+    username: yup.string()
+        .strict(true)
+        .min(3, 'Username troppo corto')
+        .required("Username obbligatorio"),
+    password: yup.string()
+        .strict(true)
+        .password()
+        .min(8, 'Minimo 8 caratteri')
+        .minSymbols(0)
+        .minLowercase(0)
+        .minUppercase(0)
+        .minNumbers(0)
+        .required("Password obbligatoria"),
+    schoolCode: yup.string()
+        .strict(true)
+        .matches(/^SS\d{5}$/, "Codice scuola errato")
+        .required("Codice scuola obbligatorio"),
+    newPassword: yup.string()
+        .strict(true)
+        .password()
+        .min(8, 'Minimo 8 caratteri')
+        .minSymbols(0)
+        .minLowercase(0)
+        .minUppercase(0)
+        .minNumbers(0)
+        .required("Password obbligatoria"),
+});
+
+
 interface IFormValues {
     username: string;
     password: string;
     schoolCode: string;
     role: string;
+    newPassword?: string;
 }
 
 const initialValues: IFormValues = {
     username: "",
     password: "",
     schoolCode: "",
-    role: "student"
+    role: "student",
+    newPassword: "",
 };
 
 
 export const Login = () => {
     const navigator = useNavigate()
-    const [error, setError] = useState(false);
-
+    const [error, setError] = useState<boolean>(false);
+    const [firstLogin, setFirstLogin] = useState<boolean>(false);
     const [role, setRole] = React.useState('student');
+
+    let validationSchema = firstLogin ? validationSchemaFirstLogin : validationSchemaNormal;
+
     const onSubmit = async (values: IFormValues) => {
 
         try {
+            let response;
             values.role = role
-            const response = await axios.post(Env.API_BASE_URL + '/auth/login', values)
+            if(!firstLogin) {
+                const data = {
+                    username: values.username,
+                    password: values.password,
+                    schoolCode: values.schoolCode,
+                    role: values.role
+                }
+                response = await axios.post(Env.API_BASE_URL + '/auth/login', data);
+            } else {
+                if(values.newPassword !== values.password) {
+                    throw new Error("Password non corrispondenti")
+                } else {
+                    response = await axios.post(Env.API_BASE_URL + '/auth/first-login', values);
+                }
+            }
             if (response.status === 200) {
                 replaceToken(JSON.stringify(response.data))
                 navigator("/" + getRole().toLowerCase() + "/dashboard")
             } else if (response.status === 406) {
-                navigator("/first-login")
+                validationSchema = validationSchemaFirstLogin
+                setFirstLogin(true)
             } else {
                 setError(true)
             }
@@ -157,6 +208,24 @@ export const Login = () => {
                             fullWidth
                             sx={{mb: 3}}
                         />
+
+                        {
+                            firstLogin && <div>
+                                <TextField
+                                    label="Nuova Password"
+                                    variant="outlined"
+                                    color="primary"
+                                    type="password"
+                                    name="newPassword"
+                                    placeholder="Passowrd"/>
+                                <TextField   label="Conferma Password"
+                                             variant="outlined"
+                                             color="primary"
+                                             type="password"
+                                             name="checkPassword"
+                                             placeholder="Passowrd"/>
+                            </div>
+                        }
 
                         <div className={'centerInForm'}>
                             <ToggleButtonGroup
