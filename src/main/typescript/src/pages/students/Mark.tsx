@@ -17,11 +17,10 @@ import MenuItem from "@mui/material/MenuItem";
 import {deepOrange, green} from "@mui/material/colors";
 import {ListGeneric, ListItemProp} from "../../components/ListGeneric.tsx";
 import axiosConfig from "../../services/AxiosConfig.ts";
-import {getId} from "../../services/AuthService.ts";
 import {Env} from "../../Env.ts";
 import {MarkResponse} from "../../entities/MarkResponse.ts";
 import {AxiosResponse} from "axios";
-import {getLatestStudentYear} from "../../services/StudentService.ts";
+import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 
 
 const compareDate   = (date : Date, dateObject: DateObject)=> {
@@ -35,8 +34,9 @@ export const Mark: React.FC = () => {
     const [subject, setSubject] = useState('');
 
 
+
     const [values, setValues] = useState<DateObject[]>([
-        new DateObject().setMonth(9).setYear(getLatestStudentYear).setDay(1),
+        new DateObject().setMonth(9).setYear(SelectedYear.year).setDay(1),
         new DateObject().add(0, "days"),
     ])
 
@@ -47,8 +47,8 @@ export const Mark: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response: AxiosResponse<MarkResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${getId()}/marks/${getLatestStudentYear}`);
-            const averageResponse: AxiosResponse<number>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${getId()}/marks/${getLatestStudentYear}/averages`);
+            const response: AxiosResponse<MarkResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}`);
+            const averageResponse: AxiosResponse<number>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
             const re = response.data;
             const correctedData: ListItemProp[] = re.map((mark: MarkResponse) => ({
                 avatar: mark.mark.toPrecision(2),
