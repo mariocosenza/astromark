@@ -32,20 +32,20 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
+        var authorizationHeader = request.getHeader("Authorization");
         String jwtToken = null;
         UUID id = null;
-        String role = "";
+        var role = "";
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
             id = jwtService.extractUUID(jwtToken);
             role = jwtService.extractRole(jwtToken);
-            System.out.println(role + "Nel filtro");
 
         }
         if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             SchoolUser schoolUser = authenticationService.getUser(id, role);
+
 
             if (jwtService.validateToken(jwtToken, schoolUser)) {
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(schoolUser, null, List.of(authenticationService.getRole(schoolUser)));

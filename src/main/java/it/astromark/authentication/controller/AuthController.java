@@ -2,31 +2,42 @@ package it.astromark.authentication.controller;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.dto.UserLoginDTO;
+import it.astromark.authentication.service.JWTService;
+import it.astromark.user.student.entity.Student;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final JWTService jwtService;
 
     @Autowired
-    public AuthController(final AuthenticationService authenticationService) {
+    public AuthController(final AuthenticationService authenticationService, JWTService jwtService) {
 
         this.authenticationService = authenticationService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginDTO user) {
         var schoolUser = authenticationService.login(user.username(), user.password(), user.schoolCode(), user.role());
-        if(schoolUser != null) {
-            return switch (schoolUser.getPendingState()){
+        if (schoolUser != null) {
+
+
+            return switch (schoolUser.getPendingState()) {
                 case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
-                case NORMAL, REMOVE -> new ResponseEntity<>(authenticationService.verify(user.username(), user.password(), user.schoolCode(), user.role()), HttpStatus.OK);
+                case NORMAL, REMOVE ->
+                        new ResponseEntity<>(authenticationService.verify(user.username(), user.password(), user.schoolCode(), user.role()), HttpStatus.OK);
             };
         }
 
@@ -38,10 +49,26 @@ public class AuthController {
         return "First login logic";
     }
 
+    @PreAuthorize("hasRole('student')")
     @GetMapping("/token")
-    public String sayHello(){
+    public String sayHello() {
+
         return "Hello";
 
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader(name = "Authorization", required = false) String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwtToken = authorizationHeader.substring(7); // Rimuove "Bearer "
+            jwtService.logOut(jwtToken);
+            return new ResponseEntity<>("Logout successful", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Logout Error: Authorization header missing or invalid", HttpStatus.BAD_REQUEST);
+
+        }
+    }
 }
+
+
+

@@ -1,6 +1,10 @@
 package it.astromark.user.commons.model;
 
 import it.astromark.school.entity.School;
+import it.astromark.user.parent.entity.Parent;
+import it.astromark.user.secretary.entity.Secretary;
+import it.astromark.user.student.entity.Student;
+import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -10,13 +14,11 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
 @SuperBuilder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
@@ -29,7 +31,7 @@ public abstract class SchoolUser {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
     private School school;
 
@@ -87,6 +89,7 @@ public abstract class SchoolUser {
     @Column(name = "PENDING_STATE", columnDefinition = "PendingState DEFAULT 'FIRST_LOGIN'")
     private PendingState pendingState;
 
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof SchoolUser that)) return false;
@@ -98,4 +101,6 @@ public abstract class SchoolUser {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+
 }

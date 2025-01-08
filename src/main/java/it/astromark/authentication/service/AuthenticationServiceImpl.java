@@ -11,12 +11,17 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -39,7 +44,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser login(String username, String password, String schoolCode, String role) {
 
-
         // Cerca l'utente nei vari repository
         var schoolUser = findUserInRepositories(username, schoolCode, role);
         if (schoolUser == null) return null;
@@ -54,20 +58,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public SchoolUser getUser(UUID id, String role) {
-
-        return switch (role) {
-            case "ROLE_student" -> studentRepository.getReferenceById(id);
-            case "ROLE_teacher" -> teacherRepository.getReferenceById(id);
-            case "ROLE_parent" -> parentRepository.getReferenceById(id);
-            case "ROLE_secretary" -> secretaryRepository.getReferenceById(id);
-            default -> throw new RuntimeException("UUID not found in any repository: " + id);
+        Supplier<RuntimeException> exceptionSupplier = () -> new DataAccessException("UUID not found in any repository: " + id) {
         };
 
-
+        return switch (role) {
+            case "ROLE_student" -> studentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_teacher" -> teacherRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_parent" -> parentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_secretary" -> secretaryRepository.findById(id).orElseThrow(exceptionSupplier);
+            default -> throw exceptionSupplier.get();
+        };
     }
 
-
+    @Override
     public String verify(String username, String password, String schoolCode, String role) {
 
         var schoolUser = login(username, password, schoolCode, role);
@@ -76,11 +81,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         else return null;
     }
 
-
-    @Override
-    public String schoolCode(SchoolUser schoolUser) {
-        return schoolUser.getSchool().getCode();
-    }
 
     @Override
     public GrantedAuthority getRole(SchoolUser user) {
@@ -111,4 +111,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }; // Nessun utente trovato
     }
 
+    public boolean isStudent() {
+        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Student;
+    }
+
+    public boolean isTeacher() {
+        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Teacher;
+    }
+
+    public boolean isParent() {
+        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Parent;
+    }
+
+    public boolean isSecretary() {
+        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Secretary;
+    }
+
+    public Optional<Parent> getParent() {
+        return isParent() ? Optional.of((Parent)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+    }
+
+    public Optional<Student> getStudent() {
+        return isStudent() ? Optional.of((Student)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+    }
+
+    public Optional<Teacher> getTeacher() {
+        return isTeacher() ? Optional.of((Teacher)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+    }
+
+    public Optional<Secretary> getSecretary() {
+        return isSecretary() ? Optional.of((Secretary)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+    }
 }

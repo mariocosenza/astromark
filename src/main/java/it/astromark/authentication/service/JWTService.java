@@ -6,23 +6,27 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import it.astromark.user.commons.model.Role;
 import it.astromark.user.commons.model.SchoolUser;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
 import javax.crypto.SecretKey;
 import java.util.*;
 
 @Service
+@NoArgsConstructor
 public class JWTService {
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    public JWTService() {}
+    private final List<String> blacklist = new ArrayList<>();
+
 
     public String generateToken(UUID id, GrantedAuthority role) {
 
-        var claims = new HashMap<String,Object>();
+        var claims = new HashMap<String, Object>();
         claims.put("role", role.getAuthority());
 
         return Jwts.builder()
@@ -48,7 +52,7 @@ public class JWTService {
      * @return the extracted UUID
      */
     public UUID extractUUID(String jwtToken) {
-        Claims claims = extractAllClaims(jwtToken);
+        var claims = extractAllClaims(jwtToken);
         return UUID.fromString(claims.getSubject());
     }
 
@@ -59,7 +63,7 @@ public class JWTService {
      * @return the extracted role as a String
      */
     public String extractRole(String jwtToken) {
-        Claims claims = extractAllClaims(jwtToken);
+        var claims = extractAllClaims(jwtToken);
         return claims.get("role", String.class);
     }
 
@@ -72,19 +76,22 @@ public class JWTService {
      * @return true if the token is valid, false otherwise
      */
     public boolean validateToken(String jwtToken, SchoolUser schoolUser) {
-        UUID tokenUUID = extractUUID(jwtToken);
-        String tokenRole = extractRole(jwtToken);
-        Claims claims = extractAllClaims(jwtToken);
+        var tokenUUID = extractUUID(jwtToken);
+        var tokenRole = extractRole(jwtToken);
+        var claims = extractAllClaims(jwtToken);
+
+
+        if (blacklist.contains(jwtToken)) {
+            return false;
+        }
 
         // Ensure the token's subject matches the user's ID
         if (!tokenUUID.equals(schoolUser.getId())) {
-            System.out.println("Maccia");
             return false;
         }
 
         // Ensure the token's role matches the user's role
         if (!tokenRole.equalsIgnoreCase(Role.getRole(schoolUser))) {
-            System.out.println(tokenRole.equalsIgnoreCase(Role.getRole(schoolUser)));
             return false;
         }
 
@@ -105,4 +112,12 @@ public class JWTService {
                 .parseSignedClaims(jwtToken)
                 .getPayload();
     }
+
+
+    public void logOut(String jwtToken) {
+        blacklist.add(jwtToken);
+
+    }
+
+
 }
