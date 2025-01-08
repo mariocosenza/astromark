@@ -5,7 +5,6 @@ import {ThemeProvider} from "@mui/material";
 import {theme} from "./theme/GlobalTheme";
 import {App} from "./pages/App";
 import {Login} from "./pages/Login.tsx";
-import {FirstLogin} from "./pages/FirstLogin.tsx";
 import {ProtectedRoutePath, Role} from "./components/route/ProtectedRoute.tsx";
 import {StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
@@ -13,8 +12,9 @@ import {Dashboard} from "./pages/students/Dashboard.tsx";
 import {Mark} from "./pages/students/Mark.tsx";
 import {ClassActvitity} from "./pages/students/ClassActvitity.tsx";
 import {Settings} from "./pages/Settings.tsx";
-import {Allert} from "./pages/students/Allert.tsx";
 import {AbsenceDelays} from "./pages/students/Absence.tsx";
+import {Allert} from "./pages/students/Communication.tsx";
+import {Note} from "./pages/students/Note.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -25,14 +25,13 @@ ReactDOM.createRoot(root).render(
                 <Routes>
                     <Route path="/" element={<App />} />
                     <Route path="/login" element={<Login/>}/>
-                    <Route path="/first-login" element={<FirstLogin/>}/>
                     <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
                     <Route path="/student" element={<ProtectedRoutePath role={Role.STUDENT}/>}>
                         <Route path="dashboard" element={<Dashboard/>}/>
                         <Route path="voti" element={<Mark/>}/>
                         <Route path="assenze" element={<AbsenceDelays/>}/>
                         <Route path="assegno" element={<ClassActvitity/>}/>
-                        <Route path="note" element={<Dashboard/>}/>
+                        <Route path="note" element={<Note/>}/>
                         <Route path="pagella" element={<Dashboard/>}/>
                         <Route path="orario" element={<Dashboard/>}/>
                         <Route path="avvisi" element={<Allert/>}/>
