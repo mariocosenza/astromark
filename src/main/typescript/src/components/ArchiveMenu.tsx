@@ -14,6 +14,7 @@ import {SelectedYear} from "../services/StateService.ts";
 export const ArchiveMenu: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [data, setData]  = useState<number[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -29,7 +30,16 @@ export const ArchiveMenu: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            setData(getStudentYears.data);
+            await getStudentYears().then((response) => {
+                if(response !== null) {
+                    setData(response)
+                    SelectedYear.year = response[0]
+                }
+                else {
+                    setData(new Array(new Date().getFullYear()))
+                }
+            })
+            setLoading(false);
         } catch (error) {
             console.error(error);
         }
@@ -58,7 +68,7 @@ export const ArchiveMenu: React.FC = () => {
                 }}
             >
                 {
-                    data.map((year: number) => <MenuItem key={year} onClick={() => {
+                  !loading && data.map((year: number) => <MenuItem key={year} onClick={() => {
                         SelectedYear.year = year
                         handleClose()
                     }}>{year}</MenuItem>)
