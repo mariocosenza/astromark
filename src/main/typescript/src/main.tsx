@@ -15,6 +15,8 @@ import {Settings} from "./pages/Settings.tsx";
 import {AbsenceDelays} from "./pages/students/Absence.tsx";
 import {Allert} from "./pages/students/Communication.tsx";
 import {Note} from "./pages/students/Note.tsx";
+import {TeacherDashboard} from "./pages/teacher/TeacherDashboard.tsx";
+import {SchoolClass} from "./pages/teacher/SchoolClass.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -39,7 +41,8 @@ ReactDOM.createRoot(root).render(
                     </Route>
                     <Route path="/teacher" element={<Navigate to="/teacher/dashboard" replace />} />
                     <Route path="/teacher" element={<ProtectedRoutePath role={Role.TEACHER}/>}>
-                        <Route path="dashboard" element={<h1>Dashboard</h1>}/>
+                        <Route path="dashboard" element={<TeacherDashboard/>}/>
+                        <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace />} />

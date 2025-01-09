@@ -1,7 +1,6 @@
-export type SchoolClassResponse = {
+export type TeacherClassResponse = {
     id: number;
     number: number;
     letter: string;
-    year: number;
     description: string;
 }
