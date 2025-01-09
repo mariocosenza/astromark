@@ -21,7 +21,11 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "class_timetable", schema = "astromark")
+@Table(
+        name = "class_timetable",
+        schema = "astromark",
+        uniqueConstraints = {@UniqueConstraint(name = "uk_class_timetable", columnNames = {"school_class_id", "start_validity", "end_validity"})}
+)
 public class ClassTimetable extends Timetable {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

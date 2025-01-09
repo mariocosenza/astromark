@@ -1,6 +1,7 @@
 package it.astromark.agenda.schoolclass.entity;
 
 import it.astromark.agenda.commons.entity.Timeslot;
+import it.astromark.classmanagement.didactic.entity.Teaching;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -29,5 +30,14 @@ public class TeachingTimeslot extends Timeslot {
 
     @OneToOne(mappedBy = "teachingTimeslot")
     private SignedHour signedHour;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumns({
+            @JoinColumn(name = "teaching_teacher_id", referencedColumnName = "teacher_id", nullable = false),
+            @JoinColumn(name = "teaching_subject_title", referencedColumnName = "subject_title", nullable = false)
+    })
+    private Teaching teaching;
 
 }
