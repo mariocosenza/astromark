@@ -4,6 +4,7 @@ import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.dto.SchoolUserUpdate;
 import it.astromark.user.commons.service.SchoolUserService;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class SchoolUserController {
     }
 
     @PatchMapping("/address")
-    public SchoolUserResponse updateAddress(@RequestBody String address) {
+    public SchoolUserResponse updateAddress(@RequestBody @NotBlank String address) {
         return schoolUserService.updateAddress(address);
     }
 
