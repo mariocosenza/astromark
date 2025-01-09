@@ -4,6 +4,7 @@ import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import it.astromark.classmanagement.didactic.entity.StudyPlan;
 import it.astromark.communication.entity.Communication;
 import it.astromark.school.entity.School;
+import it.astromark.user.student.entity.Student;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -67,6 +68,10 @@ public class SchoolClass {
     @Builder.Default
     @OneToMany(mappedBy = "schoolClass")
     private Set<TeacherClass> teacherClasses = new LinkedHashSet<>();
+
+    @ManyToMany(mappedBy = "schoolClasses")
+    @Builder.Default
+    private Set<Student> students = new LinkedHashSet<>();
 
     @Override
     public boolean equals(Object o) {

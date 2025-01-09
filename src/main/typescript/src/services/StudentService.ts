@@ -1,7 +1,28 @@
-import {AxiosResponse} from "axios";
 import axiosConfig from "./AxiosConfig.ts";
 import {Env} from "../Env.ts";
-import {getId} from "./AuthService.ts";
+import {SelectedStudent} from "./StateService.ts";
+import {AxiosResponse} from "axios";
+import {getId, getRole} from "./AuthService.ts";
+import {Role} from "../components/route/ProtectedRoute.tsx";
 
-export const getStudentYears: AxiosResponse<number[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${getId()}/years`);
-export const getLatestStudentYear = getStudentYears.data[0];
+export async function getStudentYears() {
+    if(SelectedStudent.id !== null) {
+        const response : AxiosResponse<number[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/years`)
+
+       return response.data
+    } else if(getRole().toUpperCase() === Role.STUDENT) {
+        SelectedStudent.id = getId();
+        return getStudentYears();
+    } else {
+        return null;
+    }
+}
+
+
+export const getLatestStudentYear  = getStudentYears().then(function(result) {
+    if(result !== null) {
+        return result[0]
+    } else {
+        return new Date().getFullYear();
+    }
+});

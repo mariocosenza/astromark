@@ -22,7 +22,7 @@ export function getToken(): string {
     if (user === null) {
         return "";
     }
-    return user.replace("\"", "");
+    return user.replaceAll("\"", "");
 }
 
 export function getRole(): string {

@@ -69,7 +69,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public Mark getById(Integer integer) {
+    public MarkResponse getById(Integer integer) {
         return null;
     }
 }

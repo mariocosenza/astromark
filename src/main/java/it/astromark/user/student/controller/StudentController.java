@@ -1,15 +1,15 @@
 package it.astromark.user.student.controller;
 
+import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.user.student.service.StudentService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("api/students")
 public class StudentController {
@@ -25,5 +25,10 @@ public class StudentController {
         return studentService.getStudentYears(studentId);
     }
 
+
+    @GetMapping("/{studentId}/classes/{year}")
+    public List<SchoolClassResponse> getSchoolClassByYear(@PathVariable UUID studentId, @PathVariable Year year) {
+        return studentService.getSchoolClassByYear(studentId, year);
+    }
 
 }
