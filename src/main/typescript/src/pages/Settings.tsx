@@ -11,17 +11,7 @@ import YupPassword from "yup-password";
 import * as yup from "yup";
 
 
-function sendPreferences(confirmPassword: string | undefined,password: string | undefined) {
-    if (password === undefined || confirmPassword === undefined) {
-        return
-    }
-    if(confirmPassword === password) {
-        axiosConfig.patch(Env.API_BASE_URL + '/school-users/preferences', {
-            password: password
-        })
-        logout()
-    }
-}
+
 
 function sendAddress(address: string) {
     axiosConfig.patch(Env.API_BASE_URL + '/school-users/address', address)
@@ -41,41 +31,81 @@ YupPassword(yup) // extend yup
 
 const passwordValidation = yup.object().shape({
     password: yup.string()
-        .strict(true)
-        .password()
         .min(8, 'Minimo 8 caratteri')
-        .minSymbols(1)
-        .minLowercase(1)
-        .minUppercase(1)
-        .minNumbers(1)
+        .matches(/[a-z]/, 'Deve contenere almeno una lettera minuscola')
+        .matches(/[A-Z]/, 'Deve contenere almeno una lettera maiuscola')
+        .matches(/[0-9]/, 'Deve contenere almeno un numero')
+        .matches(/[^a-zA-Z0-9]/, 'Deve contenere almeno un simbolo')
         .required("Password obbligatoria"),
 });
 
 export const Settings: React.FC = () => {
-    const [address, setAddress] = useState<string>()
-    const [schoolUser, setSchoolUser] = useState<SchoolUser>()
-    const [confirmPassword, setConfirmPassword] = useState<string>()
-    const [newPassword, setNewPassword] = useState<string>()
-    const [error, setError] = useState<boolean>(false)
-    const [saved, setSaved] = useState<boolean>(false)
+    const [address, setAddress] = useState<string>();
+    const [schoolUser, setSchoolUser] = useState<SchoolUser>();
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [newPassword, setNewPassword] = useState<string>('');
+    const [error, setError] = useState<boolean>(false);
+    const [saved, setSaved] = useState<boolean>(false);
+    const [validationMessage, setValidationMessage] = useState<string>('');
 
-    const onPasswordChange = (password: string) => {
-        if(passwordValidation.isValidSync(password)) {
-            setNewPassword(password)
-            setError(false)
-            setSaved(false)
-        } else {
-            setError(true)
+    const validatePassword = async (password: string): Promise<boolean> => {
+        try {
+            await passwordValidation.validate({ password }, { abortEarly: false });
+            return true;
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                setValidationMessage(err.errors[0]);
+            }
+            return false;
         }
-    }
+    };
 
-    const onConfirmPasswordChange = (password: string) => {
-        if(passwordValidation.isValidSync(password)) {
-            setConfirmPassword(password)
-            setError(false)
-            setSaved(false)
-        } else {
-            setError(true)
+    const onPasswordChange = async (password: string) => {
+        setNewPassword(password);
+        setSaved(false);
+
+        const isValid = await validatePassword(password);
+        setError(!isValid);
+    };
+
+    const onConfirmPasswordChange = async (password: string) => {
+        setConfirmPassword(password);
+        setSaved(false);
+
+        if (password !== newPassword) {
+            setError(true);
+            setValidationMessage('Le password non coincidono');
+            return;
+        }
+
+        const isValid = await validatePassword(password);
+        setError(!isValid);
+    };
+
+    async function sendPreferences(confirmPassword: string | undefined, password: string | undefined) {
+        try {
+            if (!password || !confirmPassword) {
+                setError(true);
+                return;
+            }
+            if (password !== confirmPassword) {
+                setError(true);
+                return;
+            }
+            const isValid = await validatePassword(password);
+            if (!isValid) {
+                setError(true);
+                return;
+            }
+            await axiosConfig.patch(Env.API_BASE_URL + '/school-users/preferences', {
+                password: password
+            });
+            logout();
+            window.location.href = '/';
+
+        } catch (error) {
+            console.error('Error updating preferences:', error);
+            setError(true);
         }
     }
 
@@ -142,10 +172,10 @@ export const Settings: React.FC = () => {
                     (schoolUser !== undefined) &&  <Box className={'secondary-container'} style={{maxHeight: '80vh', minWidth: '40vw', marginTop: '2rem', display: 'grid', padding: '2vw'}}>
                         <h1>Informazioni contatto</h1>
                         <TextField disabled={true} id="email" label="Email" value={schoolUser.email} variant="outlined" />
-                        <TextField id="password"  onChange={ (e) => onPasswordChange(e.currentTarget.value)} label="Password" variant="outlined" />
-                        <TextField id="checkPassoword" onChange={ (e) => onConfirmPasswordChange(e.currentTarget.value)} label="Conferma Password" variant="outlined" />
+                        <TextField id="password"  type={'password'} onChange={ (e) => onPasswordChange(e.currentTarget.value)} label="Password" variant="outlined" />
+                        <TextField id="checkPassoword" type={'password'} onChange={ (e) => onConfirmPasswordChange(e.currentTarget.value)} label="Conferma Password" variant="outlined" />
                         {
-                            error && <Alert id="errorLogin" sx={{mb: '1rem'}} severity="error">La password deve contenere almeno un carattere speciale, un numero, una minuscola, una maiuscola e deve essere lunga almeno 8 caratteri</Alert>
+                            error && <Alert id="errorLogin" sx={{mb: '1rem'}} severity="error">{validationMessage}</Alert>
                         }
                         <Button variant="contained" style={{maxHeight: '4rem'}}>Consensi privacy</Button>
                         <Button variant="contained" onClick={() => address !== undefined? sendPreferences(confirmPassword, newPassword) : null} style={{maxHeight: '4rem'}}>Salva</Button>

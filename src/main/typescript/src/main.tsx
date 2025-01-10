@@ -16,6 +16,7 @@ import {AbsenceDelays} from "./pages/students/Absence.tsx";
 import {Allert} from "./pages/students/Communication.tsx";
 import {Note} from "./pages/students/Note.tsx";
 import {Timetable} from "./pages/students/Timetable.tsx";
+import {SemesterReport} from "./pages/students/Report.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -33,7 +34,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="assenze" element={<AbsenceDelays/>}/>
                         <Route path="assegno" element={<ClassActvitity/>}/>
                         <Route path="note" element={<Note/>}/>
-                        <Route path="pagella" element={<Dashboard/>}/>
+                        <Route path="pagella" element={<SemesterReport/>}/>
                         <Route path="orario" element={<Timetable/>}/>
                         <Route path="avvisi" element={<Allert/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
