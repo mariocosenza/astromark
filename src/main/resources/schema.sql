@@ -274,7 +274,8 @@ CREATE TABLE class_timetable
     end_validity    DATE CHECK (end_validity IS NULL OR end_validity > start_validity),
 
     CONSTRAINT pk_class_timetable PRIMARY KEY (id),
-    CONSTRAINT fk_class_timetable_school_class FOREIGN KEY (school_class_id) REFERENCES school_class (id)
+    CONSTRAINT fk_class_timetable_school_class FOREIGN KEY (school_class_id) REFERENCES school_class (id),
+    CONSTRAINT uk_class_timetable UNIQUE (school_class_id, start_validity, end_validity)
 );
 
 CREATE TABLE reception_timetable
@@ -295,12 +296,15 @@ CREATE TABLE teaching_timeslot
 
     id                 INT GENERATED ALWAYS AS IDENTITY,
     class_timetable_id INT                                      NOT NULL,
+    teaching_subject_title VARCHAR(255)                         NOT NULL,
+    teaching_teacher_id    UUID                                 NOT NULL,
     hour               SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
     date               DATE                                     NOT NULL,
 
     CONSTRAINT pk_teaching_timeslot PRIMARY KEY (id),
     CONSTRAINT uk_teaching_timeslot UNIQUE (class_timetable_id, hour, date),
-    CONSTRAINT fk_teaching_timeslot_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk_teaching_timeslot_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_teaching_timeslot_teaching FOREIGN KEY (teaching_subject_title, teaching_teacher_id) REFERENCES teaching (subject_title, teacher_id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 

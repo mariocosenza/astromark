@@ -18,6 +18,7 @@ import {Note} from "./pages/students/Note.tsx";
 import {TeacherDashboard} from "./pages/teacher/TeacherDashboard.tsx";
 import {SchoolClass} from "./pages/teacher/SchoolClass.tsx";
 import {TeacherTicket} from "./pages/teacher/TeacherTicket.tsx";
+import {Timetable} from "./pages/students/Timetable.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -36,7 +37,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="assegno" element={<ClassActvitity/>}/>
                         <Route path="note" element={<Note/>}/>
                         <Route path="pagella" element={<Dashboard/>}/>
-                        <Route path="orario" element={<Dashboard/>}/>
+                        <Route path="orario" element={<Timetable/>}/>
                         <Route path="avvisi" element={<Allert/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>

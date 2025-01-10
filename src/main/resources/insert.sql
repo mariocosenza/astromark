@@ -138,29 +138,18 @@ VALUES
     ((SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024), '2024-09-01', '2024-10-06'),
     ((SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024), '2024-10-06', null);
 
-INSERT INTO teaching_timeslot (class_timetable_id, hour, date)
+INSERT INTO teaching_timeslot (class_timetable_id, hour, date, teaching_subject_title, teaching_teacher_id)
 VALUES
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 1, '2025-01-15'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 2, '2025-01-15'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 3, '2025-01-15'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 4, '2025-01-16'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 5, '2025-01-16'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'A' AND year = 2024) LIMIT 1), 2, '2025-01-16'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'B' AND year = 2024) LIMIT 1), 4, '2025-01-17'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 5, '2025-01-17'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) LIMIT 1), 3, '2025-01-18'),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 1, '2025-01-18');
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 1, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 2, '2025-01-15','Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 3, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'B' AND year = 2024) LIMIT 1), 4, '2025-01-17', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) LIMIT 1), 3, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 1, '2025-01-18', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'));
 
 INSERT INTO signed_hour (teaching_timeslot_id, teacher_id, substitution)
 VALUES
-    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-15' LIMIT 1), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-16' LIMIT 1), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-16' LIMIT 1), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-16' LIMIT 1), (SELECT id FROM teacher WHERE username = 'anna.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-17' LIMIT 1), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' LIMIT 1), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-18' LIMIT 1), (SELECT id FROM teacher WHERE username = 'anna.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' LIMIT 1), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false);
+    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-15' LIMIT 1), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false);
 
 INSERT INTO reception_timetable(teacher_id, text_info_reception, start_validity)
 VALUES
@@ -176,22 +165,17 @@ VALUES
 
 INSERT INTO class_activity (signed_hour_teaching_timeslot_id, title, description)
 VALUES
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') LIMIT 1), 'Lezione di Matematica', 'Ripasso sulle equazioni di secondo grado.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') LIMIT 1), 'Rivoluzione Industriale', 'Discussione sulle principali invenzioni.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui') LIMIT 1), 'Lezione di Inglese', 'Approfondimento sulla grammatica.');
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') LIMIT 1), 'Lezione di Matematica', 'Ripasso sulle equazioni di secondo grado.');
+
 
 INSERT INTO homework (signed_hour_teaching_timeslot_id, due_date, title, description)
 VALUES
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') LIMIT 1), '2025-03-18', 'Esercizi sulle equazioni', 'Risolvere gli esercizi da 1 a 10 a pagina 50 del libro di testo.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') LIMIT 1), '2025-02-10', 'Esercizi Rivoluzione Francese', 'Completa le domande a pagina 150.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui') LIMIT 1), '2025-02-15', 'Scrivi un saggio', 'Scrivi un saggio di 500 parole.');
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') LIMIT 1), '2025-03-18', 'Esercizi sulle equazioni', 'Risolvere gli esercizi da 1 a 10 a pagina 50 del libro di testo.');
+
 
 INSERT INTO homework_chat (homework_signed_hour_teaching_timeslot_id, title, student_id)
 VALUES
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') LIMIT 1), 'Dubbio esercizio 3', (SELECT id FROM student WHERE username = 'luca.verdi')),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') LIMIT 1), 'Chiarimenti compito', (SELECT id FROM student WHERE username = 'marco.neri')),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') LIMIT 1), 'Dubbi su un esercizio', (SELECT id FROM student WHERE username = 'luca.verdi')),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui') LIMIT 1), 'Dubbi sul saggio', (SELECT id FROM student WHERE username = 'elisa.verdi'));
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') LIMIT 1), 'Dubbio esercizio 3', (SELECT id FROM student WHERE username = 'luca.verdi'));
 
 INSERT INTO ticket (parent_id, teacher_id, title, category, datetime, closed, solved)
 VALUES
