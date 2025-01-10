@@ -17,6 +17,7 @@ import {Allert} from "./pages/students/Communication.tsx";
 import {Note} from "./pages/students/Note.tsx";
 import {TeacherDashboard} from "./pages/teacher/TeacherDashboard.tsx";
 import {SchoolClass} from "./pages/teacher/SchoolClass.tsx";
+import {TeacherTicket} from "./pages/teacher/TeacherTicket.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -43,6 +44,7 @@ ReactDOM.createRoot(root).render(
                     <Route path="/teacher" element={<ProtectedRoutePath role={Role.TEACHER}/>}>
                         <Route path="dashboard" element={<TeacherDashboard/>}/>
                         <Route path="classi" element={<SchoolClass/>}/>
+                        <Route path="ticket" element={<TeacherTicket/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace />} />

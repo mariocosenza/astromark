@@ -3,6 +3,7 @@ import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HouseIcon from '@mui/icons-material/House';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
+import ArticleIcon from '@mui/icons-material/Article';
 import {useState} from "react";
 import {NavLink} from "react-router";
 
@@ -36,6 +37,16 @@ export const TeacherSideNav = () => {
                                 <HouseIcon />
                             </ListItemIcon>
                             <ListItemText primary={"Classi"} />
+                        </ListItemButton>
+                    </ListItem>
+                </NavLink>
+                <NavLink to="/teacher/ticket" end>
+                    <ListItem key="assenze" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ArticleIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Ticket"} />
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
