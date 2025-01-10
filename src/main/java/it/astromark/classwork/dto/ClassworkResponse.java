@@ -1,4 +1,8 @@
 package it.astromark.classwork.dto;
 
-public record ClassworkResponse(Integer id, String title, String description, String signedHour) {
+import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
+
+import java.time.LocalDate;
+
+public record ClassworkResponse(Integer id, String title, String description, TeachingTimeslotResponse signedHour) {
 }
