@@ -12,7 +12,7 @@ import {Dashboard} from "./pages/students/Dashboard.tsx";
 import {Mark} from "./pages/students/Mark.tsx";
 import {ClassActvitity} from "./pages/students/ClassActvitity.tsx";
 import {Settings} from "./pages/Settings.tsx";
-import {AbsenceDelays} from "./pages/students/Absence.tsx";
+import {AbsenceDelays} from "./pages/students/AbsenceDelay.tsx";
 import {Allert} from "./pages/students/Communication.tsx";
 import {Note} from "./pages/students/Note.tsx";
 import {Timetable} from "./pages/students/Timetable.tsx";
