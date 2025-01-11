@@ -38,7 +38,7 @@ public class SemesterReport {
     @Builder.Default
     @ColumnDefault("true")
     @Column(name = "first_semester", nullable = false)
-    private Boolean firstSemester = false;
+    private Boolean firstSemester = true;
 
     @NotNull
     @Builder.Default

@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ClassActivityRepository extends JpaRepository<ClassActivity, Integer> {
-    List<ClassworkResponse> findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(Integer attr0);
+    List<ClassActivity> findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(Integer attr0);
 }

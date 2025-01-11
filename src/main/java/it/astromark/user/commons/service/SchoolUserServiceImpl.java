@@ -15,6 +15,7 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -103,7 +104,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    public SchoolUserResponse updateAddress(@Size(max = 512) String address) {
+    public SchoolUserResponse updateAddress(@Size(min = 5) @Pattern(regexp = "^[^<>%$]*$") String address) {
         SchoolUser user;
         if(authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
