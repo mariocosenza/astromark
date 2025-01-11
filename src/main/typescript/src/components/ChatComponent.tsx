@@ -8,12 +8,12 @@ export type MessageComponent = {
     hexColor: string
 }
 
-export type MessageComponents = {
+export type Props = {
     list: MessageComponent[]
     send: Function
 }
 
-export const ChatComponent: React.FC<MessageComponents> = ({list, send}) => {
+export const ChatComponent: React.FC<Props> = ({list, send}) => {
 
     const messageList = list;
     const [newMessage, setNewMessage] = useState<string>('');
@@ -29,41 +29,25 @@ export const ChatComponent: React.FC<MessageComponents> = ({list, send}) => {
     }
 
     return (
-        <Box
-            className={'surface-container'}
-            sx={{
-                width: '100%',
-                marginTop: '1rem',
-                padding: '1rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%'
-            }}
-        >
+        <Box className={'surface-container chat-container'}>
 
-            <Box sx={{flexGrow: 1, overflowY: 'auto', marginBottom: '1rem'}}>
+            <Box>
                 {messageList.map((message, i) => (
-                    <Box display={'flex'} alignItems={'center'} key={'list' + i}
-                         sx={{backgroundColor: '#fff', padding: '0.5rem', borderRadius: '8px', marginBottom: '0.5rem'}}>
-                        <Avatar sx={{bgcolor: message.hexColor, marginRight: '1rem'}}>{message.avatar}</Avatar>
-                        <Typography variant='body2' color='textPrimary'>{message.text}</Typography>
+                    <Box className={'message-item'} display={'flex'} alignItems={'center'} key={'list' + i}>
+                        <Avatar sx={{bgcolor: message.hexColor, marginRight: '1rem'}}> {message.avatar} </Avatar>
+                        <Typography variant='body2' color='textPrimary'> {message.text} </Typography>
                     </Box>
                 ))}
             </Box>
 
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <Box display={'flex'} alignItems={'center'}>
                 <TextField
-                    placeholder='Scrivi il tuo messaggio'
-                    variant='outlined'
-                    fullWidth
-                    size='small'
-                    value={newMessage}
+                    className={'textfield-item'} margin={'normal'} size={'small'} fullWidth
+                    placeholder='Scrivi il tuo messaggio' value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    sx={{backgroundColor: '#fff', borderRadius: '8px'}}
                 />
 
-                <Button variant='contained' color='primary' sx={{marginLeft: '0.5rem'}} onClick={handleSendMessage}>
+                <Button variant='contained' color='primary' sx={{marginLeft: '0.5rem', marginTop: '0.4rem'}} onClick={handleSendMessage}>
                     <SendIcon/>
                 </Button>
             </Box>

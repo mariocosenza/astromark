@@ -24,27 +24,14 @@ export const TicketCreation: React.FC = () => {
     }
 
     return (
-        <Box
-            sx={{
-                width: '90%',
-                position: 'sticky',
-                bottom: 0,
-                marginTop: '1rem',
-                padding: '1rem',
-                borderRadius: '8px',
-                backgroundColor: '#e3f2fd',
-                boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.1)'
-            }}
-        >
-            <Typography variant='h6' sx={{ marginBottom: '1rem' }}>Crea ticket per la segreteria</Typography>
+        <Box className={'ticket-creation-box'}>
+            <Typography variant='h6'>Crea ticket per la segreteria</Typography>
             <TextField
-                placeholder="Inserisci l'oggetto"
-                variant='outlined'
-                fullWidth
-                value={newMessage}
+                className={'textfield-item'} margin={'normal'} fullWidth
+                placeholder="Inserisci l'oggetto" value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                sx={{ marginBottom: '1rem', backgroundColor: '#fff' }}
             />
+
             <Button variant='contained' color='primary' fullWidth onClick={handleCreateTicket}>
                 Crea
             </Button>

@@ -8,11 +8,14 @@ import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
 import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import {TeacherClassResponse} from "../../entities/TeacherClassResponse.ts";
-import {Item, RectangleList} from "../../components/RectangleList.tsx";
+import {Item, GridList} from "../../components/GridList.tsx";
+import {useNavigate} from "react-router";
+import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 
 export const SchoolClass: React.FC = () => {
     const [data, setData] = useState<Item[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
@@ -35,32 +38,22 @@ export const SchoolClass: React.FC = () => {
         }
     }
 
+    const chooseSchoolClass = (id: number) => {
+        SelectedSchoolClass.SchoolClassId = id;
+        navigate(`/teacher/giornaleClasse`);
+    };
+
     return (
         <div>
             <TeacherDashboardNavbar/>
-            <Typography
-                variant="h4"
-                sx={{
-                    textAlign: "center",
-                    marginTop: 4,
-                    fontWeight: "bold",
-                    color: "#1976d2",
-                }}
-            >
+            <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
                 Scegli la classe
             </Typography>
 
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                overflowY: 'auto',
-                maxHeight: '66vh',
-                marginTop: '1vh'
-            }}>
+            <div className={'centerBox'} style={{marginTop:'4vh'}}>
 
                 {
-                    loading ? <CircularProgress/> : <RectangleList items={data}></RectangleList>
+                    loading ? <CircularProgress/> : <GridList items={data} onClick={chooseSchoolClass}></GridList>
                 }
 
             </div>

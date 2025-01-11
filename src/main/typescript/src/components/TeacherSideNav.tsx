@@ -6,7 +6,7 @@ import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined
 import ArticleIcon from '@mui/icons-material/Article';
 import {useState} from "react";
 import {NavLink} from "react-router";
-
+import {isSelectedClass} from "../services/TeacherService.ts";
 
 
 export const TeacherSideNav = () => {
@@ -31,7 +31,7 @@ export const TeacherSideNav = () => {
                     </ListItem>
                 </NavLink>
                 <NavLink to="/teacher/classi" end>
-                    <ListItem key="assenze" disablePadding>
+                    <ListItem key="classi" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
                                 <HouseIcon />
@@ -41,7 +41,7 @@ export const TeacherSideNav = () => {
                     </ListItem>
                 </NavLink>
                 <NavLink to="/teacher/ticket" end>
-                    <ListItem key="assenze" disablePadding>
+                    <ListItem key="ticket" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
                                 <ArticleIcon />
@@ -50,6 +50,19 @@ export const TeacherSideNav = () => {
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
+
+                {isSelectedClass() && (
+                    <NavLink to="/teacher/classWork" end>
+                        <ListItem key="classWork" disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <ArticleIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"ClassWork"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </NavLink>
+                )}
 
                 <Divider/>
                 <NavLink to={"/teacher/impostazioni"} end>

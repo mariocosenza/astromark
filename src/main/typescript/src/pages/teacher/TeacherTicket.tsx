@@ -26,9 +26,10 @@ export const TeacherTicket: React.FC = () => {
 
     const fetchData = async () => {
         try{
+            let fetchedTicket: TicketCard[] = [];
             const ticketResponse: AxiosResponse<TicketResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/tickets/ticket`);
             if (ticketResponse.data.length){
-                const correctedTicketData: TicketCard[] = ticketResponse.data.map((ticket: TicketResponse) => ({
+                fetchedTicket = ticketResponse.data.map((ticket: TicketResponse) => ({
                     avatar: 'T',
                     title: "Ticket del " + ticket.datetime.toString().substring(0, 10),
                     description: ticket.title,
@@ -36,13 +37,14 @@ export const TeacherTicket: React.FC = () => {
                     id: ticket.id
                 }));
 
-                setTicketData(correctedTicketData);
                 if (SelectedTicket.ticketId === null){
                     SelectedTicket.ticketId = ticketResponse.data[ticketResponse.data.length -1].id
                 }
+
                 await fetchMessages()
             }
 
+            setTicketData(fetchedTicket);
             setLoading(false);
         }catch (error){
             console.log(error)
@@ -51,18 +53,18 @@ export const TeacherTicket: React.FC = () => {
 
     const fetchMessages = async () => {
         try{
+            let fetchedMessages: MessageComponent[]  = [];
             const messageResponse: AxiosResponse<MessageResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/tickets/${SelectedTicket.ticketId}/messages`);
             if (messageResponse.data.length){
-                const correctedMessageData: MessageComponent[] = messageResponse.data.map((message: MessageResponse) => ({
+                fetchedMessages = messageResponse.data.map((message: MessageResponse) => ({
                     avatar: message.senderName.charAt(0),
                     text: message.text,
                     hexColor: message.isSecretary ? orange[500] : blue[500],
                 }));
-
-                setMessageData(correctedMessageData)
                 setLetterName(messageResponse.data[0].senderName.charAt(0))
             }
 
+            setMessageData(fetchedMessages)
         }catch (error){
             console.log(error)
         }
@@ -90,24 +92,18 @@ export const TeacherTicket: React.FC = () => {
     return (
         <div>
             <TeacherDashboardNavbar/>
-            <Stack
-                spacing={2}
-                direction={{ xs: 'column', md: 'row' }}
-                justifyContent="center"
-                marginTop={'2vh'}
-                sx={{ flexWrap: 'wrap' }}
-            >
+            <Stack spacing={2} direction={{ xs: 'column', md: 'row' }} justifyContent="center" marginTop={'2vh'}>
 
-                <Box sx={{ width: { xs: '100%', md: '45%' }, margin: '1rem' }}>
-                    <Box sx={{ padding: '1rem' }}>
+                <Box justifyContent="center" width={{xs: '100%', md: '45%'}}>
+                    <Box padding={'1rem'}>
                         {loading ? <CircularProgress /> : <TicketList list={ticketData} onTicketClick={fetchMessages} />}
                     </Box>
-                    <Box sx={{ padding: '1rem' }}>
+                    <Box padding={'1rem'}>
                         <TicketCreation />
                     </Box>
                 </Box>
 
-                <Box sx={{ width: { xs: '100%', md: '45%' }, margin: '1rem' }}>
+                <Box width={{xs: '100%', md: '45%'}}>
                     <ChatComponent list={messageData} send={sendMessage}/>
                 </Box>
             </Stack>

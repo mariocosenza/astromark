@@ -32,18 +32,3 @@ export class SelectedStudent {
     }
     private static _id: string | null = null;
 }
-
-export class SelectedTeacher {
-    static get id(): string | null {
-        if(getRole().toUpperCase() !== Role.TEACHER) {
-            return this._id;
-        } else {
-            return getId()
-        }
-    }
-
-    static set id(value: string) {
-        this._id = value;
-    }
-    private static _id: string | null = null;
-}
