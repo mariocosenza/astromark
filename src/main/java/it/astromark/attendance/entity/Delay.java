@@ -23,6 +23,6 @@ public class Delay extends JustifiableEntity {
     @NotNull
     @ColumnDefault("now()")
     @Column(name = "date_time", nullable = false)
-    private Instant dateTime;
+    private Instant date;
 
 }
