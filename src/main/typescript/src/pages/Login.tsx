@@ -180,7 +180,7 @@ export const Login = () => {
                             color="primary"
                             type="text"
                             name="username"
-                            placeholder="Mario Rossi"
+                            placeholder="mario.rossi"
                             sx={{mb: 3}}
                             fullWidth
                             value={formik.values.username}
@@ -195,7 +195,7 @@ export const Login = () => {
                             color="primary"
                             type="password"
                             name="password"
-                            placeholder="john@johndoe.com"
+                            placeholder="*******"
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -246,7 +246,7 @@ export const Login = () => {
                             error && <Alert id="errorLogin" sx={{mb: '1rem'}} severity="error">Credenziali errate</Alert>
                         }
                         <div className={'centerInForm'}>
-                            <Button variant="contained" type="submit" size="large" disabled={!formik.isValid}>
+                            <Button variant="contained" style={{backgroundColor: 'rgb(85,108,151)', color: 'white'}} type="submit" size="large" disabled={!formik.isValid}>
                                 Accedi
                             </Button>
                         </div>
