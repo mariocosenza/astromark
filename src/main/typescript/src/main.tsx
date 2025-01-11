@@ -6,7 +6,7 @@ import {theme} from "./theme/GlobalTheme";
 import {App} from "./pages/App";
 import {Login} from "./pages/Login.tsx";
 import {ProtectedRoutePath, Role} from "./components/route/ProtectedRoute.tsx";
-import {StrictMode} from "react";
+import React, {StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
 import {Dashboard} from "./pages/students/Dashboard.tsx";
 import {Mark} from "./pages/students/Mark.tsx";
@@ -20,8 +20,14 @@ import {SchoolClass} from "./pages/teacher/SchoolClass.tsx";
 import {TeacherTicket} from "./pages/teacher/TeacherTicket.tsx";
 import {Timetable} from "./pages/students/Timetable.tsx";
 import {SemesterReport} from "./pages/students/Report.tsx";
+import {isSelectedClass} from "./services/TeacherService.ts";
+import {ClassWork} from "./pages/teacher/ClassWork.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
+
+const ConditionalRoute = ({node, condition,}: { node: React.ReactNode; condition: () => boolean;}) => {
+    return condition() ? <>{node}</> : <Navigate to="/" replace />;
+};
 
 ReactDOM.createRoot(root).render(
     <StrictMode>
@@ -47,6 +53,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="dashboard" element={<TeacherDashboard/>}/>
                         <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="ticket" element={<TeacherTicket/>}/>
+                        <Route path="classWork" element={<ConditionalRoute node={<ClassWork/>} condition={isSelectedClass}/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace />} />

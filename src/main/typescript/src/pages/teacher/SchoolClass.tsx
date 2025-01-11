@@ -40,7 +40,7 @@ export const SchoolClass: React.FC = () => {
 
     const chooseSchoolClass = (id: number) => {
         SelectedSchoolClass.SchoolClassId = id;
-        navigate(`/teacher/giornaleClasse`);
+        navigate(`/teacher/classWork`);
     };
 
     return (
@@ -51,11 +51,8 @@ export const SchoolClass: React.FC = () => {
             </Typography>
 
             <div className={'centerBox'} style={{marginTop:'4vh'}}>
-
-                {
-                    loading ? <CircularProgress/> : <GridList items={data} onClick={chooseSchoolClass}></GridList>
-                }
-
+                {loading ? <CircularProgress/> :
+                    <GridList items={data} onClick={chooseSchoolClass}></GridList>}
             </div>
         </div>
     );
