@@ -40,7 +40,7 @@ public class TicketController {
     @PostMapping("/{ticketId}/addMessage")
     void sendMessage(@PathVariable UUID ticketId, @RequestBody String textMessage) {
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        ticketService.addMessage(ticket, textMessage.substring(1, textMessage.length() - 1));
+        ticketService.addMessage(ticket, textMessage);
     }
 
     @PostMapping("/newTicket")

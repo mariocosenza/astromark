@@ -70,7 +70,7 @@ public class TicketServiceImpl implements TicketService {
         var message = new Message();
         message.setId(UUID.randomUUID());
         message.setTicket(ticket);
-        message.setText(text);
+        message.setText(text.substring(1, text.length() - 1));
         message.setDateTime(new Date().toInstant());
 
         if(authenticationService.isTeacher()){
@@ -92,7 +92,7 @@ public class TicketServiceImpl implements TicketService {
         var ticket = new Ticket();
         ticket.setDatetime(new Date().toInstant());
         ticket.setCategory("Category");
-        ticket.setTitle(title);
+        ticket.setTitle(title.substring(1, title.length() - 1));
 
         if(authenticationService.isTeacher()){
             ticket.setTeacher(authenticationService.getTeacher().orElseThrow());
