@@ -26,7 +26,7 @@ import java.util.Set;
 @Table(
         name = "student",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_student_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_student_username_code_tax_id", columnNames = {"school_code", "tax_id"})}
 )
 public class Student extends SchoolUser {
 
