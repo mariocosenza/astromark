@@ -6,7 +6,6 @@ import it.astromark.agenda.schoolclass.dto.TeachingTimeslotRequest;
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
 import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.user.commons.controller.SchoolUserController;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -67,7 +66,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         if(!schoolUserService.isLoggedParentStudentClass(classID)) {
             throw new AccessDeniedException("You are not allowed to access this class");
         } else if(authenticationService.isStudent()) {
-            if(!studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
+            if(studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
                 throw new AccessDeniedException("You are not allowed to access this class");
             }
         }

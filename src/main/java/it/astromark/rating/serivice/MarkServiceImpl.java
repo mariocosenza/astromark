@@ -115,12 +115,12 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public MarkResponse delete(Integer integer) {
-        return null;
+    public void delete(Integer integer) {
+
     }
 
     @Override
-    public MarkResponse getById(Integer integer) {
+    public Mark getById(Integer integer) {
         return null;
     }
 }
