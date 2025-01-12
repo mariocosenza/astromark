@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface TeachingTimeslotRepository extends JpaRepository<TeachingTimeslot, Integer> {
     List<TeachingTimeslot> findTeachingTimeslotByClassTimetableSchoolClass_IdAndDateBetween(Integer classTimetableId, @NotNull LocalDate dateAfter, @NotNull LocalDate dateBefore);
+
+    List<TeachingTimeslot> findByClassTimetableSchoolClass_IdAndDate(Integer classTimetable_id, @NotNull LocalDate date);
 }
