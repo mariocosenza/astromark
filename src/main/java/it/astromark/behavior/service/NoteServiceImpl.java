@@ -46,8 +46,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void delete(UUID uuid) {
-
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override

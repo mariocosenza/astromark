@@ -115,8 +115,8 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public void delete(Integer integer) {
-
+    public boolean delete(Integer integer) {
+            return false;
     }
 
     @Override

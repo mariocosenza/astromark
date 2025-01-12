@@ -31,8 +31,8 @@ public class SchoolServiceImpl implements SchoolService{
     }
 
     @Override
-    public void delete(String s) {
-
+    public boolean delete(String s) {
+        return false;
     }
 
     @Override

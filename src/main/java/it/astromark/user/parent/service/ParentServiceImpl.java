@@ -63,8 +63,8 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
-    public void delete(UUID uuid) {
-
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override

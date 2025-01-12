@@ -75,8 +75,8 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public void delete(UUID uuid) {
-
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override

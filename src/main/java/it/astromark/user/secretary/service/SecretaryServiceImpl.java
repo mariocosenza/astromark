@@ -59,8 +59,8 @@ public class SecretaryServiceImpl implements SecretaryService{
     }
 
     @Override
-    public void delete(UUID uuid) {
-
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override

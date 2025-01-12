@@ -58,8 +58,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public void delete(UUID uuid) {
-
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override
