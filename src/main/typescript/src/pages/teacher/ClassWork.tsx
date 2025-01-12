@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     CircularProgress,
     IconButton,
@@ -20,6 +20,11 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Grid from "@mui/material/Grid2";
 import {TeacherClassResponse} from "../../entities/TeacherClassResponse.ts";
+import {AxiosResponse} from "axios";
+import {SignHourResponse} from "../../entities/SignHourResponse.ts";
+import axiosConfig from "../../services/AxiosConfig.ts";
+import {Env} from "../../Env.ts";
+import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 
 interface RowData {
     firm: boolean;
@@ -31,15 +36,6 @@ interface RowData {
     homeworkBold: string;
     homework: string;
 }
-
-const rows: RowData[] = [
-    { firm: false, hour: 1, name: '', subject: '', activityBold: '', activity: '', homeworkBold: '', homework: '' },
-    { firm: true, hour: 2, name: 'Mario Rossi', subject: 'Matematica', activityBold: 'Spiegazione teoria: ', activity: 'Disequazioni', homeworkBold: 'Studio', homework: 'Studiare da pag 3 a pag 4' },
-    { firm: true, hour: 3, name: 'Luigi Bianchi', subject: 'Italiano', activityBold: 'Spiegazione teoria: ', activity: 'Dante ', homeworkBold: 'Studio', homework: 'Studiare da pag 3 a pag 4' },
-    { firm: true, hour: 4, name: 'Sara Verdi', subject: 'Informatica', activityBold: 'Esercitazione: ', activity: 'C++', homeworkBold: 'Esercizi', homework: 'Studiare da pag 3 a pag 4' },
-    { firm: false, hour: 5, name: '', subject: '', activityBold: '', activity: '', homeworkBold: '', homework: '' },
-    { firm: true, hour: 6, name: 'Mario Rossi', subject: 'Matematica', activityBold: 'Esercitazione: ', activity: 'Disequazioni', homeworkBold: 'Esercizi', homework: 'Studiare da pag 3 a pag 4' },
-];
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
@@ -59,8 +55,55 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 export const ClassWork: React.FC = () => {
-    const schoolClass: TeacherClassResponse = {id: 0, number: 3, letter: 'A', description: 'Tradizionale'}
-    const loading = false;
+    const [schoolClass, setSchoolClass] = useState<TeacherClassResponse>({id: 0, number: 0, letter: '', description: ''});
+    const [rows, setRows] = useState<RowData[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const date = new DateObject().setDate(new Date(2025, 0, 15));
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            setSchoolClass({id: 0, number: 3, letter: 'A', description: 'Tradizionale'});
+
+            let rowResponse : RowData[] = [];
+            const response: AxiosResponse<SignHourResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.SchoolClassId}/signedHours/${date.format("YYYY-MM-DD")}`);
+            if (response.data.length){
+                rowResponse = response.data.map((signHour: SignHourResponse) => ({
+                    firm: true,
+                    hour: signHour.hour,
+                    name: signHour.name + ' ' + signHour.surname,
+                    subject: signHour.subject,
+                    activityBold: signHour.activityTitle,
+                    activity: signHour.activityDescription,
+                    homeworkBold: signHour.homeworkTitle,
+                    homework: signHour.homeworkDescription,
+                }));
+            }
+
+            setRows(addEmptyHour(rowResponse))
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const addEmptyHour = (rows: RowData[]) => {
+        let newRows: RowData[] = [];
+        let i = 0;
+        for (let hour = 1; hour < 8; hour++) {
+            if (i < rows.length && rows[i].hour == hour) {
+                newRows.push(rows[i]);
+                i++;
+            } else {
+                newRows.push({ firm: false, hour: hour, name: '', subject: '', activityBold: '', activity: '', homeworkBold: '', homework: ''});
+            }
+        }
+
+        return newRows;
+    }
 
     const handleRowClick = (row: RowData) => {
         alert(`Hai cliccato su ${row.hour}`);
