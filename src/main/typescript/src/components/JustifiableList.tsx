@@ -4,6 +4,8 @@ import React from "react";
 import axiosConfig from "../services/AxiosConfig.ts";
 import { Env } from "../Env.ts";
 import { SelectedStudent } from "../services/StateService.ts";
+import {getRole} from "../services/AuthService.ts";
+import {Role} from "./route/ProtectedRoute.tsx";
 
 export type JustificationProp = {
     id: string;
@@ -85,7 +87,7 @@ export const JustifiableList: React.FC<JustificationListProp> = (props) => {
                         }
                         </Typography>
                     </div>
-                    {!item.justified && (
+                    {!item.justified && getRole().toUpperCase() == Role.PARENT && (
                         <>
                             <TextField
                                 sx={{ mt: "0.5rem" }}
