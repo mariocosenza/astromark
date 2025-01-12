@@ -24,14 +24,16 @@ export const SchoolClass: React.FC = () => {
     const fetchData = async () => {
         try {
             const response: AxiosResponse<TeacherClassResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/schoolClasses`);
-            const re = response.data;
-            const correctedData: Item[] = re.map((schoolClass: TeacherClassResponse) => ({
-                id: schoolClass.id,
-                title: schoolClass.number.toString() + schoolClass.letter,
-                description: schoolClass.description,
-            }));
+            if (response.data.length){
+                const correctedData: Item[] = response.data.map((schoolClass: TeacherClassResponse) => ({
+                    id: schoolClass.id,
+                    title: schoolClass.number.toString() + schoolClass.letter,
+                    description: schoolClass.description,
+                }));
 
-            setData(correctedData);
+                setData(correctedData);
+            }
+
             setLoading(false);
         } catch (error) {
             console.error(error);
