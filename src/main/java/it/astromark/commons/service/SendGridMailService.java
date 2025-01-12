@@ -6,12 +6,13 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import net.datafaker.Faker;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
+@Slf4j
 public class SendGridMailService {
     SendGrid sendGrid;
 
@@ -19,12 +20,12 @@ public class SendGridMailService {
         this.sendGrid = sendGrid;
     }
 
-    public String sendAccessMail(String email) {
+    public void sendAccessMail(String schoolCode, String username, String email, String password) {
         var from = new Email("noreply@astromark.it");
-        var subject = "Credenziali primo accesso AstroMark";
+        var subject = "Credenziali Accesso AstroMark";
         var to = new Email(email);
-        var password = new Faker().internet().password(8, 256, true, true, true);
-        Content content = new Content("text/plain", "La tua password temporanea è: " + password);
+        Content content = new Content("text/html", "<b> La tua password temporanea è: </b> <br> <br>" + password  +
+                "<br><br>Per favore, cambiala al primo accesso!" + "<br><br>" + "Il tuo username è: " + username + "<br>" + "Il tuo codice scuola è: " + schoolCode + "<p> <br><a href='https://astromark.it/login'>Clicca qui per accedere</a>" + "<br><br> " + "AstroMark Team </p>");
         Mail mail = new Mail(from, subject, to, content);
 
         Request request = new Request();
@@ -34,8 +35,7 @@ public class SendGridMailService {
             request.setBody(mail.build());
             sendGrid.api(request);
         } catch (IOException ex) {
-            return null;
+            log.warn("Errore nell'invio della mail", ex);
         }
-        return password;
     }
 }
