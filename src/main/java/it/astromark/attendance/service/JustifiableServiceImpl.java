@@ -40,7 +40,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student')") //temp student
+    @PreAuthorize("hasRole('parent')")
     public JustifiableResponse justify(@NotNull UUID studentId, @NotNull UUID justificationId, @NotEmpty @Size(max = 512) String justificationText, @NotNull Boolean absence) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
