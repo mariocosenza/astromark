@@ -43,7 +43,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-const CustomTableCell = styled(TableCell)(({ }) => ({
+const CustomTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: blue[900],
         color: 'white',
