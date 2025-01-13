@@ -2,7 +2,7 @@ package it.astromark.user.commons.service;
 
 import it.astromark.SpringTestConf;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.commons.validator.SpringValidationConf;
+import it.astromark.commons.configuration.SpringValidationConf;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.parent.repository.ParentRepository;
 import it.astromark.user.secretary.repository.SecretaryRepository;
@@ -15,12 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @ActiveProfiles(value = "test")

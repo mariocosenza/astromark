@@ -1,7 +1,7 @@
 package it.astromark.school;
 
 import it.astromark.SpringTestConf;
-import it.astromark.commons.validator.SpringValidationConf;
+import it.astromark.commons.configuration.SpringValidationConf;
 import it.astromark.school.entity.School;
 import it.astromark.school.repository.SchoolRepository;
 import lombok.extern.slf4j.Slf4j;
