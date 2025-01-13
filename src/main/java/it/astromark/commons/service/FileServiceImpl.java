@@ -1,4 +1,5 @@
 package it.astromark.commons.service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -8,11 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -29,52 +26,57 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
-        // Convert multipart file to a File object
-        File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-            fileOutputStream.write(multipartFile.getBytes());
-        }
+        // 1. Get a safe, sanitized file name (removing any path components)
+        String originalFilename = Objects.requireNonNull(multipartFile.getOriginalFilename(),
+                "File name cannot be null");
+        String safeFilename = FilenameUtils.getName(originalFilename);
 
-        // Generate a unique file name
-        String fileName = generateFileName(multipartFile);
+        // 2. Generate a unique file name (e.g., using timestamp)
+        String fileName = generateFileName(safeFilename);
 
-        // Upload the file
+        // 3. Prepare the PutObjectRequest
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
-                .contentType("plain/" + FilenameUtils.getExtension(multipartFile.getOriginalFilename()))
+                .contentType("plain/" + FilenameUtils.getExtension(safeFilename))
                 .metadata(Map.of("Title", "File Upload - " + fileName))
                 .build();
 
-        s3Client.putObject(putObjectRequest, RequestBody.fromFile(file));
+        // 4. Upload the file directly from multipart bytes
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
 
-        // Delete the temporary file
-        //noinspection ResultOfMethodCallIgnored
-        file.delete();
+        // 5. Retrieve the file URL (assuming the object/bucket is publicly accessible)
+        String fileUrl = s3Client.utilities()
+                .getUrl(GetUrlRequest.builder()
+                        .bucket(bucketName)
+                        .key(fileName)
+                        .build())
+                .toExternalForm();
 
-        return fileName;
+        log.info("File successfully uploaded: {}", fileUrl);
+        return fileUrl;
     }
 
     @Override
     public boolean delete(String fileName) {
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileName)
-                .build();
-
-        s3Client.deleteObject(deleteObjectRequest);
-
-        File file = Paths.get(fileName).toFile();
-        if (file.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            file.delete();
+        try {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .build();
+            s3Client.deleteObject(deleteObjectRequest);
+            log.info("File successfully deleted: {}", fileName);
             return true;
+        } catch (S3Exception e) {
+            log.error("Error deleting file {} from S3", fileName, e);
+            return false;
         }
-        return false;
     }
 
-
-    private String generateFileName(MultipartFile multiPart) {
-        return new Date().getTime() + "-" + Objects.requireNonNull(multiPart.getOriginalFilename()).replace(" ", "_");
+    /**
+     * Generates a timestamp-based file name.
+     */
+    private String generateFileName(String safeFilename) {
+        return new Date().getTime() + "-" + safeFilename.replace(" ", "_");
     }
 }
