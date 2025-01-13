@@ -23,7 +23,7 @@ import java.util.Set;
 @Table(
         name = "parent",
         schema = "astromark",
-        uniqueConstraints = {@UniqueConstraint(name = "uk_parent_username_code_tax_id", columnNames = {"username","school_code", "tax_id"})}
+        uniqueConstraints = {@UniqueConstraint(name = "uk_parent_username_code_tax_id", columnNames = {"school_code", "tax_id"})}
 )
 public class Parent extends SchoolUser {
 
@@ -38,7 +38,7 @@ public class Parent extends SchoolUser {
 
 
     @ManyToMany
-    @Builder.Default
+    @Singular
     @JoinTable(name = "student_parent",
             joinColumns = @JoinColumn(name = "parent_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))

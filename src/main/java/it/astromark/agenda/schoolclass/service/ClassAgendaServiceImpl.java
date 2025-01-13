@@ -77,7 +77,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         if(!schoolUserService.isLoggedParentStudentClass(classID)) {
             throw new AccessDeniedException("You are not allowed to access this class");
         } else if(authenticationService.isStudent()) {
-            if(!studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
+            if(studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
                 throw new AccessDeniedException("You are not allowed to access this class");
             }
         }

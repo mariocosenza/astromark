@@ -3,6 +3,7 @@ package it.astromark.communication.service;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.communication.dto.CommunicationRequest;
 import it.astromark.communication.dto.CommunicationResponse;
+import it.astromark.communication.entity.Communication;
 import it.astromark.communication.mapping.CommunicationMapper;
 import it.astromark.communication.repository.CommunicationRepository;
 import it.astromark.user.commons.service.SchoolUserService;
@@ -44,12 +45,12 @@ public class CommunicationServiceImpl implements CommunicationService  {
     }
 
     @Override
-    public CommunicationResponse delete(Integer integer) {
-        return null;
+    public boolean delete(Integer integer) {
+        return false;
     }
 
     @Override
-    public CommunicationResponse getById(Integer integer) {
+    public Communication getById(Integer integer) {
         return null;
     }
 
@@ -61,7 +62,7 @@ public class CommunicationServiceImpl implements CommunicationService  {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (!schoolUserService.isLoggedParentStudentClass(schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(authenticationService.isStudent() && !studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(),schoolClassId)) {
+        } else if(authenticationService.isStudent() && studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         return communicationMapper.toCommunicationResponseList(communicationRepository.findBySchoolClass_Id(schoolClassId));

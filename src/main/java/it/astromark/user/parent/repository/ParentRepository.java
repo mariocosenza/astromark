@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface ParentRepository extends JpaRepository<Parent, UUID> {
 
     Parent findByUsernameAndSchoolCode(String username , String schoolCode);
+    Integer countByNameAndSurname(String name, String surname);
 }

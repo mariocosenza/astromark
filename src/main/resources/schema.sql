@@ -88,7 +88,7 @@ CREATE TABLE parent
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_parent PRIMARY KEY (id),
-    CONSTRAINT uk_parent_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_parent_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_parent_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -108,7 +108,7 @@ CREATE TABLE secretary
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_secretary PRIMARY KEY (id),
-    CONSTRAINT uk_secretary_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_secretary_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_secretary_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -128,7 +128,7 @@ CREATE TABLE teacher
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_teacher PRIMARY KEY (id),
-    CONSTRAINT uk_teacher_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_teacher_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_teacher_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -174,7 +174,7 @@ CREATE TABLE student
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_student PRIMARY KEY (id),
-    CONSTRAINT uk_student_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_student_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_student_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 

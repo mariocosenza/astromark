@@ -12,6 +12,7 @@ import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+@Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -60,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public SchoolUser getUser(UUID id, String role) {
-        Supplier<RuntimeException> exceptionSupplier = () -> new DataAccessException("UUID not found in any repository: " + id) {
+        Supplier<DataAccessException> exceptionSupplier = () -> new DataAccessException("UUID not found in any repository: " + id) {
         };
 
         return switch (role) {

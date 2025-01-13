@@ -21,8 +21,8 @@ export const Timetable: React.FC = () => {
 
 
     const [values, setValues] = useState<DateObject[]>([
-        new DateObject().setYear(SelectedYear.year).add(0, "days"),
-        new DateObject().add(0, "days"),
+        new DateObject().subtract(6, "days"),
+        new DateObject().add(1, "days")
     ])
 
 
@@ -49,6 +49,8 @@ export const Timetable: React.FC = () => {
     };
 
     const change = (value: DateObject[]) => {
+        value[0] = value[0].add(1, 'days');
+        value[1] = value[1].add(1, 'days');
         setValues(value);
         fetchData();
     }
@@ -57,8 +59,10 @@ export const Timetable: React.FC = () => {
     return (
         <div>
             <DashboardNavbar />
-            <InputLabel sx={{ml: '1rem'}}>
-                     Seleziona settimana
+            <Stack direction={'row'} spacing={2} sx={{justifyContent: 'center', alignItems: 'center'}}>
+                <InputLabel sx={{ml: '1rem'}}>
+                    Seleziona settimana
+                </InputLabel>
                 <DatePicker
                     style={{ marginTop: '1rem', marginLeft: '1rem', marginBottom: '1rem' }}
                     range
@@ -66,8 +70,8 @@ export const Timetable: React.FC = () => {
                     value={values}
                     onChange={change}
                 />
-            </InputLabel>
 
+            </Stack>
             <Stack
                 spacing={0}
                 sx={{

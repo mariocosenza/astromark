@@ -113,8 +113,8 @@ body {
 
 
 footer {
-  background-color: var(--md-sys-color-primary-container);
-  color: var(--md-sys-color-on-background);
+  background-color: var(--md-sys-color-primary) !important;
+  color: var(--md-sys-color-inverse-on-surface);
 }
 
 a {
@@ -133,7 +133,7 @@ a.whiteLink {
     color: var(--md-sys-color-on-background);
 }
 .drawer a.active {
-  color: var(--md-sys-color-on-error-container);
+  color: #700f11;
 }
 
 .centerBox {
@@ -217,6 +217,9 @@ form div.centerInForm {
   width: 100%;
 }
 
+.justifiableList {
+  min-height: 5rem !important;
+}
 .title {
   text-align: center;
   margin-top: 4vh;
@@ -231,6 +234,9 @@ form div.centerInForm {
   width: 80%;
 }
 
+header  {
+  background-color: var(--md-sys-color-primary) !important;
+}
 @media (min-width: 600px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
