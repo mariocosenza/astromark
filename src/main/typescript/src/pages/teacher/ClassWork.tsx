@@ -56,7 +56,7 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 export const ClassWork: React.FC = () => {
     const [rows, setRows] = useState<RowData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const date = new DateObject().setDate(new Date(2025, 0, 15));
+    const [date, setDate] = useState<DateObject>(new DateObject().setDate(new Date(2025, 0, 15)))
 
     useEffect(() => {
         fetchData();
@@ -79,9 +79,8 @@ export const ClassWork: React.FC = () => {
                 }));
             }
 
-            setRows(addEmptyHour(rowResponse))
             setLoading(false);
-            setRows(rowResponse)
+            setRows(addEmptyHour(rowResponse))
         } catch (error) {
             console.error(error);
         }
@@ -125,9 +124,12 @@ export const ClassWork: React.FC = () => {
                             Data
                         </Typography>
                         <DatePicker
-                            buttons={true}
-                            value={new DateObject()}
-                            onChange={console.log}
+                            value={date}
+                            onChange={(newDate) => {
+                                if (newDate) {
+                                    setDate(newDate);
+                                    fetchData();
+                                }}}
                         />
                     </Stack>
                 </Grid>
@@ -137,12 +139,12 @@ export const ClassWork: React.FC = () => {
                 <Table>
                     <TableHead>
                         <CustomTableRow>
-                            <CustomTableCell>Firma</CustomTableCell>
-                            <CustomTableCell>Docente</CustomTableCell>
-                            <CustomTableCell>Materia</CustomTableCell>
-                            <CustomTableCell>Attività Svolta</CustomTableCell>
-                            <CustomTableCell>Compiti Assegnati</CustomTableCell>
-                            <CustomTableCell></CustomTableCell>
+                            <CustomTableCell width={'8%'}>Firma</CustomTableCell>
+                            <CustomTableCell width={'13%'}>Docente</CustomTableCell>
+                            <CustomTableCell width={'13%'}>Materia</CustomTableCell>
+                            <CustomTableCell width={'30%'}>Attività Svolta</CustomTableCell>
+                            <CustomTableCell width={'30%'}>Compiti Assegnati</CustomTableCell>
+                            <CustomTableCell width={'6%'}></CustomTableCell>
                         </CustomTableRow>
                     </TableHead>
 
