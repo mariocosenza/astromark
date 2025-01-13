@@ -29,8 +29,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
+        // Validate the filename
+        String originalFilename = Objects.requireNonNull(multipartFile.getOriginalFilename());
+        validateFilename(originalFilename);
+
         // Convert multipart file to a File object
-        File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        File file = new File(originalFilename);
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             fileOutputStream.write(multipartFile.getBytes());
         }
@@ -76,5 +80,11 @@ public class FileServiceImpl implements FileService {
 
     private String generateFileName(MultipartFile multiPart) {
         return new Date().getTime() + "-" + Objects.requireNonNull(multiPart.getOriginalFilename()).replace(" ", "_");
+    }
+
+    private void validateFilename(String filename) {
+        if (filename.contains("..") || filename.contains("/") || filename.contains("\\")) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
     }
 }
