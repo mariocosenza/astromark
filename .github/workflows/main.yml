@@ -50,6 +50,31 @@ jobs:
       - name: Update mail test
         run: sed -i 's/\${SPRING_MAIL_KEY}/${{ secrets.SPRING_MAIL_KEY }}/g' src/main/resources/application-test.yml
 
+      - name: Update aws access key
+        run: sed -i 's/\${AWS_ACCESS_KEY}/${{ secrets.AWS_ACCESS_KEY }}/g' src/main/resources/application.yml
+      - name: Update aws access key dev
+        run: sed -i 's/\${AWS_ACCESS_KEY}/${{ secrets.AWS_ACCESS_KEY }}/g' src/main/resources/application-dev.yml
+      - name: Update aws access key test
+        run: sed -i 's/\${AWS_ACCESS_KEY}/${{ secrets.AWS_ACCESS_KEY }}/g' src/main/resources/application-test.yml
+      - name: Update aws secret key
+        run: sed -i 's/\${AWS_SECRET_KEY}/${{ secrets.AWS_SECRET_KEY }}/g' src/main/resources/application.yml
+      - name: Update aws secret key dev
+        run: sed -i 's/\${AWS_SECRET_KEY}/${{ secrets.AWS_SECRET_KEY }}/g' src/main/resources/application-dev.yml
+      - name: Update aws secret key test
+        run: sed -i 's/\${AWS_SECRET_KEY}/${{ secrets.AWS_SECRET_KEY }}/g' src/main/resources/application-test.yml
+      - name: Update aws bucket name
+        run: sed -i 's/\${AWS_BUCKET_NAME}/${{ secrets.AWS_BUCKET_NAME }}/g' src/main/resources/application.yml
+      - name: Update aws bucket name dev
+        run: sed -i 's/\${AWS_BUCKET_NAME}/${{ secrets.AWS_BUCKET_NAME }}/g' src/main/resources/application-dev.yml
+      - name: Update aws bucket name test
+        run: sed -i 's/\${AWS_BUCKET_NAME}/${{ secrets.AWS_BUCKET_NAME }}/g' src/main/resources/application-test.yml
+      - name: Update aws endpoint
+        run: sed -i 's/\${AWS_ENDPOINT}/${{ secrets.AWS_ENDPOINT }}/g' src/main/resources/application.yml
+      - name: Update aws endpoint dev
+        run: sed -i 's/\${AWS_ENDPOINT}/${{ secrets.AWS_ENDPOINT }}/g' src/main/resources/application-dev.yml
+      - name: Update aws endpoint test
+        run: sed -i 's/\${AWS_ENDPOINT}/${{ secrets.AWS_ENDPOINT }}/g' src/main/resources/application-test.yml
+
       - name: Build and start containers
         run: |
           # Ensure correct permissions for mvnw
