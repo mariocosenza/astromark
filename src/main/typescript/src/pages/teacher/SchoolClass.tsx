@@ -28,7 +28,7 @@ export const SchoolClass: React.FC = () => {
                 const correctedData: Item[] = response.data.map((schoolClass: TeacherClassResponse) => ({
                     id: schoolClass.id,
                     title: schoolClass.number.toString() + schoolClass.letter,
-                    description: schoolClass.description,
+                    desc: schoolClass.description,
                 }));
 
                 setData(correctedData);
@@ -40,8 +40,10 @@ export const SchoolClass: React.FC = () => {
         }
     }
 
-    const chooseSchoolClass = (id: number) => {
-        SelectedSchoolClass.SchoolClassId = id;
+    const chooseSchoolClass = (id: number, title: string, desc: string) => {
+        SelectedSchoolClass.id = id;
+        SelectedSchoolClass.title = title;
+        SelectedSchoolClass.desc = desc;
         navigate(`/teacher/classWork`);
     };
 

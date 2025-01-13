@@ -19,7 +19,6 @@ import DatePicker, {DateObject} from "react-multi-date-picker";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Grid from "@mui/material/Grid2";
-import {TeacherClassResponse} from "../../entities/TeacherClassResponse.ts";
 import {AxiosResponse} from "axios";
 import {SignHourResponse} from "../../entities/SignHourResponse.ts";
 import axiosConfig from "../../services/AxiosConfig.ts";
@@ -55,7 +54,6 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 export const ClassWork: React.FC = () => {
-    const [schoolClass, setSchoolClass] = useState<TeacherClassResponse>({id: 0, number: 0, letter: '', description: ''});
     const [rows, setRows] = useState<RowData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const date = new DateObject().setDate(new Date(2025, 0, 15));
@@ -66,10 +64,8 @@ export const ClassWork: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            setSchoolClass({id: 0, number: 3, letter: 'A', description: 'Tradizionale'});
-
             let rowResponse : RowData[] = [];
-            const response: AxiosResponse<SignHourResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.SchoolClassId}/signedHours/${date.format("YYYY-MM-DD")}`);
+            const response: AxiosResponse<SignHourResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${date.format("YYYY-MM-DD")}`);
             if (response.data.length){
                 rowResponse = response.data.map((signHour: SignHourResponse) => ({
                     firm: true,
@@ -85,6 +81,7 @@ export const ClassWork: React.FC = () => {
 
             setRows(addEmptyHour(rowResponse))
             setLoading(false);
+            setRows(rowResponse)
         } catch (error) {
             console.error(error);
         }
@@ -118,11 +115,9 @@ export const ClassWork: React.FC = () => {
 
             <Grid container alignItems={'center'} justifyContent={'center'} margin={'1rem'}>
                 <Grid size={2}>
-                    {loading ? null : (
-                        <Typography variant="h6" className="title" fontWeight="bold">
-                            {schoolClass.number + schoolClass.letter + ' - ' + schoolClass.description}
-                        </Typography>
-                    )}
+                    <Typography variant="h6" className="title" fontWeight="bold">
+                        {SelectedSchoolClass.title + ' - ' + SelectedSchoolClass.desc}
+                    </Typography>
                 </Grid>
                 <Grid>
                     <Stack direction={'column'} justifyContent={'center'}>
@@ -138,7 +133,7 @@ export const ClassWork: React.FC = () => {
                 </Grid>
             </Grid>
 
-            <TableContainer sx={{ width: '90%', margin: '0 5%', paddingBottom: '1rem'}}>
+            <TableContainer sx={{ width: '90%', margin: '0 5%'}}>
                 <Table>
                     <TableHead>
                         <CustomTableRow>
@@ -196,10 +191,9 @@ export const ClassWork: React.FC = () => {
                 </Table>
             </TableContainer>
 
-            { loading ? (
-                <Grid container justifyContent={'center'}>
-                    <CircularProgress size={150}/>
-                </Grid>) : null }
+            <Grid container justifyContent={'center'} margin={'5%'}>
+                { loading ? <CircularProgress size={150}/>  : null}
+            </Grid>
         </div>
     );
 };
