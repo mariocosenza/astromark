@@ -20,13 +20,14 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Grid from "@mui/material/Grid2";
 import {AxiosResponse} from "axios";
-import {SignHourResponse} from "../../entities/SignHourResponse.ts";
+import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 
 interface RowData {
-    firm: boolean;
+    id: number
+    signed: boolean;
     hour: number;
     name: string;
     subject: string;
@@ -65,43 +66,33 @@ export const ClassWork: React.FC = () => {
     const fetchData = async () => {
         try {
             let rowResponse : RowData[] = [];
-            const response: AxiosResponse<SignHourResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${date.format("YYYY-MM-DD")}`);
+            const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${date.format("YYYY-MM-DD")}`);
             if (response.data.length){
-                rowResponse = response.data.map((signHour: SignHourResponse) => ({
-                    firm: true,
-                    hour: signHour.hour,
-                    name: signHour.name + ' ' + signHour.surname,
-                    subject: signHour.subject,
-                    activityBold: signHour.activityTitle,
-                    activity: signHour.activityDescription,
-                    homeworkBold: signHour.homeworkTitle,
-                    homework: signHour.homeworkDescription,
+                rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
+                    id: teachingSlot.id,
+                    signed: teachingSlot.signed,
+                    hour: teachingSlot.hour,
+                    name: teachingSlot.name + ' ' + teachingSlot.surname,
+                    subject: teachingSlot.subject,
+                    activityBold: teachingSlot.activityTitle,
+                    activity: teachingSlot.activityDescription,
+                    homeworkBold: teachingSlot.homeworkTitle,
+                    homework: teachingSlot.homeworkDescription,
                 }));
             }
 
             setLoading(false);
-            setRows(addEmptyHour(rowResponse))
+            setRows(rowResponse)
         } catch (error) {
             console.error(error);
         }
     }
 
-    const addEmptyHour = (rows: RowData[]) => {
-        let newRows: RowData[] = [];
-        let i = 0;
-        for (let hour = 1; hour < 8; hour++) {
-            if (i < rows.length && rows[i].hour == hour) {
-                newRows.push(rows[i]);
-                i++;
-            } else {
-                newRows.push({ firm: false, hour: hour, name: '', subject: '', activityBold: '', activity: '', homeworkBold: '', homework: ''});
-            }
-        }
+    const handleEditClick = (row: RowData) => {
+        alert(`Hai cliccato su ${row.hour}`);
+    };
 
-        return newRows;
-    }
-
-    const handleRowClick = (row: RowData) => {
+    const handleSignClick = (row: RowData) => {
         alert(`Hai cliccato su ${row.hour}`);
     };
 
@@ -153,11 +144,11 @@ export const ClassWork: React.FC = () => {
                             <CustomTableRow key={row.hour}>
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
-                                            {row.firm ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}/> :
-                                                <IconButton>
-                                                    <AddCircleOutlineIcon fontSize={'large'} onClick={() => handleRowClick(row)}/>
-                                                </IconButton>
-                                            }
+                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}/> :
+                                            <IconButton>
+                                                <AddCircleOutlineIcon fontSize={'large'} onClick={() => handleSignClick(row)}/>
+                                            </IconButton>
+                                        }
 
                                         <Typography variant="caption" color={'textSecondary'}>
                                             {(row.hour + 7) + ':00 - ' + (row.hour + 8) + ':00'}
@@ -183,7 +174,7 @@ export const ClassWork: React.FC = () => {
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
-                                    <IconButton onClick={() => handleRowClick(row)}>
+                                    <IconButton onClick={() => handleEditClick(row)}>
                                         <EditOutlinedIcon fontSize={'large'}/>
                                     </IconButton>
                                 </CustomTableCell>
