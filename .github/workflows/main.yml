@@ -68,8 +68,8 @@ jobs:
         run: sed -i 's/\${AWS_BUCKET_NAME}/${{ secrets.AWS_BUCKET_NAME }}/g' src/main/resources/application-dev.yml
       - name: Update aws bucket name test
         run: sed -i 's/\${AWS_BUCKET_NAME}/${{ secrets.AWS_BUCKET_NAME }}/g' src/main/resources/application-test.yml
-      - name: Update aws endpoint
-        run: sed -i 's/\${AWS_ENDPOINT}/${{ secrets.AWS_ENDPOINT }}/g' src/main/resources/application.yml
+      - name: Replace AWS endpoint
+        run: sed -i 's/\${AWS_ENDPOINT}/***\/g' src/main/resources/application.yml
       - name: Update aws endpoint dev
         run: sed -i 's/\${AWS_ENDPOINT}/${{ secrets.AWS_ENDPOINT }}/g' src/main/resources/application-dev.yml
       - name: Update aws endpoint test
