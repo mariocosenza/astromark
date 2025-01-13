@@ -26,6 +26,10 @@ server:
     include-message: never
     include-stacktrace: never
     include-exception: false
-
-
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  bucket:
+    name: ${AWS_BUCKET_NAME}
+  endpoint: ${AWS_ENDPOINT}
 

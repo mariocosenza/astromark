@@ -1,4 +1,4 @@
-package it.astromark.commons.validator;
+package it.astromark.commons.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
