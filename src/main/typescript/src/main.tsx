@@ -22,6 +22,7 @@ import {Timetable} from "./pages/students/Timetable.tsx";
 import {SemesterReport} from "./pages/students/Report.tsx";
 import {isSelectedClass} from "./services/TeacherService.ts";
 import {ClassAgenda} from "./pages/teacher/ClassAgenda.tsx";
+import {SignHour} from "./pages/teacher/SignHour.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -54,6 +55,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="ticket" element={<TeacherTicket/>}/>
                         <Route path="agenda" element={<ConditionalRoute node={<ClassAgenda/>} condition={isSelectedClass}/>}/>
+                        <Route path="ora" element={<ConditionalRoute node={<SignHour/>} condition={isSelectedClass}/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace />} />

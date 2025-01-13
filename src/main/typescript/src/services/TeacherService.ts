@@ -1,3 +1,4 @@
+import {ClassAgendaRow} from "../pages/teacher/ClassAgenda.tsx";
 
 export class SelectedSchoolClass {
     static get id(): number | null {
@@ -32,3 +33,56 @@ export class SelectedSchoolClass {
 export const isSelectedClass = () => {
     return SelectedSchoolClass.id !== null;
 };
+
+export class SelectedTeachingTimeslot {
+
+    static setSlot(slot: ClassAgendaRow) {
+        this._id = slot.id
+        this._signed = slot.signed;
+        this._hour = slot.hour;
+        this._name = slot.name;
+        this._subject = slot.subject;
+        this._activityTitle = slot.activityTitle;
+        this._activityDesc = slot.activityDesc;
+        this._homeworkTitle = slot.homeworkTitle;
+        this._homeworkDesc = slot.homeworkDesc;
+    }
+
+    static get id(): number | null {
+        return this._id;
+    }
+    static get signed(): boolean | null {
+        return this._signed;
+    }
+    static get hour(): number | null {
+        return this._hour;
+    }
+    static get name(): string {
+        return this._name;
+    }
+    static get subject(): string {
+        return this._subject;
+    }
+    static get activityTitle(): string {
+        return this._activityTitle;
+    }
+    static get activityDesc(): string {
+        return this._activityDesc;
+    }
+    static get homeworkTitle(): string {
+        return this._homeworkTitle;
+    }
+    static get homeworkDesc(): string {
+        return this._homeworkDesc;
+    }
+
+    private static _id: number | null = null;
+    private static _signed: boolean | null = null;
+    private static _hour: number | null = null;
+    private static _name: string = '';
+    private static _subject: string = '';
+    private static _activityTitle: string = '';
+    private static _activityDesc: string = '';
+    private static _homeworkTitle: string = '';
+    private static _homeworkDesc: string = '';
+}

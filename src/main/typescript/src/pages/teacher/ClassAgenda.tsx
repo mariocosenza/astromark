@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {
-    CircularProgress,
-    IconButton,
-    Stack,
-    styled, tableCellClasses,
-    TableContainer,
-    Typography,
-} from "@mui/material";
+import {CircularProgress, IconButton, Stack, styled, tableCellClasses, TableContainer, Typography,} from "@mui/material";
 import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -23,7 +16,8 @@ import {AxiosResponse} from "axios";
 import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedSchoolClass} from "../../services/TeacherService.ts";
+import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
+import {useNavigate} from "react-router";
 
 export interface ClassAgendaRow {
     id: number
@@ -58,15 +52,16 @@ export const ClassAgenda: React.FC = () => {
     const [rows, setRows] = useState<ClassAgendaRow[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject().setDate(new Date(2025, 0, 15)))
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchData();
+        fetchData(date.format("YYYY-MM-DD"));
     }, []);
 
-    const fetchData = async () => {
+    const fetchData = async (selectedDate: string) => {
         try {
             let rowResponse : ClassAgendaRow[] = [];
-            const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${date.format("YYYY-MM-DD")}`);
+            const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${selectedDate}`);
             if (response.data.length){
                 rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
                     id: teachingSlot.id,
@@ -88,8 +83,17 @@ export const ClassAgenda: React.FC = () => {
         }
     }
 
-    const choseTeachingTimeslot = (row: ClassAgendaRow) => {
-        alert(`Hai cliccato su ${row.hour}`);
+    const choseTeachingTimeslot = (slot: ClassAgendaRow) => {
+        SelectedTeachingTimeslot.setSlot(slot);
+        navigate(`/teacher/ora`);
+    };
+
+    const handleDateChange = (newDate: DateObject | null) => {
+        if (newDate) {
+            setLoading(true);
+            setDate(newDate);
+            fetchData(newDate.format("YYYY-MM-DD"));
+        }
     };
 
     return (
@@ -112,11 +116,7 @@ export const ClassAgenda: React.FC = () => {
                         </Typography>
                         <DatePicker
                             value={date}
-                            onChange={(newDate) => {
-                                if (newDate) {
-                                    setDate(newDate);
-                                    fetchData();
-                                }}}
+                            onChange={handleDateChange}
                         />
                     </Stack>
                 </Grid>
