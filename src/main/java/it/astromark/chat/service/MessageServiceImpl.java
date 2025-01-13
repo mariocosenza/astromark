@@ -4,7 +4,6 @@ import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.entity.Message;
 import it.astromark.user.commons.model.SchoolUser;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -38,12 +37,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageResponse delete(UUID uuid) {
-        return null;
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override
-    public MessageResponse getById(UUID uuid) {
+    public Message getById(UUID uuid) {
         return null;
     }
 }

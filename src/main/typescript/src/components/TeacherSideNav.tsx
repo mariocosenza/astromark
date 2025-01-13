@@ -4,6 +4,7 @@ import HouseIcon from '@mui/icons-material/House';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import {useState} from "react";
 import {NavLink} from "react-router";
 import {isSelectedClass} from "../services/TeacherService.ts";
@@ -52,13 +53,13 @@ export const TeacherSideNav = () => {
                 </NavLink>
 
                 {isSelectedClass() && (
-                    <NavLink to="/teacher/classWork" end>
-                        <ListItem key="classWork" disablePadding>
+                    <NavLink to="/teacher/agenda" end>
+                        <ListItem key="agenda" disablePadding>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <ArticleIcon />
+                                    <HistoryEduIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary={"ClassWork"} />
+                                <ListItemText primary={"Agenda di Classe"} />
                             </ListItemButton>
                         </ListItem>
                     </NavLink>

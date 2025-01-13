@@ -114,12 +114,12 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public TicketResponse delete(UUID uuid) {
-        return null;
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override
-    public TicketResponse getById(UUID uuid) {
+    public Ticket getById(UUID uuid) {
         return null;
     }
 }

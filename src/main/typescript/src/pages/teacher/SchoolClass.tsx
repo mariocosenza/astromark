@@ -44,7 +44,7 @@ export const SchoolClass: React.FC = () => {
         SelectedSchoolClass.id = id;
         SelectedSchoolClass.title = title;
         SelectedSchoolClass.desc = desc;
-        navigate(`/teacher/classWork`);
+        navigate(`/teacher/agenda`);
     };
 
     return (

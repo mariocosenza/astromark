@@ -25,16 +25,16 @@ import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 
-interface RowData {
+export interface ClassAgendaRow {
     id: number
     signed: boolean;
     hour: number;
     name: string;
     subject: string;
-    activityBold: string
-    activity: string;
-    homeworkBold: string;
-    homework: string;
+    activityTitle: string
+    activityDesc: string;
+    homeworkTitle: string;
+    homeworkDesc: string;
 }
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -54,8 +54,8 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
     fontSize: '1.1rem',
 }));
 
-export const ClassWork: React.FC = () => {
-    const [rows, setRows] = useState<RowData[]>([]);
+export const ClassAgenda: React.FC = () => {
+    const [rows, setRows] = useState<ClassAgendaRow[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject().setDate(new Date(2025, 0, 15)))
 
@@ -65,7 +65,7 @@ export const ClassWork: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            let rowResponse : RowData[] = [];
+            let rowResponse : ClassAgendaRow[] = [];
             const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${date.format("YYYY-MM-DD")}`);
             if (response.data.length){
                 rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
@@ -74,10 +74,10 @@ export const ClassWork: React.FC = () => {
                     hour: teachingSlot.hour,
                     name: teachingSlot.name + ' ' + teachingSlot.surname,
                     subject: teachingSlot.subject,
-                    activityBold: teachingSlot.activityTitle,
-                    activity: teachingSlot.activityDescription,
-                    homeworkBold: teachingSlot.homeworkTitle,
-                    homework: teachingSlot.homeworkDescription,
+                    activityTitle: teachingSlot.activityTitle,
+                    activityDesc: teachingSlot.activityDescription,
+                    homeworkTitle: teachingSlot.homeworkTitle,
+                    homeworkDesc: teachingSlot.homeworkDescription,
                 }));
             }
 
@@ -88,11 +88,7 @@ export const ClassWork: React.FC = () => {
         }
     }
 
-    const handleEditClick = (row: RowData) => {
-        alert(`Hai cliccato su ${row.hour}`);
-    };
-
-    const handleSignClick = (row: RowData) => {
+    const choseTeachingTimeslot = (row: ClassAgendaRow) => {
         alert(`Hai cliccato su ${row.hour}`);
     };
 
@@ -100,7 +96,7 @@ export const ClassWork: React.FC = () => {
         <div>
             <TeacherDashboardNavbar/>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
-                Giornale di Classe
+                Agenda di Classe
             </Typography>
 
             <Grid container alignItems={'center'} justifyContent={'center'} margin={'1rem'}>
@@ -146,7 +142,7 @@ export const ClassWork: React.FC = () => {
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
                                         {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}/> :
                                             <IconButton>
-                                                <AddCircleOutlineIcon fontSize={'large'} onClick={() => handleSignClick(row)}/>
+                                                <AddCircleOutlineIcon fontSize={'large'} onClick={() => choseTeachingTimeslot(row)}/>
                                             </IconButton>
                                         }
 
@@ -161,20 +157,20 @@ export const ClassWork: React.FC = () => {
 
                                 <CustomTableCell>
                                     <Typography fontWeight={'bold'} fontSize={'large'}>
-                                        {row.activityBold + (row.activityBold === '' ? '' : ':')}
+                                        {row.activityTitle + (row.activityTitle === '' ? '' : ':')}
                                     </Typography>
-                                    {row.activity}
+                                    {row.activityDesc}
                                 </CustomTableCell>
 
                                 <CustomTableCell>
                                     <Typography fontWeight={'bold'} fontSize={'large'}>
-                                        {row.homeworkBold + (row.homeworkBold === '' ? '' : ':')}
+                                        {row.homeworkTitle + (row.homeworkTitle === '' ? '' : ':')}
                                     </Typography>
-                                    {row.homework}
+                                    {row.homeworkDesc}
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
-                                    <IconButton onClick={() => handleEditClick(row)}>
+                                    <IconButton onClick={() => choseTeachingTimeslot(row)}>
                                         <EditOutlinedIcon fontSize={'large'}/>
                                     </IconButton>
                                 </CustomTableCell>
