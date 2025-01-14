@@ -11,6 +11,7 @@ import it.astromark.chat.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @PreAuthorize("hasRole('teacher') || hasRole('parent') || hasRole('secretary')")
-    public void addMessage(Ticket ticket, String text) {
+    public UUID sendMessage(UUID ticketId, String text) {
+        var ticket = ticketRepository.findById(ticketId).orElseThrow();
         var message = new Message();
         message.setId(UUID.randomUUID());
         message.setTicket(ticket);
@@ -79,15 +81,17 @@ public class TicketServiceImpl implements TicketService {
             message.setParent(authenticationService.getParent().orElseThrow());
         } else if(authenticationService.isSecretary()){
             message.setSecretary(authenticationService.getSecretary().orElseThrow());
-        } else return;
+        } else {
+            throw new AccessDeniedException("Cannot send ticket");
+        }
 
-        messageRepository.save(message);
+        return messageRepository.save(message).getId();
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('teacher') || hasRole('parent')")
-    public void newTicket(String title) {
+    public void createTicket(String title) {
 
         var ticket = new Ticket();
         ticket.setDatetime(new Date().toInstant());
