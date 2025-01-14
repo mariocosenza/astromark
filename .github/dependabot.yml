@@ -6,10 +6,10 @@ updates:
     directory: "src/main/typescript"
     # Check the npm registry for updates every day (weekdays)
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "maven"
     directory: "/"
     # Check the maven registry for updates every day (weekdays)
     schedule:
-      interval: "daily"
+      interval: "weekly"
