@@ -18,6 +18,8 @@ import {Env} from "../../Env.ts";
 import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {ListGeneric} from "../../components/ListGeneric.tsx";
 import MenuItem from "@mui/material/MenuItem";
+import {ChatHomeworkComponent} from "../../components/ChatHomework.tsx";
+
 
 export interface ClassActvitityResponse {
     id: number;
@@ -33,12 +35,12 @@ export interface TeachingTimeslotResponse {
 }
 
 
-const Homework : React.FC = () => {
-    return (
-        <div>
-            <h1>Homework</h1>
-        </div>
-    )
+export const Homework: React.FC = () => {
+   return (
+         <div>
+              <ChatHomeworkComponent chatId={'b3886ede-bf4b-4bdd-b224-bf69fcad4ffa'}/>
+         </div>
+   );
 }
 
 const Activity : React.FC = () => {
