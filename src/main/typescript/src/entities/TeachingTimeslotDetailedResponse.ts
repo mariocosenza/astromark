@@ -1,3 +1,5 @@
+import {DateObject} from "react-multi-date-picker";
+
 export type TeachingTimeslotDetailedResponse = {
     id: number;
     hour: number;
@@ -9,5 +11,6 @@ export type TeachingTimeslotDetailedResponse = {
     activityDescription: string;
     homeworkTitle: string;
     homeworkDescription: string;
+    homeworkDueDate: DateObject;
 }
 

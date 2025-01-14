@@ -5,18 +5,18 @@ import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.ts
 import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 
 export const SignHour: React.FC = () => {
-    const [date, setDate] = useState<DateObject>(new DateObject().setDate(new Date(2025, 0, 15)))
-    const [activityTitle, setActivityTitle] = React.useState<string>(SelectedTeachingTimeslot.activityTitle);
-    const [activityDesc, setActivityDesc] = React.useState<string>(SelectedTeachingTimeslot.activityDesc);
-    const [homeworkTitle, setHomeworkTitle] = React.useState<string>(SelectedTeachingTimeslot.homeworkTitle);
-    const [homeworkDesc, setHomeworkDesc] = React.useState<string>(SelectedTeachingTimeslot.homeworkDesc);
+    const [activityTitle, setActivityTitle] = useState<string>(SelectedTeachingTimeslot.activityTitle);
+    const [activityDesc, setActivityDesc] = useState<string>(SelectedTeachingTimeslot.activityDesc);
+    const [homeworkTitle, setHomeworkTitle] = useState<string>(SelectedTeachingTimeslot.homeworkTitle);
+    const [homeworkDesc, setHomeworkDesc] = useState<string>(SelectedTeachingTimeslot.homeworkDesc);
+    const [homeWorkDate, setHomeWorkDate] = useState<DateObject>(SelectedTeachingTimeslot.homeworkDate ? SelectedTeachingTimeslot.homeworkDate : new DateObject().add(7, 'days'));
 
     const handleSave = () => {
         console.log(activityTitle);
         console.log(activityDesc);
         console.log(homeworkTitle);
         console.log(homeworkDesc);
-        console.log(date.format("YYYY-MM-DD"));
+        console.log(homeWorkDate.format("YYYY-MM-DD"));
     };
 
     return (
@@ -71,9 +71,9 @@ export const SignHour: React.FC = () => {
                                     Consegna
                                 </Typography>
                                 <DatePicker
-                                    value={date}
+                                    value={homeWorkDate}
                                     onChange={(newDate: DateObject) => {
-                                        newDate ? setDate(newDate) : null
+                                        newDate ? setHomeWorkDate(newDate) : null
                                     }}
                                 />
                             </Stack>

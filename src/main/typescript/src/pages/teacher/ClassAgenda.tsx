@@ -29,6 +29,7 @@ export interface ClassAgendaRow {
     activityDesc: string;
     homeworkTitle: string;
     homeworkDesc: string;
+    homeworkDate: DateObject;
 }
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -73,6 +74,7 @@ export const ClassAgenda: React.FC = () => {
                     activityDesc: teachingSlot.activityDescription,
                     homeworkTitle: teachingSlot.homeworkTitle,
                     homeworkDesc: teachingSlot.homeworkDescription,
+                    homeworkDate: teachingSlot.homeworkDueDate,
                 }));
             }
 
@@ -167,6 +169,9 @@ export const ClassAgenda: React.FC = () => {
                                         {row.homeworkTitle + (row.homeworkTitle === '' ? '' : ':')}
                                     </Typography>
                                     {row.homeworkDesc}
+                                    <Typography fontSize={'small'} color={'textSecondary'}>
+                                        {row.homeworkDate ? 'Per il ' + row.homeworkDate.toString() : ''}
+                                    </Typography>
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
