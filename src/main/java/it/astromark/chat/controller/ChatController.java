@@ -1,32 +1,33 @@
 package it.astromark.chat.controller;
 
+import it.astromark.chat.service.MessageService;
 import it.astromark.commons.dto.APIResponse;
-import it.astromark.commons.service.FileService;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @RestController
+@RequestMapping("api/chats")
 public class ChatController {
 
-    private final FileService fileService;
+    private final MessageService messageService;
 
-    public ChatController(FileService fileService) {
-        this.fileService = fileService;
+    public ChatController(MessageService messageService) {
+        this.messageService = messageService;
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<APIResponse> uploadFile(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+    @PostMapping("/upload/{messageId}")
+    public ResponseEntity<APIResponse> uploadFile(@RequestParam("file") MultipartFile multipartFile, @PathVariable @NotNull UUID messageId) throws IOException {
         if (multipartFile.isEmpty()) {
             throw new FileUploadException("File is empty. Cannot save an empty file");
         }
@@ -35,7 +36,7 @@ public class ChatController {
         List<String> allowedFileExtensions = List.of("pdf", "txt", "epub", "csv", "png", "jpg", "jpeg", "srt");
 
         if (isValidFile && allowedFileExtensions.contains(FilenameUtils.getExtension(multipartFile.getOriginalFilename()))) {
-            String fileName = fileService.uploadFile(multipartFile);
+            String fileName =  messageService.addAttachment(messageId, multipartFile);
 
             APIResponse apiResponse = new APIResponse(
                     "File uploaded successfully. File unique name => " + fileName,

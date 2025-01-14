@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ClassworkService {
     List<ClassworkResponse> getClassActivities(Integer classId);
+    List<ClassworkResponse> getHomework(Integer classId);
 }
