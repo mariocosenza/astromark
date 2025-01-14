@@ -138,7 +138,7 @@ const Activity : React.FC = () => {
     );
 }
 
-export const ClassActvitity: React.FC = () => {
+export const ClassActivity: React.FC = () => {
     const [value, setValue] = React.useState(0);
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {

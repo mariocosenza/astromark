@@ -10,7 +10,7 @@ import React, {StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
 import {Dashboard} from "./pages/students/Dashboard.tsx";
 import {Mark} from "./pages/students/Mark.tsx";
-import {ClassActvitity} from "./pages/students/ClassActvitity.tsx";
+import {ClassActivity} from "./pages/students/ClassActivity.tsx";
 import {Settings} from "./pages/Settings.tsx";
 import {AbsenceDelays} from "./pages/students/AbsenceDelay.tsx";
 import {Allert} from "./pages/students/Communication.tsx";
@@ -41,7 +41,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="dashboard" element={<Dashboard/>}/>
                         <Route path="voti" element={<Mark/>}/>
                         <Route path="assenze" element={<AbsenceDelays/>}/>
-                        <Route path="assegno" element={<ClassActvitity/>}/>
+                        <Route path="assegno" element={<ClassActivity/>}/>
                         <Route path="note" element={<Note/>}/>
                         <Route path="pagella" element={<SemesterReport/>}/>
                         <Route path="orario" element={<Timetable/>}/>
