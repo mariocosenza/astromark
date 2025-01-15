@@ -2,8 +2,10 @@ package it.astromark.user.teacher.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.classmanagement.dto.TeacherClassResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.entity.TeacherClass;
+import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.commons.service.SendGridMailService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
@@ -12,6 +14,7 @@ import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.teacher.dto.TeacherRequest;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
+import org.springframework.transaction.annotation.Transactional;
 import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,13 +33,15 @@ public class TeacherServiceImpl implements TeacherService {
     private final AuthenticationService authenticationService;
     private final TeacherRepository teacherRepository;
     private final SendGridMailService sendGridMailService;
+    private final ClassManagementMapper classManagementMapper;
 
-    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository,SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService) {
+    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper) {
         this.teacherClassRepository = teacherClassRepository;
         this.schoolUserMapper = schoolUserMapper;
         this.authenticationService = authenticationService;
         this.teacherRepository = teacherRepository;
         this.sendGridMailService = sendGridMailService;
+        this.classManagementMapper = classManagementMapper;
     }
 
     @Override
@@ -63,12 +68,14 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @PreAuthorize("hasRole('teacher')")
-    public List<SchoolClass> getSchoolClasses(){
+    @Transactional
+    public List<TeacherClassResponse> getSchoolClasses(){
         var teacher = authenticationService.getTeacher().orElseThrow();
-        return teacherClassRepository.findByTeacher(teacher).stream()
+        return classManagementMapper.toTeacherClassResponseList(
+                teacherClassRepository.findByTeacher(teacher).stream()
                 .map(TeacherClass::getSchoolClass)
                 .sorted(Comparator.comparingInt(SchoolClass::getYear))
-                .toList();
+                .toList());
     }
 
     @Override
