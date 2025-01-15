@@ -19,6 +19,7 @@ import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {ListGeneric} from "../../components/ListGeneric.tsx";
 import MenuItem from "@mui/material/MenuItem";
 import {ChatHomeworkComponent} from "../../components/ChatHomework.tsx";
+import {HomeworkList} from "../../components/HomeworkList.tsx";
 
 
 export interface ClassActvitityResponse {
@@ -28,18 +29,118 @@ export interface ClassActvitityResponse {
     signedHour: TeachingTimeslotResponse;
 }
 
+export interface HomeworkResponse {
+    id: number;
+    title: string;
+    description: string;
+    dueDate: Date;
+    signedHour: TeachingTimeslotResponse;
+}
+
 export interface TeachingTimeslotResponse {
     title: string;
     hour: number;
-    date: string;
+    date: Date;
 }
 
 
 export const Homework: React.FC = () => {
-   return (
-         <div>
+    const [loading, setLoading] = React.useState<boolean>(true);
+    const [activity, setActivity] = React.useState<ClassActvitityResponse[]>([]);
+    const [checked, setChecked] = React.useState<boolean>(false);
+    const [subject, setSubject] = React.useState<string>('Seleziona Materia');
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setSubject(event.target.value as string);
+    };
+
+    useEffect(() => {
+        fetchData()
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            const schoolClass: AxiosResponse<SchoolClass[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
+            const response: AxiosResponse<HomeworkResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/homeworks/all`);
+            setActivity(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    return (
+        <Stack flex={'auto'} minWidth={'100%'} direction={'row'} spacing={'1'}>
+        <Box style={{justifyContent: 'center',  marginTop: '1rem',  marginRight: '5vw', marginLeft: '5vw'}}>
+            {
+                loading ? (
+                    <div>Loading...</div>
+                ) : !checked ? (
+                    <HomeworkList
+                        list={activity
+                            .filter(
+                                (v) =>
+                                    v.signedHour.title === subject || subject === 'Seleziona Materia'
+                            )
+                            .map((activity: ClassActvitityResponse) => ({
+                                avatar: 'A',
+                                title:  activity.signedHour.title,
+                                description: activity.title + ': ' + activity.description,
+                                hexColor: 'dodgerblue',
+                                date: activity.signedHour.date,
+                            }))}
+                    />
+                ) : (
+                    <HomeworkList
+                        list={activity
+                            .filter(
+                                (v) =>
+                                    v.signedHour.title === subject || subject === 'Seleziona Materia'
+                            )
+                            .map((activity: ClassActvitityResponse) => ({
+                                avatar: 'A',
+                                title:  activity.signedHour.title,
+                                description: activity.title + ': ' + activity.description,
+                                hexColor: 'dodgerblue',
+                                date: activity.signedHour.date,
+                            }))
+                            .reverse()}
+                    />
+                )
+            }
+            <Stack direction={'row'} className="stack-bottom">
+                <InputLabel>
+                    Ordine Inverso
+                    <Checkbox onClick={() => setChecked(!checked)} checked={checked} />
+                </InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={subject}
+                    label="Materia"
+                    onChange={handleChange}
+                >
+                    <MenuItem style={{color: 'grey'}} value={"Seleziona Materia"}>{"Seleziona Materia"}</MenuItem>
+                    <Divider/>
+                    {loading ? (
+                        <CircularProgress />
+                    ) : (
+                        Array.from(
+                            new Set(
+                                activity.map((a: ClassActvitityResponse) => a.signedHour.title)
+                            )
+                        ).map((sub, _) => {
+                            return <MenuItem value={sub}>{sub}</MenuItem>;
+                        })
+                    )}
+                </Select>
+            </Stack>
+        </Box>
+         <div style={{maxWidth: '50vw'}}>
               <ChatHomeworkComponent chatId={'b3886ede-bf4b-4bdd-b224-bf69fcad4ffa'}/>
          </div>
+        </Stack>
    );
 }
 
@@ -83,10 +184,10 @@ const Activity : React.FC = () => {
                             )
                             .map((activity: ClassActvitityResponse) => ({
                                 avatar: 'C',
-                                title: `${activity.signedHour.date} ${activity.title}`,
+                                title: `${activity.signedHour.date} ${activity.signedHour.title}`,
                                 description: activity.description,
                                 hexColor: 'dodgerblue',
-                                date: new Date(),
+                                date: activity.signedHour.date,
                             }))}
                     />
                 ) : (
@@ -98,10 +199,10 @@ const Activity : React.FC = () => {
                             )
                             .map((activity: ClassActvitityResponse) => ({
                                 avatar: 'C',
-                                title: `${activity.signedHour.date} ${activity.title}`,
+                                title: `${activity.signedHour.date} ${activity.signedHour.title}`,
                                 description: activity.description,
                                 hexColor: 'dodgerblue',
-                                date: new Date(),
+                                date: activity.signedHour.date,
                             }))
                             .reverse()}
                     />

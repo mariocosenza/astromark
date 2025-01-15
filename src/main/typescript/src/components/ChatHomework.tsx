@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef, FormEvent } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import axios from "axios";
 import { Env } from "../Env";
 import { getToken } from "../services/AuthService";
+import { Box, Avatar, Typography, TextField, Button } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 
 // Define interface for individual message
 interface MessageResponse {
@@ -26,6 +28,13 @@ interface ChatHomeworkProps {
     chatId: string; // typically a UUID string
 }
 
+// Function to determine avatar color based on the sender's name
+const getAvatarColor = (name: string): string => {
+    const colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722"];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+};
+
 export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) => {
     const [messages, setMessages] = useState<MessageResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -33,8 +42,6 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
     const stompClientRef = useRef<Client | null>(null);
     const API_BASE_URL = Env.API_BASE_URL; // e.g., "http://localhost:8080"
 
-    // Fetch existing messages using a REST call
-    // (Assuming the REST endpoint returns an array of messages or a HomeworkChatResponse)
     const fetchMessages = async () => {
         try {
             const response = await axios.get<any>(
@@ -44,12 +51,9 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
                 }
             );
             let messagesArray: MessageResponse[] = [];
-            // Here we check if the response is an array of messages...
             if (Array.isArray(response.data)) {
                 messagesArray = response.data;
-            }
-            // ...or if it is an object containing the messages array in the "messages" property.
-            else if (response.data && Array.isArray(response.data.messages)) {
+            } else if (response.data && Array.isArray(response.data.messages)) {
                 messagesArray = response.data.messages;
             } else {
                 console.error("The response does not contain an array of messages", response.data);
@@ -57,13 +61,12 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
             setMessages(messagesArray);
         } catch (error) {
             console.error("Error fetching messages:", error);
-            setMessages([]); // fallback to empty array in case of error
+            setMessages([]);
         } finally {
             setLoading(false);
         }
     };
 
-    // Connect to the WebSocket (endpoint: /ws) and subscribe to the topic
     const connectWebSocket = () => {
         const stompClient = new Client({
             webSocketFactory: () => new SockJS(`${Env.BASE_URL}/ws`),
@@ -74,13 +77,10 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
 
         stompClient.onConnect = () => {
             console.log("Connected to WebSocket");
-            // Subscribe to the specific chat topic (using the path defined on the server)
             stompClient.subscribe(`/topic/chat/${chatId}`, (message) => {
                 if (message.body) {
                     try {
-                        // Parse the response as HomeworkChatResponse
                         const receivedResponse: HomeworkChatResponse = JSON.parse(message.body);
-                        // Update state exclusively from the topic broadcast (use the messages array from the response)
                         setMessages(receivedResponse.messages);
                     } catch (error) {
                         console.error("Error parsing the message:", error);
@@ -97,19 +97,13 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
         stompClientRef.current = stompClient;
     };
 
-    // Send a new message:
-    // 1. Via REST POST to "/api/homeworks/{chatId}/addMessage"
-    // 2. Via WebSocket to destination "/app/homeworks/chats/{chatId}"
-    // The message will be displayed only when it is received via the topic.
     const sendMessage = async (text: string) => {
-        // Prepare the payload for WebSocket. The server expects this payload to determine the chat.
         const messagePayload = {
             chatId,
             text,
         };
 
         try {
-            // Send the message via REST to register it definitively
             await axios.post(
                 `${API_BASE_URL}/homeworks/${chatId}/addMessage`,
                 JSON.stringify(text),
@@ -121,7 +115,6 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
                 }
             );
 
-            // Publish the message via WebSocket if connected
             if (stompClientRef.current && stompClientRef.current.connected) {
                 stompClientRef.current.publish({
                     destination: `/app/homeworks/chats/${chatId}`,
@@ -134,22 +127,12 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
         } catch (error) {
             console.error("Error sending the message via REST:", error);
         }
-        // Clear the input field. The new message will be displayed when the topic sends the updated HomeworkChatResponse.
         setNewMessage("");
-    };
-
-    // Handle the form submission
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (newMessage.trim() !== "") {
-            sendMessage(newMessage.trim());
-        }
     };
 
     useEffect(() => {
         fetchMessages();
         connectWebSocket();
-        // Cleanup: deactivate the WS client when chatId changes or on component unmount
         return () => {
             if (stompClientRef.current) {
                 stompClientRef.current.deactivate();
@@ -159,43 +142,59 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ chatId }) =
     }, [chatId]);
 
     return (
-        <div style={{ border: "1px solid #ccc", padding: "1rem", maxWidth: "600px", margin: "auto" }}>
-            <h2>Chat {chatId}</h2>
-            {loading ? (
-                <p>Loading messages...</p>
-            ) : (
-                <>
-                    {messages && messages.length === 0 ? (
-                        <p>No messages yet</p>
-                    ) : (
-                        <ul style={{ listStyle: "none", padding: 0 }}>
-                            {messages.map((msg, index) => (
-                                <li key={index} style={{ marginBottom: "0.75rem" }}>
-                                    <strong>{msg.senderName}: </strong>
-                                    <span>{msg.text}</span>
-                                    {msg.timestamp && (
-                                        <em style={{ marginLeft: "0.5rem", fontSize: "0.8rem" }}>
-                                            {new Date(msg.timestamp).toLocaleString()}
-                                        </em>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </>
-            )}
-            <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
-                <input
-                    type="text"
+        <Box className={'surface-container chat-container'} style={{ maxWidth: '600px', margin: 'auto', padding: '1rem', border: '1px solid #ccc' }}>
+            <Typography variant="h6" component="h2">Chat {chatId}</Typography>
+
+            <Box style={{ marginTop: '1rem' }}>
+                {loading ? (
+                    <Typography variant='body1'>Loading messages...</Typography>
+                ) : (
+                    <>
+                        {messages && messages.length === 0 ? (
+                            <Typography variant='body2'>No messages yet</Typography>
+                        ) : (
+                            <Box>
+                                {messages.map((msg, index) => (
+                                    <Box className={'message-item'} display={'flex'} alignItems={'center'} key={'list' + index} style={{ marginBottom: '0.75rem' }}>
+                                        <Avatar sx={{ bgcolor: getAvatarColor(msg.senderName), marginRight: '1rem' }}> {msg.senderName.charAt(0)} </Avatar>
+                                        <Box>
+                                            <Typography variant='body2' color='textPrimary'>
+                                                <strong>{msg.senderName}:</strong> {msg.text}
+                                            </Typography>
+                                            {msg.timestamp && (
+                                                <Typography variant='caption' color='textSecondary' style={{ marginLeft: '0.5rem', fontSize: '0.8rem' }}>
+                                                    {new Date(msg.timestamp).toLocaleString()}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </Box>
+                                ))}
+                            </Box>
+                        )}
+                    </>
+                )}
+            </Box>
+
+            <Box display={'flex'} alignItems={'center'} style={{ marginTop: '1rem' }}>
+                <TextField
+                    className={'textfield-item'}
+                    margin={'normal'}
+                    size={'small'}
+                    fullWidth
+                    placeholder='Scrivi il tuo messaggio'
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Write a new message..."
-                    style={{ width: "80%", padding: "0.5rem", fontSize: "1rem" }}
                 />
-                <button type="submit" style={{ padding: "0.5rem 1rem", marginLeft: "0.5rem", fontSize: "1rem" }}>
-                    Send
-                </button>
-            </form>
-        </div>
+
+                <Button
+                    variant='contained'
+                    color='primary'
+                    sx={{ marginLeft: '0.5rem', marginTop: '0.4rem' }}
+                    onClick={() => sendMessage(newMessage)}
+                >
+                    <SendIcon />
+                </Button>
+            </Box>
+        </Box>
     );
 };
