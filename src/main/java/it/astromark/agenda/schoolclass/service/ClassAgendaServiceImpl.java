@@ -11,6 +11,7 @@ import it.astromark.agenda.schoolclass.mapper.ClassAgendaMapper;
 import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.repository.ClassActivityRepository;
@@ -42,9 +43,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final ClassActivityRepository classActivityRepository;
     private final HomeworkRepository homeworkRepository;
     private final SignedHourRepository signedHourRepository;
+    private final TeacherClassRepository teacherClassRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
@@ -54,6 +56,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         this.classActivityRepository = classActivityRepository;
         this.homeworkRepository = homeworkRepository;
         this.signedHourRepository = signedHourRepository;
+        this.teacherClassRepository = teacherClassRepository;
     }
 
 
@@ -71,20 +74,30 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Transactional
     @PreAuthorize("hasRole('teacher')")
     public void sign(Integer classId, SignHourRequest request) {
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        if (teacherClassRepository.findByTeacher(teacher).stream()
+                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+            throw new AccessDeniedException("You are not allowed to sign this class");
+        }
+
         var signedhour = signedHourRepository.findById(request.slotId()).orElse(null);
 
         ClassActivity activity = null;
         Homework homework = null;
 
-        if (signedhour == null) {
-            signedhour = new SignedHour();
-            signedhour.setTeachingTimeslot(teachingTimeslotRepository.findById(request.slotId()).orElseThrow());
-            signedhour.setTeacher(authenticationService.getTeacher().orElseThrow());
+        if (signedhour != null) {
+            if (!signedhour.getTeacher().getId().equals(teacher.getId())) {
+                throw new AccessDeniedException("You are not allowed to edit this hour");
+            }
 
-            signedHourRepository.save(signedhour);
-        } else {
             activity = classActivityRepository.findBySignedHour(signedhour);
             homework = homeworkRepository.findBySignedHour(signedhour);
+        } else {
+            signedhour = new SignedHour();
+            signedhour.setTeachingTimeslot(teachingTimeslotRepository.findById(request.slotId()).orElseThrow());
+            signedhour.setTeacher(teacher);
+
+            signedHourRepository.save(signedhour);
         }
 
         if (!request.activityTitle().isEmpty()) {
@@ -107,9 +120,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
             homework.setTitle(request.homeworkTitle());
             homework.setDescription(request.homeworkDescription());
-            if (request.homeworkDueDate() != null) {
-                homework.setDueDate(LocalDate.ofInstant(request.homeworkDueDate().toInstant(), ZoneId.systemDefault()));
-            } else homework.setDueDate(null);
+            homework.setDueDate(LocalDate.ofInstant(request.homeworkDueDate().toInstant(), ZoneId.systemDefault()));
 
             homeworkRepository.save(homework);
         }

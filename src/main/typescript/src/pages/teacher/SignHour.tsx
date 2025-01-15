@@ -95,31 +95,23 @@ export const SignHour: React.FC = () => {
                                 <TextField fullWidth variant="outlined" label="Titolo" name="activityTitle"
                                            value={formik.values.activityTitle}
                                            onChange={formik.handleChange}
-                                           onBlur={formik.handleBlur}
-                                           error={formik.touched.activityTitle && Boolean(formik.errors.activityTitle)}
-                                           helperText={formik.touched.activityTitle && formik.errors.activityTitle}/>
+                                           error={!!formik.errors.activityTitle}
+                                           helperText={formik.errors.activityTitle}/>
 
                                 <TextField fullWidth variant="outlined" multiline rows={4} label="Attività Svolta" name="activityDesc"
                                            value={formik.values.activityDesc}
-                                           onChange={formik.handleChange}
-                                           onBlur={formik.handleBlur}
-                                           error={formik.touched.activityDesc && Boolean(formik.errors.activityDesc)}
-                                           helperText={formik.touched.activityDesc && formik.errors.activityDesc}/>
+                                           onChange={formik.handleChange}/>
                             </Stack>
                             <Stack spacing={3} flex={1}>
                                 <TextField fullWidth variant="outlined" label="Titolo Compiti" name="homeworkTitle"
                                            value={formik.values.homeworkTitle}
                                            onChange={formik.handleChange}
-                                           onBlur={formik.handleBlur}
-                                           error={formik.touched.homeworkTitle && Boolean(formik.errors.homeworkTitle)}
-                                           helperText={formik.touched.homeworkTitle && formik.errors.homeworkTitle}/>
+                                           error={!!formik.errors.homeworkTitle}
+                                           helperText={formik.errors.homeworkTitle}/>
 
                                 <TextField fullWidth variant="outlined" multiline rows={4} label="Compiti Assegnati" name="homeworkDesc"
                                            value={formik.values.homeworkDesc}
-                                           onChange={formik.handleChange}
-                                           onBlur={formik.handleBlur}
-                                           error={formik.touched.homeworkDesc && Boolean(formik.errors.homeworkDesc)}
-                                           helperText={formik.touched.homeworkDesc && formik.errors.homeworkDesc}/>
+                                           onChange={formik.handleChange}/>
 
                                 <Stack direction={'column'} justifyContent={'center'}>
                                     <Typography variant="caption" color={'textSecondary'}>
