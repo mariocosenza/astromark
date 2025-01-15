@@ -1,14 +1,16 @@
 package it.astromark.classwork.service;
 
+import it.astromark.agenda.commons.mapper.TimeslotMapper;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.chat.repository.HomeworkChatRepository;
 import it.astromark.classwork.dto.ClassworkResponse;
+import it.astromark.classwork.dto.HomeworkResponse;
 import it.astromark.classwork.mapper.ClassworkMapper;
 import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,17 +29,17 @@ public class ClassworkServiceImpl implements ClassworkService {
     private final StudentRepository studentRepository;
     private final ClassworkMapper classworkMapper;
     private final HomeworkRepository homeworkRepository;
-    private final HomeworkChatRepository homeworkChatRepository;
+    private final TimeslotMapper timeslotMapper;
 
     @Autowired
-    public ClassworkServiceImpl(ClassActivityRepository classActivityRepository, AuthenticationService authenticationService, SchoolUserService schoolUserService, StudentRepository studentRepository, ClassworkMapper classworkMapper, HomeworkRepository homeworkRepository, HomeworkChatRepository homeworkChatRepository) {
+    public ClassworkServiceImpl(ClassActivityRepository classActivityRepository, AuthenticationService authenticationService, SchoolUserService schoolUserService, StudentRepository studentRepository, ClassworkMapper classworkMapper, HomeworkRepository homeworkRepository, TimeslotMapper timeslotMapper) {
         this.classActivityRepository = classActivityRepository;
         this.authenticationService = authenticationService;
         this.schoolUserService = schoolUserService;
         this.studentRepository = studentRepository;
         this.classworkMapper = classworkMapper;
         this.homeworkRepository = homeworkRepository;
-        this.homeworkChatRepository = homeworkChatRepository;
+        this.timeslotMapper = timeslotMapper;
     }
 
     public void updateDescription(Integer id, String description) {
@@ -66,7 +68,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('student') || hasRole('parent')")
-    public List<ClassworkResponse> getHomework(Integer classId) {
+    public List<HomeworkResponse> getHomework(Integer classId) {
         if(!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");
         } else if(!authenticationService.isStudent()) {
@@ -75,7 +77,7 @@ public class ClassworkServiceImpl implements ClassworkService {
             }
         }
 
-        return classworkMapper.homeworkToClassworkResponseList(homeworkRepository.findAllBySignedHour_TeachingTimeslot_ClassTimetableSchoolClass_Id(classId)).stream().sorted(Comparator.comparing(s -> s.signedHour().date())).toList();
+        return classworkMapper.homeworkToHomeworkResponseList(homeworkRepository.findAllBySignedHour_TeachingTimeslot_ClassTimetableSchoolClass_Id(classId)).stream().sorted(Comparator.comparing(HomeworkResponse::dueDate)).toList();
     }
 
 

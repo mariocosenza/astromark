@@ -11,6 +11,8 @@ import it.astromark.chat.repository.MessageRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -55,7 +57,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('student') || hasRole('teacher')")
-    public UUID sendMessage(UUID chatId, String text) {
+    public UUID sendMessage(UUID chatId, @NotEmpty String text) {
         if(authenticationService.isStudent() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getStudent().equals(authenticationService.getStudent().orElseThrow())) {
             throw new AccessDeniedException("You are not allowed to access this chat");
@@ -83,7 +85,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
     @Override
     @PreAuthorize("hasRole('teacher')")
-    public void addChat(Integer homeworkId) {
+    public void addChat(@NotNull Integer homeworkId) {
         var homework = homeworkRepository.findById(homeworkId).orElseThrow();
         if(!homework.getSignedHour().getTeachingTimeslot().getTeaching().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
             throw new AccessDeniedException("You are not allowed to access this homework");
@@ -110,5 +112,20 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
             throw new AccessDeniedException("You are not allowed to access this chat");
         }
         return chatMapper.toMessageResponseList(messageRepository.findByHomeworkChat_IdOrderByDateTimeAsc(chatId), messageService);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('student') || hasRole('teacher')")
+    public boolean hasUncompletedHomeworkChat(@NotNull Integer homeworkId) {
+        var homework = homeworkRepository.findById(homeworkId).orElse(null);
+        if(homework == null) {
+            return false;
+        } else if (authenticationService.isStudent() && !homework.getSignedHour().getTeachingTimeslot().getClassTimetable().getSchoolClass().getStudents().contains(authenticationService.getStudent().orElseThrow())) {
+            return false;
+        } else if (authenticationService.isTeacher() && !homework.getSignedHour().getTeachingTimeslot().getTeaching().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
+            return false;
+        }
+
+        return homeworkChatRepository.existsHomeworkChatByHomeworkSignedHourTeachingTimeslot_IdAndCompletedIsFalse(homeworkId);
     }
 }

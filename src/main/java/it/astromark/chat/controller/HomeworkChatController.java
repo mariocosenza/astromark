@@ -2,7 +2,6 @@ package it.astromark.chat.controller;
 
 import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.service.HomeworkChatService;
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class HomeworkChatController {
     }
 
     @PostMapping("/{chatId}/addMessage")
-    public UUID sendMessage(@PathVariable UUID chatId, @RequestBody @NotEmpty String messageRequest) {
+    public UUID sendMessage(@PathVariable UUID chatId, @RequestBody  String messageRequest) {
         return homeworkChatService.sendMessage(chatId, messageRequest.replace("\"", ""));
     }
 
@@ -34,5 +33,9 @@ public class HomeworkChatController {
        return homeworkChatService.getMessageList(chatId);
     }
 
+    @GetMapping("/{homeworkId}/has-uncompleted-chat")
+    public boolean hasUncompletedHomeworkChat (@PathVariable Integer homeworkId) {
+        return homeworkChatService.hasUncompletedHomeworkChat(homeworkId);
+    }
 
 }
