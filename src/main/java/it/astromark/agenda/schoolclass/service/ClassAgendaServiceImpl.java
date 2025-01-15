@@ -5,10 +5,14 @@ import it.astromark.agenda.schoolclass.dto.SignHourRequest;
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotRequest;
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
+import it.astromark.agenda.schoolclass.entity.SignedHour;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
 import it.astromark.agenda.schoolclass.mapper.ClassAgendaMapper;
+import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classwork.entity.ClassActivity;
+import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
 import it.astromark.user.commons.service.SchoolUserService;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
@@ -36,9 +41,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final ClassAgendaMapper classAgendaMapper;
     private final ClassActivityRepository classActivityRepository;
     private final HomeworkRepository homeworkRepository;
+    private final SignedHourRepository signedHourRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
@@ -47,6 +53,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         this.classAgendaMapper = classAgendaMapper;
         this.classActivityRepository = classActivityRepository;
         this.homeworkRepository = homeworkRepository;
+        this.signedHourRepository = signedHourRepository;
     }
 
 
@@ -61,8 +68,51 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('teacher')")
     public void sign(Integer classId, SignHourRequest request) {
+        var signedhour = signedHourRepository.findById(request.slotId()).orElse(null);
 
+        ClassActivity activity = null;
+        Homework homework = null;
+
+        if (signedhour == null) {
+            signedhour = new SignedHour();
+            signedhour.setTeachingTimeslot(teachingTimeslotRepository.findById(request.slotId()).orElseThrow());
+            signedhour.setTeacher(authenticationService.getTeacher().orElseThrow());
+
+            signedHourRepository.save(signedhour);
+        } else {
+            activity = classActivityRepository.findBySignedHour(signedhour);
+            homework = homeworkRepository.findBySignedHour(signedhour);
+        }
+
+        if (!request.activityTitle().isEmpty()) {
+            if (activity == null){
+                activity = new ClassActivity();
+                activity.setSignedHour(signedhour);
+            }
+
+            activity.setTitle(request.activityTitle());
+            activity.setDescription(request.activityDescription());
+
+            classActivityRepository.save(activity);
+        }
+
+        if (!request.homeworkTitle().isEmpty()) {
+            if (homework == null){
+                homework = new Homework();
+                homework.setSignedHour(signedhour);
+            }
+
+            homework.setTitle(request.homeworkTitle());
+            homework.setDescription(request.homeworkDescription());
+            if (request.homeworkDueDate() != null) {
+                homework.setDueDate(LocalDate.ofInstant(request.homeworkDueDate().toInstant(), ZoneId.systemDefault()));
+            } else homework.setDueDate(null);
+
+            homeworkRepository.save(homework);
+        }
     }
 
     @Override
