@@ -6,7 +6,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {blue} from "@mui/material/colors";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DatePicker, {DateObject} from "react-multi-date-picker";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -40,7 +39,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 
 const CustomTableCell = styled(TableCell)(() => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: blue[900],
+        backgroundColor: 'var(--md-sys-color-primary)',
         color: 'white',
         borderColor: 'black',
     },
@@ -52,7 +51,7 @@ const CustomTableCell = styled(TableCell)(() => ({
 export const ClassAgenda: React.FC = () => {
     const [rows, setRows] = useState<ClassAgendaRow[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [date, setDate] = useState<DateObject>(new DateObject().setDate(new Date(2025, 0, 15)))
+    const [date, setDate] = useState<DateObject>(new DateObject())
     const navigate = useNavigate();
 
     useEffect(() => {
