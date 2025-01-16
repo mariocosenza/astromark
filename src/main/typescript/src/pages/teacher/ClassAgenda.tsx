@@ -17,11 +17,13 @@ import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useNavigate} from "react-router";
+import {getId} from "../../services/AuthService.ts";
 
 export interface ClassAgendaRow {
     id: number
     signed: boolean;
     hour: number;
+    isTeacherHour: boolean;
     name: string;
     subject: string;
     activityTitle: string
@@ -67,6 +69,7 @@ export const ClassAgenda: React.FC = () => {
                     id: teachingSlot.id,
                     signed: teachingSlot.signed,
                     hour: teachingSlot.hour,
+                    isTeacherHour: teachingSlot.teacherId === getId(),
                     name: teachingSlot.name + ' ' + teachingSlot.surname,
                     subject: teachingSlot.subject,
                     activityTitle: teachingSlot.activityTitle,
@@ -142,8 +145,8 @@ export const ClassAgenda: React.FC = () => {
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
                                         {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}/> :
-                                            <IconButton>
-                                                <AddCircleOutlineIcon fontSize={'large'} onClick={() => choseTeachingTimeslot(row)}/>
+                                            <IconButton disabled={!row.isTeacherHour} onClick={() => choseTeachingTimeslot(row)}>
+                                                <AddCircleOutlineIcon fontSize={'large'}/>
                                             </IconButton>
                                         }
 
@@ -174,7 +177,7 @@ export const ClassAgenda: React.FC = () => {
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
-                                    <IconButton onClick={() => choseTeachingTimeslot(row)}>
+                                    <IconButton disabled={!(row.signed && row.isTeacherHour)} onClick={() => choseTeachingTimeslot(row)}>
                                         <EditOutlinedIcon fontSize={'large'}/>
                                     </IconButton>
                                 </CustomTableCell>

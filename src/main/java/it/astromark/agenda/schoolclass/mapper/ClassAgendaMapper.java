@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ClassAgendaMapper {
 
+    @Mapping(target = "teacherId", source = "teaching.teacher.id")
     @Mapping(target = "name", source = "teaching.teacher.name")
     @Mapping(target = "surname", source = "teaching.teacher.surname")
     @Mapping(target = "subject", source = "teaching.subjectTitle.title")
