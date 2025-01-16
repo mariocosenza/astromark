@@ -9,6 +9,7 @@ import { Env } from "../Env.ts";
 import { AxiosResponse } from "axios";
 import YupPassword from "yup-password";
 import * as yup from "yup";
+import {TeacherDashboardNavbar} from "../components/TeacherDashboardNavbar.tsx";
 
 
 export function validateAddress(address: string): boolean {
@@ -160,6 +161,8 @@ export const Settings: React.FC = () => {
             {getRole().toUpperCase() === Role.STUDENT ||
             getRole().toUpperCase() === Role.PARENT ? (
                 <DashboardNavbar />
+            ) : getRole().toUpperCase() === Role.TEACHER ? (
+                <TeacherDashboardNavbar />
             ) : (
                 <h1>Settings</h1>
             )}
