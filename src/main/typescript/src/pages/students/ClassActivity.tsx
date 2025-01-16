@@ -20,9 +20,10 @@ import {ListGeneric} from "../../components/ListGeneric.tsx";
 import MenuItem from "@mui/material/MenuItem";
 import {ChatHomeworkComponent} from "../../components/ChatHomework.tsx";
 import {HomeworkList} from "../../components/HomeworkList.tsx";
+import {createGlobalState} from "react-use";
 
 
-export interface ClassActvitityResponse {
+export interface ClassActivityResponse {
     id: number;
     title: string;
     description: string;
@@ -33,6 +34,7 @@ export interface HomeworkResponse {
     id: number;
     title: string;
     description: string;
+    chat: boolean;
     dueDate: Date;
     signedHour: TeachingTimeslotResponse;
 }
@@ -43,12 +45,16 @@ export interface TeachingTimeslotResponse {
     date: Date;
 }
 
+export const openChat = createGlobalState<boolean>(false);
+export const homeworkChatId = createGlobalState<number>(-1);
 
 export const Homework: React.FC = () => {
     const [loading, setLoading] = React.useState<boolean>(true);
-    const [activity, setActivity] = React.useState<ClassActvitityResponse[]>([]);
+    const [activity, setActivity] = React.useState<HomeworkResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
+    const [open, ] = openChat();
+    const [chatId, ] = homeworkChatId();
 
     const handleChange = (event: SelectChangeEvent) => {
         setSubject(event.target.value as string);
@@ -71,8 +77,8 @@ export const Homework: React.FC = () => {
 
 
     return (
-        <Stack flex={'auto'} minWidth={'100%'} direction={'row'} spacing={'1'}>
-        <Box style={{justifyContent: 'center',  marginTop: '1rem',  marginRight: '5vw', marginLeft: '5vw'}}>
+        <Stack flex={'auto'} flexWrap={'wrap'} minWidth={'100%'} direction={'row'} spacing={'1'}>
+        <Box style={{justifyContent: 'center',  marginTop: '1rem',  marginRight: '5vw', marginLeft: open? '2vw' : '5vw'}}>
             {
                 loading ? (
                     <div>Loading...</div>
@@ -83,7 +89,9 @@ export const Homework: React.FC = () => {
                                 (v) =>
                                     v.signedHour.title === subject || subject === 'Seleziona Materia'
                             )
-                            .map((activity: ClassActvitityResponse) => ({
+                            .map((activity: HomeworkResponse) => ({
+                                id: activity.id,
+                                chat: activity.chat,
                                 avatar: 'A',
                                 title:  activity.signedHour.title,
                                 description: activity.title + ': ' + activity.description,
@@ -98,7 +106,9 @@ export const Homework: React.FC = () => {
                                 (v) =>
                                     v.signedHour.title === subject || subject === 'Seleziona Materia'
                             )
-                            .map((activity: ClassActvitityResponse) => ({
+                            .map((activity: HomeworkResponse) => ({
+                                id: activity.id,
+                                chat: activity.chat,
                                 avatar: 'A',
                                 title:  activity.signedHour.title,
                                 description: activity.title + ': ' + activity.description,
@@ -109,6 +119,7 @@ export const Homework: React.FC = () => {
                     />
                 )
             }
+
             <Stack direction={'row'} className="stack-bottom">
                 <InputLabel>
                     Ordine Inverso
@@ -128,25 +139,27 @@ export const Homework: React.FC = () => {
                     ) : (
                         Array.from(
                             new Set(
-                                activity.map((a: ClassActvitityResponse) => a.signedHour.title)
+                                activity.map((a: ClassActivityResponse) => a.signedHour.title)
                             )
                         ).map((sub, _) => {
-                            return <MenuItem value={sub}>{sub}</MenuItem>;
+                            return <MenuItem key={sub} value={sub}>{sub}</MenuItem>;
                         })
                     )}
                 </Select>
             </Stack>
         </Box>
-         <div style={{maxWidth: '50vw'}}>
-              <ChatHomeworkComponent chatId={'b3886ede-bf4b-4bdd-b224-bf69fcad4ffa'}/>
-         </div>
+            { open &&
+                <div style={{minWidth: '40vw', marginTop: '1rem'}}>
+                    <ChatHomeworkComponent homeworkId={chatId}/>
+                </div>
+            }
         </Stack>
    );
 }
 
 const Activity : React.FC = () => {
     const [loading, setLoading] = React.useState<boolean>(true);
-    const [activity, setActivity] = React.useState<ClassActvitityResponse[]>([]);
+    const [activity, setActivity] = React.useState<ClassActivityResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
 
@@ -161,7 +174,7 @@ const Activity : React.FC = () => {
     const fetchData = async () => {
         try {
             const schoolClass: AxiosResponse<SchoolClass[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
-            const response: AxiosResponse<ClassActvitityResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/activities/all`);
+            const response: AxiosResponse<ClassActivityResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/activities/all`);
             setActivity(response.data);
             setLoading(false);
         } catch (error) {
@@ -182,7 +195,7 @@ const Activity : React.FC = () => {
                                 (v) =>
                                     v.signedHour.title === subject || subject === 'Seleziona Materia'
                             )
-                            .map((activity: ClassActvitityResponse) => ({
+                            .map((activity: ClassActivityResponse) => ({
                                 avatar: 'C',
                                 title: `${activity.signedHour.date} ${activity.signedHour.title}`,
                                 description: activity.description,
@@ -197,7 +210,7 @@ const Activity : React.FC = () => {
                                 (v) =>
                                     v.signedHour.title === subject || subject === 'Seleziona Materia'
                             )
-                            .map((activity: ClassActvitityResponse) => ({
+                            .map((activity: ClassActivityResponse) => ({
                                 avatar: 'C',
                                 title: `${activity.signedHour.date} ${activity.signedHour.title}`,
                                 description: activity.description,
@@ -227,10 +240,10 @@ const Activity : React.FC = () => {
                     ) : (
                         Array.from(
                             new Set(
-                                activity.map((a: ClassActvitityResponse) => a.signedHour.title)
+                                activity.map((a: ClassActivityResponse) => a.signedHour.title)
                             )
                         ).map((sub, _) => {
-                            return <MenuItem value={sub}>{sub}</MenuItem>;
+                            return <MenuItem key={sub} value={sub}>{sub}</MenuItem>;
                         })
                     )}
                 </Select>
