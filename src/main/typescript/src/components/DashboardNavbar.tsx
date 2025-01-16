@@ -4,7 +4,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {StudentParentSideNav} from "./StudentParentSideNav.tsx";
 import {Role} from "./route/ProtectedRoute.tsx";
-import {isRole, logout} from "../services/AuthService.ts";
+import {asyncLogout, isRole} from "../services/AuthService.ts";
 import {ArchiveMenu} from "./ArchiveMenu.tsx";
 import {NavLink, useNavigate} from "react-router";
 
@@ -30,8 +30,9 @@ export const DashboardNavbar: React.FC = () => {
                         <LogoutOutlinedIcon
                             sx={{ml: 1}}
                             onClick={() => {
-                                logout()
-                                navigator('/')
+                                asyncLogout(localStorage.getItem("user"))
+                                localStorage.removeItem("user")
+                                navigator('/logout')
                             }
                             }
                         />

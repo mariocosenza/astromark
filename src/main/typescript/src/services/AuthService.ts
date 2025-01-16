@@ -17,6 +17,17 @@ export function logout(): void {
     }
 }
 
+export function asyncLogout(item : any): void {
+    try {
+        if(item !== null) {
+            axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
+        }
+    } catch (e) {
+        console.log("User not exist");
+    }
+}
+
+
 export function getToken(): string {
     const user = localStorage.getItem("user");
     if (user === null) {
