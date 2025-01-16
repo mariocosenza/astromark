@@ -15,8 +15,8 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class SchoolUserServiceImpl implements SchoolUserService {
 
@@ -104,7 +105,10 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    public SchoolUserResponse updateAddress(@Size(min = 5) @Pattern(regexp = "^[^<>%$]*$") String address) {
+    public SchoolUserResponse updateAddress(String address) {
+        if(address.length() < 5 || !address.matches("^[a-zA-Z0-9\\s,.'\\-/]{3,100}$")) {
+            throw new IllegalArgumentException("Address must be at least 5 characters long");
+        }
         SchoolUser user;
         if(authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
