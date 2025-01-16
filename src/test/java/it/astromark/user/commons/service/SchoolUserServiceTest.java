@@ -91,7 +91,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress));
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
