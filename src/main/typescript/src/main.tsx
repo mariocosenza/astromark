@@ -63,7 +63,14 @@ ReactDOM.createRoot(root).render(
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace />} />
                     <Route path="/parent" element={<ProtectedRoutePath role={Role.PARENT}/>}>
-                        <Route path="dashboard" element={<h1>Dashboard</h1>}/>
+                        <Route path="dashboard" element={<Dashboard/>}/>
+                        <Route path="voti" element={<Mark/>}/>
+                        <Route path="assenze" element={<AbsenceDelays/>}/>
+                        <Route path="assegno" element={<ClassActivity/>}/>
+                        <Route path="note" element={<Note/>}/>
+                        <Route path="pagella" element={<SemesterReport/>}/>
+                        <Route path="orario" element={<Timetable/>}/>
+                        <Route path="avvisi" element={<Allert/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="*" element={<MissingRoute/>}/>
