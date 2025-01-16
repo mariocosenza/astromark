@@ -25,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
@@ -93,9 +94,15 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
             activity = classActivityRepository.findBySignedHour(signedhour);
             homework = homeworkRepository.findBySignedHour(signedhour);
         } else {
+            var slot = teachingTimeslotRepository.findById(request.slotId()).orElseThrow();
+            if (!slot.getTeaching().getTeacher().getId().equals(teacher.getId())) {
+                throw new AccessDeniedException("You are not allowed to sign this hour");
+            }
+
             signedhour = new SignedHour();
-            signedhour.setTeachingTimeslot(teachingTimeslotRepository.findById(request.slotId()).orElseThrow());
+            signedhour.setTeachingTimeslot(slot);
             signedhour.setTeacher(teacher);
+            signedhour.setTimeSign(Instant.now());
 
             signedHourRepository.save(signedhour);
         }
