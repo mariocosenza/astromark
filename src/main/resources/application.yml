@@ -20,6 +20,7 @@ spring:
     secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
 server:
   error:
+    path: /error
     whitelabel:
       enabled: false
     include-binding-errors: never
