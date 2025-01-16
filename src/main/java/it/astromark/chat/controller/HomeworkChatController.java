@@ -34,7 +34,7 @@ public class HomeworkChatController {
     }
 
     @GetMapping("/{homeworkId}/has-uncompleted-chat")
-    public boolean hasUncompletedHomeworkChat (@PathVariable Integer homeworkId) {
+    public UUID  hasUncompletedHomeworkChat (@PathVariable Integer homeworkId) {
         return homeworkChatService.hasUncompletedHomeworkChat(homeworkId);
     }
 

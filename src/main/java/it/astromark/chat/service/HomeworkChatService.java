@@ -14,5 +14,5 @@ public interface HomeworkChatService {
     Teacher findTeacher(UUID chatId);
     void addChat(Integer homeworkId);
     List<MessageResponse> getMessageList(UUID chatId);
-    boolean hasUncompletedHomeworkChat(Integer homeworkId);
+    UUID hasUncompletedHomeworkChat(Integer homeworkId);
 }

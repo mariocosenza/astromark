@@ -115,17 +115,16 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('teacher')")
-    public boolean hasUncompletedHomeworkChat(@NotNull Integer homeworkId) {
+    @Transactional
+    @PreAuthorize("hasRole('student')")
+    public UUID hasUncompletedHomeworkChat(@NotNull Integer homeworkId) {
         var homework = homeworkRepository.findById(homeworkId).orElse(null);
         if(homework == null) {
-            return false;
+            return null ;
         } else if (authenticationService.isStudent() && !homework.getSignedHour().getTeachingTimeslot().getClassTimetable().getSchoolClass().getStudents().contains(authenticationService.getStudent().orElseThrow())) {
-            return false;
-        } else if (authenticationService.isTeacher() && !homework.getSignedHour().getTeachingTimeslot().getTeaching().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
-            return false;
+            return null;
         }
 
-        return homeworkChatRepository.existsHomeworkChatByHomeworkSignedHourTeachingTimeslot_IdAndCompletedIsFalse(homeworkId);
+        return homeworkChatRepository.findByHomeworkSignedHourTeachingTimeslot_IdAndStudent(homeworkId, authenticationService.getStudent().orElseThrow()).getId();
     }
 }
