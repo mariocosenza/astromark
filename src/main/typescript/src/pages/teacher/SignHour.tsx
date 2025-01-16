@@ -31,7 +31,7 @@ const validationSchema = yup.object({
 });
 
 export const SignHour: React.FC = () => {
-    const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homeworkDate || new DateObject())
+    const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homeworkDate || new DateObject().add(1, 'days'))
     const [dateError, setDateError] = useState<boolean>(false)
     const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ export const SignHour: React.FC = () => {
     const handleDateChange = (newDate: DateObject | null) => {
         if (newDate) {
             setDueDate(newDate)
-            setDateError(newDate < new DateObject())
+            setDateError(newDate <= new DateObject())
         }
     };
 
