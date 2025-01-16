@@ -6,8 +6,8 @@ import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotRequest;
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
 import it.astromark.agenda.schoolclass.entity.SignedHour;
-import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
 import it.astromark.agenda.schoolclass.mapper.ClassAgendaMapper;
+import it.astromark.agenda.schoolclass.repository.ClassTimetableRepository;
 import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
@@ -45,9 +45,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final HomeworkRepository homeworkRepository;
     private final SignedHourRepository signedHourRepository;
     private final TeacherClassRepository teacherClassRepository;
+    private final ClassTimetableRepository classTimetableRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository, ClassTimetableRepository classTimetableRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
@@ -58,6 +59,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         this.homeworkRepository = homeworkRepository;
         this.signedHourRepository = signedHourRepository;
         this.teacherClassRepository = teacherClassRepository;
+        this.classTimetableRepository = classTimetableRepository;
     }
 
 
@@ -157,8 +159,15 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('teacher')")
     public List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(Integer classId, LocalDate localDate) {
-        List<TeachingTimeslot> teachingTimeslotList = teachingTimeslotRepository.findByClassTimetableSchoolClass_IdAndDate(classId, localDate);
+        if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
+                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+            throw new AccessDeniedException("You are not allowed to see this timetable");
+        }
+
+        var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
+        var teachingTimeslotList = teachingTimeslotRepository.findTeachingTimeslotByClassTimetableAndDate(classTimetable, localDate);
         return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList, classActivityRepository, homeworkRepository);
     }
 

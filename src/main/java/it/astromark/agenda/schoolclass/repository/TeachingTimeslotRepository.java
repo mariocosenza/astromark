@@ -1,5 +1,6 @@
 package it.astromark.agenda.schoolclass.repository;
 
+import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,5 @@ import java.util.List;
 public interface TeachingTimeslotRepository extends JpaRepository<TeachingTimeslot, Integer> {
     List<TeachingTimeslot> findTeachingTimeslotByClassTimetableSchoolClass_IdAndDateBetween(Integer classTimetableId, @NotNull LocalDate dateAfter, @NotNull LocalDate dateBefore);
 
-    List<TeachingTimeslot> findByClassTimetableSchoolClass_IdAndDate(Integer classTimetable_id, @NotNull LocalDate date);
+    List<TeachingTimeslot> findTeachingTimeslotByClassTimetableAndDate(@NotNull ClassTimetable classTimetable, @NotNull LocalDate date);
 }
