@@ -32,6 +32,8 @@ VALUES
 INSERT INTO subject (title)
 VALUES
     ('Matematica'),
+    ('Fisica'),
+    ('Chimica'),
     ('Italiano'),
     ('Inglese'),
     ('Storia'),
@@ -49,10 +51,13 @@ VALUES
 INSERT INTO study_plan_subject (subject_title, study_plan_school_class_id)
 VALUES
     ('Matematica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
+    ('Fisica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
+    ('Chimica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
     ('Italiano', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
     ('Inglese', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
     ('Storia', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
     ('Informatica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024))),
+    ('Fisica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024))),
     ('Italiano', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 1 AND letter = 'C' AND year = 2024))),
     ('Storia', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024))),
     ('Matematica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024))),
@@ -77,6 +82,8 @@ VALUES
 INSERT INTO teacher (school_code, username, email, password, name, surname, tax_id, birth_date, residential_address, gender, pending_state)
 VALUES
     ('SS12345', 'marco.gialli', 'marco.gialli@gmail.com', encode(sha512('Gialli123*'::bytea), 'hex'), 'Marco', 'Gialli', 'GLLMRC75D04H703W', '1975-04-04', 'Via Genova 7, Roma', true, 'NORMAL'),
+    ('SS12345', 'alessandro.rossi', 'alessandro.rossi@gmail.com', encode(sha512('Rossi123*'::bytea), 'hex'), 'Alessandro', 'Rossi', 'RSSALN80A01H501X', '1980-01-01', 'Via Firenze 20, Roma', true, 'NORMAL'),
+    ('SS12345', 'maria.bianchi', 'maria.bianchi@gmail.com', encode(sha512('Bianchi123*'::bytea), 'hex'), 'Maria', 'Bianchi', 'BNCMRA85B02G479Y', '1985-02-02', 'Via Torino 25, Roma', false, 'NORMAL'),
     ('SS67890', 'elena.blui', 'elena.blui@gmail.com', encode(sha512('Blui123*'::bytea), 'hex'), 'Elena', 'Blui', 'BLELNA82E05Z112V', '1982-05-05', 'Via Palermo 8, Milano', false, 'NORMAL'),
     ('SS12345', 'riccardo.blui', 'riccardo.blui@gmail.com', encode(sha512('Blui123*'::bytea), 'hex'), 'Riccardo', 'Blui', 'BLURCD78E04G111W', '1978-04-04', 'Via Palermo 6, Milano', true, 'NORMAL'),
     ('SS12345', 'elisa.gialli', 'elisa.gialli@gmail.com', encode(sha512('Gialli123*'::bytea), 'hex'), 'Elisa', 'Gialli', 'GLLSFA82F01B890T', '1982-01-01', 'Via Firenze 1, Roma', false, 'NORMAL'),
@@ -85,6 +92,9 @@ VALUES
 INSERT INTO teacher_class (teacher_id, school_class_id, coordinator)
 VALUES
     ((SELECT id FROM teacher WHERE username = 'marco.gialli'), (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024), true),
+    ((SELECT id FROM teacher WHERE username = 'marco.gialli'), (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024), false),
+    ((SELECT id FROM teacher WHERE username = 'alessandro.rossi'), (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024), false),
+    ((SELECT id FROM teacher WHERE username = 'maria.bianchi'), (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024), false),
     ((SELECT id FROM teacher WHERE username = 'elena.blui'), (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024), false),
     ((SELECT id FROM teacher WHERE username = 'riccardo.blui'), (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024), false),
     ((SELECT id FROM teacher WHERE username = 'elisa.gialli'), (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024), true),
@@ -93,6 +103,9 @@ VALUES
 INSERT INTO teaching (subject_title, teacher_id, type_of_activity)
 VALUES
     ('Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Lezione'),
+    ('Fisica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Lezione'),
+    ('Fisica', (SELECT id FROM teacher WHERE username = 'alessandro.rossi'), 'Lezione'),
+    ('Chimica', (SELECT id FROM teacher WHERE username = 'maria.bianchi'), 'Laboratorio'),
     ('Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), 'Laboratorio'),
     ('Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), 'Lezione'),
     ('Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), 'Lezione'),
@@ -149,14 +162,15 @@ VALUES
     ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-02-13', 'WRITTEN', 8, 'Analisi di un testo narrativo.'),
     ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-02-21', 'ORAL', 7, 'Interrogazione sulla Rivoluzione Francese.');
 
-INSERT INTO semester_report (first_semester, public, passed, year, student_id) VALUES
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'luca.verdi')),
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'marco.neri')),
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'sofia.bianchi')),
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'giulia.rossi')),
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'elisa.verdi')),
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'franco.blui')),
-                                                                                   (true, true, true, 2024, (SELECT id FROM student WHERE username = 'chiara.neri'));
+INSERT INTO semester_report (first_semester, public, passed, year, student_id)
+VALUES
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'luca.verdi')),
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'marco.neri')),
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'sofia.bianchi')),
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'giulia.rossi')),
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'elisa.verdi')),
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'franco.blui')),
+    (true, true, true, 2024, (SELECT id FROM student WHERE username = 'chiara.neri'));
 
 INSERT INTO semester_report_mark (subject_title, semester_id, mark)
 VALUES
@@ -194,47 +208,71 @@ VALUES
 
 INSERT INTO teaching_timeslot (class_timetable_id, hour, date, teaching_subject_title, teaching_teacher_id)
 VALUES
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 1, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 2, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 3, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), 1, '2025-01-18', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'B' AND year = 2024) LIMIT 1), 4, '2025-01-17', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 1, '2025-01-15', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 3, '2025-01-17', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 4, '2025-01-17', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 5, '2025-01-17', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 4, '2025-01-16', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 5, '2025-01-16', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 2, '2025-01-15', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 3, '2025-01-15', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 4, '2025-01-15', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) LIMIT 1), 2, '2025-01-18', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'A' AND year = 2024) LIMIT 1), 2, '2025-01-16', 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'A' AND year = 2024) LIMIT 1), 4, '2025-01-18', 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) LIMIT 1), 2, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) LIMIT 1), 3, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'));
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 1, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-15', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 1, '2025-01-18', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'B' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-17', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-19', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-19', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 1, '2025-01-20', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 1, '2025-01-21', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-22', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 6, '2025-01-23', 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-20', 'Fisica', (SELECT id FROM teacher WHERE username = 'alessandro.rossi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-21', 'Fisica', (SELECT id FROM teacher WHERE username = 'alessandro.rossi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-22', 'Fisica', (SELECT id FROM teacher WHERE username = 'alessandro.rossi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-23', 'Fisica', (SELECT id FROM teacher WHERE username = 'alessandro.rossi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-20', 'Chimica', (SELECT id FROM teacher WHERE username = 'maria.bianchi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-21', 'Chimica', (SELECT id FROM teacher WHERE username = 'maria.bianchi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 5, '2025-01-22', 'Chimica', (SELECT id FROM teacher WHERE username = 'maria.bianchi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-23', 'Chimica', (SELECT id FROM teacher WHERE username = 'maria.bianchi')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 1, '2025-01-15', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-17', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-17', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 5, '2025-01-17', 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-16', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 5, '2025-01-16', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-15', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-15', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-15', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-18', 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-16', 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-18', 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-21', 'Fisica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-23', 'Fisica', (SELECT id FROM teacher WHERE username = 'marco.gialli'));
 
-INSERT INTO signed_hour (teaching_timeslot_id, teacher_id, substitution)
+INSERT INTO signed_hour (teaching_timeslot_id, teacher_id, time_sign, substitution)
 VALUES
-    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-17' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-15' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-17' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-17' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-16' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-16' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-15' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-15' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-15' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-18' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-16' AND teaching_subject_title = 'Inglese'), (SELECT id FROM teacher WHERE username = 'anna.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese'),  (SELECT id FROM teacher WHERE username = 'anna.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica'), (SELECT id FROM teacher WHERE username = 'elena.blui'), false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica'), (SELECT id FROM teacher WHERE username = 'elena.blui'), false);
+    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-15 08:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-15 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-15 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-18 08:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-17' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-17 11:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-19' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-19 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-21' AND teaching_subject_title = 'Matematica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-21 08:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-22' AND teaching_subject_title = 'Fisica'), (SELECT id FROM teacher WHERE username = 'alessandro.rossi'), '2025-01-22 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica'), (SELECT id FROM teacher WHERE username = 'alessandro.rossi'), '2025-01-21 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-22' AND teaching_subject_title = 'Chimica'), (SELECT id FROM teacher WHERE username = 'maria.bianchi'), '2025-01-22 12:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-23' AND teaching_subject_title = 'Chimica'), (SELECT id FROM teacher WHERE username = 'maria.bianchi'), '2025-01-23 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-15' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-15 08:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-17' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-17 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-17' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-17 11:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' AND teaching_subject_title = 'Storia'), (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-17 12:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-16' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-16 11:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-16' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-16 12:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-15' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-15 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-15' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-15 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-15' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-15 11:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-18' AND teaching_subject_title = 'Italiano'), (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-18 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-16' AND teaching_subject_title = 'Inglese'), (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-16 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese'),  (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-18 11:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica'), (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-18 09:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica'), (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-18 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-21 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Fisica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-23 10:15',  false);
 
 INSERT INTO reception_timetable(teacher_id, text_info_reception, start_validity)
 VALUES
@@ -267,20 +305,36 @@ VALUES
 
 INSERT INTO class_activity (signed_hour_teaching_timeslot_id, title, description)
 VALUES
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-15' LIMIT 1)), 'Lezione di Matematica', 'Approfondimento sulle funzioni quadratiche.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' LIMIT 1)), 'Lezione di Matematica', 'Ripasso sulle equazioni di secondo grado.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-18' LIMIT 1)), 'Laboratorio di Informatica', 'Sviluppo di un programma semplice in Python.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-17' LIMIT 1)), 'Lezione di Storia', 'Discussione sulle principali invenzioni.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' LIMIT 1)), 'Lezione di Storia', 'Analisi degli eventi della Seconda Guerra Mondiale.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elisa.gialli') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-16' LIMIT 1)), 'Lezione di Italiano', 'Introduzione alla Divina Commedia di Dante Alighieri.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-16' LIMIT 1)), 'Lezione di Inglese', 'Approfondimento sulla grammatica.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' LIMIT 1)), 'Lezione di Inglese', 'Studio e analisi di un testo letterario inglese.');
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-15' AND teaching_subject_title = 'Matematica')), 'Lezione di Matematica', 'Approfondimento sulle funzioni quadratiche.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' AND teaching_subject_title = 'Matematica')), 'Lezione di Matematica', 'Ripasso sulle equazioni di secondo grado.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-19' AND teaching_subject_title = 'Matematica')), 'Approfondimento su funzioni lineari', 'Discussione sui concetti fondamentali delle funzioni lineari.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-21' AND teaching_subject_title = 'Matematica')), 'Ripasso di geometria', 'Esercizi e teoria sui poligoni regolari e circonferenze.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-22' AND teaching_subject_title = 'Fisica')), 'Lezione su moto rettilineo uniforme', 'Analisi teorica e risoluzione di problemi sul moto rettilineo uniforme.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica')), 'Esercizi su velocità e accelerazione', 'Problemi pratici per calcolare velocità, accelerazione e tempi di percorrenza.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-22' AND teaching_subject_title = 'Chimica')), 'Introduzione alla tavola periodica', 'Analisi degli elementi chimici e delle loro proprietà.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-23' AND teaching_subject_title = 'Chimica')), 'Esperimento: elettrolisi dell’acqua', 'Dimostrazione pratica dell’elettrolisi per separare idrogeno e ossigeno.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica')), 'Laboratorio di Informatica', 'Sviluppo di un programma semplice in Python.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-17' AND teaching_subject_title = 'Storia')), 'Lezione di Storia', 'Discussione sulle principali invenzioni.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' AND teaching_subject_title = 'Storia')), 'Lezione di Storia', 'Analisi degli eventi della Seconda Guerra Mondiale.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-16' AND teaching_subject_title = 'Italiano')), 'Lezione di Italiano', 'Introduzione alla Divina Commedia di Dante Alighieri.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-16' AND teaching_subject_title = 'Inglese')), 'Lezione di Inglese', 'Approfondimento sulla grammatica.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese')), 'Lezione di Inglese', 'Studio e analisi di un testo letterario inglese.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica')),'Esercizi sul moto rettilineo uniforme','Lezione pratica sul moto rettilineo uniforme.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Fisica')),'Ripasso sul moto rettilineo uniforme','Esercizi avanzati sul moto rettilineo uniforme.');
 
 INSERT INTO homework (signed_hour_teaching_timeslot_id, due_date, title, description)
 VALUES
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' LIMIT 1)), '2025-01-25', 'Esercizi sulle equazioni', 'Risolvere gli esercizi da 1 a 10 a pagina 50 del libro di testo.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' LIMIT 1)), '2025-01-24', 'Esercizi Rivoluzione Francese', 'Completa le domande a pagina 150.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui') AND teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' LIMIT 1)), '2025-02-15', 'Scrivi un saggio', 'Scrivi un saggio di 500 parole.');
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-18' AND teaching_subject_title = 'Matematica')), '2025-01-25', 'Esercizi sulle equazioni', 'Risolvere gli esercizi da 1 a 10 a pagina 50 del libro di testo.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-19' AND teaching_subject_title = 'Matematica')), '2025-01-25', 'Esercizi su funzioni lineari', 'Completare gli esercizi 1-10 a pagina 45 del libro di testo.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 1 AND date = '2025-01-21' AND teaching_subject_title = 'Matematica')), '2025-01-28', 'Ripasso di geometria', 'Disegnare i principali poligoni e calcolare le loro aree e perimetri.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-22' AND teaching_subject_title = 'Fisica')), '2025-01-30', 'Problemi sul moto rettilineo uniforme', 'Risolvere i problemi 5-8 a pagina 120 del libro di testo.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica')), '2025-01-27', 'Esercizi su velocità', 'Calcolare la velocità media in diversi scenari.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-22' AND teaching_subject_title = 'Chimica')), '2025-01-29', 'Ripasso sulla tavola periodica', 'Memorizzare i gruppi e i periodi principali della tavola periodica.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-23' AND teaching_subject_title = 'Chimica')), '2025-02-01', 'Relazione sull’elettrolisi', 'Scrivere una breve relazione sull’esperimento condotto in classe.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' AND teaching_subject_title = 'Storia')), '2025-01-24', 'Esercizi Rivoluzione Francese', 'Completa le domande a pagina 150.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese')), '2025-02-15', 'Scrivi un saggio', 'Scrivi un saggio di 500 parole.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica')),'2025-01-30','Esercizi sul moto rettilineo uniforme','Completa gli esercizi 1-10 del capitolo 3.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Fisica')),'2025-02-02','Moto rettilineo uniforme','Risolvi i problemi 5-8 a pagina 85 del libro di testo.');
 
 INSERT INTO homework_chat (homework_signed_hour_teaching_timeslot_id, title, student_id)
 VALUES
@@ -334,7 +388,7 @@ VALUES
 
 INSERT INTO red_date (class_timetable_id, date)
 VALUES
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) LIMIT 1), '2024-12-25');
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), '2024-12-25');
 
 INSERT INTO student_school_class (school_class_id, student_id)
 VALUES
