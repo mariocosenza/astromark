@@ -75,7 +75,7 @@ class TeacherRepositoryTest {
                 .surname(surname)
                 .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString())
                 .residentialAddress(faker.address().fullAddress())
-                .gender(true)
+                .male(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname)
                 .school(school).build());

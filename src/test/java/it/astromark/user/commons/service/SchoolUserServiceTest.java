@@ -1,8 +1,5 @@
 package it.astromark.user.commons.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
 import it.astromark.authentication.service.AuthenticationService;
@@ -30,6 +27,10 @@ import org.springframework.test.context.ActiveProfiles;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @Slf4j
 @ActiveProfiles(value = "test")
@@ -75,7 +76,7 @@ class SchoolUserServiceTest {
                 .surname(surname)
                 .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString()) //unsafe
                 .residentialAddress(faker.address().fullAddress())
-                .gender(true)
+                .male(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname)
                 .school(school).build();
