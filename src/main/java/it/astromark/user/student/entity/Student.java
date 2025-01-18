@@ -64,7 +64,7 @@ public class Student extends SchoolUser {
     @OneToMany(mappedBy = "student")
     private Set<SemesterReport> semesterReports = new LinkedHashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Builder.Default
     @JoinTable(name = "student_school_class",
             joinColumns = @JoinColumn(name = "student_id"),
