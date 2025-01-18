@@ -5,6 +5,7 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
 import ArticleIcon from '@mui/icons-material/Article';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
 import {useState} from "react";
 import {NavLink} from "react-router";
 import {isSelectedClass} from "../services/TeacherService.ts";
@@ -53,18 +54,29 @@ export const TeacherSideNav = () => {
                 </NavLink>
 
                 {isSelectedClass() && (
-                    <NavLink to="/teacher/agenda" end>
-                        <ListItem key="agenda" disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <HistoryEduIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={"Agenda di Classe"} />
-                            </ListItemButton>
-                        </ListItem>
-                    </NavLink>
+                    <>
+                        <NavLink to="/teacher/agenda" end>
+                            <ListItem key="agenda" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <HistoryEduIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Agenda di Classe"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink to="/teacher/appello" end>
+                            <ListItem key="appello" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <CoPresentIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Appello"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                    </>
                 )}
-
                 <Divider/>
                 <NavLink to={"/teacher/impostazioni"} end>
                     <ListItem key="impostazioni" disablePadding>
