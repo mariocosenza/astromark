@@ -42,7 +42,7 @@ public class SecretaryServiceImpl implements SecretaryService{
                 .surname(secretaryRequest.surname())
                 .email(secretaryRequest.email())
                 .username(username)
-                .gender(secretaryRequest.gender())
+                .male(secretaryRequest.male())
                 .residentialAddress(secretaryRequest.residentialAddress())
                 .birthDate(secretaryRequest.birthDate())
                 .taxId(secretaryRequest.taxId())
