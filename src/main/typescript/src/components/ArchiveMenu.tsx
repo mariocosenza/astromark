@@ -18,7 +18,6 @@ export const ArchiveMenu: React.FC = () => {
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
-        console.log(SelectedYear.year)
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -28,16 +27,17 @@ export const ArchiveMenu: React.FC = () => {
         fetchData();
     }, []);
 
-    const fetchData = async () => {
+    const fetchData = () => {
         try {
-            await getStudentYears().then((response) => {
-                if(response !== null) {
-                    setData(response)
-                    SelectedYear.year = response[0]
-                }
-                else {
-                    setData(new Array(new Date().getFullYear()))
-                }
+           getStudentYears().then((response) => {
+                    if (response !== null) {
+                        if (SelectedYear.isNull()) {
+                            SelectedYear.year = response[0]
+                        }
+                        setData(response)
+                    } else {
+                        setData(new Array(new Date().getFullYear()))
+                    }
             })
             setLoading(false);
         } catch (error) {
@@ -71,7 +71,7 @@ export const ArchiveMenu: React.FC = () => {
                   !loading && data.map((year: number) => <MenuItem key={year} onClick={() => {
                         SelectedYear.year = year
                         handleClose()
-                    }}>{year}</MenuItem>)
+                    }}>{year + '/' + (year + 1)}</MenuItem>)
                 }
             </Menu>
         </div>
