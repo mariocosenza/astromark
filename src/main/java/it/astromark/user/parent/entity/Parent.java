@@ -37,7 +37,7 @@ public class Parent extends SchoolUser {
     private Set<ReceptionBooking> receptionBookings = new LinkedHashSet<>();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Singular
     @JoinTable(name = "student_parent",
             joinColumns = @JoinColumn(name = "parent_id"),
