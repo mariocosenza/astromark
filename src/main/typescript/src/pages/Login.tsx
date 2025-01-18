@@ -141,6 +141,8 @@ export const Login = () => {
     };
 
     useEffect(() => {
+        localStorage.removeItem("studentId")
+        localStorage.removeItem("year")
         if (isLogged() && !isExpired()) {
             navigator("/" + getRole().toLowerCase() + "/dashboard")
         }
@@ -154,7 +156,7 @@ export const Login = () => {
             display: 'flex',
             flexDirection: 'column'
         }}>
-            <HomePageNavbar showLogin={false}/>
+            <HomePageNavbar/>
             <Box p='2%' style={{boxShadow: '0px 4px 50px rgba(0, 0, 0, 0.25)', margin: 'auto', maxWidth: '90vw'}}>
                 <div>
                     <form onSubmit={formik.handleSubmit}>

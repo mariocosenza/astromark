@@ -8,7 +8,6 @@ import {Role} from "../components/route/ProtectedRoute.tsx";
 export async function getStudentYears() {
     if(SelectedStudent.id !== null) {
         const response : AxiosResponse<number[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/years`)
-
        return response.data
     } else if(getRole().toUpperCase() === Role.STUDENT) {
         SelectedStudent.id = getId();
@@ -19,10 +18,3 @@ export async function getStudentYears() {
 }
 
 
-export const getLatestStudentYear  = getStudentYears().then(function(result) {
-    if(result !== null) {
-        return result[0]
-    } else {
-        return new Date().getFullYear();
-    }
-});

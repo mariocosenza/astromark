@@ -11,16 +11,21 @@ export function logout(): void {
     try {
         if(localStorage.getItem("user") !== null) {
             axiosConfig.post(Env.API_BASE_URL + "/auth/logout").then(_ => localStorage.removeItem("user"))
+            localStorage.removeItem("year")
+            localStorage.removeItem("studentId")
         }
     } catch (e) {
         console.log("User not exist");
     }
 }
 
-export function asyncLogout(item : any): void {
+export async function asyncLogout(item : any) {
     try {
         if(item !== null) {
-            axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
+          await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
+            localStorage.removeItem("user")
+            localStorage.removeItem("year")
+            localStorage.removeItem("studentId")
         }
     } catch (e) {
         console.log("User not exist");

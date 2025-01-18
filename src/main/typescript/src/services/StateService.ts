@@ -4,17 +4,18 @@ import {Role} from "../components/route/ProtectedRoute.tsx";
 
 export class SelectedYear {
     static get year(): number {
-        return this._year;
+        return this._year as number;
+    }
+
+    static isNull() {
+        return this._year === null;
     }
 
     static set year(value: number) {
+        localStorage.setItem("year", value.toString());
         this._year = value;
     }
-    private static _year = new Date().getMonth() > 9 ? new Date().getFullYear() : new Date().getFullYear() - 1;
-
-}
-
-export class SelectedClass {
+    private static _year : null | number = localStorage.getItem("year") ? parseInt(localStorage.getItem("year") as string) : null;
 
 }
 
@@ -28,7 +29,8 @@ export class SelectedStudent {
     }
 
     static set id(value: string) {
+        localStorage.setItem("studentId", value);
         this._id = value;
     }
-    private static _id: string | null = null;
+    private static _id: string | null = localStorage.getItem("studentId") ? localStorage.getItem("studentId") : null;
 }
