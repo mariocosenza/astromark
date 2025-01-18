@@ -1,6 +1,6 @@
 import {Avatar, Box, Button, Typography} from "@mui/material";
 import React from "react";
-import {homeworkChatId, openChat} from "../pages/students/ClassActivity.tsx";
+import {homeworkChatId, openChat} from "../pages/./studentsParents/ClassActivity.tsx";
 import {getRole} from "../services/AuthService.ts";
 import {Role} from "./route/ProtectedRoute.tsx";
 
