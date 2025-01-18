@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {CircularProgress, IconButton, Stack, styled, tableCellClasses, TableContainer, Typography,} from "@mui/material";
+import {CircularProgress, IconButton, Stack, TableContainer, Typography,} from "@mui/material";
 import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DatePicker, {DateObject} from "react-multi-date-picker";
@@ -18,6 +16,7 @@ import {Env} from "../../Env.ts";
 import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useNavigate} from "react-router";
 import {getId} from "../../services/AuthService.ts";
+import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 
 export interface ClassAgendaRow {
     id: number
@@ -32,23 +31,6 @@ export interface ClassAgendaRow {
     homeworkDesc: string;
     homeworkDate: DateObject;
 }
-
-const CustomTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-    },
-}));
-
-const CustomTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: 'var(--md-sys-color-primary)',
-        color: 'white',
-        borderColor: 'black',
-    },
-
-    border: '1px solid gray',
-    fontSize: '1.1rem',
-}));
 
 export const ClassAgenda: React.FC = () => {
     const [rows, setRows] = useState<ClassAgendaRow[]>([]);
