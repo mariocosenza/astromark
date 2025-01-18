@@ -8,20 +8,23 @@ import {Login} from "./pages/Login.tsx";
 import {ProtectedRoutePath, Role} from "./components/route/ProtectedRoute.tsx";
 import React, {StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
-import {Dashboard} from "./pages/students/Dashboard.tsx";
-import {Mark} from "./pages/students/Mark.tsx";
-import {ClassActivity} from "./pages/students/ClassActivity.tsx";
+import {Dashboard} from "./pages/./studentsParents/Dashboard.tsx";
+import {Mark} from "./pages/./studentsParents/Mark.tsx";
+import {ClassActivity} from "./pages/./studentsParents/ClassActivity.tsx";
 import {Settings} from "./pages/Settings.tsx";
-import {AbsenceDelays} from "./pages/students/AbsenceDelay.tsx";
-import {Allert} from "./pages/students/Communication.tsx";
-import {Note} from "./pages/students/Note.tsx";
+import {AbsenceDelays} from "./pages/./studentsParents/AbsenceDelay.tsx";
+import {Allert} from "./pages/./studentsParents/Communication.tsx";
+import {Note} from "./pages/./studentsParents/Note.tsx";
 import {TeacherDashboard} from "./pages/teacher/TeacherDashboard.tsx";
 import {SchoolClass} from "./pages/teacher/SchoolClass.tsx";
 import {TeacherTicket} from "./pages/teacher/TeacherTicket.tsx";
-import {Timetable} from "./pages/students/Timetable.tsx";
-import {SemesterReport} from "./pages/students/Report.tsx";
+import {Timetable} from "./pages/./studentsParents/Timetable.tsx";
+import {SemesterReport} from "./pages/./studentsParents/Report.tsx";
 import {isSelectedClass} from "./services/TeacherService.ts";
 import {ClassAgenda} from "./pages/teacher/ClassAgenda.tsx";
+import {ProtectedStudentParentRoute} from "./components/route/ProtectedStudentParentRoute.tsx";
+import {Ticket} from "./pages/parents/Ticket.tsx";
+import {Reception} from "./pages/parents/Reception.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -37,7 +40,7 @@ ReactDOM.createRoot(root).render(
                     <Route path="/" element={<App />} />
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
-                    <Route path="/student" element={<ProtectedRoutePath role={Role.STUDENT}/>}>
+                    <Route path="/student" element={<ProtectedStudentParentRoute role={Role.STUDENT}/>}>
                         <Route path="dashboard" element={<Dashboard/>}/>
                         <Route path="voti" element={<Mark/>}/>
                         <Route path="assenze" element={<AbsenceDelays/>}/>
@@ -62,7 +65,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace />} />
-                    <Route path="/parent" element={<ProtectedRoutePath role={Role.PARENT}/>}>
+                    <Route path="/parent" element={<ProtectedStudentParentRoute role={Role.PARENT}/>}>
                         <Route path="dashboard" element={<Dashboard/>}/>
                         <Route path="voti" element={<Mark/>}/>
                         <Route path="assenze" element={<AbsenceDelays/>}/>
@@ -72,6 +75,8 @@ ReactDOM.createRoot(root).render(
                         <Route path="orario" element={<Timetable/>}/>
                         <Route path="avvisi" element={<Allert/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
+                        <Route path="ticket" element={<Ticket/>}/>
+                        <Route path="ricevimento" element={<Reception/>}/>
                     </Route>
                     <Route path="*" element={<MissingRoute/>}/>
                 </Routes>

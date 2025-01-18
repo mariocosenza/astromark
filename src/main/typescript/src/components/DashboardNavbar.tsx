@@ -1,19 +1,19 @@
 import React from "react";
 import {AppBar, Box, Toolbar, Typography} from "@mui/material";
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {StudentParentSideNav} from "./StudentParentSideNav.tsx";
 import {Role} from "./route/ProtectedRoute.tsx";
 import {asyncLogout, isRole} from "../services/AuthService.ts";
 import {ArchiveMenu} from "./ArchiveMenu.tsx";
 import {NavLink, useNavigate} from "react-router";
+import {AccountMenu} from "./AccountMenu.tsx";
 
 
 
 export const DashboardNavbar: React.FC = () => {
     const navigator = useNavigate()
     return (
-        <header>
+        <header style={{overflowY: "hidden"}}>
             <Box sx={{flexGrow: 1, width: '100%'}}>
                 <AppBar position="static">
                     <Toolbar>
@@ -23,16 +23,14 @@ export const DashboardNavbar: React.FC = () => {
                             AstroMark
                             </NavLink>
                         </Typography>
-                        <ArchiveMenu/>
                         {
-                            isRole(Role.PARENT) && <div> <AccountCircleOutlinedIcon/></div>
+                            isRole(Role.PARENT) && <div> <AccountMenu/></div>
                         }
+                        <ArchiveMenu/>
                         <LogoutOutlinedIcon
                             sx={{ml: 1}}
                             onClick={() => {
-                                asyncLogout(localStorage.getItem("user"))
-                                localStorage.removeItem("user")
-                                navigator('/logout')
+                                asyncLogout(localStorage.getItem("user")).then(_ => navigator('/logout'))
                             }
                             }
                         />
