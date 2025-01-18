@@ -14,6 +14,7 @@ import {CustomTableCell, CustomTableRow} from "../../components/CustomTableCompo
 import {AttendanceResponse} from "../../entities/AttendanceResponse.ts";
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
+import {DelayComponent} from "../../components/DelayComponent.tsx";
 
 export type AttendanceRow = {
     id: string;
@@ -86,10 +87,7 @@ export const Attendance: React.FC = () => {
 
             {changeView ? (
                 <div>
-                    <h1>Segna Ritardo</h1>
-                    <Button variant="contained" color="primary" onClick={() => {setChangeView(false)}}>
-                        Salva
-                    </Button>
+                    <DelayComponent returnBack={() => {setChangeView(false)}}/>
                 </div>
             ) : (
                 <div>
