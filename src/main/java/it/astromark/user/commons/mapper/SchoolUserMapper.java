@@ -5,11 +5,17 @@ import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.dto.ParentDetailedResponse;
 import it.astromark.user.parent.entity.Parent;
+import it.astromark.user.student.entity.Student;
 import org.mapstruct.Mapper;
+
+import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface SchoolUserMapper {
     SchoolUserResponse toSchoolUserResponse(SchoolUser student);
     SchoolUserDetailed toSchoolUserDetailed(SchoolUser student);
     ParentDetailedResponse toParentDetailedResponse(Parent student);
+    List<SchoolUserDetailed> toSchoolUserDetailedList(Set<Student> students);
+
 }
