@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Box, Divider, Stack, Tab, Tabs} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {AxiosResponse} from "axios";
 import {JustifiableList, JustificationListProp} from "../../components/JustifiableList.tsx";
 
@@ -33,10 +33,11 @@ function toJustificationListProp(justification: JustificationResponse[], absence
 const Absence : React.FC = () => {
     const [data, setData] = useState<JustificationResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [toggle, _] = changeStudentOrYear();
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
@@ -60,10 +61,11 @@ const Absence : React.FC = () => {
 const Delay : React.FC = () => {
     const [data, setData] = useState<JustificationResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [toggle, _] = changeStudentOrYear();
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
@@ -88,10 +90,11 @@ export const AbsenceDelays: React.FC = () => {
     const [value, setValue] = useState<number>(0);
     const [totAbsences, setTotAbsences] = useState<number>(0);
     const [totDelays, setTotDelays] = useState<number>(0);
+    const [toggle, _] = changeStudentOrYear();
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {

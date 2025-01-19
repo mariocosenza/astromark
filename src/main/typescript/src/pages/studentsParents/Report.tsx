@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
-import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import {getRole} from "../../services/AuthService.ts";
 import {Role} from "../../components/route/ProtectedRoute.tsx";
@@ -41,12 +41,12 @@ export const SemesterReport: React.FC = () => {
     const [data, setData]  = useState<SemesterReportResponse>();
     const [secondData, setSecondData]  = useState<SemesterReportResponse>();
     const [loading, setLoading] = useState<boolean>(true);
-
+    const [toggle, _] = changeStudentOrYear();
 
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {

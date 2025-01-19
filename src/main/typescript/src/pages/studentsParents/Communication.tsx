@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {AccordionNotViewable} from "../../components/AccordionNotViewable.tsx";
 import axiosConfig from "../../services/AxiosConfig.ts";
-import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
 
@@ -22,10 +22,11 @@ export type SchoolClass = {
 export const Allert : React.FC = () => {
     const [allerts, setAllerts] = React.useState<Communication[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
+    const [toggle, _] = changeStudentOrYear();
 
     useEffect(() => {
         fetchData()
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {

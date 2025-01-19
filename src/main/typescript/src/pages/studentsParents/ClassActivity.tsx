@@ -14,7 +14,7 @@ import {AxiosResponse} from "axios";
 import {SchoolClass} from "./Communication.tsx";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {ListGeneric} from "../../components/ListGeneric.tsx";
 import MenuItem from "@mui/material/MenuItem";
 import {ChatHomeworkComponent} from "../../components/ChatHomework.tsx";
@@ -52,6 +52,7 @@ export const Homework: React.FC = () => {
     const [activity, setActivity] = React.useState<HomeworkResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
+    const [toggle, _] = changeStudentOrYear();
     const [open, ] = openChat();
     const [chatId, ] = homeworkChatId();
 
@@ -59,9 +60,10 @@ export const Homework: React.FC = () => {
         setSubject(event.target.value as string);
     };
 
+
     useEffect(() => {
-        fetchData()
-    }, []);
+        fetchData();
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
