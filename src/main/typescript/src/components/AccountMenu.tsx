@@ -3,11 +3,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import {IconButton} from "@mui/material";
-import {useEffect, useState} from "react";
-import {SelectedStudent, SelectedYear} from "../services/StateService.ts";
-import axiosConfig from "../services/AxiosConfig.ts";
-import {Env} from "../Env.ts";
-import {getStudentYears} from "../services/StudentService.ts";
+import {useState} from "react";
+import {changeStudentOrYear, SelectedStudent} from "../services/StateService.ts";
 
 export type SchoolUserDetail =  {
     id: string;
@@ -21,41 +18,21 @@ export type SchoolUserDetail =  {
 }
 
 
+export type SchoolUserDetailProp = {
+    data: SchoolUserDetail[]
+}
 
 
-export const AccountMenu: React.FC = () => {
+export const AccountMenu: React.FC<SchoolUserDetailProp> = ({data}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [data, setData]  = useState<SchoolUserDetail[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const open = Boolean(anchorEl);
+    const [toggle, setToggle] = changeStudentOrYear();
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData =  () => {
-        try {
-            axiosConfig.get<SchoolUserDetail[]>(Env.API_BASE_URL + '/parents/students').then((response) => {
-               SelectedStudent.id = response.data[0].id
-               setData(response.data)
-               getStudentYears().then((response) => {
-                   console.log(response)
-                       if (response !== null && SelectedYear.isNull()) {
-                           SelectedYear.year = response[0]
-                       }
-               })
-               setLoading(false);
-           });
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     return (
         <div>
@@ -80,8 +57,9 @@ export const AccountMenu: React.FC = () => {
                 }}
             >
                 {
-                  !loading && data.map((student: SchoolUserDetail) => <MenuItem key={student.id} onClick={() => {
+                  data.map((student: SchoolUserDetail) => <MenuItem key={student.id} onClick={() => {
                         SelectedStudent.id = student.id
+                        setToggle(!toggle)
                         handleClose()
                     }}>{student.name + ' ' + student.surname}</MenuItem>)
                 }

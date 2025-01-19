@@ -3,19 +3,19 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import {IconButton} from "@mui/material";
-import {useEffect, useState} from "react";
-import {getStudentYears} from "../services/StudentService.ts";
-import {SelectedYear} from "../services/StateService.ts";
+import {useState} from "react";
+import {changeStudentOrYear, SelectedYear} from "../services/StateService.ts";
 
 
+export type Year = {
+    data: number[];
+}
 
 
-
-export const ArchiveMenu: React.FC = () => {
+export const ArchiveMenu: React.FC<Year> = ({data}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [data, setData]  = useState<number[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const open = Boolean(anchorEl);
+    const [toggle, setToggle] = changeStudentOrYear();
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -23,27 +23,6 @@ export const ArchiveMenu: React.FC = () => {
         setAnchorEl(null);
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = () => {
-        try {
-           getStudentYears().then((response) => {
-                    if (response !== null) {
-                        if (SelectedYear.isNull()) {
-                            SelectedYear.year = response[0]
-                        }
-                        setData(response)
-                    } else {
-                        setData(new Array(new Date().getFullYear()))
-                    }
-            })
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     return (
         <div>
@@ -68,8 +47,9 @@ export const ArchiveMenu: React.FC = () => {
                 }}
             >
                 {
-                  !loading && data.map((year: number) => <MenuItem key={year} onClick={() => {
+                  data.map((year: number) => <MenuItem key={year} onClick={() => {
                         SelectedYear.year = year
+                        setToggle(!toggle)
                         handleClose()
                     }}>{year + '/' + (year + 1)}</MenuItem>)
                 }
