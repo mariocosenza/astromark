@@ -21,11 +21,11 @@ export function logout(): void {
 
 export async function asyncLogout(item : any) {
     try {
+        localStorage.removeItem("year")
+        localStorage.removeItem("studentId")
         if(item !== null) {
           await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
             localStorage.removeItem("user")
-            localStorage.removeItem("year")
-            localStorage.removeItem("studentId")
         }
     } catch (e) {
         console.log("User not exist");

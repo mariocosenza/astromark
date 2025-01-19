@@ -1,5 +1,6 @@
 import {getId, getRole} from "./AuthService.ts";
 import {Role} from "../components/route/ProtectedRoute.tsx";
+import {createGlobalState} from "react-use";
 
 
 export class SelectedYear {
@@ -18,6 +19,8 @@ export class SelectedYear {
     private static _year : null | number = localStorage.getItem("year") ? parseInt(localStorage.getItem("year") as string) : null;
 
 }
+
+export const changeStudentOrYear = createGlobalState<boolean>(false)
 
 export class SelectedStudent {
     static get id(): string | null {
