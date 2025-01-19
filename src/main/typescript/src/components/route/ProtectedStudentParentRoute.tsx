@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router';
 
 import React from "react";
-import {getRole, isExpired, isLogged, logout} from "../../services/AuthService.ts";
+import {getRole, isExpired, isLogged} from "../../services/AuthService.ts";
 import {DashboardNavbar} from "../DashboardNavbar.tsx";
 import {ProtectedRoutePathProps} from "./ProtectedRoute.tsx";
 
@@ -15,7 +15,7 @@ export const ProtectedStudentParentRoute: React.FC<ProtectedRoutePathProps> = ({
 
     if(expired || getRole().toUpperCase() !== role) {
         if(expired) {
-            logout()
+            localStorage.removeItem("user")
         }
 
         return <Navigate to="/" replace />;
