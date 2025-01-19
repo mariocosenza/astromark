@@ -141,6 +141,8 @@ export const Login = () => {
     };
 
     useEffect(() => {
+        localStorage.removeItem("studentId")
+        localStorage.removeItem("year")
         if (isLogged() && !isExpired()) {
             navigator("/" + getRole().toLowerCase() + "/dashboard")
         }
@@ -154,7 +156,7 @@ export const Login = () => {
             display: 'flex',
             flexDirection: 'column'
         }}>
-            <HomePageNavbar showLogin={false}/>
+            <HomePageNavbar/>
             <Box p='2%' style={{boxShadow: '0px 4px 50px rgba(0, 0, 0, 0.25)', margin: 'auto', maxWidth: '90vw'}}>
                 <div>
                     <form onSubmit={formik.handleSubmit}>
@@ -180,7 +182,7 @@ export const Login = () => {
                             color="primary"
                             type="text"
                             name="username"
-                            placeholder="Mario Rossi"
+                            placeholder="mario.rossi"
                             sx={{mb: 3}}
                             fullWidth
                             value={formik.values.username}
@@ -195,7 +197,7 @@ export const Login = () => {
                             color="primary"
                             type="password"
                             name="password"
-                            placeholder="john@johndoe.com"
+                            placeholder="*******"
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -246,7 +248,7 @@ export const Login = () => {
                             error && <Alert id="errorLogin" sx={{mb: '1rem'}} severity="error">Credenziali errate</Alert>
                         }
                         <div className={'centerInForm'}>
-                            <Button variant="contained" type="submit" size="large" disabled={!formik.isValid}>
+                            <Button variant="contained" style={{backgroundColor: 'rgb(85,108,151)', color: 'white'}} type="submit" size="large" disabled={!formik.isValid}>
                                 Accedi
                             </Button>
                         </div>

@@ -2,7 +2,7 @@ package it.astromark.user.secretary.repository;
 
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
-import it.astromark.commons.validator.SpringValidationConf;
+import it.astromark.commons.configuration.SpringValidationConf;
 import it.astromark.school.repository.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.PendingState;
@@ -74,7 +74,7 @@ class SecretaryRepositoryTest {
                 .surname(surname)
                 .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString())
                 .residentialAddress(faker.address().fullAddress())
-                .gender(true)
+                .male(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname)
                 .school(school).build());

@@ -19,7 +19,7 @@ export const App: React.FC = () => {
            height: '100vh',
            display: 'flex',
            flexDirection: 'column'}}>
-        <HomePageNavbar showLogin={true}/>
+        <HomePageNavbar/>
             <Box sx={{ height: '100%', width: '80vw', m: 'auto', flex: 1}}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mx='0%' mt='5%'>
                     <Grid size={6}>

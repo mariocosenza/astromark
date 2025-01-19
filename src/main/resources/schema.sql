@@ -88,7 +88,7 @@ CREATE TABLE parent
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_parent PRIMARY KEY (id),
-    CONSTRAINT uk_parent_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_parent_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_parent_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -108,7 +108,7 @@ CREATE TABLE secretary
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_secretary PRIMARY KEY (id),
-    CONSTRAINT uk_secretary_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_secretary_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_secretary_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -128,7 +128,7 @@ CREATE TABLE teacher
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_teacher PRIMARY KEY (id),
-    CONSTRAINT uk_teacher_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_teacher_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_teacher_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -174,7 +174,7 @@ CREATE TABLE student
     PENDING_STATE       PENDINGSTATE DEFAULT 'FIRST_LOGIN',
 
     CONSTRAINT pk_student PRIMARY KEY (id),
-    CONSTRAINT uk_student_username_code_tax_id UNIQUE (username, school_code, tax_id),
+    CONSTRAINT uk_student_username_code_tax_id UNIQUE (school_code, tax_id),
     CONSTRAINT fk_student_school FOREIGN KEY (school_code) REFERENCES school (code)
 );
 
@@ -274,7 +274,8 @@ CREATE TABLE class_timetable
     end_validity    DATE CHECK (end_validity IS NULL OR end_validity > start_validity),
 
     CONSTRAINT pk_class_timetable PRIMARY KEY (id),
-    CONSTRAINT fk_class_timetable_school_class FOREIGN KEY (school_class_id) REFERENCES school_class (id)
+    CONSTRAINT fk_class_timetable_school_class FOREIGN KEY (school_class_id) REFERENCES school_class (id),
+    CONSTRAINT uk_class_timetable UNIQUE (school_class_id, start_validity, end_validity)
 );
 
 CREATE TABLE reception_timetable
@@ -295,12 +296,15 @@ CREATE TABLE teaching_timeslot
 
     id                 INT GENERATED ALWAYS AS IDENTITY,
     class_timetable_id INT                                      NOT NULL,
+    teaching_subject_title VARCHAR(255)                         NOT NULL,
+    teaching_teacher_id    UUID                                 NOT NULL,
     hour               SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
     date               DATE                                     NOT NULL,
 
     CONSTRAINT pk_teaching_timeslot PRIMARY KEY (id),
     CONSTRAINT uk_teaching_timeslot UNIQUE (class_timetable_id, hour, date),
-    CONSTRAINT fk_teaching_timeslot_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk_teaching_timeslot_class_timetable FOREIGN KEY (class_timetable_id) REFERENCES class_timetable (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_teaching_timeslot_teaching FOREIGN KEY (teaching_subject_title, teaching_teacher_id) REFERENCES teaching (subject_title, teacher_id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 
@@ -449,8 +453,9 @@ CREATE TABLE red_date
 
 CREATE TABLE student_school_class
 (
-    school_class_id SERIAL,
-    student_id      UUID,
+    school_class_id   SERIAL,
+    student_id        UUID,
+    change_class_date DATE DEFAULT NULL,
 
     CONSTRAINT pk_student_school_class PRIMARY KEY (school_class_id, student_id),
     CONSTRAINT fk_student_school_class_school_class FOREIGN KEY (school_class_id) REFERENCES school_class(id),

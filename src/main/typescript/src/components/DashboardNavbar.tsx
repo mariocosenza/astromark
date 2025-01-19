@@ -1,19 +1,69 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {AppBar, Box, Toolbar, Typography} from "@mui/material";
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {StudentParentSideNav} from "./StudentParentSideNav.tsx";
 import {Role} from "./route/ProtectedRoute.tsx";
-import {isRole, logout} from "../services/AuthService.ts";
+import {asyncLogout, isRole} from "../services/AuthService.ts";
 import {ArchiveMenu} from "./ArchiveMenu.tsx";
 import {NavLink, useNavigate} from "react-router";
+import {AccountMenu, SchoolUserDetail} from "./AccountMenu.tsx";
+import {getStudentYears} from "../services/StudentService.ts";
+import {SelectedStudent, SelectedYear} from "../services/StateService.ts";
+import axiosConfig from "../services/AxiosConfig.ts";
+import {Env} from "../Env.ts";
 
 
 
 export const DashboardNavbar: React.FC = () => {
+
+    const [students, setStudents]  = useState<SchoolUserDetail[]>([]);
+    const [years, setYears]  = useState<number[]>([]);
+    const [loading, setLoading] = React.useState<boolean>(true);
+
+
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            if(!isRole(Role.STUDENT)) {
+                await axiosConfig.get<SchoolUserDetail[]>(Env.API_BASE_URL + '/parents/students').then((response) => {
+                    SelectedStudent.id = response.data[0].id
+                    setStudents(response.data)
+                    getStudentYears().then((response) => {
+                        console.log(response)
+                        if (response !== null) {
+                            SelectedYear.year = response[0]
+                        }
+                    })
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        try {
+            await getStudentYears().then((response) => {
+                if (response !== null) {
+                    if (SelectedYear.isNull()) {
+                        SelectedYear.year = response[0]
+                    }
+                    setYears(response)
+                } else {
+                    setYears(new Array(new Date().getFullYear()))
+                }
+            })
+            setLoading(false);
+        } catch (error) {
+            setYears(new Array(new Date().getFullYear()))
+            console.error(error);
+        }
+    }
+
     const navigator = useNavigate()
     return (
-        <header>
+        <header style={{overflowY: "hidden"}}>
             <Box sx={{flexGrow: 1, width: '100%'}}>
                 <AppBar position="static">
                     <Toolbar>
@@ -23,15 +73,16 @@ export const DashboardNavbar: React.FC = () => {
                             AstroMark
                             </NavLink>
                         </Typography>
-                        <ArchiveMenu/>
                         {
-                            isRole(Role.PARENT) && <div> <AccountCircleOutlinedIcon/></div>
+                           !loading && isRole(Role.PARENT) && <div> <AccountMenu data={students}/></div>
+                        }
+                        {
+                            !loading && <ArchiveMenu data={years}/>
                         }
                         <LogoutOutlinedIcon
                             sx={{ml: 1}}
                             onClick={() => {
-                                logout()
-                                navigator('/')
+                                asyncLogout(localStorage.getItem("user")).then(_ => navigator('/logout'))
                             }
                             }
                         />

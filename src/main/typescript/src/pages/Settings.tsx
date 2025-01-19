@@ -1,81 +1,138 @@
-import React, {useEffect, useState} from "react";
-import {Alert, Box, Button, InputLabel, Stack, TextField} from "@mui/material";
-import {getRole, logout} from "../services/AuthService.ts";
-import {Role} from "../components/route/ProtectedRoute.tsx";
-import {DashboardNavbar} from "../components/DashboardNavbar.tsx";
-import DatePicker, {DateObject} from "react-multi-date-picker";
+import React, { useEffect, useState } from "react";
+import { Alert, Box, Button, InputLabel, Stack, TextField, Typography } from "@mui/material";
+import { logout } from "../services/AuthService.ts";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 import axiosConfig from "../services/AxiosConfig.ts";
-import {Env} from "../Env.ts";
-import {AxiosResponse} from "axios";
+import { Env } from "../Env.ts";
+import { AxiosResponse } from "axios";
 import YupPassword from "yup-password";
 import * as yup from "yup";
 
 
-function sendPreferences(confirmPassword: string | undefined,password: string | undefined) {
-    if (password === undefined || confirmPassword === undefined) {
-        return
+export function validateAddress(address: string): boolean {
+    if (address.length < 5) {
+        return false;
     }
-    if(confirmPassword === password) {
-        axiosConfig.patch(Env.API_BASE_URL + '/school-users/preferences', {
-            password: password
-        })
-        logout()
-    }
+    const addressRegex = /^[a-zA-Z0-9\s.]+$/;
+    return addressRegex.test(address);
+
 }
 
 function sendAddress(address: string) {
-    axiosConfig.patch(Env.API_BASE_URL + '/school-users/address', address)
+    if (validateAddress(address)) {
+        axiosConfig
+            .patch(Env.API_BASE_URL + "/school-users/address", address)
+            .then(() => {
+                // eventuale logica di successo
+            })
+            .catch((err) => {
+                console.error("Errore durante l'invio dell'indirizzo:", err);
+            });
+    } else {
+        console.error("Indirizzo non valido");
+    }
 }
 
 type SchoolUser = {
-    name: string,
-    surname: string,
-    taxId: string,
-    email: string,
-    residentialAddress: string,
-    birthDate: Date
-}
+    name: string;
+    surname: string;
+    taxId: string;
+    email: string;
+    residentialAddress: string;
+    birthDate: Date;
+};
 
-
-YupPassword(yup) // extend yup
+YupPassword(yup); // extend yup
 
 const passwordValidation = yup.object().shape({
-    password: yup.string()
-        .strict(true)
-        .password()
-        .min(8, 'Minimo 8 caratteri')
-        .minSymbols(1)
-        .minLowercase(1)
-        .minUppercase(1)
-        .minNumbers(1)
+    password: yup
+        .string()
+        .min(8, "Minimo 8 caratteri")
+        .matches(/[a-z]/, "Deve contenere almeno una lettera minuscola")
+        .matches(/[A-Z]/, "Deve contenere almeno una lettera maiuscola")
+        .matches(/[0-9]/, "Deve contenere almeno un numero")
+        .matches(/[^a-zA-Z0-9]/, "Deve contenere almeno un simbolo")
         .required("Password obbligatoria"),
 });
 
 export const Settings: React.FC = () => {
-    const [address, setAddress] = useState<string>()
-    const [schoolUser, setSchoolUser] = useState<SchoolUser>()
-    const [confirmPassword, setConfirmPassword] = useState<string>()
-    const [newPassword, setNewPassword] = useState<string>()
-    const [error, setError] = useState<boolean>(false)
-    const [saved, setSaved] = useState<boolean>(false)
+    // Stati relativi all'indirizzo
+    const [address, setAddress] = useState<string>("");
+    const [addressError, setAddressError] = useState<boolean>(false);
+    const [addressValidationMessage, setAddressValidationMessage] = useState<string>("");
+    const [addressSaved, setAddressSaved] = useState<boolean>(false);
 
-    const onPasswordChange = (password: string) => {
-        if(passwordValidation.isValidSync(password)) {
-            setNewPassword(password)
-            setError(false)
-            setSaved(false)
-        } else {
-            setError(true)
+    // Stati relativi all'utente e alle password
+    const [schoolUser, setSchoolUser] = useState<SchoolUser>();
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [newPassword, setNewPassword] = useState<string>("");
+    const [error, setError] = useState<boolean>(false);
+    const [validationMessage, setValidationMessage] = useState<string>("");
+
+    const validatePassword = async (password: string): Promise<boolean> => {
+        try {
+            await passwordValidation.validate({ password }, { abortEarly: false });
+            return true;
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                setValidationMessage(err.errors[0]);
+            }
+            return false;
         }
-    }
+    };
 
-    const onConfirmPasswordChange = (password: string) => {
-        if(passwordValidation.isValidSync(password)) {
-            setConfirmPassword(password)
-            setError(false)
-            setSaved(false)
-        } else {
-            setError(true)
+    const onPasswordChange = async (password: string) => {
+        setNewPassword(password);
+        // Resettiamo lo stato password
+        setError(false);
+        setValidationMessage("");
+
+        const isValid = await validatePassword(password);
+        setError(!isValid);
+    };
+
+    const onConfirmPasswordChange = async (password: string) => {
+        setConfirmPassword(password);
+        // Resettiamo lo stato password
+        setError(false);
+        setValidationMessage("");
+
+        if (password !== newPassword) {
+            setError(true);
+            setValidationMessage("Le password non coincidono");
+            return;
+        }
+
+        const isValid = await validatePassword(password);
+        setError(!isValid);
+    };
+
+    async function sendPreferences(
+        confirmPassword: string | undefined,
+        password: string | undefined
+    ) {
+        try {
+            if (!password || !confirmPassword) {
+                setError(true);
+                return;
+            }
+            if (password !== confirmPassword) {
+                setError(true);
+                return;
+            }
+            const isValid = await validatePassword(password);
+            if (!isValid) {
+                setError(true);
+                return;
+            }
+            await axiosConfig.patch(Env.API_BASE_URL + "/school-users/preferences", {
+                password: password,
+            });
+            logout();
+            window.location.href = "/";
+        } catch (error) {
+            console.error("Error updating preferences:", error);
+            setError(true);
         }
     }
 
@@ -85,73 +142,171 @@ export const Settings: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response: AxiosResponse<SchoolUser> = await axiosConfig.get(Env.API_BASE_URL + '/school-users/detailed')
-            setSchoolUser(response.data)
-            setAddress(response.data.residentialAddress.replaceAll('\"', ""))
+            const response: AxiosResponse<SchoolUser> = await axiosConfig.get(
+                Env.API_BASE_URL + "/school-users/detailed"
+            );
+            setSchoolUser(response.data);
+            // Rimuovo eventuali virgolette presenti
+            setAddress(response.data.residentialAddress.replaceAll('"', ""));
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     return (
         <div>
-            {
-                getRole().toUpperCase() === Role.STUDENT || getRole().toUpperCase() === Role.PARENT ? <DashboardNavbar/> : <h1>Settings</h1>
-            }
             <Stack
                 spacing={2}
                 direction="row"
-                flexWrap={'wrap'}
-                width={'100%'}
+                flexWrap={"wrap"}
+                width={"100%"}
                 sx={{
-                    height: 'calc(100vh - 64px)',
-                    justifyContent: 'center'
+                    height: "calc(100vh - 64px)",
+                    justifyContent: "center",
                 }}
             >
-                {
-                    (schoolUser !== undefined) &&
-                    <Box className={'surface-container'} style={{maxHeight: '80vh', minWidth: '40vw', marginTop: '2rem', display: 'grid', padding: '2vw'}}>
-                        <h1>Anagrafica</h1>
-                        <TextField disabled={true} id="name" label="Nome" variant="outlined" value={schoolUser.name}/>
-                        <TextField disabled={true} id="surname" label="Cognome" variant="outlined" value={schoolUser.surname}/>
-                        <TextField disabled={true} id="taxId" label="Codice Fiscale" variant="outlined" value={schoolUser.taxId}/>
+                {/* Colonna di sinistra: Anagrafica */}
+                {schoolUser !== undefined && (
+                    <Box
+                        className={"surface-container"}
+                        style={{
+                            maxHeight: "80vh",
+                            minWidth: "40vw",
+                            marginTop: "2rem",
+                            display: "grid",
+                            padding: "2vw",
+                        }}
+                    >
+                        <Typography variant="h4" gutterBottom>
+                            Anagrafica
+                        </Typography>
+                        <TextField
+                            disabled
+                            id="name"
+                            label="Nome"
+                            variant="outlined"
+                            value={schoolUser.name}
+                        />
+                        <TextField
+                            disabled
+                            id="surname"
+                            label="Cognome"
+                            variant="outlined"
+                            value={schoolUser.surname}
+                        />
+                        <TextField
+                            disabled
+                            id="taxId"
+                            label="Codice Fiscale"
+                            variant="outlined"
+                            value={schoolUser.taxId}
+                        />
                         <TextField
                             id="address"
                             name="address"
-                            value={address} // Use a state variable
-                            onChange={(e) =>{
-                                setSaved(true)
-                                setAddress(e.target.value)}}
+                            value={address}
+                            onChange={(e) => {
+                                setAddress(e.target.value);
+                                setAddressSaved(false);
+                                setAddressError(false);
+                                setAddressValidationMessage("");
+                            }}
                             label="Indirizzo"
                             variant="outlined"
                         />
-
-
-                        <Box>
+                        <Box sx={{ mt: 2 }}>
                             <InputLabel>Data di nascita</InputLabel>
-                            <DatePicker disabled={true} value={new DateObject(schoolUser.birthDate)}/>
+                            <DatePicker disabled value={new DateObject(schoolUser.birthDate)} />
                         </Box>
-
-                        {
-                            saved && <Alert sx={{mb: '1rem'}} severity="success">Indirizzo corretto</Alert>
-                        }
-                        <Button variant="contained" onClick={() => sendAddress(address as string)} style={{maxHeight: '4rem'}}>Salva</Button>
+                        {/* Alert per l'indirizzo */}
+                        {addressSaved && (
+                            <Alert sx={{ mb: "1rem" }} severity="success">
+                                Indirizzo corretto
+                            </Alert>
+                        )}
+                        {addressError && (
+                            <Alert sx={{ mb: "1rem" }} severity="error">
+                                {addressValidationMessage}
+                            </Alert>
+                        )}
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                if (validateAddress(address)) {
+                                    sendAddress(address);
+                                    setAddressSaved(true);
+                                    setAddressError(false);
+                                    setAddressValidationMessage("");
+                                } else {
+                                    setAddressSaved(false);
+                                    setAddressValidationMessage(
+                                        "Indirizzo non valido: deve contenere almeno 5 caratteri e non avere caratteri speciali (eccetto il punto)"
+                                    );
+                                    setAddressError(true);
+                                }
+                            }}
+                            style={{ maxHeight: "4rem" }}
+                        >
+                            Salva
+                        </Button>
                     </Box>
-                }
-                {
-                    (schoolUser !== undefined) &&  <Box className={'secondary-container'} style={{maxHeight: '80vh', minWidth: '40vw', marginTop: '2rem', display: 'grid', padding: '2vw'}}>
-                        <h1>Informazioni contatto</h1>
-                        <TextField disabled={true} id="email" label="Email" value={schoolUser.email} variant="outlined" />
-                        <TextField id="password"  onChange={ (e) => onPasswordChange(e.currentTarget.value)} label="Password" variant="outlined" />
-                        <TextField id="checkPassoword" onChange={ (e) => onConfirmPasswordChange(e.currentTarget.value)} label="Conferma Password" variant="outlined" />
-                        {
-                            error && <Alert id="errorLogin" sx={{mb: '1rem'}} severity="error">La password deve contenere almeno un carattere speciale, un numero, una minuscola, una maiuscola e deve essere lunga almeno 8 caratteri</Alert>
-                        }
-                        <Button variant="contained" style={{maxHeight: '4rem'}}>Consensi privacy</Button>
-                        <Button variant="contained" onClick={() => address !== undefined? sendPreferences(confirmPassword, newPassword) : null} style={{maxHeight: '4rem'}}>Salva</Button>
+                )}
+                {/* Colonna di destra: Informazioni contatto */}
+                {schoolUser !== undefined && (
+                    <Box
+                        className={"secondary-container"}
+                        style={{
+                            maxHeight: "80vh",
+                            minWidth: "40vw",
+                            marginTop: "2rem",
+                            display: "grid",
+                            padding: "2vw",
+                        }}
+                    >
+                        <Typography variant="h4" gutterBottom>
+                            Informazioni contatto
+                        </Typography>
+                        <TextField
+                            disabled
+                            id="email"
+                            label="Email"
+                            value={schoolUser.email}
+                            variant="outlined"
+                        />
+                        <TextField
+                            id="password"
+                            type={"password"}
+                            onChange={(e) => onPasswordChange(e.currentTarget.value)}
+                            label="Password"
+                            variant="outlined"
+                        />
+                        <TextField
+                            id="checkPassoword"
+                            type={"password"}
+                            onChange={(e) => onConfirmPasswordChange(e.currentTarget.value)}
+                            label="Conferma Password"
+                            variant="outlined"
+                        />
+                        {error && (
+                            <Alert id="errorLogin" sx={{ mb: "1rem" }} severity="error">
+                                {validationMessage}
+                            </Alert>
+                        )}
+                        <Button variant="contained" style={{ maxHeight: "4rem" }}>
+                            Consensi privacy
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={() =>
+                                address !== undefined ? sendPreferences(confirmPassword, newPassword) : null
+                            }
+                            style={{ maxHeight: "4rem" }}
+                        >
+                            Salva
+                        </Button>
                     </Box>
-                }
+                )}
             </Stack>
         </div>
     );
-}
+};

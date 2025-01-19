@@ -15,7 +15,10 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
-import jakarta.validation.constraints.Size;
+
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class SchoolUserServiceImpl implements SchoolUserService {
 
@@ -45,12 +49,12 @@ public class SchoolUserServiceImpl implements SchoolUserService {
 
     @Override
     public boolean isStudentParent(Parent parent, UUID studentId) {
-        return parent.getStudents().stream().noneMatch(s -> s.getId().equals(studentId));
+        return parent.getStudents().stream().anyMatch(s -> s.getId().equals(studentId));
     }
 
     @Override
     public boolean isLoggedUserParent(UUID studentId) {
-        return !authenticationService.isParent() || isStudentParent(authenticationService.getParent().orElseThrow(), studentId);
+        return !authenticationService.isParent() || isStudentParent(authenticationService.getParent().orElseThrow(() -> new RuntimeException("test")), studentId);
     }
 
     @Override
@@ -64,15 +68,17 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
+    @Transactional
     public boolean isLoggedParentStudentClass(Integer classId) {
         if(authenticationService.isParent()) {
-            return authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> Objects.equals(c.getId(), classId)));
+            return authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
         } else {
             return true;
         }
     }
 
     @Override
+    @Transactional
     public boolean isLoggedTeacherStudent(UUID studentId) {
         return !authenticationService.isTeacher() || authenticationService.getTeacher().orElseThrow().getTeacherClasses().stream().anyMatch(c -> c.getSchoolClass().getStudents().stream().anyMatch(s -> s.getId().equals(studentId)));
     }
@@ -103,7 +109,10 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    public SchoolUserResponse updateAddress(@Size(max = 512) String address) {
+    public SchoolUserResponse updateAddress(String address) {
+        if(address.length() < 5 || !address.matches("^[a-zA-Z0-9\\s,.'\\-/]{3,100}$")) {
+            throw new IllegalArgumentException("Address must be at least 5 characters long");
+        }
         SchoolUser user;
         if(authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
@@ -127,8 +136,8 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    public boolean isLoggedStudent(UUID studentId) {
-        return authenticationService.isStudent() || !authenticationService.getStudent().orElseThrow().getId().equals(studentId);
+    public boolean isLoggedStudent(@NotNull UUID studentId) {
+        return !authenticationService.isStudent() || authenticationService.getStudent().orElseThrow().getId().equals(studentId);
     }
 
     @Override

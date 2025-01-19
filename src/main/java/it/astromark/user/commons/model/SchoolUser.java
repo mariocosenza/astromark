@@ -1,10 +1,6 @@
 package it.astromark.user.commons.model;
 
 import it.astromark.school.entity.School;
-import it.astromark.user.parent.entity.Parent;
-import it.astromark.user.secretary.entity.Secretary;
-import it.astromark.user.student.entity.Student;
-import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -77,7 +73,7 @@ public abstract class SchoolUser {
     @ColumnDefault("false")
     @NotNull
     @Column(name = "gender")
-    private Boolean gender;
+    private Boolean male;
 
     @Size(max = 512)
     @NotBlank

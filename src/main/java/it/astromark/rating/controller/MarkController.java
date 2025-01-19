@@ -1,6 +1,7 @@
 package it.astromark.rating.controller;
 
 import it.astromark.rating.dto.MarkResponse;
+import it.astromark.rating.dto.SemesterReportResponse;
 import it.astromark.rating.serivice.MarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,4 +32,13 @@ public class MarkController {
         return markService.getAverage(studentId, year);
     }
 
+    @GetMapping("/{studentId}/reports/{year}")
+    public SemesterReportResponse getReport(@PathVariable Short year, @PathVariable UUID studentId, @RequestParam Boolean firstSemester) {
+        return markService.getReport(studentId, year, firstSemester);
+    }
+
+    @PatchMapping("/reports/{reportId}")
+    public SemesterReportResponse viewReport(@PathVariable Integer reportId) {
+        return markService.viewReport(reportId);
+    }
 }

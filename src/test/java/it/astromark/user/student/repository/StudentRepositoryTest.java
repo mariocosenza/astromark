@@ -2,12 +2,13 @@ package it.astromark.user.student.repository;
 
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
-import it.astromark.commons.validator.SpringValidationConf;
+import it.astromark.commons.configuration.SpringValidationConf;
 import it.astromark.school.repository.SchoolRepository;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.student.entity.Student;
 import jakarta.validation.Validator;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @ActiveProfiles(value = "test")
 @Slf4j
+@NoArgsConstructor
 @Import({SpringTestConf.class, SpringValidationConf.class})
 class StudentRepositoryTest {
 
@@ -75,7 +77,7 @@ class StudentRepositoryTest {
                 .surname(surname)
                 .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString()) //unsafe
                 .residentialAddress(faker.address().fullAddress())
-                .gender(true)
+                .male(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname)
                 .school(school).build());

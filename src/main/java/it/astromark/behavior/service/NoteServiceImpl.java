@@ -1,8 +1,9 @@
 package it.astromark.behavior.service;
 
-import it.astromark.authentication.service.AuthenticationService;
+
 import it.astromark.behavior.dto.NoteRequest;
 import it.astromark.behavior.dto.NoteResponse;
+import it.astromark.behavior.entity.Note;
 import it.astromark.behavior.mapper.NoteMapper;
 import it.astromark.behavior.repository.NoteRepository;
 import it.astromark.user.commons.service.SchoolUserService;
@@ -45,12 +46,12 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteResponse delete(UUID uuid) {
-        return null;
+    public boolean delete(UUID uuid) {
+        return false;
     }
 
     @Override
-    public NoteResponse getById(UUID uuid) {
+    public Note getById(UUID uuid) {
         return null;
     }
 

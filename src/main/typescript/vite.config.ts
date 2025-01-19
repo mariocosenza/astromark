@@ -8,4 +8,7 @@ export default defineConfig({
     outDir: '../resources/static/',
     emptyOutDir: true,
   },
+  define: {
+    global: 'window',
+  },
 });

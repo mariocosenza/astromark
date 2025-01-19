@@ -4,6 +4,9 @@ import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.dto.SchoolUserUpdate;
 import it.astromark.user.commons.service.SchoolUserService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +27,7 @@ public class SchoolUserController {
     }
 
     @PatchMapping("/address")
-    public SchoolUserResponse updateAddress(@RequestBody String address) {
+    public SchoolUserResponse updateAddress(@RequestBody @Size(min = 5) @Pattern(regexp = "^[a-zA-Z0-9\\s.]+$") String address) {
         return schoolUserService.updateAddress(address);
     }
 
