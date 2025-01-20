@@ -2,8 +2,10 @@ package it.astromark.user.parent.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.classmanagement.entity.TeacherClass;
 import it.astromark.commons.service.SendGridMailService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
+import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.parent.dto.ParentDetailedResponse;
 import it.astromark.user.parent.dto.ParentRequest;
@@ -79,5 +81,15 @@ public class ParentServiceImpl implements ParentService {
     @Transactional
     public List<SchoolUserDetailed> getStudents() {
         return schoolUserMapper.toSchoolUserDetailedList(authenticationService.getParent().orElseThrow().getStudents());
+    }
+
+    @Override
+    @Transactional
+    public List<SchoolUserResponse> getTeachers() {
+        return schoolUserMapper.toSchoolUserResponseList(authenticationService.getParent().orElseThrow()
+                .getStudents().stream()
+                .flatMap(student -> student.getSchoolClasses().stream()
+                        .flatMap(schoolClass -> schoolClass.getTeacherClasses().stream()
+                                .map(TeacherClass::getTeacher))).toList());
     }
 }
