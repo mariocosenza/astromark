@@ -163,6 +163,7 @@ const Activity : React.FC = () => {
     const [activity, setActivity] = React.useState<ClassActivityResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
+    const [toggle, _] = changeStudentOrYear();
 
     const handleChange = (event: SelectChangeEvent) => {
         setSubject(event.target.value as string);
@@ -170,7 +171,7 @@ const Activity : React.FC = () => {
 
     useEffect(() => {
         fetchData()
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
