@@ -4,7 +4,7 @@ import SockJS from "sockjs-client";
 import { AxiosResponse } from "axios";
 import { Env } from "../Env";
 import { getRole, getToken } from "../services/AuthService";
-import { Box, Avatar, Typography, TextField, Button, IconButton } from "@mui/material";
+import {Box, Avatar, Typography, TextField, Button, IconButton, Snackbar, Alert} from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile"; // Attachment icon
 import DownloadIcon from "@mui/icons-material/Download"; // Download icon
@@ -71,6 +71,8 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
     const stompClientRef = useRef<Client | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+    const [error, setError] = useState<string>("");
+    const [showError, setShowError] = useState(false);
     const API_BASE_URL = Env.API_BASE_URL; // e.g. "http://localhost:8080"
 
     /**
@@ -169,11 +171,19 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
 
             // If a file is selected, proceed with the file upload.
             if (selectedFile) {
+                // Check file size (16MB = 16 * 1024 * 1024 bytes)
+                const maxSize = 16 * 1024 * 1024; // 16MB in bytes
+
+                if (selectedFile.size > maxSize) {
+                    setError("Il file è troppo grande. La dimensione massima consentita è 16MB.");
+                    setShowError(true);
+                    return;
+                }
+
                 try {
                     const formData = new FormData();
                     formData.append("file", selectedFile);
 
-                    // The upload endpoint expects the id returned from the previous call (response.data).
                     await axiosConfig.post(
                         `${API_BASE_URL}/chats/upload/${response.data}`,
                         formData,
@@ -186,9 +196,10 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                     );
                 } catch (error) {
                     console.error("Error uploading the file:", error);
+                    setError("Si è verificato un errore durante l'upload del file. Riprova più tardi.");
+                    setShowError(true);
                 }
             }
-
             if (stompClientRef.current && stompClientRef.current.connected) {
                 stompClientRef.current.publish({
                     destination: `/app/homeworks/chats/${chatId}`,
@@ -374,10 +385,24 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                 {/* Hidden file input */}
                 <input
                     type="file"
+                    accept={".pdf,.txt,.epub,.csv,.png,.jpg,.jpeg,.doc,.docx,.ppt,.pptx,.xls,.xlsx"}
                     style={{ display: "none" }}
                     ref={fileInputRef}
                     onChange={handleFileChange}
                 />
+                <Snackbar
+                    open={showError}
+                    autoHideDuration={6000}
+                    onClose={() => setShowError(false)}
+                >
+                    <Alert
+                        onClose={() => setShowError(false)}
+                        severity="error"
+                        sx={{ width: '100%' }}
+                    >
+                        {error}
+                    </Alert>
+                </Snackbar>
             </Box>
         </Box>
     );
