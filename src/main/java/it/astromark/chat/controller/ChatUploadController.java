@@ -18,11 +18,11 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("api/chats")
-public class ChatController {
+public class ChatUploadController {
 
     private final MessageService messageService;
 
-    public ChatController(MessageService messageService) {
+    public ChatUploadController(MessageService messageService) {
         this.messageService = messageService;
     }
 
@@ -33,7 +33,7 @@ public class ChatController {
         }
 
         boolean isValidFile = isValidFile(multipartFile);
-        List<String> allowedFileExtensions = List.of("pdf", "txt", "epub", "csv", "png", "jpg", "jpeg", "srt");
+        List<String> allowedFileExtensions = List.of("pdf", "txt", "epub", "csv", "png", "jpg", "jpeg", "doc", "docx", "ppt", "pptx", "xls", "xlsx");
 
         if (isValidFile && allowedFileExtensions.contains(FilenameUtils.getExtension(multipartFile.getOriginalFilename()))) {
             String fileName =  messageService.addAttachment(messageId, multipartFile);
