@@ -54,7 +54,7 @@ public class FileServiceImpl implements FileService {
                 .toExternalForm();
 
         log.info("File successfully uploaded: {}", fileUrl);
-        return fileUrl;
+        return safeFilename;
     }
 
     @Override

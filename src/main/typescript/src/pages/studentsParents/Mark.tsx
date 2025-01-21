@@ -1,4 +1,3 @@
-import {DashboardNavbar} from "../../components/DashboardNavbar.tsx";
 import React, {useEffect, useState} from "react";
 import {
     Box,
@@ -20,7 +19,7 @@ import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {MarkResponse} from "../../entities/MarkResponse.ts";
 import {AxiosResponse} from "axios";
-import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 
 
 const compareDate   = (date : Date, dateObject: DateObject)=> {
@@ -32,6 +31,7 @@ export const Mark: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [average, setAverage] = useState<number>(0);
     const [subject, setSubject] = useState('');
+    const [toggle, _] = changeStudentOrYear();
 
 
 
@@ -43,7 +43,7 @@ export const Mark: React.FC = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
@@ -72,7 +72,6 @@ export const Mark: React.FC = () => {
 
     return (
         <div>
-            <DashboardNavbar/>
             <Stack spacing={2}
                    direction="row"
                    style={{justifyContent: 'center', marginTop: '1rem'}}

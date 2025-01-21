@@ -24,3 +24,12 @@ aws:
   bucket:
     name: ${AWS_BUCKET_NAME}
   endpoint: ${AWS_ENDPOINT}
+server:
+  error:
+    path: /error
+    whitelabel:
+      enabled: false
+    include-binding-errors: never
+    include-message: never
+    include-stacktrace: never
+    include-exception: false

@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface TimeslotMapper {
 
-    @Mapping(target = "title", source = "teaching.subjectTitle.title")
+    @Mapping(target = "title", source = "timeslot.teaching.subjectTitle.title")
     TeachingTimeslotResponse toTeachingTimeslotResponse(TeachingTimeslot timeslot);
     List<TeachingTimeslotResponse> toTeachingTimeslotResponseList(List<TeachingTimeslot> timeslots);
 }

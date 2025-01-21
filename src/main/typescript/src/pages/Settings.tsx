@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Box, Button, InputLabel, Stack, TextField, Typography } from "@mui/material";
-import { getRole, logout } from "../services/AuthService.ts";
-import { Role } from "../components/route/ProtectedRoute.tsx";
-import { DashboardNavbar } from "../components/DashboardNavbar.tsx";
+import { logout } from "../services/AuthService.ts";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import axiosConfig from "../services/AxiosConfig.ts";
 import { Env } from "../Env.ts";
 import { AxiosResponse } from "axios";
 import YupPassword from "yup-password";
 import * as yup from "yup";
-import {TeacherDashboardNavbar} from "../components/TeacherDashboardNavbar.tsx";
 
 
 export function validateAddress(address: string): boolean {
@@ -158,14 +155,6 @@ export const Settings: React.FC = () => {
 
     return (
         <div>
-            {getRole().toUpperCase() === Role.STUDENT ||
-            getRole().toUpperCase() === Role.PARENT ? (
-                <DashboardNavbar />
-            ) : getRole().toUpperCase() === Role.TEACHER ? (
-                <TeacherDashboardNavbar />
-            ) : (
-                <h1>Settings</h1>
-            )}
             <Stack
                 spacing={2}
                 direction="row"

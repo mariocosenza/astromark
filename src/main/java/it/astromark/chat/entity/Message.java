@@ -25,6 +25,7 @@ import java.util.UUID;
 public class Message {
     @Id
     @ColumnDefault("gen_random_uuid()")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 

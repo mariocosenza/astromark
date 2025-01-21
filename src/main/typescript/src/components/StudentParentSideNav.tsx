@@ -9,22 +9,28 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import AddAlertOutlinedIcon from '@mui/icons-material/AddAlertOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
-import {useState} from "react";
+import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import GroupsIcon from '@mui/icons-material/Groups';
 import {NavLink} from "react-router";
+import {getRole} from "../services/AuthService.ts";
+import {createGlobalState} from "react-use";
 
+export const openBar = createGlobalState<boolean>(false)
 
 export const StudentParentSideNav = () => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = openBar();
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
 
+    const role= getRole().toLowerCase();
+
     const DrawerList = (
 
-        <Box className={"drawer"} sx={{ width: '15vw' }} minWidth={250} role="presentation" onClick={toggleDrawer(false)}>
+        <Box className={"drawer"} sx={{ width: '15vw' }} minWidth={250} role="presentation" onClick={toggleDrawer(true)}>
             <List>
-                <NavLink to="/student/dashboard" end>
+                <NavLink to={`/${role}/dashboard`} end>
                     <ListItem key="dashboard" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
@@ -34,7 +40,7 @@ export const StudentParentSideNav = () => {
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
-                <NavLink to="/student/assenze" end>
+                <NavLink to={`/${role}/assenze`} end>
                 <ListItem key="assenze" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -44,7 +50,7 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <NavLink to="/student/assegno" end>
+                <NavLink to={`/${role}/assegno`} end>
                 <ListItem key="assegno" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -54,7 +60,7 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <NavLink to="/student/voti" end>
+                <NavLink to={`/${role}/voti`} end>
                 <ListItem key="Voti" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -64,7 +70,7 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <NavLink to="/student/note" end>
+                <NavLink to={`/${role}/note`} end>
                 <ListItem key="note" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -74,7 +80,7 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <NavLink to="/student/pagella" end>
+                <NavLink to={`/${role}/pagella`} end>
                 <ListItem key="pagella" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -84,7 +90,7 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <NavLink to="/student/orario" end>
+                <NavLink to={`/${role}/orario`} end>
                 <ListItem key="orario" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -94,7 +100,7 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <NavLink to={"/student/avvisi"} end>
+                <NavLink to={`/${role}/avvisi`} end>
                 <ListItem key="avvisi" disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
@@ -104,16 +110,44 @@ export const StudentParentSideNav = () => {
                     </ListItemButton>
                 </ListItem>
                 </NavLink>
-                <Divider/>
-                <NavLink to={"/student/impostazioni"} end>
-                <ListItem key="impostazioni" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ManageAccountsOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Impostazioni"} />
-                    </ListItemButton>
-                </ListItem>
+
+                {
+                    role === "parent" && <NavLink to={`/parent/ricevimento`}>
+                        <Divider/>
+                        <ListItem key="reception" disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <GroupsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Ricevimento"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </NavLink>
+                }
+                {
+                    role === "parent" &&
+                    <NavLink to={`/parent/ticket`} end>
+                        <ListItem key="ticket" disablePadding>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <ConfirmationNumberOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Ticket"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </NavLink>
+                }
+
+                <NavLink to={`/${role}/impostazioni`} end style={{position: 'fixed', bottom: 0, width: '15vw'}}>
+                    <Divider/>
+                    <ListItem key="impostazioni" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ManageAccountsOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Impostazioni"} />
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
             </List>
         </Box>
@@ -121,7 +155,7 @@ export const StudentParentSideNav = () => {
 
     return (
         <div>
-            <DensityMediumOutlinedIcon onClick={toggleDrawer(true)}>Open drawer</DensityMediumOutlinedIcon>
+            <DensityMediumOutlinedIcon onClick={toggleDrawer(true)}>Apri drawer</DensityMediumOutlinedIcon>
             <Drawer open={open} onClose={toggleDrawer(false)}>
                 {DrawerList}
             </Drawer>

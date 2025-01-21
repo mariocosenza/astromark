@@ -453,8 +453,9 @@ CREATE TABLE red_date
 
 CREATE TABLE student_school_class
 (
-    school_class_id SERIAL,
-    student_id      UUID,
+    school_class_id   SERIAL,
+    student_id        UUID,
+    change_class_date DATE DEFAULT NULL,
 
     CONSTRAINT pk_student_school_class PRIMARY KEY (school_class_id, student_id),
     CONSTRAINT fk_student_school_class_school_class FOREIGN KEY (school_class_id) REFERENCES school_class(id),

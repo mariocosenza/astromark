@@ -1,25 +1,38 @@
 package it.astromark.classwork.mapper;
 
 import it.astromark.classwork.dto.ClassworkResponse;
+import it.astromark.classwork.dto.HomeworkResponse;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ClassworkMapper {
 
 
-    @Mapping(target = "signedHour", source = "classwork.signedHour.teachingTimeslot")
+    @Mappings({
+            @Mapping(target = "signedHour", source = "classwork.signedHour.teachingTimeslot"),
+            @Mapping(target = "signedHour.title", source = "classwork.signedHour.teachingTimeslot.teaching.subjectTitle.title"),
+            @Mapping(target = "signedHour.hour", source = "classwork.signedHour.teachingTimeslot.hour"),
+            @Mapping(target = "signedHour.date", source = "classwork.signedHour.teachingTimeslot.date"),
+    })
     ClassworkResponse toClassworkResponse(ClassActivity classwork);
-    @Mapping(target = "signedHour", source = "classwork.signedHour.teachingTimeslot")
-    ClassworkResponse toClassworkResponse(Homework classwork);
+    @Mappings({
+            @Mapping(target = "signedHour", source = "homework.signedHour.teachingTimeslot"),
+            @Mapping(target = "signedHour.title", source = "homework.signedHour.teachingTimeslot.teaching.subjectTitle.title"),
+            @Mapping(target = "signedHour.hour", source = "homework.signedHour.teachingTimeslot.hour"),
+            @Mapping(target = "signedHour.date", source = "homework.signedHour.teachingTimeslot.date"),
+            @Mapping(target = "chat", expression = "java(homework.getHomeworkChats() != null)")
+    })
+    HomeworkResponse toHomeworkResponse(Homework homework);
 
     List<ClassworkResponse> classActivityToClassworkResponseList(List<ClassActivity> classworks);
-    List<ClassworkResponse> homeworkToClassworkResponseList(List<Homework> classworks);
+    List<HomeworkResponse> homeworkToHomeworkResponseList(List<Homework> classworks);
 
 
 }

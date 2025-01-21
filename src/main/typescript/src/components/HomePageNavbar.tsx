@@ -5,11 +5,8 @@ import {Link} from "react-router";
 import {getRole, isLogged} from "../services/AuthService.ts";
 
 
-type PropsLogin = {
-    showLogin: boolean
-}
 
-export const HomePageNavbar: React.FC<PropsLogin> = ({showLogin}) => {
+export const HomePageNavbar: React.FC= () => {
     const path : string = `/${getRole().toLowerCase()}/dashboard`
     return (
         <header>
@@ -29,12 +26,9 @@ export const HomePageNavbar: React.FC<PropsLogin> = ({showLogin}) => {
                         </Typography>
 
                         {
-                            showLogin && !isLogged() && <div> <Link to="/login" className={'whiteLink'}>
+                            !isLogged()? <div> <Link to="/login" className={'whiteLink'}>
                                 <Button color="inherit">Accedi</Button>
-                            </Link> </div>
-                        }
-                        {
-                            isLogged() &&  <div> <Link to={path} className={'whiteLink'}>
+                            </Link> </div> : <div> <Link to={path} className={'whiteLink'}>
                             <Button color="inherit">Vai alla Dashboard</Button>
                             </Link> </div>
                         }

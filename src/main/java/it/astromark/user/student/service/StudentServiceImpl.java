@@ -3,6 +3,7 @@ package it.astromark.user.student.service;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.utils.PasswordUtils;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
+import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.commons.service.SendGridMailService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
@@ -13,6 +14,7 @@ import it.astromark.user.student.dto.StudentRequest;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 @Slf4j
 @Service
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
 
     private final SchoolUserService schoolUserService;
     private final StudentRepository studentRepository;
@@ -52,19 +55,21 @@ public class StudentServiceImpl implements StudentService{
     public SchoolUserDetailed create(StudentRequest studentRequest) {
         var username = studentRequest.name() + "." + studentRequest.surname() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();
+        var schoolClass = school.getSchoolClasses().stream().filter(c -> c.getId().equals(studentRequest.classId())).findFirst().orElseThrow();
         var password = new Faker().internet().password(8, 64, true, false, true);
-        var user =schoolUserMapper.toSchoolUserDetailed(studentRepository.save(Student.builder().school(school)
-                    .name(studentRequest.name())
-                    .surname(studentRequest.surname())
-                    .email(studentRequest.email())
-                    .username(username)
-                    .gender(studentRequest.gender())
-                    .residentialAddress(studentRequest.residentialAddress())
-                    .birthDate(studentRequest.birthDate())
-                    .taxId(studentRequest.taxId())
-                    .pendingState(PendingState.FIRST_LOGIN)
-                    .password(PasswordUtils.hashPassword(password))
-                    .build()));
+        var user = schoolUserMapper.toSchoolUserDetailed(studentRepository.save(Student.builder().school(school)
+                .name(studentRequest.name())
+                .surname(studentRequest.surname())
+                .email(studentRequest.email())
+                .username(username)
+                .male(studentRequest.male())
+                .residentialAddress(studentRequest.residentialAddress())
+                .birthDate(studentRequest.birthDate())
+                .taxId(studentRequest.taxId())
+                .schoolClasses(new HashSet<>(List.of(schoolClass)))
+                .pendingState(PendingState.FIRST_LOGIN)
+                .password(PasswordUtils.hashPassword(password))
+                .build()));
         sendGridMailService.sendAccessMail(school.getCode(), username, studentRequest.email(), password);
         return user;
     }
@@ -86,30 +91,31 @@ public class StudentServiceImpl implements StudentService{
 
     @PreAuthorize("hasRole('student') || hasRole('parent')")
     @Transactional
-    public List<Year> getStudentYears(UUID studentId) {
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+    public List<Integer> getStudentYears(@NotNull UUID studentId) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(!schoolUserService.isLoggedStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
-        Supplier<DataAccessException> exception = () -> new DataAccessException("You are not allowed to access this resource") {};
-        return studentRepository.findById(studentId).orElseThrow(exception).getSchoolClasses().stream().map(c -> Year.of(c.getYear())).toList();
+        Supplier<DataAccessException> exception = () -> new DataAccessException("You are not allowed to access this resource") {
+        };
+        return studentRepository.findById(studentId).orElseThrow(exception).getSchoolClasses().stream().map(SchoolClass::getYear).toList();
     }
 
     @Override
     @PreAuthorize("hasRole('student') || hasRole('parent')")
     @Transactional
     public List<SchoolClassResponse> getSchoolClassByYear(UUID studentId, Year year) {
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(!schoolUserService.isLoggedStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
-        Supplier<DataAccessException> exception = () -> new DataAccessException("You are not allowed to access this resource") {};
+        Supplier<DataAccessException> exception = () -> new DataAccessException("You are not allowed to access this resource") {
+        };
         return classManagementMapper.toSchoolClassResponseList(studentRepository.findById(studentId).orElseThrow(exception).getSchoolClasses().stream()
                 .filter(c -> c.getYear() == year.getValue()).toList());
     }
-
 
 
 }

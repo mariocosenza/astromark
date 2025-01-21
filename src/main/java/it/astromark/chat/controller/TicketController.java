@@ -24,12 +24,12 @@ public class TicketController {
     }
 
     @GetMapping("/ticket")
-    List<TicketResponse> getTickets() {
+    public List<TicketResponse> getTickets() {
         return ticketService.getTickets();
     }
 
     @GetMapping("/{ticketId}/messages")
-    List<MessageResponse> getMessages(@PathVariable UUID ticketId) {
+    public List<MessageResponse> getMessages(@PathVariable UUID ticketId) {
         if(ticketId == null)
             return null;
 
@@ -38,14 +38,13 @@ public class TicketController {
     }
 
     @PostMapping("/{ticketId}/addMessage")
-    void sendMessage(@PathVariable UUID ticketId, @RequestBody String textMessage) {
-        var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        ticketService.addMessage(ticket, textMessage);
+    public UUID sendMessage(@PathVariable UUID ticketId, @RequestBody String textMessage) {
+        return ticketService.sendMessage(ticketId, textMessage);
     }
 
     @PostMapping("/newTicket")
-    void newTicket(@RequestBody String title) {
-        ticketService.newTicket(title);
+    public void createTicket(@RequestBody String title) {
+        ticketService.createTicket(title);
     }
 
 }

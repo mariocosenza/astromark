@@ -3,16 +3,19 @@ package it.astromark.user.parent.service;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.utils.PasswordUtils;
 import it.astromark.commons.service.SendGridMailService;
+import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.parent.dto.ParentDetailedResponse;
 import it.astromark.user.parent.dto.ParentRequest;
 import it.astromark.user.parent.entity.Parent;
 import it.astromark.user.parent.repository.ParentRepository;
 import it.astromark.user.student.repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -45,7 +48,7 @@ public class ParentServiceImpl implements ParentService {
                 .surname(parentRequest.surname())
                 .email(parentRequest.email())
                 .username(username)
-                .gender(parentRequest.gender())
+                .male(parentRequest.male())
                 .residentialAddress(parentRequest.residentialAddress())
                 .birthDate(parentRequest.birthDate())
                 .taxId(parentRequest.taxId())
@@ -70,5 +73,11 @@ public class ParentServiceImpl implements ParentService {
     @Override
     public Parent getById(UUID uuid) {
         return null;
+    }
+
+    @Override
+    @Transactional
+    public List<SchoolUserDetailed> getStudents() {
+        return schoolUserMapper.toSchoolUserDetailedList(authenticationService.getParent().orElseThrow().getStudents());
     }
 }

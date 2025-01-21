@@ -4,7 +4,6 @@ import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.student.dto.StudentRequest;
 import it.astromark.user.student.service.StudentService;
-import it.astromark.user.teacher.dto.TeacherRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,8 @@ public class StudentController {
     }
 
     @GetMapping("/{studentId}/years")
-    public List<Year> getStudentYears(@PathVariable UUID studentId) {
+    public List<Integer> getStudentYears(@PathVariable UUID studentId) {
+        log.info("Getting student years for student with id: {}", studentService.getStudentYears(studentId));
         return studentService.getStudentYears(studentId);
     }
 

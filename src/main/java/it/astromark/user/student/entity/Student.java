@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLJoinTableRestriction;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -63,12 +64,14 @@ public class Student extends SchoolUser {
     @OneToMany(mappedBy = "student")
     private Set<SemesterReport> semesterReports = new LinkedHashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Builder.Default
     @JoinTable(name = "student_school_class",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "school_class_id"))
+    @SQLJoinTableRestriction("change_class_date IS NULL")
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
+
 
 
 }

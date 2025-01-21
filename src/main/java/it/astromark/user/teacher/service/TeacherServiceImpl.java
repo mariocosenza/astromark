@@ -55,7 +55,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .surname(teacherRequest.surname())
                 .email(teacherRequest.email())
                 .username(username)
-                .gender(teacherRequest.gender())
+                .male(teacherRequest.male())
                 .residentialAddress(teacherRequest.residentialAddress())
                 .birthDate(teacherRequest.birthDate())
                 .taxId(teacherRequest.taxId())

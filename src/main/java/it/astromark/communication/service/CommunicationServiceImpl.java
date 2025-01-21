@@ -62,7 +62,7 @@ public class CommunicationServiceImpl implements CommunicationService  {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (!schoolUserService.isLoggedParentStudentClass(schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(authenticationService.isStudent() && studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), schoolClassId)) {
+        } else if(authenticationService.isStudent() && !studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         return communicationMapper.toCommunicationResponseList(communicationRepository.findBySchoolClass_Id(schoolClassId));

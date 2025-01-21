@@ -1,4 +1,3 @@
-import {DashboardNavbar} from "../../components/DashboardNavbar.tsx";
 import React, {useEffect, useState} from "react";
 
 import DatePicker, {DateObject} from "react-multi-date-picker"
@@ -6,7 +5,7 @@ import DatePicker, {DateObject} from "react-multi-date-picker"
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
-import {SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {InputLabel, Stack, Typography} from "@mui/material";
 import {ClassTimeslot, ClassTimeslotProps} from "../../components/ClassTimeslot.tsx";
 import {SchoolClass} from "./Communication.tsx";
@@ -18,6 +17,7 @@ import {SchoolClass} from "./Communication.tsx";
 export const Timetable: React.FC = () => {
     const [data, setData]  = useState<ClassTimeslotProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [toggle, _] = changeStudentOrYear();
 
 
     const [values, setValues] = useState<DateObject[]>([
@@ -28,7 +28,7 @@ export const Timetable: React.FC = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
@@ -58,7 +58,6 @@ export const Timetable: React.FC = () => {
 
     return (
         <div>
-            <DashboardNavbar />
             <Stack direction={'row'} spacing={2} sx={{justifyContent: 'center', alignItems: 'center'}}>
                 <InputLabel sx={{ml: '1rem'}}>
                     Seleziona settimana
