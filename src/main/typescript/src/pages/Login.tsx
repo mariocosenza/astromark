@@ -108,6 +108,7 @@ export const Login = () => {
                 }
             }
             if (response.status === 200) {
+                localStorage.removeItem("user")
                 replaceToken(JSON.stringify(response.data))
                 navigator("/" + getRole().toLowerCase() + "/dashboard")
             } else if (response.status === 406) {

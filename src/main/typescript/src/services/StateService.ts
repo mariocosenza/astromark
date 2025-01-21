@@ -16,7 +16,7 @@ export class SelectedYear {
         localStorage.setItem("year", value.toString());
         this._year = value;
     }
-    private static _year : null | number = localStorage.getItem("year") ? parseInt(localStorage.getItem("year") as string) : null;
+    private static _year : null | number = localStorage.getItem("year") ? parseInt(localStorage.getItem("year") as string) : 2024;
 
 }
 
