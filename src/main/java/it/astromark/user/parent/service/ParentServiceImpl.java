@@ -7,6 +7,7 @@ import it.astromark.commons.service.SendGridMailService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
+import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.dto.ParentDetailedResponse;
 import it.astromark.user.parent.dto.ParentRequest;
 import it.astromark.user.parent.entity.Parent;
@@ -17,6 +18,7 @@ import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,6 +92,6 @@ public class ParentServiceImpl implements ParentService {
                 .getStudents().stream()
                 .flatMap(student -> student.getSchoolClasses().stream()
                         .flatMap(schoolClass -> schoolClass.getTeacherClasses().stream()
-                                .map(TeacherClass::getTeacher))).toList());
+                                .map(TeacherClass::getTeacher))).sorted(Comparator.comparing(SchoolUser::getSurname)).toList());
     }
 }
