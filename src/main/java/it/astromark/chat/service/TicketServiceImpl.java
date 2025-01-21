@@ -15,6 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -66,14 +67,17 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasRole('teacher') || hasRole('parent') || hasRole('secretary')")
     public UUID sendMessage(UUID ticketId, String text) {
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
+        if(ticket.getClosed() || ticket.getSolved()){
+            throw new IllegalArgumentException("Ticket is closed or solved");
+        }
         var message = new Message();
-        message.setId(UUID.randomUUID());
         message.setTicket(ticket);
-        message.setText(text.substring(1, text.length() - 1));
-        message.setDateTime(new Date().toInstant());
+        message.setText(text);
+        message.setDateTime(Instant.now());
 
         if(authenticationService.isTeacher()){
             message.setTeacher(authenticationService.getTeacher().orElseThrow());
