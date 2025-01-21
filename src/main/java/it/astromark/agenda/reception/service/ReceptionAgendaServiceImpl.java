@@ -3,16 +3,16 @@ package it.astromark.agenda.reception.service;
 import it.astromark.agenda.reception.dto.ReceptionBookingResponse;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotRequest;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
+import it.astromark.agenda.reception.entity.ReceptionBooking;
 import it.astromark.agenda.reception.mapper.ReceptionAgendaMapper;
 import it.astromark.agenda.reception.repository.ReceptionBookingRepository;
 import it.astromark.agenda.reception.repository.ReceptionTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.user.parent.service.ParentService;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -30,25 +30,34 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     private final ReceptionBookingRepository receptionBookingRepository;
     private final ReceptionTimeslotRepository receptionTimeslotRepository;
     private final ReceptionAgendaMapper receptionAgendaMapper;
+    private final ParentService parentService;
 
-    public ReceptionAgendaServiceImpl(AuthenticationService authenticationService, TeacherRepository teacherRepository, ReceptionBookingRepository receptionBookingRepository, ReceptionTimeslotRepository receptionTimeslotRepository, ReceptionAgendaMapper receptionAgendaMapper) {
+    public ReceptionAgendaServiceImpl(AuthenticationService authenticationService, TeacherRepository teacherRepository, ReceptionBookingRepository receptionBookingRepository, ReceptionTimeslotRepository receptionTimeslotRepository, ReceptionAgendaMapper receptionAgendaMapper, ParentService parentService) {
         this.authenticationService = authenticationService;
         this.teacherRepository = teacherRepository;
         this.receptionBookingRepository = receptionBookingRepository;
         this.receptionTimeslotRepository = receptionTimeslotRepository;
         this.receptionAgendaMapper = receptionAgendaMapper;
+        this.parentService = parentService;
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('parent')")
     public boolean book(Integer receptionTimeslotID) {
-        var slot = receptionTimeslotRepository.findByIdAndDateAfter(receptionTimeslotID, LocalDate.now());
+        var slot = receptionTimeslotRepository.findByIdAndDateAfter(receptionTimeslotID, LocalDate.now().minusDays(200));
         var parent = authenticationService.getParent().orElseThrow();
         for (var student : parent.getStudents()) {
             if (slot.getReceptionTimetable().getTeacher().getTeacherClasses().stream().anyMatch(c -> c.getSchoolClass().getStudents().contains(student))) {
                 if(slot.getBooked() < slot.getCapacity()) {
                     slot.setBooked((short) (slot.getBooked() + 1));
+                    receptionBookingRepository.save(ReceptionBooking.builder()
+                            .bookingOrder(slot.getBooked())
+                            .parent(parent)
+                            .confirmed(false)
+                            .refused(false)
+                            .receptionTimeslot(slot).build());
+                    return true;
                 }
             }
         }
@@ -95,19 +104,21 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('teacher') || hasRole('parent')")
-    public Page<ReceptionTimeslotResponse> getSlots(@NotNull UUID teacherID, @NotNull Integer pageNo, @NotNull Integer pageSize) {
+    public List<ReceptionTimeslotResponse> getSlots(@NotNull UUID teacherID) {
         Teacher teacher;
         if(authenticationService.isTeacher()) {
             teacher = authenticationService.getTeacher().orElseThrow();
         } else {
             teacher = teacherRepository.findById(teacherID).orElseThrow();
-            if(teacher.getTeacherClasses().stream().noneMatch(c -> c.getSchoolClass().getStudents().stream().anyMatch(s -> s.getId().equals(authenticationService.getParent().orElseThrow().getId())))) {
+            if(teacher
+                    .getTeacherClasses()
+                    .stream().anyMatch(c -> c.getSchoolClass().getStudents().stream().noneMatch(s -> parentService.getStudents().stream().anyMatch(p -> p.id().equals(s.getId()))))) {
                 throw new AccessDeniedException("Parent is not a student of the teacher");
             }
         }
 
-        var timeslot = receptionTimeslotRepository.findAllByReceptionTimetable_TeacherAndDateAfter(teacher, LocalDate.now(), PageRequest.of(pageNo, pageSize));
+        var timeslot = receptionTimeslotRepository.findAllByReceptionTimetable_TeacherAndDateAfter(teacher, LocalDate.now().minusDays(200L));
 
-        return timeslot.map(receptionAgendaMapper::toReceptionTimeslotResponse);
+        return timeslot.stream().map(receptionAgendaMapper::toReceptionTimeslotResponse).toList();
     }
 }

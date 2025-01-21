@@ -14,6 +14,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface ReceptionAgendaMapper {
 
+    @Mappings({
+            @Mapping(target = "name", source = "receptionTimeslot.receptionTimetable.teacher.name"),
+            @Mapping(target = "surname", source = "receptionTimeslot.receptionTimetable.teacher.surname")
+    })
     ReceptionTimeslotResponse toReceptionTimeslotResponse(ReceptionTimeslot receptionTimeslot);
     @Mappings({
             @Mapping(target = "date", source = "receptionBooking.receptionTimeslot.date"),

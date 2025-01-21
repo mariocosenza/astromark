@@ -3,7 +3,6 @@ package it.astromark.agenda.reception.controller;
 import it.astromark.agenda.reception.dto.ReceptionBookingResponse;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
 import it.astromark.agenda.reception.service.ReceptionAgendaService;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +29,8 @@ public class ReceptionAgendaController {
     }
 
     @GetMapping("/teacher/{teacherId}/timeslots")
-    public Page<ReceptionTimeslotResponse> getSlots(@PathVariable UUID teacherId, @RequestParam Integer pageNo, @RequestParam Integer pageSize) {
-        return receptionAgendaService.getSlots(teacherId, pageNo, pageSize);
+    public List<ReceptionTimeslotResponse> getSlots(@PathVariable UUID teacherId) {
+        return receptionAgendaService.getSlots(teacherId);
     }
 
 
