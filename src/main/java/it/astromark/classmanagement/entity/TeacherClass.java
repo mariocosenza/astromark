@@ -21,13 +21,13 @@ public class TeacherClass {
     private TeacherClassId id;
 
     @MapsId("teacherId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
     @MapsId("schoolClassId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @ColumnDefault("nextval('astromark.teacher_class_school_class_id_seq')")
     @JoinColumn(name = "school_class_id", nullable = false)
