@@ -94,4 +94,9 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList, classActivityRepository, homeworkRepository);
     }
 
+    @Override
+    public void createTimeTable(Integer classId, TeachingTimeslotRequest request) {
+
+    }
+
 }
