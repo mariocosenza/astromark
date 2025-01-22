@@ -10,11 +10,18 @@ import java.util.UUID;
 
 public interface ReceptionAgendaService {
     boolean book(Integer receptionTimeslotID);
+
     boolean confirm(Integer receptionTimeslotID);
+
     boolean refuse(Integer receptionTimeslotID);
+
     ReceptionTimeslotResponse addTimeslot(Integer id, ReceptionTimeslotRequest request);
+
     List<ReceptionBookingResponse> getNotConfirmed(Integer tableId);
+
     List<ReceptionBookingResponse> getRefused(Integer tableId);
+
     List<ReceptionBookingResponse> getBookedSlots();
+
     List<ReceptionTimeslotResponse> getSlots(@NotNull UUID teacherID);
 }

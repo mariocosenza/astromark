@@ -9,4 +9,5 @@ public record HomeworkChatResponse(
         UUID studentId,
         Boolean completed,
         List<MessageResponse> messages
-) {}
+) {
+}

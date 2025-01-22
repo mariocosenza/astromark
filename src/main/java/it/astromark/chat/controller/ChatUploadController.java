@@ -36,7 +36,7 @@ public class ChatUploadController {
         List<String> allowedFileExtensions = List.of("pdf", "txt", "epub", "csv", "png", "jpg", "jpeg", "doc", "docx", "ppt", "pptx", "xls", "xlsx");
 
         if (isValidFile && allowedFileExtensions.contains(FilenameUtils.getExtension(multipartFile.getOriginalFilename()))) {
-            String fileName =  messageService.addAttachment(messageId, multipartFile);
+            String fileName = messageService.addAttachment(messageId, multipartFile);
 
             APIResponse apiResponse = new APIResponse(
                     "File uploaded successfully. File unique name => " + fileName,
@@ -56,9 +56,9 @@ public class ChatUploadController {
         }
     }
 
-    private boolean isValidFile(MultipartFile multipartFile){
+    private boolean isValidFile(MultipartFile multipartFile) {
         log.info("Empty Status ==> {}", multipartFile.isEmpty());
-        if (Objects.isNull(multipartFile.getOriginalFilename())){
+        if (Objects.isNull(multipartFile.getOriginalFilename())) {
             return false;
         }
         return !multipartFile.getOriginalFilename().trim().isEmpty();

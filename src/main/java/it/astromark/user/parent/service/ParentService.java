@@ -13,6 +13,7 @@ import java.util.UUID;
 public interface ParentService extends CrudService<Parent, ParentRequest, ParentDetailedResponse, UUID> {
 
     List<SchoolUserDetailed> getStudents();
+
     List<SchoolUserResponse> getTeachers();
 
 }

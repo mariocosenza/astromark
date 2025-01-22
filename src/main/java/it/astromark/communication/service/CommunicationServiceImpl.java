@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CommunicationServiceImpl implements CommunicationService  {
+public class CommunicationServiceImpl implements CommunicationService {
 
     private final CommunicationRepository communicationRepository;
     private final SchoolUserService schoolUserService;
@@ -58,11 +58,11 @@ public class CommunicationServiceImpl implements CommunicationService  {
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public List<CommunicationResponse> getCommunicationBySchoolClassId(Integer schoolClassId) {
-        if(!schoolUserService.isLoggedTeacherClass(schoolClassId)) {
+        if (!schoolUserService.isLoggedTeacherClass(schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (!schoolUserService.isLoggedParentStudentClass(schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(authenticationService.isStudent() && !studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), schoolClassId)) {
+        } else if (authenticationService.isStudent() && !studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         return communicationMapper.toCommunicationResponseList(communicationRepository.findBySchoolClass_Id(schoolClassId));

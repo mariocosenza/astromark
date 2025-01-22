@@ -12,8 +12,8 @@ import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.teacher.dto.TeacherRequest;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
-import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
+import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final SendGridMailService sendGridMailService;
 
-    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository,SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService) {
+    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService) {
         this.teacherClassRepository = teacherClassRepository;
         this.schoolUserMapper = schoolUserMapper;
         this.authenticationService = authenticationService;
@@ -63,7 +63,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @PreAuthorize("hasRole('TEACHER')")
-    public List<SchoolClass> getSchoolClasses(){
+    public List<SchoolClass> getSchoolClasses() {
         var teacher = authenticationService.getTeacher().orElseThrow();
         return teacherClassRepository.findByTeacher(teacher).stream()
                 .map(TeacherClass::getSchoolClass)

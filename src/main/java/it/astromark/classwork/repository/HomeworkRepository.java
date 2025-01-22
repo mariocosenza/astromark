@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface HomeworkRepository extends JpaRepository<Homework, Integer> {
     Homework findBySignedHour(SignedHour signedHour);
+
     List<Homework> findAllBySignedHour_TeachingTimeslot_ClassTimetableSchoolClass_Id(Integer classId);
 }

@@ -15,13 +15,13 @@ import java.net.URI;
 @Configuration
 public class S3ClientConfig {
 
-   @Value("${aws.accessKey}")
-   private String accessKey;
+    @Value("${aws.accessKey}")
+    private String accessKey;
 
-   @Value("${aws.secretKey}")
-   private String secretKey;
+    @Value("${aws.secretKey}")
+    private String secretKey;
 
-   @Value("${aws.endpoint}")
+    @Value("${aws.endpoint}")
     private String endpoint;
 
     @Bean

@@ -1,4 +1,5 @@
 package it.astromark.chat.controller;
+
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.JWTService;
 import it.astromark.chat.dto.HomeworkChatResponse;
@@ -8,11 +9,11 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.UUID;

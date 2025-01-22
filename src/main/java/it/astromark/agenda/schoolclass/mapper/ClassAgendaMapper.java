@@ -74,6 +74,5 @@ public interface ClassAgendaMapper {
     }
 
 
-
 }
 

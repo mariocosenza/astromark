@@ -15,21 +15,32 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public interface AuthenticationService  {
+public interface AuthenticationService {
 
     SchoolUser login(UserLoginRequest user);
-    SchoolUser getUser(UUID id , String role);
+
+    SchoolUser getUser(UUID id, String role);
+
     String verify(String username, String password, String schoolCode, String role);
+
     SchoolUser firstLogin(@NotNull UserFirstLoginRequest user);
+
     GrantedAuthority getRole(SchoolUser user);
 
     boolean isStudent();
+
     boolean isTeacher();
+
     boolean isParent();
+
     boolean isSecretary();
+
     Optional<Parent> getParent();
+
     Optional<Student> getStudent();
+
     Optional<Teacher> getTeacher();
+
     Optional<Secretary> getSecretary();
 
 }

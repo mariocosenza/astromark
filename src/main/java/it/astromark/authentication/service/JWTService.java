@@ -61,7 +61,7 @@ public class JWTService {
      */
     public UUID extractUUID(String jwtToken) {
         var claims = extractAllClaims(jwtToken);
-        if(claims == null) {
+        if (claims == null) {
             return null;
         }
         return UUID.fromString(claims.getSubject());
@@ -125,7 +125,7 @@ public class JWTService {
                     .getPayload();
         } catch (Exception e) {
             log.warn("Error while extracting claims from JWT token: {}", e.getMessage());
-           return null;
+            return null;
         }
     }
 

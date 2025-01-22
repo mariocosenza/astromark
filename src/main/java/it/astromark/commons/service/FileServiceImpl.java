@@ -26,10 +26,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
+    private final S3Client s3Client;
     @Value("${aws.bucket.name}")
     private String bucketName;
-
-    private final S3Client s3Client;
 
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {

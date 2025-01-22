@@ -14,6 +14,7 @@ import java.util.List;
 @Repository
 public interface ReceptionTimeslotRepository extends JpaRepository<ReceptionTimeslot, Integer> {
     List<ReceptionTimeslot> findAllByReceptionTimetable_TeacherAndDateAfter(@NotNull Teacher receptionTimetableTeacher, @NotNull LocalDate dateAfter);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     ReceptionTimeslot findByIdAndDateAfter(Integer id, @NotNull LocalDate dateAfter);
 

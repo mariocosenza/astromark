@@ -75,11 +75,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             SchoolUser updatedUser = switch (user.role().toLowerCase()) {
                 case "student" -> studentRepository.save((Student) schoolUser);
                 case "teacher" -> teacherRepository.save((Teacher) schoolUser);
-                case "parent" ->  parentRepository.save((Parent) schoolUser);
+                case "parent" -> parentRepository.save((Parent) schoolUser);
                 case "secretary" -> secretaryRepository.save((Secretary) schoolUser);
                 default -> null;
             };
-            if(updatedUser != null) {
+            if (updatedUser != null) {
                 return login(new UserLoginRequest(updatedUser.getUsername(), user.newPassword(), user.schoolCode(), user.role()));
             }
         }
@@ -142,34 +142,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public boolean isStudent() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Student;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Student;
     }
 
     public boolean isTeacher() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Teacher;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Teacher;
     }
 
     public boolean isParent() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Parent;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Parent;
     }
 
     public boolean isSecretary() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Secretary;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Secretary;
     }
 
     public Optional<Parent> getParent() {
-        return isParent() ? Optional.of((Parent)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isParent() ? Optional.of((Parent) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 
     public Optional<Student> getStudent() {
-        return isStudent() ? Optional.of((Student)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isStudent() ? Optional.of((Student) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 
     public Optional<Teacher> getTeacher() {
-        return isTeacher() ? Optional.of((Teacher)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isTeacher() ? Optional.of((Teacher) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 
     public Optional<Secretary> getSecretary() {
-        return isSecretary() ? Optional.of((Secretary)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isSecretary() ? Optional.of((Secretary) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 }

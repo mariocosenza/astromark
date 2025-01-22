@@ -19,6 +19,7 @@ public interface ReceptionAgendaMapper {
             @Mapping(target = "surname", source = "receptionTimeslot.receptionTimetable.teacher.surname")
     })
     ReceptionTimeslotResponse toReceptionTimeslotResponse(ReceptionTimeslot receptionTimeslot);
+
     @Mappings({
             @Mapping(target = "date", source = "receptionBooking.receptionTimeslot.date"),
             @Mapping(target = "mode", source = "receptionBooking.receptionTimeslot.mode"),
@@ -27,6 +28,7 @@ public interface ReceptionAgendaMapper {
             @Mapping(target = "surname", source = "receptionBooking.receptionTimeslot.receptionTimetable.teacher.surname")
     })
     ReceptionBookingResponse toReceptionBookingResponse(ReceptionBooking receptionBooking);
+
     List<ReceptionBookingResponse> toReceptionBookingResponseList(List<ReceptionBooking> receptionBookings);
 
 }

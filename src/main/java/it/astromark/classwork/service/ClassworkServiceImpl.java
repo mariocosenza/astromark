@@ -51,12 +51,12 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<ClassworkResponse> getClassActivities(Integer classId) {
-        if(!schoolUserService.isLoggedParentStudentClass(classId)) {
+        if (!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");
-        } else if(authenticationService.isStudent()) {
-                if(studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
-                    throw new AccessDeniedException("You are not allowed to access this class");
-                }
+        } else if (authenticationService.isStudent()) {
+            if (studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
+                throw new AccessDeniedException("You are not allowed to access this class");
+            }
         }
 
         return classworkMapper.classActivityToClassworkResponseList(classActivityRepository.findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(classId)).stream().sorted(Comparator.comparing(s -> s.signedHour().date())).toList();
@@ -66,10 +66,10 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<HomeworkResponse> getHomework(Integer classId) {
-        if(!schoolUserService.isLoggedParentStudentClass(classId)) {
+        if (!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");
-        } else if(authenticationService.isStudent()) {
-            if(studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
+        } else if (authenticationService.isStudent()) {
+            if (studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
                 throw new AccessDeniedException("You are not allowed to access this class");
             }
         }

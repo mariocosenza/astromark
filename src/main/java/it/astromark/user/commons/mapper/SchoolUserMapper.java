@@ -15,9 +15,13 @@ import java.util.Set;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface SchoolUserMapper {
     SchoolUserResponse toSchoolUserResponse(SchoolUser student);
+
     SchoolUserDetailed toSchoolUserDetailed(SchoolUser student);
+
     ParentDetailedResponse toParentDetailedResponse(Parent student);
+
     List<SchoolUserDetailed> toSchoolUserDetailedList(Set<Student> students);
+
     List<SchoolUserResponse> toSchoolUserResponseList(List<Teacher> teachers);
 
 }

@@ -10,7 +10,10 @@ import java.util.UUID;
 
 public interface TicketService extends CrudService<Ticket, Ticket, TicketResponse, UUID> {
     List<TicketResponse> getTickets();
+
     List<MessageResponse> getMessages(Ticket ticket);
+
     UUID sendMessage(UUID ticketId, String text);
+
     void createTicket(String title);
 }

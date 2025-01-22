@@ -12,5 +12,6 @@ import java.util.UUID;
 @Repository
 public interface AbsenceRepository extends JpaRepository<Absence, UUID> {
     int countAbsenceByDateBetweenAndStudent_Id(@NotNull LocalDate dateAfter, @NotNull LocalDate dateBefore, UUID studentId);
+
     List<Absence> findAbsenceOByDateBetweenAndStudent_IdOrderByDateDesc(@NotNull LocalDate dateAfter, @NotNull LocalDate dateBefore, UUID studentId);
 }

@@ -2,7 +2,10 @@ package it.astromark.agenda.commons.entity;
 
 import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 

@@ -7,8 +7,9 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommunicationMapper {
     CommunicationResponse toCommunicationResponse(Communication communication);
+
     List<CommunicationResponse> toCommunicationResponseList(List<Communication> communications);
 }

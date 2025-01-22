@@ -46,7 +46,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<MarkResponse> getMarkByYear(UUID studentId, Year year) {
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         return markMapper.toMarkResponseList(markRepository.findMarkByStudentIdAndDateBetween(studentId, LocalDate.of(year.getValue(), Month.SEPTEMBER, 1),
@@ -66,19 +66,18 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, Boolean semester) {
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        }  else if (!schoolUserService.isLoggedStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
         var report = semesterReportRepository.findByStudent_IdAndFirstSemesterAndYear(studentId, semester, year);
-        if(report.isEmpty()) {
+        if (report.isEmpty()) {
             return null;
-        }
-        else if(!report.getFirst().getPublicField() && authenticationService.isStudent()){
+        } else if (!report.getFirst().getPublicField() && authenticationService.isStudent()) {
             throw new AccessDeniedException("You are not allowed to access this resource") {
             };
         }
@@ -93,7 +92,7 @@ public class MarkServiceImpl implements MarkService {
     public SemesterReportResponse viewReport(Integer reportId) {
         var report = semesterReportRepository.findById(reportId).orElseThrow();
 
-        if(!schoolUserService.isLoggedUserParent(report.getStudent().getId())) {
+        if (!schoolUserService.isLoggedUserParent(report.getStudent().getId())) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
@@ -115,7 +114,7 @@ public class MarkServiceImpl implements MarkService {
 
     @Override
     public boolean delete(Integer integer) {
-            return false;
+        return false;
     }
 
     @Override

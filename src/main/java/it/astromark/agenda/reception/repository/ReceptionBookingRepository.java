@@ -13,5 +13,6 @@ import java.util.List;
 @Repository
 public interface ReceptionBookingRepository extends JpaRepository<ReceptionBooking, ReceptionBookingId> {
     List<ReceptionBooking> findByReceptionTimeslot_ReceptionTimetable_Teacher(@NotNull Teacher receptionTimeslotReceptionTimetableTeacher);
+
     List<ReceptionBooking> findByParent(@NotNull Parent parent);
 }

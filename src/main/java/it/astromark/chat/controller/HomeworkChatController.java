@@ -24,17 +24,17 @@ public class HomeworkChatController {
     }
 
     @PostMapping("/{chatId}/addMessage")
-    public UUID sendMessage(@PathVariable UUID chatId, @RequestBody  String messageRequest) {
+    public UUID sendMessage(@PathVariable UUID chatId, @RequestBody String messageRequest) {
         return homeworkChatService.sendMessage(chatId, messageRequest.replace("\"", ""));
     }
 
     @GetMapping("/{chatId}/messages")
     public List<MessageResponse> getMessageList(@PathVariable UUID chatId) {
-       return homeworkChatService.getMessageList(chatId);
+        return homeworkChatService.getMessageList(chatId);
     }
 
     @GetMapping("/{homeworkId}/has-uncompleted-chat")
-    public UUID  hasUncompletedHomeworkChat (@PathVariable Integer homeworkId) {
+    public UUID hasUncompletedHomeworkChat(@PathVariable Integer homeworkId) {
         return homeworkChatService.hasUncompletedHomeworkChat(homeworkId);
     }
 

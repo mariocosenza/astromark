@@ -74,10 +74,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<TeachingTimeslotResponse> getWeekTimeslot(Integer classID, LocalDate date) {
-        if(!schoolUserService.isLoggedParentStudentClass(classID)) {
+        if (!schoolUserService.isLoggedParentStudentClass(classID)) {
             throw new AccessDeniedException("You are not allowed to access this class");
-        } else if(authenticationService.isStudent()) {
-            if(studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
+        } else if (authenticationService.isStudent()) {
+            if (studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
                 throw new AccessDeniedException("You are not allowed to access this class");
             }
         }

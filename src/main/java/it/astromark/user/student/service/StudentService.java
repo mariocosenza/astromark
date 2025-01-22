@@ -12,5 +12,6 @@ import java.util.UUID;
 
 public interface StudentService extends CrudService<Student, StudentRequest, SchoolUserDetailed, UUID> {
     List<Integer> getStudentYears(UUID studentId);
-    List<SchoolClassResponse>  getSchoolClassByYear(UUID studentId, Year year);
+
+    List<SchoolClassResponse> getSchoolClassByYear(UUID studentId, Year year);
 }

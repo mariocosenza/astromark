@@ -4,5 +4,6 @@ import it.astromark.agenda.reception.entity.ReceptionBookingId;
 
 import java.time.LocalDate;
 
-public record ReceptionBookingResponse(ReceptionBookingId id, Short bookingOrder, Boolean confirmed, Boolean refused, LocalDate date, Short hour, String mode, String name, String surname) {
+public record ReceptionBookingResponse(ReceptionBookingId id, Short bookingOrder, Boolean confirmed, Boolean refused,
+                                       LocalDate date, Short hour, String mode, String name, String surname) {
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class SecretaryServiceImpl implements SecretaryService{
+public class SecretaryServiceImpl implements SecretaryService {
     private final SecretaryRepository secretaryRepository;
     private final AuthenticationService authenticationService;
     private final SchoolUserMapper schoolUserMapper;

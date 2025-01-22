@@ -15,7 +15,6 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
-
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +69,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @Override
     @Transactional
     public boolean isLoggedParentStudentClass(Integer classId) {
-        if(authenticationService.isParent()) {
+        if (authenticationService.isParent()) {
             return authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
         } else {
             return true;
@@ -87,15 +86,15 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER') || hasRole('SECRETARY')")
     public SchoolUserResponse updatePreferences(SchoolUserUpdate schoolUserUpdate) {
         SchoolUser user;
-        if(authenticationService.isStudent()) {
+        if (authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
             user.setPassword(PasswordUtils.hashPassword(schoolUserUpdate.password()));
             studentRepository.save((Student) user);
-        } else if(authenticationService.isParent()) {
+        } else if (authenticationService.isParent()) {
             user = authenticationService.getParent().orElseThrow();
             user.setPassword(PasswordUtils.hashPassword(schoolUserUpdate.password()));
             parentRepository.save((Parent) user);
-        } else if(authenticationService.isTeacher()) {
+        } else if (authenticationService.isTeacher()) {
             user = authenticationService.getTeacher().orElseThrow();
             user.setPassword(PasswordUtils.hashPassword(schoolUserUpdate.password()));
             teacherRepository.save((Teacher) user);
@@ -110,19 +109,19 @@ public class SchoolUserServiceImpl implements SchoolUserService {
 
     @Override
     public SchoolUserResponse updateAddress(String address) {
-        if(address.length() < 5 || !address.matches("^[a-zA-Z0-9\\s,.'\\-/]{3,100}$")) {
+        if (address.length() < 5 || !address.matches("^[a-zA-Z0-9\\s,.'\\-/]{3,100}$")) {
             throw new IllegalArgumentException("Address must be at least 5 characters long");
         }
         SchoolUser user;
-        if(authenticationService.isStudent()) {
+        if (authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
             user.setResidentialAddress(address);
             studentRepository.save((Student) user);
-        } else if(authenticationService.isParent()) {
+        } else if (authenticationService.isParent()) {
             user = authenticationService.getParent().orElseThrow();
             user.setResidentialAddress(address);
             parentRepository.save((Parent) user);
-        } else if(authenticationService.isTeacher()) {
+        } else if (authenticationService.isTeacher()) {
             user = authenticationService.getTeacher().orElseThrow();
             user.setResidentialAddress(address);
             teacherRepository.save((Teacher) user);
@@ -143,11 +142,11 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @Override
     public SchoolUserDetailed getByIdDetailed() {
         SchoolUser user;
-        if(authenticationService.isStudent()) {
+        if (authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
-        } else if(authenticationService.isParent()) {
+        } else if (authenticationService.isParent()) {
             user = authenticationService.getParent().orElseThrow();
-        } else if(authenticationService.isTeacher()) {
+        } else if (authenticationService.isTeacher()) {
             user = authenticationService.getTeacher().orElseThrow();
         } else {
             user = authenticationService.getSecretary().orElseThrow();

@@ -14,21 +14,24 @@ import java.util.List;
 import java.util.Set;
 
 
-@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MarkMapper {
 
     @Mapping(target = "title", source = "teaching.id.subjectTitle")
     MarkResponse toMarkResponse(Mark mark);
+
     List<MarkResponse> toMarkResponseList(List<Mark> marks);
 
     @Mapping(target = "title", source = "subjectTitle.title")
     SemesterReportMarkResponse toSemesterReportMarkResponse(SemesterReportMark mark);
+
     List<SemesterReportMarkResponse> toSemesterReportMarkResponseList(List<SemesterReportMark> marks);
+
     Set<SemesterReportMarkResponse> toSemesterReportMarkResponseSet(Set<SemesterReportMark> marks);
 
     SemesterReportResponse toSemesterReportResponse(SemesterReport report);
-    List<SemesterReportResponse> toSemesterReportResponseList(List<SemesterReport> reports);
 
+    List<SemesterReportResponse> toSemesterReportResponseList(List<SemesterReport> reports);
 
 
 }

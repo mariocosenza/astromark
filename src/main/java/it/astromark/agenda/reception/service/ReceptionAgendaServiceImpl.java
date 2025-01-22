@@ -49,7 +49,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
         var parent = authenticationService.getParent().orElseThrow();
         for (var student : parent.getStudents()) {
             if (slot.getReceptionTimetable().getTeacher().getTeacherClasses().stream().anyMatch(c -> c.getSchoolClass().getStudents().contains(student))) {
-                if(slot.getBooked() < slot.getCapacity()) {
+                if (slot.getBooked() < slot.getCapacity()) {
                     slot.setBooked((short) (slot.getBooked() + 1));
                     receptionBookingRepository.save(ReceptionBooking.builder()
                             .bookingOrder(slot.getBooked())
@@ -94,7 +94,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<ReceptionBookingResponse> getBookedSlots() {
-        if(authenticationService.isTeacher()) {
+        if (authenticationService.isTeacher()) {
             return receptionAgendaMapper.toReceptionBookingResponseList(receptionBookingRepository.findByReceptionTimeslot_ReceptionTimetable_Teacher(authenticationService.getTeacher().orElseThrow()).stream().sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate())).toList());
         } else {
             return receptionAgendaMapper.toReceptionBookingResponseList(receptionBookingRepository.findByParent(authenticationService.getParent().orElseThrow()).stream().sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate())).toList());
@@ -106,11 +106,11 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<ReceptionTimeslotResponse> getSlots(@NotNull UUID teacherID) {
         Teacher teacher;
-        if(authenticationService.isTeacher()) {
+        if (authenticationService.isTeacher()) {
             teacher = authenticationService.getTeacher().orElseThrow();
         } else {
             teacher = teacherRepository.findById(teacherID).orElseThrow();
-            if(teacher
+            if (teacher
                     .getTeacherClasses()
                     .stream().anyMatch(c -> c.getSchoolClass().getStudents().stream().noneMatch(s -> parentService.getStudents().stream().anyMatch(p -> p.id().equals(s.getId()))))) {
                 throw new AccessDeniedException("Parent is not a student of the teacher");

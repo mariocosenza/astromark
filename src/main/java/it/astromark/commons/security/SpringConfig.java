@@ -85,8 +85,6 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
 
-
-
     private void serveDirectory(ResourceHandlerRegistry registry) {
         String[] endpointPatterns = new String[]{"/".substring(0, 0), "/", "/" + "**"};
         registry
@@ -95,7 +93,7 @@ public class SpringConfig implements WebMvcConfigurer {
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver() {
                     @Override
-                    public Resource resolveResource(HttpServletRequest request,@Nullable  String requestPath, @Nullable List<? extends Resource> locations, @Nullable ResourceResolverChain chain) {
+                    public Resource resolveResource(HttpServletRequest request, @Nullable String requestPath, @Nullable List<? extends Resource> locations, @Nullable ResourceResolverChain chain) {
                         Resource resource = super.resolveResource(request, Objects.requireNonNull(requestPath), Objects.requireNonNull(locations), Objects.requireNonNull(chain));
                         if (Objects.nonNull(resource)) {
                             return resource;

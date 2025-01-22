@@ -23,7 +23,7 @@ public class JustifiableController {
     }
 
     @PatchMapping("{studentId}/justifiable/{justificationId}/justify")
-    JustifiableResponse justify(@PathVariable UUID studentId,@PathVariable UUID justificationId, @RequestBody String justificationText, @RequestParam Boolean absence) {
+    JustifiableResponse justify(@PathVariable UUID studentId, @PathVariable UUID justificationId, @RequestBody String justificationText, @RequestParam Boolean absence) {
         return justifiableService.justify(studentId, justificationId, justificationText, absence);
     }
 

@@ -47,7 +47,7 @@ public class ParentServiceImpl implements ParentService {
         var school = authenticationService.getSecretary().orElseThrow().getSchool();
         var student = studentRepository.findById(parentRequest.studentId()).orElseThrow();
         var password = new Faker().internet().password(8, 64, true, false, true);
-        var user =  schoolUserMapper.toParentDetailedResponse(parentRepository.save(Parent.builder().school(school)
+        var user = schoolUserMapper.toParentDetailedResponse(parentRepository.save(Parent.builder().school(school)
                 .name(parentRequest.name())
                 .surname(parentRequest.surname())
                 .email(parentRequest.email())
