@@ -1,15 +1,14 @@
 package it.astromark.authentication.controller;
 
+import it.astromark.authentication.dto.UserFirstLoginRequest;
+import it.astromark.authentication.dto.UserLoginRequest;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.authentication.dto.UserLoginDTO;
 import it.astromark.authentication.service.JWTService;
-import it.astromark.user.student.entity.Student;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -29,11 +28,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDTO user) {
-        var schoolUser = authenticationService.login(user.username(), user.password(), user.schoolCode(), user.role());
+    public ResponseEntity<String> login(@NotNull @RequestBody UserLoginRequest user) {
+        var schoolUser = authenticationService.login(user);
         if (schoolUser != null) {
-
-
             return switch (schoolUser.getPendingState()) {
                 case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
                 case NORMAL, REMOVE ->
@@ -45,17 +42,19 @@ public class AuthController {
     }
 
     @PostMapping("/first-login")
-    public String Hello() {
-        return "First login logic";
+    public ResponseEntity<String> firstLogin(@RequestBody UserFirstLoginRequest user) {
+        var schoolUser = authenticationService.firstLogin(user);
+        if (schoolUser != null) {
+            return switch (schoolUser.getPendingState()) {
+                case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
+                case NORMAL, REMOVE ->
+                        new ResponseEntity<>(authenticationService.verify(user.username(), user.password(), user.schoolCode(), user.role()), HttpStatus.OK);
+            };
+        }
+
+        return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
     }
 
-    @PreAuthorize("hasRole('student')")
-    @GetMapping("/token")
-    public String sayHello() {
-
-        return "Hello";
-
-    }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader(name = "Authorization", required = false) String authorizationHeader) {

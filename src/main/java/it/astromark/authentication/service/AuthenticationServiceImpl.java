@@ -1,6 +1,9 @@
 package it.astromark.authentication.service;
 
+import it.astromark.authentication.dto.UserFirstLoginRequest;
+import it.astromark.authentication.dto.UserLoginRequest;
 import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.commons.model.Role;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.entity.Parent;
@@ -44,18 +47,44 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public SchoolUser login(String username, String password, String schoolCode, String role) {
+    public SchoolUser login(UserLoginRequest user) {
 
         // Cerca l'utente nei vari repository
-        var schoolUser = findUserInRepositories(username, schoolCode, role);
-        if (schoolUser == null) return null;
+        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+        if (schoolUser == null) {
+            return null;
+        }
 
 
-        var hashedPassword = PasswordUtils.hashPassword(password);
+
+        var hashedPassword = PasswordUtils.hashPassword(user.password());
         if (hashedPassword.equals(schoolUser.getPassword()))
             return schoolUser;
 
         // Se nessun utente trovato o password non valida
+        return null;
+    }
+
+    @Override
+    public SchoolUser firstLogin(UserFirstLoginRequest user) {
+        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+
+        var hashedPassword = PasswordUtils.hashPassword(user.password());
+        if (schoolUser != null && hashedPassword.equals(schoolUser.getPassword())) {
+            schoolUser.setPassword(PasswordUtils.hashPassword(user.newPassword()));
+            schoolUser.setPendingState(PendingState.NORMAL);
+            SchoolUser updatedUser = switch (user.role().toLowerCase()) {
+                case "student" -> studentRepository.save((Student) schoolUser);
+                case "teacher" -> teacherRepository.save((Teacher) schoolUser);
+                case "parent" ->  parentRepository.save((Parent) schoolUser);
+                case "secretary" -> secretaryRepository.save((Secretary) schoolUser);
+                default -> null;
+            };
+            if(updatedUser != null) {
+                return login(new UserLoginRequest(updatedUser.getUsername(), user.newPassword(), user.schoolCode(), user.role()));
+            }
+        }
+
         return null;
     }
 
@@ -77,7 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String verify(String username, String password, String schoolCode, String role) {
 
-        var schoolUser = login(username, password, schoolCode, role);
+        var schoolUser = login(new UserLoginRequest(username, password, schoolCode, role));
         if (schoolUser != null)
             return jwtService.generateToken(schoolUser.getId(), getRole(schoolUser));
         else return null;

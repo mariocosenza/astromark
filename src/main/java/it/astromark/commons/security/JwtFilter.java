@@ -3,6 +3,7 @@ package it.astromark.commons.security;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.JWTService;
 import it.astromark.user.commons.model.SchoolUser;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -31,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @Nullable HttpServletResponse response,@Nullable FilterChain filterChain) throws ServletException, IOException {
         var authorizationHeader = request.getHeader("Authorization");
         String jwtToken = null;
         UUID id = null;
@@ -45,14 +47,17 @@ public class JwtFilter extends OncePerRequestFilter {
         if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             SchoolUser schoolUser = authenticationService.getUser(id, role);
-
-
-            if (jwtService.validateToken(jwtToken, schoolUser)) {
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(schoolUser, null, List.of(authenticationService.getRole(schoolUser)));
-                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(token);
+            try {
+                if (jwtService.validateToken(jwtToken, schoolUser)) {
+                    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(schoolUser, null, List.of(authenticationService.getRole(schoolUser)));
+                    token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(token);
+                }
+            } catch (Exception e) {
+                logger.error("Error while validating token", e);
             }
+
         }
-        filterChain.doFilter(request, response);
+        Objects.requireNonNull(filterChain).doFilter(request, response);
     }
 }

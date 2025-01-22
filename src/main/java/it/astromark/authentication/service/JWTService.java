@@ -4,25 +4,33 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import it.astromark.authentication.entity.BlackListedToken;
+import it.astromark.authentication.repository.BlackListedTokenRepository;
 import it.astromark.user.commons.model.Role;
 import it.astromark.user.commons.model.SchoolUser;
-import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
 
+@Slf4j
 @Service
-@NoArgsConstructor
+
 public class JWTService {
 
+    private final BlackListedTokenRepository blackListedTokenRepository;
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    private final List<String> blacklist = new ArrayList<>();
-
+    public JWTService(final BlackListedTokenRepository blackListedTokenRepository) {
+        this.blackListedTokenRepository = blackListedTokenRepository;
+    }
 
     public String generateToken(UUID id, GrantedAuthority role) {
 
@@ -53,6 +61,9 @@ public class JWTService {
      */
     public UUID extractUUID(String jwtToken) {
         var claims = extractAllClaims(jwtToken);
+        if(claims == null) {
+            return null;
+        }
         return UUID.fromString(claims.getSubject());
     }
 
@@ -64,7 +75,7 @@ public class JWTService {
      */
     public String extractRole(String jwtToken) {
         var claims = extractAllClaims(jwtToken);
-        return claims.get("role", String.class);
+        return claims != null ? claims.get("role", String.class) : null;
     }
 
 
@@ -75,13 +86,13 @@ public class JWTService {
      * @param schoolUser the user to validate against
      * @return true if the token is valid, false otherwise
      */
-    public boolean validateToken(String jwtToken, SchoolUser schoolUser) {
+    public boolean validateToken(String jwtToken, SchoolUser schoolUser) throws AccessDeniedException {
         var tokenUUID = extractUUID(jwtToken);
         var tokenRole = extractRole(jwtToken);
         var claims = extractAllClaims(jwtToken);
 
 
-        if (blacklist.contains(jwtToken)) {
+        if (blackListedTokenRepository.existsByToken(jwtToken)) {
             return false;
         }
 
@@ -96,7 +107,7 @@ public class JWTService {
         }
 
         // Ensure the token is not expired
-        return !claims.getExpiration().before(new Date());
+        return !(claims != null && claims.getExpiration().before(new Date()));
     }
 
     /**
@@ -106,17 +117,21 @@ public class JWTService {
      * @return the claims extracted from the token
      */
     private Claims extractAllClaims(String jwtToken) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(jwtToken)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(jwtToken)
+                    .getPayload();
+        } catch (Exception e) {
+            log.warn("Error while extracting claims from JWT token: {}", e.getMessage());
+           return null;
+        }
     }
 
 
     public void logOut(String jwtToken) {
-        blacklist.add(jwtToken);
-
+        blackListedTokenRepository.save(new BlackListedToken(jwtToken));
     }
 
 

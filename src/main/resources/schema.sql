@@ -461,3 +461,10 @@ CREATE TABLE student_school_class
     CONSTRAINT fk_student_school_class_school_class FOREIGN KEY (school_class_id) REFERENCES school_class(id),
     CONSTRAINT fk_student_school_class_student FOREIGN KEY (student_id) REFERENCES student(id)
 );
+
+CREATE TABLE black_listed_token
+(
+    token VARCHAR(512) NOT NULL,
+
+    CONSTRAINT pk_black_listed_token PRIMARY KEY (token)
+);
