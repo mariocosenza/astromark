@@ -244,15 +244,10 @@ header  {
 }
 
 .grid-item {
-  background-color: var(--md-sys-color-background);
-  border: 1px solid rgba(224, 224, 224, 1);
-  border-radius: 12px;
   min-height: 150px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  align-items: flex-start;
-  padding: 1vw 1vw 10%;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
