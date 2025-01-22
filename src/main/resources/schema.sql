@@ -294,12 +294,12 @@ CREATE TABLE reception_timetable
 CREATE TABLE teaching_timeslot
 (
 
-    id                 INT GENERATED ALWAYS AS IDENTITY,
-    class_timetable_id INT                                      NOT NULL,
-    teaching_subject_title VARCHAR(255)                         NOT NULL,
-    teaching_teacher_id    UUID                                 NOT NULL,
-    hour               SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
-    date               DATE                                     NOT NULL,
+    id                     INT GENERATED ALWAYS AS IDENTITY,
+    class_timetable_id     INT                                      NOT NULL,
+    teaching_subject_title VARCHAR(255)                             NOT NULL,
+    teaching_teacher_id    UUID                                     NOT NULL,
+    hour                   SMALLINT CHECK (hour >= 1 AND hour <= 8) NOT NULL,
+    date                   DATE                                     NOT NULL,
 
     CONSTRAINT pk_teaching_timeslot PRIMARY KEY (id),
     CONSTRAINT uk_teaching_timeslot UNIQUE (class_timetable_id, hour, date),
@@ -458,8 +458,8 @@ CREATE TABLE student_school_class
     change_class_date DATE DEFAULT NULL,
 
     CONSTRAINT pk_student_school_class PRIMARY KEY (school_class_id, student_id),
-    CONSTRAINT fk_student_school_class_school_class FOREIGN KEY (school_class_id) REFERENCES school_class(id),
-    CONSTRAINT fk_student_school_class_student FOREIGN KEY (student_id) REFERENCES student(id)
+    CONSTRAINT fk_student_school_class_school_class FOREIGN KEY (school_class_id) REFERENCES school_class (id),
+    CONSTRAINT fk_student_school_class_student FOREIGN KEY (student_id) REFERENCES student (id)
 );
 
 CREATE TABLE black_listed_token
