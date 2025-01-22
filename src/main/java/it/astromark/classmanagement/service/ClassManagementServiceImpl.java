@@ -33,7 +33,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary') || hasRole('teacher')")
+    @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
     public List<SchoolClassResponse> getClasses() {
         SchoolUser user;
         if(authenticationService.getSecretary().isPresent()) {

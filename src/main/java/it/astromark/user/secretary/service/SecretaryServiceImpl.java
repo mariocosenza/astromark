@@ -32,7 +32,7 @@ public class SecretaryServiceImpl implements SecretaryService{
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary')")
+    @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(SecretaryRequest secretaryRequest) {
         var username = secretaryRequest.name() + "." + secretaryRequest.surname() + secretaryRepository.countByNameAndSurname(secretaryRequest.name(), secretaryRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();

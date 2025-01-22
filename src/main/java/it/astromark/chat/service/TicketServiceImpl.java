@@ -38,7 +38,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    @PreAuthorize("hasRole('teacher') || hasRole('parent')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<TicketResponse> getTickets() {
         List<Ticket> ticketList = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent') || hasRole('secretary')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
     public List<MessageResponse> getMessages(Ticket ticket){
 
         var messages = messageRepository.findByTicket(ticket);
@@ -68,7 +68,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent') || hasRole('secretary')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
     public UUID sendMessage(UUID ticketId, String text) {
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
         if(ticket.getClosed() || ticket.getSolved()){
@@ -94,7 +94,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public void createTicket(String title) {
 
         var ticket = new Ticket();

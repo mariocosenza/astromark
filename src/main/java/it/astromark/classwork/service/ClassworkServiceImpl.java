@@ -49,7 +49,7 @@ public class ClassworkServiceImpl implements ClassworkService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<ClassworkResponse> getClassActivities(Integer classId) {
         if(!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");
@@ -64,7 +64,7 @@ public class ClassworkServiceImpl implements ClassworkService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<HomeworkResponse> getHomework(Integer classId) {
         if(!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");

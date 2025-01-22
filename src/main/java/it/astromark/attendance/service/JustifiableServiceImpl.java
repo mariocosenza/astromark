@@ -40,7 +40,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('parent')")
+    @PreAuthorize("hasRole('PARENT')")
     public JustifiableResponse justify(@NotNull UUID studentId, @NotNull UUID justificationId, @NotEmpty @Size(max = 512) String justificationText, @NotNull Boolean absence) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -72,7 +72,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('parent') || hasRole('student')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
     public List<JustifiableResponse> getAbsencesByYear(UUID studentId, Year year) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -84,7 +84,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('parent') || hasRole('student')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
     public List<JustifiableResponse> getDelayByYear(UUID studentId, Year year) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -96,7 +96,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('parent') || hasRole('student')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
     public Integer getTotalAbsences(UUID studentId, Year year) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -107,7 +107,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('parent') || hasRole('student')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
     public Integer getTotalDelays(UUID studentId, Year year) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");

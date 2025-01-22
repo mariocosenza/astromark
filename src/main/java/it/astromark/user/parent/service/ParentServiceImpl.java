@@ -41,7 +41,7 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary')")
+    @PreAuthorize("hasRole('SECRETARY')")
     public ParentDetailedResponse create(ParentRequest parentRequest) {
         var username = parentRequest.name() + "." + parentRequest.surname() + parentRepository.countByNameAndSurname(parentRequest.name(), parentRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();

@@ -51,7 +51,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary')")
+    @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(StudentRequest studentRequest) {
         var username = studentRequest.name() + "." + studentRequest.surname() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();
@@ -89,7 +89,7 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findById(uuid).orElse(null);
     }
 
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     @Transactional
     public List<Integer> getStudentYears(@NotNull UUID studentId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
@@ -103,7 +103,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     @Transactional
     public List<SchoolClassResponse> getSchoolClassByYear(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {

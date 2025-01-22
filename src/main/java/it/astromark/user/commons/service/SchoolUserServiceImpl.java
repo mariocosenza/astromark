@@ -84,7 +84,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('parent') || hasRole('teacher') || hasRole('secretary')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER') || hasRole('SECRETARY')")
     public SchoolUserResponse updatePreferences(SchoolUserUpdate schoolUserUpdate) {
         SchoolUser user;
         if(authenticationService.isStudent()) {

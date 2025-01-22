@@ -56,7 +56,7 @@ public class CommunicationServiceImpl implements CommunicationService  {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent') || hasRole('teacher')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public List<CommunicationResponse> getCommunicationBySchoolClassId(Integer schoolClassId) {
         if(!schoolUserService.isLoggedTeacherClass(schoolClassId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");

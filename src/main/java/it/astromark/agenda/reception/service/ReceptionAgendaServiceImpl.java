@@ -43,7 +43,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('parent')")
+    @PreAuthorize("hasRole('PARENT')")
     public boolean book(Integer receptionTimeslotID) {
         var slot = receptionTimeslotRepository.findByIdAndDateAfter(receptionTimeslotID, LocalDate.now().minusDays(200));
         var parent = authenticationService.getParent().orElseThrow();
@@ -92,7 +92,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<ReceptionBookingResponse> getBookedSlots() {
         if(authenticationService.isTeacher()) {
             return receptionAgendaMapper.toReceptionBookingResponseList(receptionBookingRepository.findByReceptionTimeslot_ReceptionTimetable_Teacher(authenticationService.getTeacher().orElseThrow()).stream().sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate())).toList());
@@ -103,7 +103,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<ReceptionTimeslotResponse> getSlots(@NotNull UUID teacherID) {
         Teacher teacher;
         if(authenticationService.isTeacher()) {

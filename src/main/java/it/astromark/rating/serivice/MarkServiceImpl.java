@@ -44,7 +44,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<MarkResponse> getMarkByYear(UUID studentId, Year year) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -54,7 +54,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public Double getAverage(UUID studentId, Year year) {
         return getMarkByYear(studentId, year).stream()
                 .mapToDouble(MarkResponse::mark)
@@ -64,7 +64,7 @@ public class MarkServiceImpl implements MarkService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent') || hasRole('teacher')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, Boolean semester) {
         if(!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -89,7 +89,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    @PreAuthorize("hasRole('parent')")
+    @PreAuthorize("hasRole('PARENT')")
     public SemesterReportResponse viewReport(Integer reportId) {
         var report = semesterReportRepository.findById(reportId).orElseThrow();
 

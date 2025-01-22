@@ -55,12 +55,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return null;
         }
 
-
-
         var hashedPassword = PasswordUtils.hashPassword(user.password());
         if (hashedPassword.equals(schoolUser.getPassword()))
             return schoolUser;
 
+        log.info("User not found in any repository");
         // Se nessun utente trovato o password non valida
         return null;
     }
@@ -95,10 +94,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         };
 
         return switch (role) {
-            case "ROLE_student" -> studentRepository.findById(id).orElseThrow(exceptionSupplier);
-            case "ROLE_teacher" -> teacherRepository.findById(id).orElseThrow(exceptionSupplier);
-            case "ROLE_parent" -> parentRepository.findById(id).orElseThrow(exceptionSupplier);
-            case "ROLE_secretary" -> secretaryRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_STUDENT" -> studentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_TEACHER" -> teacherRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_PARENT" -> parentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_SECRETARY" -> secretaryRepository.findById(id).orElseThrow(exceptionSupplier);
             default -> throw exceptionSupplier.get();
         };
     }
@@ -120,10 +119,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         return switch (user) {
-            case Parent ignored -> new SimpleGrantedAuthority("ROLE_" + Role.PARENT.toString().toLowerCase());
-            case Teacher ignored -> new SimpleGrantedAuthority("ROLE_" + Role.TEACHER.toString().toLowerCase());
-            case Student ignored -> new SimpleGrantedAuthority("ROLE_" + Role.STUDENT.toString().toLowerCase());
-            case Secretary ignored -> new SimpleGrantedAuthority("ROLE_" + Role.SECRETARY.toString().toLowerCase());
+            case Parent ignored -> new SimpleGrantedAuthority("ROLE_" + Role.PARENT.toString().toUpperCase());
+            case Teacher ignored -> new SimpleGrantedAuthority("ROLE_" + Role.TEACHER.toString().toUpperCase());
+            case Student ignored -> new SimpleGrantedAuthority("ROLE_" + Role.STUDENT.toString().toUpperCase());
+            case Secretary ignored -> new SimpleGrantedAuthority("ROLE_" + Role.SECRETARY.toString().toUpperCase());
             default ->
                     throw new IllegalStateException("Unexpected user type: " + user.getClass().toString().toLowerCase());
         };
