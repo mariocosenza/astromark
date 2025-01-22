@@ -17,8 +17,7 @@ const validationSchemaNormal = yup.object().shape({
         .strict(true)
         .min(3, 'Username troppo corto')
         .required("Username obbligatorio"),
-    password: yup.string()
-        .strict(true)
+    password: yup.string()  // Removed strict(true)
         .password()
         .min(8, 'Minimo 8 caratteri')
         .minSymbols(0)
@@ -37,8 +36,7 @@ const validationSchemaFirstLogin = yup.object().shape({
         .strict(true)
         .min(3, 'Username troppo corto')
         .required("Username obbligatorio"),
-    password: yup.string()
-        .strict(true)
+    password: yup.string()  // Removed strict(true)
         .password()
         .min(8, 'Minimo 8 caratteri')
         .minSymbols(0)
@@ -50,8 +48,7 @@ const validationSchemaFirstLogin = yup.object().shape({
         .strict(true)
         .matches(/^SS\d{5}$/, "Codice scuola errato")
         .required("Codice scuola obbligatorio"),
-    newPassword: yup.string()
-        .strict(true)
+    newPassword: yup.string()  // Removed strict(true)
         .password()
         .min(8, 'Minimo 8 caratteri')
         .minSymbols(0)
@@ -63,7 +60,7 @@ const validationSchemaFirstLogin = yup.object().shape({
             function(value) {
                 return value !== this.parent.password;
             }),
-    checkPassword: yup.string()
+    checkPassword: yup.string()  // Removed strict(true)
         .oneOf([yup.ref('newPassword')], 'Le password devono coincidere')
         .required("Conferma password obbligatoria")
 });
