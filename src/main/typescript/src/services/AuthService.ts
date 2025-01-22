@@ -11,7 +11,7 @@ export function logout(): void {
     localStorage.removeItem("year")
     localStorage.removeItem("studentId")
     try {
-        if(localStorage.getItem("user") !== null) {
+        if (localStorage.getItem("user") !== null) {
             axiosConfig.post(Env.API_BASE_URL + "/auth/logout").then(_ => localStorage.removeItem("user"))
         }
     } catch (e) {
@@ -19,12 +19,12 @@ export function logout(): void {
     }
 }
 
-export async function asyncLogout(item : any) {
+export async function asyncLogout(item: any) {
     try {
         localStorage.removeItem("year")
         localStorage.removeItem("studentId")
-        if(item !== null) {
-          await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
+        if (item !== null) {
+            await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
             localStorage.removeItem("user")
         }
     } catch (e) {
@@ -71,7 +71,7 @@ export function replaceToken(token: string): void {
 
 export function getCurrentUser(): JwtToken | null {
     const user = localStorage.getItem("user");
-    if(user === null) {
+    if (user === null) {
         return null;
     }
     return jwtDecode(user) as JwtToken;
@@ -79,7 +79,7 @@ export function getCurrentUser(): JwtToken | null {
 
 export function isExpired(): boolean {
     const user = getCurrentUser();
-    if(user !== null) {
+    if (user !== null) {
         return user.exp < Date.now() / 1000;
     }
     return true;

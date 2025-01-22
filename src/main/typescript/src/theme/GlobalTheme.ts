@@ -1,6 +1,6 @@
 import {createTheme, Theme} from "@mui/material";
 
-export const theme : Theme = createTheme({
+export const theme: Theme = createTheme({
     typography: {
         fontFamily: [
             'Titillium Web',

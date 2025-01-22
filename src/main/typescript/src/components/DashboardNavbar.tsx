@@ -13,13 +13,11 @@ import axiosConfig from "../services/AxiosConfig.ts";
 import {Env} from "../Env.ts";
 
 
-
 export const DashboardNavbar: React.FC = () => {
 
-    const [students, setStudents]  = useState<SchoolUserDetail[]>([]);
-    const [years, setYears]  = useState<number[]>([]);
+    const [students, setStudents] = useState<SchoolUserDetail[]>([]);
+    const [years, setYears] = useState<number[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
-
 
 
     useEffect(() => {
@@ -28,7 +26,7 @@ export const DashboardNavbar: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            if(!isRole(Role.STUDENT)) {
+            if (!isRole(Role.STUDENT)) {
                 await axiosConfig.get<SchoolUserDetail[]>(Env.API_BASE_URL + '/parents/students').then((response) => {
                     SelectedStudent.id = response.data[0].id
                     setStudents(response.data)
@@ -70,11 +68,11 @@ export const DashboardNavbar: React.FC = () => {
                         <StudentParentSideNav/>
                         <Typography variant="h6" component="div" sx={{ml: 1, flexGrow: 1}}>
                             <NavLink to="/dashboard" className={'whiteLink'}>
-                            AstroMark
+                                AstroMark
                             </NavLink>
                         </Typography>
                         {
-                           !loading && isRole(Role.PARENT) && <div> <AccountMenu data={students}/></div>
+                            !loading && isRole(Role.PARENT) && <div><AccountMenu data={students}/></div>
                         }
                         {
                             !loading && <ArchiveMenu data={years}/>

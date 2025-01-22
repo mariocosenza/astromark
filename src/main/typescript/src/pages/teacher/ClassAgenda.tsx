@@ -3,7 +3,8 @@ import {
     CircularProgress,
     IconButton,
     Stack,
-    styled, tableCellClasses,
+    styled,
+    tableCellClasses,
     TableContainer,
     Typography,
 } from "@mui/material";
@@ -37,7 +38,7 @@ export interface ClassAgendaRow {
     homeworkDesc: string;
 }
 
-const CustomTableRow = styled(TableRow)(({ theme }) => ({
+const CustomTableRow = styled(TableRow)(({theme}) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },
@@ -65,9 +66,9 @@ export const ClassAgenda: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            let rowResponse : ClassAgendaRow[] = [];
+            let rowResponse: ClassAgendaRow[] = [];
             const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${date.format("YYYY-MM-DD")}`);
-            if (response.data.length){
+            if (response.data.length) {
                 rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
                     id: teachingSlot.id,
                     signed: teachingSlot.signed,
@@ -116,13 +117,14 @@ export const ClassAgenda: React.FC = () => {
                                 if (newDate) {
                                     setDate(newDate);
                                     fetchData();
-                                }}}
+                                }
+                            }}
                         />
                     </Stack>
                 </Grid>
             </Grid>
 
-            <TableContainer sx={{ width: '90%', margin: '0 5%'}}>
+            <TableContainer sx={{width: '90%', margin: '0 5%'}}>
                 <Table>
                     <TableHead>
                         <CustomTableRow>
@@ -136,13 +138,14 @@ export const ClassAgenda: React.FC = () => {
                     </TableHead>
 
                     <TableBody>
-                        { loading ? null : rows.map((row) => (
+                        {loading ? null : rows.map((row) => (
                             <CustomTableRow key={row.hour}>
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
                                         {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}/> :
                                             <IconButton>
-                                                <AddCircleOutlineIcon fontSize={'large'} onClick={() => choseTeachingTimeslot(row)}/>
+                                                <AddCircleOutlineIcon fontSize={'large'}
+                                                                      onClick={() => choseTeachingTimeslot(row)}/>
                                             </IconButton>
                                         }
 
@@ -181,7 +184,7 @@ export const ClassAgenda: React.FC = () => {
             </TableContainer>
 
             <Grid container justifyContent={'center'} margin={'5%'}>
-                { loading ? <CircularProgress size={150}/>  : null}
+                {loading ? <CircularProgress size={150}/> : null}
             </Grid>
         </div>
     );

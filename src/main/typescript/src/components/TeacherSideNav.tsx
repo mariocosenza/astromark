@@ -19,15 +19,15 @@ export const TeacherSideNav = () => {
 
     const DrawerList = (
 
-        <Box className={"drawer"} sx={{ width: '15vw' }} minWidth={250} role="presentation" onClick={toggleDrawer(false)}>
+        <Box className={"drawer"} sx={{width: '15vw'}} minWidth={250} role="presentation" onClick={toggleDrawer(false)}>
             <List>
                 <NavLink to="/teacher/dashboard" end>
                     <ListItem key="dashboard" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ExploreIcon />
+                                <ExploreIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Dashboard"} />
+                            <ListItemText primary={"Dashboard"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
@@ -35,9 +35,9 @@ export const TeacherSideNav = () => {
                     <ListItem key="classi" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <HouseIcon />
+                                <HouseIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Classi"} />
+                            <ListItemText primary={"Classi"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
@@ -45,9 +45,9 @@ export const TeacherSideNav = () => {
                     <ListItem key="ticket" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ArticleIcon />
+                                <ArticleIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Ticket"} />
+                            <ListItemText primary={"Ticket"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
@@ -59,7 +59,7 @@ export const TeacherSideNav = () => {
                                 <ListItemIcon>
                                     <HistoryEduIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary={"Agenda di Classe"} />
+                                <ListItemText primary={"Agenda di Classe"}/>
                             </ListItemButton>
                         </ListItem>
                     </NavLink>
@@ -70,9 +70,9 @@ export const TeacherSideNav = () => {
                     <ListItem key="impostazioni" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ManageAccountsOutlinedIcon />
+                                <ManageAccountsOutlinedIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Impostazioni"} />
+                            <ListItemText primary={"Impostazioni"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>

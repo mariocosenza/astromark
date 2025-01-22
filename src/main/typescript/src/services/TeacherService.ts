@@ -1,5 +1,6 @@
-
 export class SelectedSchoolClass {
+    private static _id: number | null = null;
+
     static get id(): number | null {
         return this._id;
     }
@@ -7,6 +8,8 @@ export class SelectedSchoolClass {
     static set id(value: number) {
         this._id = value;
     }
+
+    private static _title: string = '';
 
     static get title(): string {
         return this._title;
@@ -16,6 +19,8 @@ export class SelectedSchoolClass {
         this._title = value;
     }
 
+    private static _desc: string = '';
+
     static get desc(): string {
         return this._desc;
     }
@@ -23,10 +28,6 @@ export class SelectedSchoolClass {
     static set desc(value: string) {
         this._desc = value;
     }
-
-    private static _id: number | null = null;
-    private static _title: string = '';
-    private static _desc: string = '';
 }
 
 export const isSelectedClass = () => {

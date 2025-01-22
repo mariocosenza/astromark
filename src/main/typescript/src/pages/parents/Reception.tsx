@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {Alert, Autocomplete, Box, Button, Divider, Snackbar, Tab, Tabs, TextField} from "@mui/material";
 import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {ListBooked} from "../../components/ListBooked.tsx";
 import Paper from "@mui/material/Paper";
+
 export type BookingId = {
     parentId: string
     receptionTimeslotId: number
@@ -59,7 +60,7 @@ const BookedSlots: React.FC = () => {
         }
     };
     return (
-        <div style={{ display: 'flex', justifyContent: 'center',  marginTop: '1rem'}}>
+        <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}>
             {
                 loading ?
                     <div>Loading...</div> :
@@ -139,7 +140,7 @@ const BookSlot: React.FC = () => {
     };
 
     const columns: GridColDef<(typeof rows)[number]>[] = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        {field: 'id', headerName: 'ID', width: 90},
         {
             field: 'date',
             headerName: 'Data',
@@ -187,7 +188,7 @@ const BookSlot: React.FC = () => {
             p: 2,
             gap: 2
         }}>
-            <Paper elevation={1} sx={{ p: 2 }}>
+            <Paper elevation={1} sx={{p: 2}}>
                 {!loading && (
                     <Autocomplete
                         id="teacher-select"
@@ -202,13 +203,13 @@ const BookSlot: React.FC = () => {
                         }}
                         getOptionLabel={(option) => `${option.name} ${option.surname}`}
                         renderInput={(params) => (
-                            <TextField {...params} label="Docente" />
+                            <TextField {...params} label="Docente"/>
                         )}
                     />
                 )}
             </Paper>
 
-            <Paper elevation={1} sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <Paper elevation={1} sx={{flex: 1, display: 'flex', flexDirection: 'column'}}>
                 {!loading && (
                     <>
                         <DataGrid
@@ -242,14 +243,14 @@ const BookSlot: React.FC = () => {
                                         count === 1 ? 'riga selezionata' : 'righe selezionate'
                                     }`,
                                 MuiTablePagination: {
-                                    labelDisplayedRows: ({ from, to, count }) => `${from}-${to} di ${count}`,
+                                    labelDisplayedRows: ({from, to, count}) => `${from}-${to} di ${count}`,
                                     labelRowsPerPage: 'Righe per pagina:'
                                 }
                             }}
                             onRowSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}
-                            sx={{ flex: 1 }}
+                            sx={{flex: 1}}
                         />
-                        <Box sx={{ p: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                        <Box sx={{p: 2, display: 'flex', justifyContent: 'flex-end'}}>
                             <Button
                                 variant="contained"
                                 onClick={handleButtonClick}
@@ -270,7 +271,7 @@ const BookSlot: React.FC = () => {
                 <Alert
                     onClose={() => setShowError(false)}
                     severity="error"
-                    sx={{ width: '100%' }}
+                    sx={{width: '100%'}}
                 >
                     {error}
                 </Alert>

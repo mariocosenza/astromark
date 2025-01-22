@@ -12,14 +12,14 @@ export const ListBooked: React.FC<ListBookedProp> = ({list}) => {
             {
                 list.map((item, i) =>
                     <Box className={'listItem'} width={'90vw'} sx={{mb: '0.8rem'}} key={'list' + i}>
-                        <Avatar sx={{ bgcolor: '#405f90', ml: '1%', mt: '0.7%'}}>B</Avatar>
+                        <Avatar sx={{bgcolor: '#405f90', ml: '1%', mt: '0.7%'}}>B</Avatar>
                         <div style={{flexDirection: 'column', marginLeft: '1%'}}>
                             <Typography variant={'h6'} fontWeight={700}>
                                 {
-                                   'Ricevimento del ' + item.date + ' ora ' + item.hour + 'ª ' + ' Docente: ' + item.name + ' ' + item.surname
+                                    'Ricevimento del ' + item.date + ' ora ' + item.hour + 'ª ' + ' Docente: ' + item.name + ' ' + item.surname
                                 }
                             </Typography>
-                            <Typography variant={'h6'} >
+                            <Typography variant={'h6'}>
                                 <b>Stato: </b>
                                 {
                                     (item.refused ? 'Rifiutato' : 'Accettato')

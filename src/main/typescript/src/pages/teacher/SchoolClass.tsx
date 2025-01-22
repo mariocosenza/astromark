@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {
-    CircularProgress,
-    Typography,
-} from "@mui/material";
+import {CircularProgress, Typography,} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
 import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import {TeacherClassResponse} from "../../entities/TeacherClassResponse.ts";
-import {Item, GridList} from "../../components/GridList.tsx";
+import {GridList, Item} from "../../components/GridList.tsx";
 import {useNavigate} from "react-router";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 
@@ -24,7 +21,7 @@ export const SchoolClass: React.FC = () => {
     const fetchData = async () => {
         try {
             const response: AxiosResponse<TeacherClassResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/schoolClasses`);
-            if (response.data.length){
+            if (response.data.length) {
                 const correctedData: Item[] = response.data.map((schoolClass: TeacherClassResponse) => ({
                     id: schoolClass.id,
                     title: schoolClass.number.toString() + schoolClass.letter,
@@ -54,7 +51,7 @@ export const SchoolClass: React.FC = () => {
                 Scegli la classe
             </Typography>
 
-            <div className={'centerBox'} style={{marginTop:'4vh'}}>
+            <div className={'centerBox'} style={{marginTop: '4vh'}}>
                 {loading ? <CircularProgress/> :
                     <GridList items={data} onClick={chooseSchoolClass}></GridList>}
             </div>

@@ -7,7 +7,7 @@ export type Item = {
     desc: string;
 }
 
-export type Props= {
+export type Props = {
     items: Item[];
     onClick: (id: number, title: string, desc: string) => void;
 }

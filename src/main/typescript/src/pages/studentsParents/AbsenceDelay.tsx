@@ -22,15 +22,15 @@ function toJustificationListProp(justification: JustificationResponse[], absence
             needsJustification: item.needsJustification,
             justified: item.justified,
             justificationText: item.justificationText,
-            avatar: absence? 'A' : 'R',
-            hexColor: absence? 'red' : 'orange',
+            avatar: absence ? 'A' : 'R',
+            hexColor: absence ? 'red' : 'orange',
             date: item.date
         }))
     }
 }
 
 
-const Absence : React.FC = () => {
+const Absence: React.FC = () => {
     const [data, setData] = useState<JustificationResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [toggle, _] = changeStudentOrYear();
@@ -52,13 +52,13 @@ const Absence : React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', marginTop: '1rem'}}>
             {
-            loading? <div>loading...</div> : <JustifiableList {...toJustificationListProp(data, true)}/>
+                loading ? <div>loading...</div> : <JustifiableList {...toJustificationListProp(data, true)}/>
             }
         </div>
     )
 }
 
-const Delay : React.FC = () => {
+const Delay: React.FC = () => {
     const [data, setData] = useState<JustificationResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [toggle, _] = changeStudentOrYear();
@@ -80,7 +80,7 @@ const Delay : React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', marginTop: '1rem'}}>
             {
-            loading? <div>loading...</div> : <JustifiableList {...toJustificationListProp(data, false)}/>
+                loading ? <div>loading...</div> : <JustifiableList {...toJustificationListProp(data, false)}/>
             }
         </div>
     )
@@ -115,30 +115,55 @@ export const AbsenceDelays: React.FC = () => {
             <Stack width={'100%'} spacing={0}
                    direction="row"
                    sx={{height: 'calc(100vh - 70px)'}}>
-                <Box sx={{ minWidth: '70%'}}>
-                    <Box sx={{ minWidth: '100%', bgcolor: 'background.paper' }}>
+                <Box sx={{minWidth: '70%'}}>
+                    <Box sx={{minWidth: '100%', bgcolor: 'background.paper'}}>
                         <Tabs
                             value={value}
                             onChange={handleChange}
                             variant="fullWidth"
                         >
-                            <Tab label="Assenze" />
-                            <Tab label="Ingressi in ritardo" />
+                            <Tab label="Assenze"/>
+                            <Tab label="Ingressi in ritardo"/>
                         </Tabs>
                         <Divider/>
                         {
-                            value === 0? <Absence/> : <Delay/>
+                            value === 0 ? <Absence/> : <Delay/>
                         }
                     </Box>
                 </Box>
                 <Stack spacing={'20%'} direction={'column'} className={'sideContainer'}>
-                        <Box bgcolor={'#904a47'} height={'20%'} style={{color: 'white', alignContent: 'center', textAlign: 'center', marginTop: '1rem', borderRadius: '1rem', marginLeft: '5%',  marginRight: '5%', boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}>
-                            <h1>Totale assenze e ritardi: {totAbsences + totDelays}</h1>
-                        </Box>
-                    <Box bgcolor={'#46483b'} height={'20%'} style={{color: 'white', alignContent: 'center', textAlign: 'center', borderRadius: '1rem', marginLeft: '5%',  marginRight: '5%', boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}>
+                    <Box bgcolor={'#904a47'} height={'20%'} style={{
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        marginTop: '1rem',
+                        borderRadius: '1rem',
+                        marginLeft: '5%',
+                        marginRight: '5%',
+                        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
+                    }}>
+                        <h1>Totale assenze e ritardi: {totAbsences + totDelays}</h1>
+                    </Box>
+                    <Box bgcolor={'#46483b'} height={'20%'} style={{
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        borderRadius: '1rem',
+                        marginLeft: '5%',
+                        marginRight: '5%',
+                        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
+                    }}>
                         <h1>Totale assenze: {totAbsences}</h1>
                     </Box>
-                    <Box bgcolor={'#004e5b'} height={'20%'} style={{color: 'white', alignContent: 'center', textAlign: 'center', borderRadius: '1rem', marginLeft: '5%',  marginRight: '5%', boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}>
+                    <Box bgcolor={'#004e5b'} height={'20%'} style={{
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        borderRadius: '1rem',
+                        marginLeft: '5%',
+                        marginRight: '5%',
+                        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
+                    }}>
                         <h1>Totale ritardi: {totDelays}</h1>
                     </Box>
                 </Stack>

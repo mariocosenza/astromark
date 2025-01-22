@@ -10,7 +10,7 @@ export default tseslint.config(
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
         files: ['**/*.{ts,tsx}'],
-        settings: { react: { version: '19.0' } },
+        settings: {react: {version: '19.0'}},
         languageOptions: {
             ecmaVersion: 2020,
             globals: globals.browser,

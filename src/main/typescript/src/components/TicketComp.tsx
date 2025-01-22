@@ -24,10 +24,10 @@ export const TicketComp: React.FC = () => {
     }, []);
 
     const fetchData = async () => {
-        try{
+        try {
             let fetchedTicket: TicketCard[] = [];
             const ticketResponse: AxiosResponse<TicketResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/tickets/ticket`);
-            if (ticketResponse.data.length){
+            if (ticketResponse.data.length) {
                 fetchedTicket = ticketResponse.data.map((ticket: TicketResponse) => ({
                     avatar: 'T',
                     title: "Ticket del " + ticket.datetime.toString().substring(0, 10),
@@ -36,8 +36,8 @@ export const TicketComp: React.FC = () => {
                     id: ticket.id
                 }));
 
-                if (SelectedTicket.ticketId === null){
-                    SelectedTicket.ticketId = ticketResponse.data[ticketResponse.data.length -1].id
+                if (SelectedTicket.ticketId === null) {
+                    SelectedTicket.ticketId = ticketResponse.data[ticketResponse.data.length - 1].id
                 }
 
                 await fetchMessages()
@@ -45,16 +45,16 @@ export const TicketComp: React.FC = () => {
 
             setTicketData(fetchedTicket);
             setLoading(false);
-        }catch (error){
+        } catch (error) {
             console.log(error)
         }
     }
 
     const fetchMessages = async () => {
-        try{
-            let fetchedMessages: MessageComponent[]  = [];
+        try {
+            let fetchedMessages: MessageComponent[] = [];
             const messageResponse: AxiosResponse<MessageResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/tickets/${SelectedTicket.ticketId}/messages`);
-            if (messageResponse.data.length){
+            if (messageResponse.data.length) {
                 fetchedMessages = messageResponse.data.map((message: MessageResponse) => ({
                     avatar: message.senderName.charAt(0),
                     text: message.text,
@@ -64,7 +64,7 @@ export const TicketComp: React.FC = () => {
             }
 
             setMessageData(fetchedMessages)
-        }catch (error){
+        } catch (error) {
             console.log(error)
         }
     }
@@ -89,20 +89,20 @@ export const TicketComp: React.FC = () => {
     };
 
     return (
-            <Stack spacing={2} direction={{ xs: 'column', md: 'row' }} justifyContent="center" marginTop={'2vh'}>
+        <Stack spacing={2} direction={{xs: 'column', md: 'row'}} justifyContent="center" marginTop={'2vh'}>
 
-                <Box justifyContent="center" width={{xs: '100%', md: '45%'}}>
-                    <Box padding={'1rem'}>
-                        {loading ? <CircularProgress /> : <TicketList list={ticketData} onTicketClick={fetchMessages} />}
-                    </Box>
-                    <Box padding={'1rem'}>
-                        <TicketCreation />
-                    </Box>
+            <Box justifyContent="center" width={{xs: '100%', md: '45%'}}>
+                <Box padding={'1rem'}>
+                    {loading ? <CircularProgress/> : <TicketList list={ticketData} onTicketClick={fetchMessages}/>}
                 </Box>
+                <Box padding={'1rem'}>
+                    <TicketCreation/>
+                </Box>
+            </Box>
 
-                <Box width={{xs: '100%', md: '45%'}}>
-                    <ChatComponent list={messageData} send={sendMessage}/>
-                </Box>
-            </Stack>
+            <Box width={{xs: '100%', md: '45%'}}>
+                <ChatComponent list={messageData} send={sendMessage}/>
+            </Box>
+        </Stack>
     );
 }

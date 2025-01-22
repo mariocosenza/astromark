@@ -24,91 +24,91 @@ export const StudentParentSideNav = () => {
         setOpen(newOpen);
     };
 
-    const role= getRole().toLowerCase();
+    const role = getRole().toLowerCase();
 
     const DrawerList = (
 
-        <Box className={"drawer"} sx={{ width: '15vw' }} minWidth={250} role="presentation" onClick={toggleDrawer(true)}>
+        <Box className={"drawer"} sx={{width: '15vw'}} minWidth={250} role="presentation" onClick={toggleDrawer(true)}>
             <List>
                 <NavLink to={`/${role}/dashboard`} end>
                     <ListItem key="dashboard" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ExploreIcon />
+                                <ExploreIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Dashboard"} />
+                            <ListItemText primary={"Dashboard"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/assenze`} end>
-                <ListItem key="assenze" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ScoreOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Assenze"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="assenze" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ScoreOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Assenze"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/assegno`} end>
-                <ListItem key="assegno" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <AssignmentTurnedInOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Attività classe"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="assegno" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <AssignmentTurnedInOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Attività classe"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/voti`} end>
-                <ListItem key="Voti" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <ReceiptLongOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Voti"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="Voti" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <ReceiptLongOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Voti"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/note`} end>
-                <ListItem key="note" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <DangerousOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Note"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="note" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <DangerousOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Note"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/pagella`} end>
-                <ListItem key="pagella" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <SummarizeOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Pagella"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="pagella" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <SummarizeOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Pagella"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/orario`} end>
-                <ListItem key="orario" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <CalendarMonthOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Orario"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="orario" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <CalendarMonthOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Orario"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
                 <NavLink to={`/${role}/avvisi`} end>
-                <ListItem key="avvisi" disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon>
-                            <AddAlertOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={"Avvisi"} />
-                    </ListItemButton>
-                </ListItem>
+                    <ListItem key="avvisi" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <AddAlertOutlinedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Avvisi"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </NavLink>
 
                 {
@@ -117,9 +117,9 @@ export const StudentParentSideNav = () => {
                         <ListItem key="reception" disablePadding>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <GroupsIcon />
+                                    <GroupsIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary={"Ricevimento"} />
+                                <ListItemText primary={"Ricevimento"}/>
                             </ListItemButton>
                         </ListItem>
                     </NavLink>
@@ -130,9 +130,9 @@ export const StudentParentSideNav = () => {
                         <ListItem key="ticket" disablePadding>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <ConfirmationNumberOutlinedIcon />
+                                    <ConfirmationNumberOutlinedIcon/>
                                 </ListItemIcon>
-                                <ListItemText primary={"Ticket"} />
+                                <ListItemText primary={"Ticket"}/>
                             </ListItemButton>
                         </ListItem>
                     </NavLink>
@@ -143,9 +143,9 @@ export const StudentParentSideNav = () => {
                     <ListItem key="impostazioni" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ManageAccountsOutlinedIcon />
+                                <ManageAccountsOutlinedIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Impostazioni"} />
+                            <ListItemText primary={"Impostazioni"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>

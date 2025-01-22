@@ -52,20 +52,20 @@
 
 html,
 body {
-  font-family: "Titillium Web", serif;
-  margin: 0;
-  width: 100%;
-  height: 100vh;
+    font-family: "Titillium Web", serif;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
 }
 
 
 footer {
-  background-color: var(--md-sys-color-primary) !important;
-  color: var(--md-sys-color-inverse-on-surface);
+    background-color: var(--md-sys-color-primary) !important;
+    color: var(--md-sys-color-inverse-on-surface);
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 a.whiteLink {
@@ -73,75 +73,77 @@ a.whiteLink {
 }
 
 #basic-button {
-  color: var(--md-sys-color-background);
+    color: var(--md-sys-color-background);
 }
 
 .drawer a {
     color: var(--md-sys-color-on-background);
 }
+
 .drawer a.active {
-  color: #700f11;
+    color: #700f11;
 }
 
 .centerBox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
 }
 
 .surface-container {
-  background-color: var(--md-sys-color-surface-variant);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+    background-color: var(--md-sys-color-surface-variant);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
 }
 
 .secondary-container {
-  background-color: var(--md-sys-color-secondary-container);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+    background-color: var(--md-sys-color-secondary-container);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
 }
+
 .alert {
-  min-width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
-  padding-bottom: 1rem;
+    min-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .accordion {
-  margin-top: 1rem;
-  padding: 0.2%;
-  background-color: var(--md-sys-color-primary-container) !important;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25) !important;
+    margin-top: 1rem;
+    padding: 0.2%;
+    background-color: var(--md-sys-color-primary-container) !important;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 .listItem {
-  display: flex;
-  flex-direction: row;
-  border-radius: 1rem;
-  background-color: var(--md-sys-color-primary-container);
-  border: 1px solid rgba(0, 0, 0, 0.56);
-  vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    border-radius: 1rem;
+    background-color: var(--md-sys-color-primary-container);
+    border: 1px solid rgba(0, 0, 0, 0.56);
+    vertical-align: middle;
 }
 
 form div.centerInForm {
-  margin-left: auto;
-  flex-direction: column;
-  flex-wrap: wrap;
-  overflow: hidden;
-  text-align: center;
-  justify-content: center;
+    margin-left: auto;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow: hidden;
+    text-align: center;
+    justify-content: center;
 }
 
 .sideContainer {
-  min-width: 30%;
-  background-color: var(--md-sys-color-surface-container);
+    min-width: 30%;
+    background-color: var(--md-sys-color-surface-container);
 }
 
 .stack-container {
-  margin: auto !important;
+    margin: auto !important;
 }
 
 .titleTable {
@@ -150,113 +152,116 @@ form div.centerInForm {
 }
 
 .classTimeslot {
-  background-color: var(--md-sys-color-surface-container);
-  max-width: 95%;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: var(--md-sys-color-surface-container);
+    max-width: 95%;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .stack-bottom {
-  margin-left: 2vw;
-  margin-bottom: 1rem;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+    margin-left: 2vw;
+    margin-bottom: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 .justifiableList {
-  min-height: 5rem !important;
+    min-height: 5rem !important;
 }
+
 .title {
-  text-align: center;
-  margin-top: 4vh;
-  font-weight: bold;
-  color: var(--md-sys-color-on-primary-fixed-variant);
+    text-align: center;
+    margin-top: 4vh;
+    font-weight: bold;
+    color: var(--md-sys-color-on-primary-fixed-variant);
 }
 
 .grid-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  width: 80%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 80%;
 }
 
-header  {
-  background-color: var(--md-sys-color-primary) !important;
+header {
+    background-color: var(--md-sys-color-primary) !important;
 }
+
 @media (min-width: 600px) {
-  .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .grid-item {
-  background-color: var(--md-sys-color-background);
-  border: 1px solid rgba(224, 224, 224, 1);
-  border-radius: 12px;
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  align-items: flex-start;
-  padding: 1vw 1vw 10%;
-  transition: transform 0.2s, box-shadow 0.2s;
+    background-color: var(--md-sys-color-background);
+    border: 1px solid rgba(224, 224, 224, 1);
+    border-radius: 12px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    align-items: flex-start;
+    padding: 1vw 1vw 10%;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .grid-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 600px) {
-  .grid-item {
-    min-height: 180px;
-    padding-bottom: 20%;
-  }
+    .grid-item {
+        min-height: 180px;
+        padding-bottom: 20%;
+    }
 }
 
 .ticket-creation-box {
-  width: 45%;
-  padding: 1rem;
-  border-radius: 1rem;
-  background-color: var(--md-sys-color-secondary-fixed);
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    width: 45%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--md-sys-color-secondary-fixed);
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (min-width: 900px) {
-  .ticket-creation-box {
-    width: auto;
-  }
+    .ticket-creation-box {
+        width: auto;
+    }
 }
 
 .hover-animation {
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 }
 
 .textfield-item {
-  border-radius: 8px;
-  background-color: white;
-  width: 100%;
+    border-radius: 8px;
+    background-color: white;
+    width: 100%;
 }
 
 .chat-container {
-  width: 100%;
-  height: 100%;
-  margin-top: 1rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .message-item {
-  background-color: white;
-  padding: 0.5rem;
-  border-radius: 8px;
-  margin-top: 0.5rem;
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
 }

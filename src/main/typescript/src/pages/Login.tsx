@@ -57,7 +57,7 @@ const validationSchemaFirstLogin = yup.object().shape({
         .minNumbers(0)
         .required("Nuova password obbligatoria")
         .test("different-password", "La nuova password deve essere diversa dalla precedente",
-            function(value) {
+            function (value) {
                 return value !== this.parent.password;
             }),
     checkPassword: yup.string()  // Removed strict(true)

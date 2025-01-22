@@ -1,9 +1,9 @@
-import { Avatar, Box, IconButton, TextField, Typography } from "@mui/material";
+import {Avatar, Box, IconButton, TextField, Typography} from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import React from "react";
 import axiosConfig from "../services/AxiosConfig.ts";
-import { Env } from "../Env.ts";
-import { SelectedStudent } from "../services/StateService.ts";
+import {Env} from "../Env.ts";
+import {SelectedStudent} from "../services/StateService.ts";
 import {getRole} from "../services/AuthService.ts";
 import {Role} from "./route/ProtectedRoute.tsx";
 
@@ -30,7 +30,7 @@ function justify(justification: string, id: string, absence: boolean): boolean {
         axiosConfig.patch(
             `${Env.API_BASE_URL}/students/${SelectedStudent.id}/justifiable/${id}/justify?absence=${absence}`,
             justification.replaceAll('"', ""),
-            { headers: { "Content-Type": "text/plain" } }
+            {headers: {"Content-Type": "text/plain"}}
         );
         return true;
     } catch (error) {
@@ -73,16 +73,16 @@ export const JustifiableList: React.FC<JustificationListProp> = (props) => {
                 <Box
                     flexWrap="wrap"
                     className="listItem"
-                    style={{ minHeight: "5rem" }}
+                    style={{minHeight: "5rem"}}
                     width="60vw"
-                    sx={{ mb: "0.5rem" }}
+                    sx={{mb: "0.5rem"}}
                     key={"list" + i}
                 >
-                    <Avatar sx={{ bgcolor: item.hexColor, ml: "1%", mt: "0.8rem" }}>{item.avatar}</Avatar>
-                    <div style={{ marginLeft: "1%", display: "flex", flexDirection: "column" }}>
+                    <Avatar sx={{bgcolor: item.hexColor, ml: "1%", mt: "0.8rem"}}>{item.avatar}</Avatar>
+                    <div style={{marginLeft: "1%", display: "flex", flexDirection: "column"}}>
                         <Typography variant="h6" ml={"1vw"} mt={"0.8rem"}>
-                            {  props.absence? 'Assenza del' : 'Ritardo del' } {item.date} {
-                                item.justified && '- Giustifica: ' + item.justificationText
+                            {props.absence ? 'Assenza del' : 'Ritardo del'} {item.date} {
+                            item.justified && '- Giustifica: ' + item.justificationText
 
                         }
                         </Typography>
@@ -90,14 +90,15 @@ export const JustifiableList: React.FC<JustificationListProp> = (props) => {
                     {!item.justified && getRole().toUpperCase() == Role.PARENT && (
                         <>
                             <TextField
-                                sx={{ mt: "0.5rem" }}
-                                style={{ marginLeft: "1%", width: "55%" }}
+                                sx={{mt: "0.5rem"}}
+                                style={{marginLeft: "1%", width: "55%"}}
                                 label="Justificazione"
                                 value={item.justificationText}
                                 onChange={(e) => handleTextChange(i, e.currentTarget.value)}
                             />
-                            <IconButton sx={{ mt: "0.2rem", ml: '10%'}} onClick={() => handleJustify(i)} style={{color: 'darkgreen'}}>
-                                <EditOutlinedIcon />
+                            <IconButton sx={{mt: "0.2rem", ml: '10%'}} onClick={() => handleJustify(i)}
+                                        style={{color: 'darkgreen'}}>
+                                <EditOutlinedIcon/>
                             </IconButton>
                         </>
                     )}
