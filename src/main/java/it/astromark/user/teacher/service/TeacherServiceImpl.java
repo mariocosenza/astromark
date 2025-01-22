@@ -70,12 +70,26 @@ public class TeacherServiceImpl implements TeacherService {
     @PreAuthorize("hasRole('teacher')")
     @Transactional
     public List<TeacherClassResponse> getSchoolClasses(){
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        return classManagementMapper.toTeacherClassResponseList(
-                teacherClassRepository.findByTeacher(teacher).stream()
+
+        var schoolClasses = teacherClassRepository.findByTeacher(
+                authenticationService.getTeacher().orElseThrow()).stream()
                 .map(TeacherClass::getSchoolClass)
-                .sorted(Comparator.comparingInt(SchoolClass::getYear))
-                .toList());
+                .toList();
+
+        if (schoolClasses.isEmpty()){
+            return null;
+        }
+
+        int schoolClassesMaxYear = schoolClasses.stream()
+                .max(Comparator.comparingInt(SchoolClass::getYear))
+                .get().getYear();
+
+        return classManagementMapper.toTeacherClassResponseList(schoolClasses.stream()
+                .filter(c -> c.getYear() == schoolClassesMaxYear)
+                .sorted(Comparator.comparing(SchoolClass::getLetter)
+                        .thenComparing(SchoolClass::getNumber))
+                .toList()
+        );
     }
 
     @Override
