@@ -7,6 +7,10 @@ import it.astromark.user.teacher.entity.Teacher;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service interface for managing homework chat-related operations.
+ * Provides methods for retrieving, sending messages, and managing homework chats.
+ */
 public interface HomeworkChatService {
     /**
      * Retrieves a homework chat along with its messages using a socket connection.

@@ -8,6 +8,10 @@ import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Service interface for managing the agenda and timeslots of school classes.
+ * Provides methods to handle teaching hours, timeslot management, and timetable creation.
+ */
 public interface ClassAgendaService {
     /**
      * Retrieves the total teaching hours for a given class.

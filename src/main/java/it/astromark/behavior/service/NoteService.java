@@ -9,6 +9,10 @@ import it.astromark.commons.service.CrudService;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service interface for managing notes related to student behavior.
+ * Extends the generic CrudService interface to provide CRUD functionality for notes.
+ */
 public interface NoteService extends CrudService<Note, NoteRequest, NoteResponse, UUID> {
     /**
      * Retrieves a list of notes for a specific student in a given class.

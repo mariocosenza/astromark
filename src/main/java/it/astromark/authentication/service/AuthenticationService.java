@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service interface for managing authentication-related operations.
+ * Provides methods for user login, logout, and token validation.
+ */
 @Service
 public interface AuthenticationService {
 

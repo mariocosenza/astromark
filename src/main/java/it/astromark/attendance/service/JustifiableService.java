@@ -6,6 +6,10 @@ import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service interface for managing justifications related to student absences and delays.
+ * Provides methods to justify, retrieve, and calculate absences and delays.
+ */
 public interface JustifiableService {
     /**
      * Justifies an absence or delay for a student.

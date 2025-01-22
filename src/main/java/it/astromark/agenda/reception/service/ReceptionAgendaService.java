@@ -8,6 +8,11 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
+
+/**
+ * Service interface for managing reception agendas and timeslots.
+ * Provides methods for booking, confirming, refusing, and retrieving reception timeslots and bookings.
+ */
 public interface ReceptionAgendaService {
     /**
      * Books a reception timeslot for a given ID.

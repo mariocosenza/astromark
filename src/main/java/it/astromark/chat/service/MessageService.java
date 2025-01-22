@@ -8,6 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * Service interface for managing message-related operations.
+ * Provides methods for retrieving message details, adding attachments, and creating messages.
+ */
 public interface MessageService {
 
     /**
