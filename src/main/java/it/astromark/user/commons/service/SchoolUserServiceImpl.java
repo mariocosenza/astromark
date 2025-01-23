@@ -85,6 +85,14 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER') || hasRole('SECRETARY')")
     public SchoolUserResponse updatePreferences(SchoolUserUpdate schoolUserUpdate) {
+        if (schoolUserUpdate.password() == null ||
+                schoolUserUpdate.password().length() < 8 ||
+                schoolUserUpdate.password().length() > 512 ||
+                !schoolUserUpdate.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
+            throw new IllegalArgumentException("Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and no whitespace.");
+        }
+
+
         SchoolUser user;
         if (authenticationService.isStudent()) {
             user = authenticationService.getStudent().orElseThrow();
