@@ -1,6 +1,7 @@
 import {Accordion, AccordionDetails, AccordionSummary, Avatar, Typography} from "@mui/material";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import React from "react";
+import {useMedia} from "react-use";
 
 export type AccordionNotViewableProps = {
     avatar: string
@@ -11,24 +12,25 @@ export type AccordionNotViewableProps = {
 }
 
 export const AccordionNotViewable: React.FC<AccordionNotViewableProps> = (props: AccordionNotViewableProps) => {
+    const isMobile = useMedia('(max-width: 1366px)');
     return (
         <Accordion className={'accordion'}>
             <AccordionSummary
-                style={{minWidth: '90vw'}}
-                expandIcon={<ArrowDropDownIcon/>}
+                style={{ minWidth: isMobile ? '20vw' : '90vw' }}
+                expandIcon={<ArrowDropDownIcon />}
                 aria-controls="panel2-content"
                 id="panel2-header"
             >
-                <Avatar sx={{bgcolor: '#df3466'}}>{props.avatar}</Avatar>
-                <Typography variant={'h6'} sx={{ml: '1vw'}}
-                            component="span">{props.title} del {props.date.toString()} </Typography>
+                <Avatar sx={{ bgcolor: '#df3466' }}>{props.avatar}</Avatar>
+                <Typography variant={'h6'} sx={{ ml: '1vw', whiteSpace: 'pre-wrap' }} component={isMobile?'h6':"span"}>
+                    {props.title} del {props.date.toString()}
+                </Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Typography>
-                    {
-                        props.description
-                    }
+                    {props.description}
                 </Typography>
             </AccordionDetails>
-        </Accordion>);
-}
+        </Accordion>
+    );
+};

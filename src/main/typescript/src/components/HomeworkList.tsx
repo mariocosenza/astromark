@@ -25,7 +25,7 @@ export const HomeworkList: React.FC<HomeworkProp> = ({list}) => {
         <div>
             {
                 list.map((item, i) =>
-                    <Box className={'listItem'} minWidth={open ? '43vw' : '90vw'} flex={'auto'} sx={{mb: '0.5rem'}}
+                    <Box className={'listItem'} minWidth={open ? '43vw' : '85vw'} flex={'auto'} sx={{mb: '0.5rem'}}
                          key={i}>
                         <Avatar sx={{bgcolor: item.hexColor, ml: '1%', mt: '0.7%'}}>{item.avatar}</Avatar>
                         <div style={{flexDirection: 'column', marginLeft: '1%'}}>

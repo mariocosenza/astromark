@@ -15,7 +15,7 @@ export const App: React.FC = () => {
             flexDirection: 'column'
         }}>
             <HomePageNavbar/>
-            <Box sx={{height: '100%', width: '80vw', m: 'auto', flex: 1}}>
+            <Box sx={{height: '70vh', width: '80vw', m: 'auto', flex: 1}}>
                 <Grid container rowSpacing={1} columnSpacing={{xs: 1, sm: 2, md: 3}} mx='0%' mt='5%'>
                     <Grid size={6}>
                         <List sx={{listStyleType: 'disc', paddingLeft: '5%'}}>
