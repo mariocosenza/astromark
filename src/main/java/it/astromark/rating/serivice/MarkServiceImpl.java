@@ -2,13 +2,17 @@ package it.astromark.rating.serivice;
 
 
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classmanagement.didactic.repository.TeachingRepository;
+import it.astromark.rating.dto.MarkRequest;
 import it.astromark.rating.dto.MarkResponse;
+import it.astromark.rating.dto.MarkUpdateRequest;
 import it.astromark.rating.dto.SemesterReportResponse;
 import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.rating.model.Mark;
 import it.astromark.rating.repository.MarkRepository;
 import it.astromark.rating.repository.SemesterReportRepository;
 import it.astromark.user.commons.service.SchoolUserService;
+import it.astromark.user.student.service.StudentService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -33,14 +37,18 @@ public class MarkServiceImpl implements MarkService {
     private final SchoolUserService schoolUserService;
     private final SemesterReportRepository semesterReportRepository;
     private final AuthenticationService authenticationService;
+    private final TeachingRepository teachingRepository;
+    private final StudentService studentService;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService) {
+    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentService studentService) {
         this.markRepository = markRepository;
         this.markMapper = markMapper;
         this.schoolUserService = schoolUserService;
         this.semesterReportRepository = semesterReportRepository;
         this.authenticationService = authenticationService;
+        this.teachingRepository = teachingRepository;
+        this.studentService = studentService;
     }
 
     @Override
@@ -103,22 +111,60 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
-    public MarkResponse create(Mark mark) {
-        return null;
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public MarkResponse create(MarkRequest mark) {
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        var teaching = teachingRepository.findById(mark.teachingId()).orElseThrow();
+        if (!teaching.getTeacher().equals(teacher)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+        if(!schoolUserService.isLoggedTeacherStudent(mark.studentId())) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        return markMapper.toMarkResponse(markRepository.save(Mark.builder()
+                .mark(mark.mark())
+                .date(mark.date())
+                .student(studentService.getById(mark.studentId()))
+                .teaching(teaching)
+                .type(mark.type())
+                .description(mark.description())
+                .build()));
     }
 
     @Override
-    public MarkResponse update(Integer integer, Mark mark) {
-        return null;
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public MarkResponse update(MarkUpdateRequest mark, UUID studentId) {
+        if(!schoolUserService.isLoggedTeacherStudent(studentId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+        var markEntity = markRepository.findById(mark.id()).orElseThrow();
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        if(!markEntity.getTeaching().getTeacher().equals(teacher)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        markEntity.setMark(mark.mark());
+        markEntity.setDescription(mark.description());
+        markEntity.setType(mark.type());
+
+        return markMapper.toMarkResponse(markRepository.save(markEntity));
     }
 
     @Override
-    public boolean delete(Integer integer) {
-        return false;
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public boolean delete(Integer id) {
+        var mark = markRepository.findById(id).orElseThrow();
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        if(!mark.getTeaching().getTeacher().equals(teacher)) {
+            return false;
+        }
+
+        markRepository.delete(mark);
+        return true;
     }
 
-    @Override
-    public Mark getById(Integer integer) {
-        return null;
-    }
 }

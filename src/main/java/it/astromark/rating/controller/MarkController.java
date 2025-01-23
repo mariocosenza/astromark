@@ -1,6 +1,8 @@
 package it.astromark.rating.controller;
 
+import it.astromark.rating.dto.MarkRequest;
 import it.astromark.rating.dto.MarkResponse;
+import it.astromark.rating.dto.MarkUpdateRequest;
 import it.astromark.rating.dto.SemesterReportResponse;
 import it.astromark.rating.serivice.MarkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +43,21 @@ public class MarkController {
     public SemesterReportResponse viewReport(@PathVariable Integer reportId) {
         return markService.viewReport(reportId);
     }
+
+    @PostMapping("/marks")
+    public MarkResponse create(@RequestBody MarkRequest mark) {
+        return markService.create(mark);
+    }
+
+    @PatchMapping("/marks/{studentId}")
+    public MarkResponse update(@RequestBody MarkUpdateRequest mark, @PathVariable UUID studentId) {
+        return markService.update(mark, studentId);
+    }
+
+    @DeleteMapping("/marks/{id}")
+    public boolean delete(@PathVariable Integer id) {
+        return markService.delete(id);
+    }
 }
+
+
