@@ -20,7 +20,7 @@ public class SchoolServiceImpl implements SchoolService {
 
 
     @Override
-    @PreAuthorize("hasRole('manager')")
+    @PreAuthorize("hasRole('MANAGER')")
     public SchoolResponse create(SchoolRequest schoolRequest) {
         return null;
     }

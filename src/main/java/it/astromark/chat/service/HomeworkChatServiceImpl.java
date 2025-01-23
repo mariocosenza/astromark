@@ -104,7 +104,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('teacher')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
     public List<MessageResponse> getMessageList(UUID chatId) {
         if (authenticationService.isStudent() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getStudent().equals(authenticationService.getStudent().orElseThrow())) {
@@ -118,7 +118,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student')")
+    @PreAuthorize("hasRole('STUDENT')")
     public UUID hasUncompletedHomeworkChat(@NotNull Integer homeworkId) {
         var homework = homeworkRepository.findById(homeworkId).orElse(null);
         if (homework == null) {

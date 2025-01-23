@@ -47,7 +47,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher')")
+    @PreAuthorize("hasRole('TEACHER')")
     public List<AttendanceResponse> getAttendance(Integer classId, LocalDate date) {
         if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
                 .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
@@ -63,7 +63,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher')")
+    @PreAuthorize("hasRole('TEACHER')")
     public void saveAttendance(Integer classId, LocalDate date, List<AttendanceRequest> attendanceRequests) {
         if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
                 .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {

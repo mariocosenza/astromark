@@ -75,7 +75,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher')")
+    @PreAuthorize("hasRole('TEACHER')")
     public void sign(Integer classId, SignHourRequest request) {
         var teacher = authenticationService.getTeacher().orElseThrow();
         if (teacherClassRepository.findByTeacher(teacher).stream()
@@ -159,7 +159,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher')")
+    @PreAuthorize("hasRole('TEACHER')")
     public List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(Integer classId, LocalDate localDate) {
         if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
                 .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
