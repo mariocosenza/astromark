@@ -1,84 +1,341 @@
 package it.astromark.authentication.service;
 
+import com.google.common.hash.Hashing;
+import it.astromark.SpringTestConf;
+import it.astromark.authentication.dto.UserLoginRequest;
+import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.commons.configuration.SpringValidationConf;
+import it.astromark.school.entity.School;
+import it.astromark.user.commons.model.PendingState;
+import it.astromark.user.student.entity.Student;
+import it.astromark.user.student.repository.StudentRepository;
+import lombok.extern.slf4j.Slf4j;
+import net.datafaker.Faker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@Slf4j
+@ActiveProfiles(value = "test")
+@ExtendWith(MockitoExtension.class)
+@Import({SpringTestConf.class, SpringValidationConf.class})
 class AuthenticationServiceTest {
+
+    @Mock
+    private StudentRepository studentRepository;
+    @InjectMocks
+    private AuthenticationServiceImpl authenticationService;
+
+    private School school;
+    private static final Faker faker = new Faker();
+
+
+    @BeforeEach
+    public void setUpUser() {
+        school = School.builder()
+                .code("SS23456")
+                .name("Liceo Severi")
+                .phoneNumber(432435L)
+                .address("Viale L. D’Orsi, 5 80053 - Castellammare di Stabia (NA)")
+                .email("naps110002@istruzione.it").build();
+
+    }
 
     @Test
     void tc1_01() {
-        assertTrue(true);
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Pluto123!";
+        school.setCode("SS12345");
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        when(studentRepository.findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode())).thenReturn(student);
+        // Use MockedStatic to mock the static method
+        try (MockedStatic<PasswordUtils> utilities = Mockito.mockStatic(PasswordUtils.class)) {
+            utilities.when(() -> PasswordUtils.hashPassword(password)).thenReturn(student.getPassword());
+
+            var request = new UserLoginRequest(student.getUsername(), password, school.getCode(), "STUDENT");
+            var result = authenticationService.login(request);
+            assertNotNull(result);
+
+            verify(studentRepository, times(1)).findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode());
+        }
     }
 
     @Test
     void tc1_02() {
-        assertTrue(true);
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Pluto12!";
+        school.setCode("SS12345");
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        when(studentRepository.findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode())).thenReturn(student);
+        // Use MockedStatic to mock the static method
+        try (MockedStatic<PasswordUtils> utilities = Mockito.mockStatic(PasswordUtils.class)) {
+            utilities.when(() -> PasswordUtils.hashPassword(password)).thenReturn(student.getPassword());
+
+            var request = new UserLoginRequest(student.getUsername(), password, school.getCode(), "STUDENT");
+            var result = authenticationService.login(request);
+            assertNotNull(result);
+
+            verify(studentRepository, times(1)).findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode());
+        }
     }
 
     @Test
     void tc1_03() {
-        assertTrue(true);
+        var name = "pl";
+        var surname = "pi";
+        var password = "Pluto123!";
+        school.setCode("SS12345");
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        when(studentRepository.findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode())).thenReturn(student);
+        // Use MockedStatic to mock the static method
+        try (MockedStatic<PasswordUtils> utilities = Mockito.mockStatic(PasswordUtils.class)) {
+            utilities.when(() -> PasswordUtils.hashPassword(password)).thenReturn(student.getPassword());
+
+            var request = new UserLoginRequest(student.getUsername(), password, school.getCode(), "STUDENT");
+            var result = authenticationService.login(request);
+            assertNotNull(result);
+
+            verify(studentRepository, times(1)).findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode());
+        }
     }
 
     @Test
     void tc1_04() {
-        assertTrue(true);
+        var name = "pluton";
+        var surname = "paperino";
+        var password = "Pluto12!";
+        school.setCode("SS12345");
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        when(studentRepository.findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode())).thenReturn(student);
+        // Use MockedStatic to mock the static method
+        try (MockedStatic<PasswordUtils> utilities = Mockito.mockStatic(PasswordUtils.class)) {
+            utilities.when(() -> PasswordUtils.hashPassword(password)).thenReturn(student.getPassword());
+
+            var request = new UserLoginRequest(student.getUsername(), password, school.getCode(), "STUDENT");
+            var result = authenticationService.login(request);
+            assertNotNull(result);
+
+            verify(studentRepository, times(1)).findByUsernameAndSchoolCode(student.getUsername(), student.getSchool().getCode());
+        }
     }
 
     @Test
     void tc1_05() {
-        assertTrue(true);
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Pluto12!";
+        school.setCode("SS12345");
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        var request = new UserLoginRequest(student.getUsername(), password, "SS1234", "STUDENT");
+        assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test
     void tc1_06() {
-        assertTrue(true);
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Pluto12!";
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+            var request = new UserLoginRequest(student.getUsername(), password, "SS123456", "STUDENT");
+            assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test
     void tc1_07() {
-        assertTrue(true);
+            var name = "pluto";
+            var surname = "pippo";
+            var password = "Pluto12!";
+            var student = Student.builder()
+                    .email(faker.internet().emailAddress())
+                    .name(name)
+                    .pendingState(PendingState.NORMAL)
+                    .surname(surname)
+                    .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                    .residentialAddress(faker.address().fullAddress())
+                    .male(true)
+                    .birthDate(LocalDate.of(2003, 5, 22))
+                    .username(name + "." + surname)
+                    .school(school).build();
+
+            var request = new UserLoginRequest(student.getUsername(), password, "SSSSSSS", "STUDENT");
+            assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test
     void tc1_08() {
-        assertTrue(true);
+        when(studentRepository.findByUsernameAndSchoolCode("pluto.pippo", "SS00000")).thenReturn(null);
+        var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SS00000", "STUDENT");
+        var result = authenticationService.login(request);
+        assertNull(result);
+        verify(studentRepository, times(1)).findByUsernameAndSchoolCode("pluto.pippo", "SS00000");
     }
 
     @Test
     void tc1_09() {
-        assertTrue(true);
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Pluto12!";
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        var request = new UserLoginRequest("p.p", password, "SS12345", "STUDENT");
+        assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test
     void tc1_10() {
-        assertTrue(true);
+        when(studentRepository.findByUsernameAndSchoolCode("plutopippo.paperino", "SS12345")).thenReturn(null);
+        var request = new UserLoginRequest("plutopippo.paperino", "Pluto123!", "SS12345", "STUDENT");
+        var result = authenticationService.login(request);
+        assertNull(result);
+        verify(studentRepository, times(1)).findByUsernameAndSchoolCode("plutopippo.paperino", "SS12345");
     }
 
     @Test
     void tc1_11() {
-        assertTrue(true);
+        when(studentRepository.findByUsernameAndSchoolCode("pippo_pluto", "SS12345")).thenReturn(null);
+        var request = new UserLoginRequest("pippo_pluto", "Pluto123!", "SS12345", "STUDENT");
+        var result = authenticationService.login(request);
+        assertNull(result);
+        verify(studentRepository, times(1)).findByUsernameAndSchoolCode("pippo_pluto", "SS12345");
     }
 
     @Test
     void tc1_12() {
-        assertTrue(true);
+        when(studentRepository.findByUsernameAndSchoolCode("pluto.pippo", "SS67890")).thenReturn(null);
+        var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SS67890", "STUDENT");
+        var result = authenticationService.login(request);
+        assertNull(result);
+        verify(studentRepository, times(1)).findByUsernameAndSchoolCode("pluto.pippo", "SS67890");
     }
 
     @Test
     void tc1_13() {
-        assertTrue(true);
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Put123!";
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
+
+        var request = new UserLoginRequest(student.getUsername(), password, "SS12345", "STUDENT");
+        assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test
     void tc1_14() {
-        assertTrue(true);
+        when(studentRepository.findByUsernameAndSchoolCode("pluto.pippo", "SS12345")).thenReturn(null);
+        var request = new UserLoginRequest("pluto.pippo", "Put1234567!", "SS12345", "STUDENT");
+        var result = authenticationService.login(request);
+        assertNull(result);
+        verify(studentRepository, times(1)).findByUsernameAndSchoolCode("pluto.pippo", "SS12345");
     }
 
     @Test
     void tc1_15() {
-        assertTrue(true);
+        when(studentRepository.findByUsernameAndSchoolCode("pluto.pippo", "SS12345")).thenReturn(null);
+        var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SS12345", "STUDENT");
+        var result = authenticationService.login(request);
+        assertNull(result);
+        verify(studentRepository, times(1)).findByUsernameAndSchoolCode("pluto.pippo", "SS12345");
     }
 
 }
