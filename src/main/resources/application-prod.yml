@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: astromark
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: astromark
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.default_schema: astromark
+    show-sql: false
+    open-in-view: false
+    generate-ddl: true
+  sendgrid:
+    api-key: ${SPRING_MAIL_KEY}
+  jwt:
+    secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
+server:
+  error:
+    path: /error
+    whitelabel:
+      enabled: false
+    include-binding-errors: never
+    include-message: never
+    include-stacktrace: never
+    include-exception: false
+  port: 8443
+  ssl:
+      key-store: classpath:keystore/astromark.p12
+      key-store-password: astromark
+      keyStoreType: PKCS12
+      keyAlias: astromark
+      enabled: true
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  bucket:
+    name: ${AWS_BUCKET_NAME}
+  endpoint: ${AWS_ENDPOINT}
