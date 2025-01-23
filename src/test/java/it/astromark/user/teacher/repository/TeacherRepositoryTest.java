@@ -3,8 +3,8 @@ package it.astromark.user.teacher.repository;
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
 import it.astromark.commons.configuration.SpringValidationConf;
-import it.astromark.school.repository.SchoolRepository;
 import it.astromark.school.entity.School;
+import it.astromark.school.repository.SchoolRepository;
 import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.validation.Validator;
@@ -24,7 +24,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Testcontainers
@@ -36,21 +37,15 @@ class TeacherRepositoryTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
-
+    private static School school;
     @Autowired
     private TeacherRepository teacherRepository;
-
     @Autowired
     private SchoolRepository schoolRepository;
-
     @Autowired
     private Validator validator;
-
     @Autowired
     private Faker faker;
-
-    private static School school;
-
 
     @BeforeAll
     public static void setUp() {

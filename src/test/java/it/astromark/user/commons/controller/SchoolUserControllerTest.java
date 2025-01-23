@@ -34,30 +34,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 class SchoolUserControllerTest {
 
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
+    private static int count;
     @Autowired
     private StudentRepository studentRepository;
     @Autowired
     private MockMvc mockMvc;
-
     private Student student;
-
     private String password;
-
     private School school;
-
     private String token;
-    private static int count;
-
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
     @Autowired
     private SchoolRepository schoolRepository;
 
 
     @BeforeEach
-    public void setUpUser() throws Exception{
+    public void setUpUser() throws Exception {
         school = School.builder()
                 .code("SS23456")
                 .name("Liceo Severi")
@@ -69,7 +63,7 @@ class SchoolUserControllerTest {
         password = faker.internet().password(8, 16, true, true);
         var name = "mario";
         var surname = "rossi";
-        var stu  = Student.builder()
+        var stu = Student.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .pendingState(PendingState.NORMAL)
@@ -78,17 +72,16 @@ class SchoolUserControllerTest {
                 .residentialAddress(faker.address().fullAddress())
                 .male(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
-                .username(name + "." + surname+ count++)
+                .username(name + "." + surname + count++)
                 .school(school).build();
         student = studentRepository.save(stu);
-         var result = mockMvc.perform(post("/api/auth/login")
+        var result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + student.getUsername() + "\",\"password\":\"" + password + "\",\"schoolCode\":\"" + school.getCode() + "\",\"role\":\"STUDENT\"}"))
                 .andReturn();
-         token = result.getResponse().getContentAsString();
+        token = result.getResponse().getContentAsString();
 
     }
-
 
 
     @Test
@@ -103,7 +96,7 @@ class SchoolUserControllerTest {
     }
 
     @Test
-    void tc2_02() throws Exception{
+    void tc2_02() throws Exception {
         var newAddress = "Via X";
 
         mockMvc.perform(patch("/api/school-users/address")
@@ -156,7 +149,7 @@ class SchoolUserControllerTest {
     }
 
     @Test
-    void tc3_02() throws Exception{
+    void tc3_02() throws Exception {
         mockMvc.perform(patch("/api/school-users/preferences")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -165,7 +158,7 @@ class SchoolUserControllerTest {
     }
 
     @Test
-    void tc3_03() throws Exception{
+    void tc3_03() throws Exception {
         mockMvc.perform(patch("/api/school-users/preferences")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +167,7 @@ class SchoolUserControllerTest {
     }
 
     @Test
-    void tc3_04() throws Exception{
+    void tc3_04() throws Exception {
         mockMvc.perform(patch("/api/school-users/preferences")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +176,7 @@ class SchoolUserControllerTest {
     }
 
     @Test
-    void tc3_05() throws Exception{
+    void tc3_05() throws Exception {
         // Not applicable for the backend
     }
 

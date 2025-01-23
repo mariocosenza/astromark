@@ -35,21 +35,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 class AuthControllerTest {
 
-    @Autowired
-    private StudentRepository studentRepository;
-
-    @Autowired
-    private MockMvc mockMvc;
-
+    private static final Faker faker = new Faker();
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
-
-    private School school;
-
     private static Student student;
-
-    private static final Faker faker = new Faker();
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private MockMvc mockMvc;
+    private School school;
     @Autowired
     private SchoolRepository schoolRepository;
 
@@ -82,9 +77,9 @@ class AuthControllerTest {
                 .username(name + "." + surname)
                 .school(school).build();
         student = studentRepository.save(student);
-        var result =mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"" + student.getUsername() + "\",\"password\":\"" + password + "\",\"schoolCode\":\"" + school.getCode() + "\",\"role\":\"STUDENT\"}"))
+        var result = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + student.getUsername() + "\",\"password\":\"" + password + "\",\"schoolCode\":\"" + school.getCode() + "\",\"role\":\"STUDENT\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
         assertNotNull(result);
@@ -96,7 +91,7 @@ class AuthControllerTest {
         student.setPassword(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString());
         student = studentRepository.save(student);
         var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-        var result =  mockMvc.perform(post("/api/auth/login")
+        var result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().isOk())
@@ -105,7 +100,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void tc1_03()  throws Exception  {
+    void tc1_03() throws Exception {
         var name = "pl";
         var surname = "pi";
         var password = "Pluto123!";
@@ -122,7 +117,7 @@ class AuthControllerTest {
                 .school(school).build();
         student = studentRepository.save(student);
         var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-        var result =  mockMvc.perform(post("/api/auth/login")
+        var result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().isOk())
@@ -131,7 +126,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void tc1_04()  throws Exception  {
+    void tc1_04() throws Exception {
         var name = "pluton";
         var surname = "paperino";
         var password = "Pluto12!";
@@ -148,43 +143,43 @@ class AuthControllerTest {
                 .school(school).build();
         student = studentRepository.save(student);
         var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-       var result =  mockMvc.perform(post("/api/auth/login")
+        var result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
-       assertNotNull(result);
+        assertNotNull(result);
     }
 
     @Test
     void tc1_05() throws Exception {
         var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SS1234", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().is5xxServerError());
     }
 
     @Test
-    void tc1_06() throws Exception{
+    void tc1_06() throws Exception {
         var request = new UserLoginRequest("SS123456", "Pluto123!", "SS123456", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().is5xxServerError());
     }
 
     @Test
-    void tc1_07() throws Exception  {
+    void tc1_07() throws Exception {
         var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SSSSSSS", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().is5xxServerError());
     }
 
     @Test
-    void tc1_08() throws Exception  {
+    void tc1_08() throws Exception {
         var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SS00000", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -193,7 +188,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void tc1_09() throws Exception  {
+    void tc1_09() throws Exception {
         var request = new UserLoginRequest("p.p", "Pluto123!", "SS12345", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -202,7 +197,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void tc1_10() throws Exception  {
+    void tc1_10() throws Exception {
         var request = new UserLoginRequest("plutopippo.paperino", "Pluto123!", "SS12345", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -211,7 +206,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void tc1_11() throws Exception  {
+    void tc1_11() throws Exception {
         var request = new UserLoginRequest("pippo_pluto", "Pluto123!", "SS12345", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -256,17 +251,17 @@ class AuthControllerTest {
     void tc1_14() throws Exception {
         var request = new UserLoginRequest("pluto.pippo", "Put1234567!", "SS12345", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    void tc1_15() throws Exception{
+    void tc1_15() throws Exception {
         var request = new UserLoginRequest("pluto.pippo", "Pluto123!", "SS12345", "STUDENT");
         mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + request.username() + "\",\"password\":\"" + request.password() + "\",\"schoolCode\":\"" + request.schoolCode() + "\",\"role\":\"" + request.role() + "\"}"))
                 .andExpect(status().is4xxClientError());
     }
 

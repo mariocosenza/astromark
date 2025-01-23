@@ -34,14 +34,12 @@ import static org.mockito.Mockito.*;
 @Import({SpringTestConf.class, SpringValidationConf.class})
 class AuthenticationServiceTest {
 
+    private static final Faker faker = new Faker();
     @Mock
     private StudentRepository studentRepository;
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
-
     private School school;
-    private static final Faker faker = new Faker();
-
 
     @BeforeEach
     public void setUpUser() {
@@ -217,29 +215,29 @@ class AuthenticationServiceTest {
                 .username(name + "." + surname)
                 .school(school).build();
 
-            var request = new UserLoginRequest(student.getUsername(), password, "SS123456", "STUDENT");
-            assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
+        var request = new UserLoginRequest(student.getUsername(), password, "SS123456", "STUDENT");
+        assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test
     void tc1_07() {
-            var name = "pluto";
-            var surname = "pippo";
-            var password = "Pluto12!";
-            var student = Student.builder()
-                    .email(faker.internet().emailAddress())
-                    .name(name)
-                    .pendingState(PendingState.NORMAL)
-                    .surname(surname)
-                    .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
-                    .residentialAddress(faker.address().fullAddress())
-                    .male(true)
-                    .birthDate(LocalDate.of(2003, 5, 22))
-                    .username(name + "." + surname)
-                    .school(school).build();
+        var name = "pluto";
+        var surname = "pippo";
+        var password = "Pluto12!";
+        var student = Student.builder()
+                .email(faker.internet().emailAddress())
+                .name(name)
+                .pendingState(PendingState.NORMAL)
+                .surname(surname)
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .residentialAddress(faker.address().fullAddress())
+                .male(true)
+                .birthDate(LocalDate.of(2003, 5, 22))
+                .username(name + "." + surname)
+                .school(school).build();
 
-            var request = new UserLoginRequest(student.getUsername(), password, "SSSSSSS", "STUDENT");
-            assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
+        var request = new UserLoginRequest(student.getUsername(), password, "SSSSSSS", "STUDENT");
+        assertThrows(IllegalArgumentException.class, () -> authenticationService.login(request));
     }
 
     @Test

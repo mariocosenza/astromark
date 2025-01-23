@@ -35,20 +35,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class AuthenticationServiceIntegrationTest {
 
 
+    private static final Faker faker = new Faker();
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
+    private static Student student;
     @Autowired
     private StudentRepository studentRepository;
     @Autowired
     private AuthenticationServiceImpl authenticationService;
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
-
     private School school;
-
-    private static Student student;
-
-    private static final Faker faker = new Faker();
     @Autowired
     private SchoolRepository schoolRepository;
 
@@ -80,10 +76,10 @@ class AuthenticationServiceIntegrationTest {
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname)
                 .school(school).build();
-       student = studentRepository.save(student);
-            var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-            var result = authenticationService.login(request);
-            assertNotNull(result);
+        student = studentRepository.save(student);
+        var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
+        var result = authenticationService.login(request);
+        assertNotNull(result);
     }
 
     @Test
@@ -92,8 +88,8 @@ class AuthenticationServiceIntegrationTest {
         student.setPassword(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString());
         student = studentRepository.save(student);
         var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-            var result = authenticationService.login(request);
-            assertNotNull(result);
+        var result = authenticationService.login(request);
+        assertNotNull(result);
     }
 
     @Test
@@ -114,8 +110,8 @@ class AuthenticationServiceIntegrationTest {
                 .school(school).build();
         student = studentRepository.save(student);
         var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-            var result = authenticationService.login(request);
-            assertNotNull(result);
+        var result = authenticationService.login(request);
+        assertNotNull(result);
     }
 
     @Test
@@ -136,8 +132,8 @@ class AuthenticationServiceIntegrationTest {
                 .school(school).build();
         student = studentRepository.save(student);
         var request = new UserLoginRequest(student.getUsername(), password, student.getSchool().getCode(), "STUDENT");
-            var result = authenticationService.login(request);
-            assertNotNull(result);
+        var result = authenticationService.login(request);
+        assertNotNull(result);
 
     }
 

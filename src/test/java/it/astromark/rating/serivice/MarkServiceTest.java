@@ -27,7 +27,7 @@ import java.time.LocalDate;
 @Slf4j
 @ActiveProfiles(value = "test")
 @ExtendWith(MockitoExtension.class)
-@WithMockUser(roles="STUDENT")
+@WithMockUser(roles = "STUDENT")
 @Import({SpringTestConf.class})
 class MarkServiceTest {
     @Mock

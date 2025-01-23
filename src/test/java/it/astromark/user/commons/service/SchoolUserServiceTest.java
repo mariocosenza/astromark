@@ -33,14 +33,14 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @ActiveProfiles(value = "test")
 @ExtendWith(MockitoExtension.class)
-@WithMockUser(roles="STUDENT")
+@WithMockUser(roles = "STUDENT")
 @Import({SpringTestConf.class})
 class SchoolUserServiceTest {
 
     @Mock
-    private  AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
     @Mock
-    private  StudentRepository studentRepository;
+    private StudentRepository studentRepository;
     @Mock
     private SchoolUserMapper schoolUserMapper;
     @InjectMocks
@@ -84,7 +84,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress));
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress));
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -100,7 +100,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -116,7 +116,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -127,7 +127,7 @@ class SchoolUserServiceTest {
     void tc2_04() {
         var newAddress = "Via";
 
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(0)).isStudent(); // Verify student check
         verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
@@ -138,7 +138,7 @@ class SchoolUserServiceTest {
     void tc2_05() {
         var newAddress = "Via Napoli#";
 
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(0)).isStudent(); // Verify student check
         verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
@@ -152,7 +152,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto123!"))); // Verify password update
+        assertDoesNotThrow(() -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto123!"))); // Verify password update
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -166,7 +166,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto12!"))); // Verify password update
+        assertDoesNotThrow(() -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto12!"))); // Verify password update
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -175,7 +175,7 @@ class SchoolUserServiceTest {
 
     @Test
     void tc3_03() {
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1!"))); // Verify password update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1!"))); // Verify password update
 
         verify(authenticationService, times(0)).isStudent(); // Verify student check
         verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
@@ -184,7 +184,7 @@ class SchoolUserServiceTest {
 
     @Test
     void tc3_04() {
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
 
         verify(authenticationService, times(0)).isStudent(); // Verify student check
         verify(authenticationService, times(0)).getStudent(); // Verify student retrieval

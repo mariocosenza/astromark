@@ -40,22 +40,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import({SpringTestConf.class})
 class SchoolUserServiceIntegrationTest {
 
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
+    private static int count;
     @Autowired
-    private  AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
-    private  StudentRepository studentRepository;
+    private StudentRepository studentRepository;
     @Autowired
     private SchoolUserServiceImpl schoolUserService;
     @Autowired
     private SchoolRepository schoolRepository;
-
-    private static int count;
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
-
-
     private Student student;
 
 
@@ -69,9 +65,9 @@ class SchoolUserServiceIntegrationTest {
                 .email("naps110002@istruzione.it").build();
         school = schoolRepository.save(school);
         var faker = new Faker();
-        String password = faker.internet().password(8, 16, true, true);
         var name = "mario";
         var surname = "rossi";
+        var password = "Pluto123!";
         var stu = Student.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
@@ -92,7 +88,7 @@ class SchoolUserServiceIntegrationTest {
         var newAddress = "Via Roma 123";
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress));
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress));
 
     }
 
@@ -101,7 +97,7 @@ class SchoolUserServiceIntegrationTest {
         var newAddress = "Via X";
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
     }
 
@@ -110,7 +106,7 @@ class SchoolUserServiceIntegrationTest {
         var newAddress = "Via S. Marco";
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress)); // Verify address update
     }
 
     @Test
@@ -118,8 +114,7 @@ class SchoolUserServiceIntegrationTest {
         var newAddress = "Via";
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updateAddress(newAddress)); // Verify address update
     }
 
     @Test
@@ -128,35 +123,35 @@ class SchoolUserServiceIntegrationTest {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
 
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updateAddress(newAddress)); // Verify address update
     }
 
     @Test
     void tc3_01() {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertDoesNotThrow(() ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto123!"))); // Verify password update
+        assertDoesNotThrow(() -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto123!"))); // Verify password update
     }
 
     @Test
     void tc3_02() {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertDoesNotThrow(() ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto12!"))); // Verify password update
+        assertDoesNotThrow(() -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto12!"))); // Verify password update
     }
 
     @Test
     void tc3_03() {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1!"))); // Verify password update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1!"))); // Verify password update
     }
 
     @Test
     void tc3_04() {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
         SecurityContextHolder.getContext().setAuthentication(token);
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
     }
 
     @Test
