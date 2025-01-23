@@ -2,6 +2,7 @@ package it.astromark.user.commons.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.dto.SchoolUserUpdate;
@@ -35,15 +36,17 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     private final SchoolUserMapper schoolUserMapper;
     private final SecretaryRepository secretaryRepository;
     private final ParentRepository parentRepository;
+    private final TeacherClassRepository teacherClassRepository;
 
     @Autowired
-    public SchoolUserServiceImpl(AuthenticationService authenticationService, StudentRepository studentRepository, TeacherRepository teacherRepository, SchoolUserMapper schoolUserMapper, SecretaryRepository secretaryRepository, ParentRepository parentRepository) {
+    public SchoolUserServiceImpl(AuthenticationService authenticationService, StudentRepository studentRepository, TeacherRepository teacherRepository, SchoolUserMapper schoolUserMapper, SecretaryRepository secretaryRepository, ParentRepository parentRepository, TeacherClassRepository teacherClassRepository) {
         this.authenticationService = authenticationService;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.schoolUserMapper = schoolUserMapper;
         this.secretaryRepository = secretaryRepository;
         this.parentRepository = parentRepository;
+        this.teacherClassRepository = teacherClassRepository;
     }
 
     @Override
@@ -79,7 +82,14 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @Override
     @Transactional
     public boolean isLoggedTeacherStudent(UUID studentId) {
-        return !authenticationService.isTeacher() || authenticationService.getTeacher().orElseThrow().getTeacherClasses().stream().anyMatch(c -> c.getSchoolClass().getStudents().stream().anyMatch(s -> s.getId().equals(studentId)));
+        if (!authenticationService.isTeacher()) {
+            return false;
+        }
+
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        return teacherClassRepository.findByTeacher(teacher).stream()
+                .anyMatch(c -> c.getSchoolClass().getStudents().stream()
+                        .anyMatch(s -> s.getId().equals(studentId)));
     }
 
     @Override
