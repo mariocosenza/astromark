@@ -114,6 +114,9 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse create(MarkRequest mark) {
+        if(mark.mark() < 0 || mark.mark() > 10) {
+            throw new IllegalArgumentException("Mark must be between 0 and 10");
+        }
         var teacher = authenticationService.getTeacher().orElseThrow();
         var teaching = teachingRepository.findById(mark.teachingId()).orElseThrow();
         if (!teaching.getTeacher().equals(teacher)) {
@@ -137,6 +140,9 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse update(MarkUpdateRequest mark, UUID studentId) {
+        if(mark.mark() < 0 || mark.mark() > 10) {
+            throw new IllegalArgumentException("Mark must be between 0 and 10");
+        }
         if(!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
