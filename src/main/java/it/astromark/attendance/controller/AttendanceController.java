@@ -1,5 +1,6 @@
 package it.astromark.attendance.controller;
 
+import it.astromark.attendance.dto.AttendanceRequest;
 import it.astromark.attendance.dto.AttendanceResponse;
 import it.astromark.attendance.service.AttendanceService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,11 @@ public class AttendanceController {
     @GetMapping("{classId}/attendance/{date}")
     List<AttendanceResponse> getAttendance(@PathVariable Integer classId, @PathVariable LocalDate date) {
         return attendanceService.getAttendance(classId, date);
+    }
+
+    @PostMapping("{classId}/attendance/{date}")
+    void saveAttendance(@PathVariable Integer classId, @PathVariable LocalDate date, @RequestBody List<AttendanceRequest> attendanceRequests) {
+        attendanceService.saveAttendance(classId, date, attendanceRequests);
     }
 
 }
