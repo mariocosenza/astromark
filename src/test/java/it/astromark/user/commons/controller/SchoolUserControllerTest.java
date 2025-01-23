@@ -1,12 +1,9 @@
 package it.astromark.user.commons.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.hash.Hashing;
-import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.school.entity.School;
 import it.astromark.school.repository.SchoolRepository;
 import it.astromark.user.commons.model.PendingState;
-import it.astromark.user.commons.service.SchoolUserServiceImpl;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import net.datafaker.Faker;
@@ -27,7 +24,8 @@ import org.testcontainers.junit.jupiter.Container;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -37,17 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SchoolUserControllerTest {
 
     @Autowired
-    private AuthenticationService authenticationService;
-    @Autowired
     private StudentRepository studentRepository;
     @Autowired
-    private SchoolUserServiceImpl schoolUserService;
-
-    @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private Student student;
 
