@@ -6,8 +6,9 @@ import {theme} from "./theme/GlobalTheme";
 import {App} from "./pages/App";
 import {Login} from "./pages/Login.tsx";
 import {ProtectedRoutePath, Role} from "./components/route/ProtectedRoute.tsx";
-import React, {StrictMode} from "react";
+import {StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
+import {ConditionalRoute} from "./components/route/ConditionalRoute.tsx";
 import {Dashboard} from "./pages/./studentsParents/Dashboard.tsx";
 import {Mark} from "./pages/./studentsParents/Mark.tsx";
 import {ClassActivity} from "./pages/./studentsParents/ClassActivity.tsx";
@@ -36,12 +37,7 @@ import {CreateClass} from "./pages/secretary/CreateClass.tsx";
 import {ManageTimetable} from "./pages/secretary/ManageTimetable.tsx";
 import {ManageTeacher} from "./pages/secretary/ManageTeacher.tsx";
 
-
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
-
-const ConditionalRoute = ({node, condition,}: { node: React.ReactNode; condition: () => boolean; }) => {
-    return condition() ? <>{node}</> : <Navigate to="/" replace/>;
-};
 
 ReactDOM.createRoot(root).render(
     <StrictMode>

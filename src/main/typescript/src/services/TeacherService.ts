@@ -2,7 +2,7 @@ import {ClassAgendaRow} from "../pages/teacher/ClassAgenda.tsx";
 import {DateObject} from "react-multi-date-picker";
 
 export class SelectedSchoolClass {
-    private static _id: number | null = parseInt(localStorage.getItem("schoolClassId") as string);
+    private static _id: number | null = localStorage.getItem("schoolClassId") ? parseInt(localStorage.getItem("schoolClassId") as string) : null;
 
     static get id(): number | null {
         return this._id;
@@ -13,7 +13,7 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassId', value.toString());
     }
 
-    private static _title: string = localStorage.getItem("schoolClassTitle") as string;
+    private static _title: string = localStorage.getItem("schoolClassTitle")  ? localStorage.getItem("schoolClassTitle") as string : '';
 
     static get title(): string {
         return this._title;
@@ -24,7 +24,7 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassTitle', value.toString());
     }
 
-    private static _desc: string = localStorage.getItem("schoolClassDesc") as string;
+    private static _desc: string = localStorage.getItem("schoolClassDesc")  ? localStorage.getItem("schoolClassDesc") as string : '';
 
     static get desc(): string {
         return this._desc;
