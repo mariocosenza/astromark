@@ -27,6 +27,13 @@ import {Ticket} from "./pages/parents/Ticket.tsx";
 import {Reception} from "./pages/parents/Reception.tsx";
 import {SignHour} from "./pages/teacher/SignHour.tsx";
 import {Attendance} from "./pages/teacher/Attendance.tsx";
+import {ProtectedSecretaryRoute} from "./components/route/ProtectedSecretaryRoute.tsx";
+import {SecretaryDashboard} from "./pages/secretary/SecretaryDashboard.tsx";
+import {ManageClass} from "./pages/secretary/ManageClass.tsx";
+import {SecretaryTicket} from "./pages/secretary/SecretaryTicket.tsx";
+import {CreateClass} from "./pages/secretary/CreateClass.tsx";
+import {ManageTimetable} from "./pages/secretary/ManageTimetable.tsx";
+import {ManageTeacher} from "./pages/secretary/ManageTeacher.tsx";
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
@@ -64,8 +71,13 @@ ReactDOM.createRoot(root).render(
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace/>}/>
-                    <Route path="/secretary" element={<ProtectedRoutePath role={Role.SECRETARY}/>}>
-                        <Route path="dashboard" element={<h1>Dashboard</h1>}/>
+                    <Route path="/secretary" element={<ProtectedSecretaryRoute role={Role.SECRETARY}/>}>
+                        <Route path="dashboard" element={<SecretaryDashboard/>}/>
+                        <Route path="manage-class" element={<ManageClass/>}/>
+                        <Route path="ticket" element={<SecretaryTicket/>}/>
+                        <Route path="add-class" element={<CreateClass/>}/>
+                        <Route path='timetable' element={<ManageTimetable/>}/>
+                        <Route path="teacher" element={<ManageTeacher/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace/>}/>
