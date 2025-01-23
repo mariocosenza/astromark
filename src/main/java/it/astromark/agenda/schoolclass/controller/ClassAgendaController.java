@@ -32,7 +32,7 @@ public class ClassAgendaController {
     }
 
     @PostMapping("/{classId}/signHour")
-    void setSignHour(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
+    void sign(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
         classAgendaService.sign(classId, signHourRequest);
     }
 
