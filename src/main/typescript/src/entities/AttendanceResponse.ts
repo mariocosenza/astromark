@@ -7,6 +7,7 @@ export type AttendanceResponse = {
     isAbsent: boolean;
     isDelayed: boolean;
     delayTime: DateObject;
+    delayNeedJustification: boolean;
     totalAbsence: number;
     totalDelay: number;
 }

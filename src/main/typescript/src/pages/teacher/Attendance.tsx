@@ -22,7 +22,9 @@ export type AttendanceRow = {
     isAbsent: boolean;
     isDelayed: boolean;
     buttonRowValue: string
-    delayTime: DateObject;
+    delayTimeHour: number
+    delayTimeMinute: number
+    delayNeedJustification: boolean;
     totalAbsence: number;
     totalDelay: number;
 }
@@ -32,6 +34,7 @@ export const Attendance: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject())
     const [changeView, setChangeView] = useState<boolean>(false)
+    const [selected, setSelected] = useState<AttendanceRow>()
 
     useEffect(() => {
         fetchData(date.format("YYYY-MM-DD"));
@@ -48,11 +51,18 @@ export const Attendance: React.FC = () => {
                     isAbsent: attendance.isAbsent,
                     isDelayed: attendance.isDelayed,
                     buttonRowValue: attendance.isAbsent ? 'absent' : (attendance.isDelayed ? 'delayed' : ''),
-                    delayTime: attendance.delayTime,
+                    delayTimeHour: attendance.delayTime ? new Date((attendance.delayTime).toString()).getHours() : 1,
+                    delayTimeMinute: attendance.delayTime ? new Date(attendance.delayTime.toString()).getMinutes() : 0,
+                    delayNeedJustification: attendance.delayNeedJustification,
                     totalAbsence: attendance.totalAbsence,
                     totalDelay: attendance.totalDelay,
                 }));
+
+                rowResponse.map((attendance) => {
+                    attendance.delayTimeHour = attendance.delayTimeHour - 1;
+                });
             }
+
             setLoading(false)
             setRows(rowResponse)
         } catch (error) {
@@ -70,12 +80,15 @@ export const Attendance: React.FC = () => {
 
     const buttonToggle = (value: 'absent' | 'delayed', selectedRow: AttendanceRow) => {
         selectedRow.buttonRowValue = selectedRow.buttonRowValue === value ? '' : value;
-        console.log(selectedRow.buttonRowValue);
+
         setRows((prevRows) =>
             prevRows.map((row) =>
                 row.id === selectedRow.id ? selectedRow : row))
 
-        setChangeView(selectedRow.buttonRowValue === 'delayed');
+        if (selectedRow.buttonRowValue === 'delayed') {
+            setSelected(selectedRow);
+            setChangeView(true);
+        }
     };
 
     return (
@@ -87,7 +100,7 @@ export const Attendance: React.FC = () => {
 
             {changeView ? (
                 <div>
-                    <DelayComponent returnBack={() => {setChangeView(false)}}/>
+                    <DelayComponent row={selected || rows[0]} returnBack={() => {setChangeView(false)}}/>
                 </div>
             ) : (
                 <div>
@@ -150,7 +163,11 @@ export const Attendance: React.FC = () => {
                                                 </Button>
                                             </Stack>
                                         </CustomTableCell>
-                                        <CustomTableCell>{row.isDelayed ? ("Ingresso alle " + row.delayTime.toString().substring(11, 16)) : ''}</CustomTableCell>
+                                        <CustomTableCell>
+                                            {row.isDelayed ? ("Ingresso alle " +
+                                                row.delayTimeHour.toString().padStart(2, '0') + ':' +
+                                                row.delayTimeMinute.toString().padStart(2, '0')) : ''}
+                                        </CustomTableCell>
                                         <CustomTableCell>
                                             <Stack direction="row" justifyContent="center" spacing={2}>
                                                 <Stack alignItems="center">
@@ -158,8 +175,7 @@ export const Attendance: React.FC = () => {
                                                     {row.totalAbsence}
                                                 </Stack>
                                                 <Stack alignItems="center">
-                                                    <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}}
-                                                                             fontSize={'large'}/>
+                                                    <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}} fontSize={'large'}/>
                                                     {row.totalDelay}
                                                 </Stack>
                                             </Stack>

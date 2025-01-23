@@ -1,22 +1,21 @@
 import React, {useState} from "react";
-import {Button, Card, CardContent, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography,} from "@mui/material";
-import {DateObject} from "react-multi-date-picker";
+import {Box, Button, Card, CardContent, FormControlLabel, Radio, RadioGroup, Select, Stack, Typography,} from "@mui/material";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
+import {AttendanceRow} from "../pages/teacher/Attendance.tsx";
+import MenuItem from "@mui/material/MenuItem";
 
-export const DelayComponent: React.FC<{returnBack: () => void }> = ({returnBack}) => {
-    const [time, setTime] = useState<DateObject>(new DateObject())
+export const DelayComponent: React.FC<{row: AttendanceRow, returnBack: () => void }> = ({row , returnBack}) => {
+    const [hour, setHour] = useState<number>(row.delayTimeHour)
+    const [minute, setMinute] = useState<number>(row.delayTimeMinute)
     const [isJustified, setIsJustified] = useState<boolean>(false);
 
     const handleSave = () => {
+        row.isDelayed = true
+        row.delayTimeHour = hour
+        row.delayTimeMinute = minute
+        row.delayNeedJustification = !isJustified
         returnBack();
-    };
-
-    const handleTimeChange = (field: "hour" | "minute", value: string) => {
-        let newTime = new DateObject()
-        let num: number = parseInt(value) || 0;
-        field === "hour" ? newTime.setHour(num) : newTime.setMinute(num)
-        setTime(newTime);
     };
 
     return (
@@ -25,22 +24,21 @@ export const DelayComponent: React.FC<{returnBack: () => void }> = ({returnBack}
                 <CardContent>
                     <Stack direction="row" justifyContent={'space-between'} alignItems={'center'} margin={2}>
                         <Typography variant="h5" className="title" fontWeight="bold">
-                            Sofia Bianchi
+                            {row.name}
                         </Typography>
                         <Stack direction="row" spacing={2}>
                             <Stack alignItems="center">
                                 <PersonOffIcon color="error" fontSize={'large'}/>
-                                3
+                                {row.totalAbsence}
                             </Stack>
                             <Stack alignItems="center">
                                 <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}} fontSize={'large'}/>
-                                4
+                                {row.totalDelay}
                             </Stack>
                         </Stack>
                     </Stack>
                 </CardContent>
             </Card>
-
 
             <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 2}}>
                 <CardContent>
@@ -51,29 +49,31 @@ export const DelayComponent: React.FC<{returnBack: () => void }> = ({returnBack}
                             <Typography variant="subtitle1" mb={2}>
                                 Inserisci ora
                             </Typography>
-                            <Stack direction="row" justifyContent={'center'} margin={2}>
-                                <TextField type="number" variant="outlined" label="Ora"
-                                    value={time.hour}
-                                    onChange={(e) => handleTimeChange("hour", e.target.value)}
-                                    slotProps={{
-                                        inputLabel: {
-                                            shrink: true,
-                                        },
-                                    }}
-                                />
-                                <Typography variant="h3" className={'title'} fontWeight="bold">
-                                    :
-                                </Typography>
-                                <TextField type="number" variant="outlined" label="Minuti"
-                                    value={time.minute}
-                                    onChange={(e) => handleTimeChange("minute", e.target.value)}
-                                    slotProps={{
-                                        inputLabel: {
-                                            shrink: true,
-                                        },
-                                    }}
-                                />
-                            </Stack>
+                            <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+
+                                <Select variant={'outlined'} value={hour.toString().padStart(2, '0')}
+                                        onChange={(e) => setHour(Number(e.target.value))}>
+
+                                    {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                                        <MenuItem key={hour} value={hour.toString().padStart(2, '0')}>
+                                            {hour.toString().padStart(2, '0')}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+
+                                <Typography>:</Typography>
+
+                                <Select variant={'outlined'} value={minute.toString().padStart(2, '0')}
+                                        onChange={(e) => setMinute(Number(e.target.value))}>
+
+                                    {Array.from({ length: 60 }, (_, i) => i).map((minute) => (
+                                        <MenuItem key={minute} value={minute.toString().padStart(2, '0')}>
+                                            {minute.toString().padStart(2, '0')}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+
+                            </Box>
                         </CardContent>
                     </Card>
 

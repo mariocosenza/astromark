@@ -1,6 +1,7 @@
 package it.astromark.attendance.mapper;
 
 import it.astromark.attendance.dto.AttendanceResponse;
+import it.astromark.attendance.entity.Delay;
 import it.astromark.attendance.repository.AbsenceRepository;
 import it.astromark.attendance.repository.DelayRepository;
 import it.astromark.user.student.entity.Student;
@@ -20,6 +21,7 @@ public interface AttendanceMapper {
     @Mapping(target = "isAbsent", source = "student", qualifiedByName = "isAbsent")
     @Mapping(target = "isDelayed", source = "student", qualifiedByName = "isDelayed")
     @Mapping(target = "delayTime", source = "student", qualifiedByName = "getDelayTime")
+    @Mapping(target = "delayNeedJustification", source = "student", qualifiedByName = "getDelayNeedJustification")
     @Mapping(target = "totalAbsence", expression = "java(student.getAbsences().size())")
     @Mapping(target = "totalDelay", expression = "java(student.getDelays().size())")
     AttendanceResponse toAttendanceResponse(Student student, @Context LocalDate date, @Context AbsenceRepository absenceRepository, @Context DelayRepository delayRepository);
@@ -33,17 +35,26 @@ public interface AttendanceMapper {
 
     @Named("isDelayed")
     default Boolean isDelayed(Student student, @Context LocalDate date, @Context DelayRepository delayRepository) {
-        var dateStart = date.atStartOfDay().toInstant(ZoneOffset.UTC);
-        var dateEnd = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
-        return !delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(dateStart, dateEnd, student.getId()).isEmpty();
+        return getDelay(student, date, delayRepository) != null;
     }
 
     @Named("getDelayTime")
     default Instant getDelayTime(Student student, @Context LocalDate date, @Context DelayRepository delayRepository) {
+        var delay = getDelay(student, date, delayRepository);
+        return delay == null ? null : delay.getDate();
+    }
+
+    @Named("getDelayNeedJustification")
+    default boolean getDelayNeedJustification(Student student, @Context LocalDate date, @Context DelayRepository delayRepository) {
+        var delay = getDelay(student, date, delayRepository);
+        return delay != null && delay.getNeedsJustification();
+    }
+
+    default Delay getDelay(Student student, LocalDate date, DelayRepository delayRepository) {
         var dateStart = date.atStartOfDay().toInstant(ZoneOffset.UTC);
         var dateEnd = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
         var delay = delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(dateStart, dateEnd, student.getId());
-        return delay.isEmpty() ? null : delay.getFirst().getDate();
+        return delay.isEmpty() ? null : delay.getFirst();
     }
 }
 
