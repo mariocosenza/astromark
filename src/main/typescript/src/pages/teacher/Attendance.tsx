@@ -15,6 +15,7 @@ import {AttendanceResponse} from "../../entities/AttendanceResponse.ts";
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import {DelayComponent} from "../../components/DelayComponent.tsx";
+import {AttendanceRequest} from "../../entities/AttendanceRequest.ts";
 
 export type AttendanceRow = {
     id: string;
@@ -67,6 +68,29 @@ export const Attendance: React.FC = () => {
             setRows(rowResponse)
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    const handleSave = async () => {
+
+        const attendanceRequest: AttendanceRequest[] = rows.map((attendance: AttendanceRow) => ({
+            studentId: attendance.id,
+            isAbsent: attendance.buttonRowValue === 'absent',
+            isDelayed: attendance.buttonRowValue === 'delayed',
+            delayTimeHour: attendance.delayTimeHour,
+            delayTimeMinute: attendance.delayTimeMinute,
+            delayNeedJustification: attendance.delayNeedJustification,
+        }));
+
+        try{
+            await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/attendance/${date.format("YYYY-MM-DD")}`, attendanceRequest, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -187,7 +211,7 @@ export const Attendance: React.FC = () => {
                     </TableContainer>
 
                     <Stack direction="row" justifyContent="flex-end" margin={'2rem 10%'}>
-                        <Button variant="contained" color="primary" sx={{borderRadius: 5, width: '10%'}}>
+                        <Button variant="contained" color="primary" sx={{borderRadius: 5, width: '10%'}} onClick={handleSave}>
                             Salva
                         </Button>
                     </Stack>
