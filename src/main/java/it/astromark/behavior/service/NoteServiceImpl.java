@@ -7,7 +7,7 @@ import it.astromark.behavior.entity.Note;
 import it.astromark.behavior.mapper.NoteMapper;
 import it.astromark.behavior.repository.NoteRepository;
 import it.astromark.user.commons.service.SchoolUserService;
-import it.astromark.user.student.service.StudentService;
+import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +23,16 @@ import java.util.UUID;
 public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
-    private final StudentService studentService;
     private final NoteMapper noteMapper;
     private final SchoolUserService schoolUserService;
+    private final StudentRepository studentRepository;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, StudentService studentService, NoteMapper noteMapper, SchoolUserService schoolUserService) {
+    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper, SchoolUserService schoolUserService, StudentRepository studentRepository) {
         this.noteRepository = noteRepository;
-        this.studentService = studentService;
         this.noteMapper = noteMapper;
         this.schoolUserService = schoolUserService;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class NoteServiceImpl implements NoteService {
         } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
-        return studentService.getById(studentId).getNotes().stream()
+        return studentRepository.findById(studentId).orElseThrow().getNotes().stream()
                 .filter(m -> m.getStudent().getSchoolClasses().stream().anyMatch(c -> c.getId().equals(classId)))
                 .map(noteMapper::toNoteResponse)
                 .toList();

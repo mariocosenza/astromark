@@ -12,7 +12,7 @@ import it.astromark.rating.model.Mark;
 import it.astromark.rating.repository.MarkRepository;
 import it.astromark.rating.repository.SemesterReportRepository;
 import it.astromark.user.commons.service.SchoolUserService;
-import it.astromark.user.student.service.StudentService;
+import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -38,17 +38,17 @@ public class MarkServiceImpl implements MarkService {
     private final SemesterReportRepository semesterReportRepository;
     private final AuthenticationService authenticationService;
     private final TeachingRepository teachingRepository;
-    private final StudentService studentService;
+    private final StudentRepository studentRepository;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentService studentService) {
+    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentRepository studentRepository) {
         this.markRepository = markRepository;
         this.markMapper = markMapper;
         this.schoolUserService = schoolUserService;
         this.semesterReportRepository = semesterReportRepository;
         this.authenticationService = authenticationService;
         this.teachingRepository = teachingRepository;
-        this.studentService = studentService;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -126,10 +126,11 @@ public class MarkServiceImpl implements MarkService {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
+
         return markMapper.toMarkResponse(markRepository.save(Mark.builder()
                 .mark(mark.mark())
                 .date(mark.date())
-                .student(studentService.getById(mark.studentId()))
+                .student(studentRepository.findById(mark.studentId()).orElseThrow())
                 .teaching(teaching)
                 .type(mark.type())
                 .description(mark.description())
