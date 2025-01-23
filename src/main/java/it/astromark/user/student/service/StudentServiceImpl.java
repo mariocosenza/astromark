@@ -15,6 +15,7 @@ import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -52,7 +54,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
-    public SchoolUserDetailed create(StudentRequest studentRequest) {
+    public SchoolUserDetailed create(@NotNull StudentRequest studentRequest) {
         var username = studentRequest.name() + "." + studentRequest.surname() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();
         var schoolClass = school.getSchoolClasses().stream().filter(c -> c.getId().equals(studentRequest.classId())).findFirst().orElseThrow();
@@ -75,18 +77,19 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public SchoolUserDetailed update(UUID uuid, StudentRequest student) {
-        return null;
-    }
-
-    @Override
-    public boolean delete(UUID uuid) {
-        return false;
-    }
-
-    @Override
-    public Student getById(UUID uuid) {
-        return studentRepository.findById(uuid).orElse(null);
+    @PreAuthorize("hasRole('SECRETARY') || hasRole('PARENT') || hasRole('STUDENT')")
+    public SchoolUserDetailed getById(UUID uuid) {
+        var student = studentRepository.findById(uuid).orElse(null);
+        if (!schoolUserService.isLoggedUserParent(uuid)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        } else if(authenticationService.isStudent()) {
+            student = authenticationService.getStudent().orElseThrow();
+        } else if(authenticationService.isSecretary()) {
+            if(!authenticationService.getSecretary().orElseThrow().getSchool().getCode().equals(Objects.requireNonNull(student).getSchool().getCode())) {
+                throw new AccessDeniedException("You are not allowed to access this resource");
+            }
+        }
+        return schoolUserMapper.toSchoolUserDetailed(student);
     }
 
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
@@ -105,7 +108,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     @Transactional
-    public List<SchoolClassResponse> getSchoolClassByYear(UUID studentId, Year year) {
+    public List<SchoolClassResponse> getSchoolClassByYear(@NotNull UUID studentId,@PastOrPresent Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
@@ -118,4 +121,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
 
+    @Override
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
+    public String attitude(UUID studentId) {
+        var student = studentRepository.findById(studentId).orElseThrow();
+        if(!schoolUserService.isLoggedUserParent(studentId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        } else if (authenticationService.isStudent()) {
+            student = authenticationService.getStudent().orElseThrow();
+        }
+        return student.getAttitude();
+    }
 }

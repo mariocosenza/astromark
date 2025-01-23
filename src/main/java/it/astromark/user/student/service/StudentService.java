@@ -1,17 +1,19 @@
 package it.astromark.user.student.service;
 
 import it.astromark.classmanagement.dto.SchoolClassResponse;
-import it.astromark.commons.service.CrudService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.student.dto.StudentRequest;
-import it.astromark.user.student.entity.Student;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
-public interface StudentService extends CrudService<Student, StudentRequest, SchoolUserDetailed, UUID> {
-    List<Integer> getStudentYears(UUID studentId);
-
-    List<SchoolClassResponse> getSchoolClassByYear(UUID studentId, Year year);
+public interface StudentService {
+    List<Integer> getStudentYears(@NotNull UUID studentId);
+    List<SchoolClassResponse> getSchoolClassByYear(@NotNull UUID studentId, @PastOrPresent Year year);
+    SchoolUserDetailed getById(@NotNull UUID studentId);
+    SchoolUserDetailed create(@NotNull StudentRequest studentRequest);
+    String attitude(@NotNull UUID studentId);
 }
