@@ -41,6 +41,7 @@ export class SelectedTeachingTimeslot {
 
     static setSlot(slot: ClassAgendaRow) {
         this._id = slot.id
+        this._hour = slot.hour
         this._activityTitle = slot.activityTitle;
         this._activityDesc = slot.activityDesc;
         this._homeworkTitle = slot.homeworkTitle;
@@ -52,6 +53,12 @@ export class SelectedTeachingTimeslot {
 
     static get id(): number | null {
         return this._id;
+    }
+
+    private static _hour: number | null = null;
+
+    static get hour(): number | null {
+        return this._hour;
     }
 
     private static _activityTitle: string = '';
@@ -82,5 +89,15 @@ export class SelectedTeachingTimeslot {
 
     static get homeworkDate(): DateObject | null {
         return this._homeworkDate;
+    }
+
+    private static _date: DateObject | null = null;
+
+    static get date(): DateObject | null {
+        return this._date;
+    }
+
+    static set date(value: DateObject | null) {
+        this._date = value;
     }
 }

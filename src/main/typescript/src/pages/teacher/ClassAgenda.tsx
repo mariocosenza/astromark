@@ -19,7 +19,7 @@ import {getId} from "../../services/AuthService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 
 export interface ClassAgendaRow {
-    id: number
+    id: number | null;
     signed: boolean;
     hour: number;
     isTeacherHour: boolean;
@@ -29,7 +29,7 @@ export interface ClassAgendaRow {
     activityDesc: string;
     homeworkTitle: string;
     homeworkDesc: string;
-    homeworkDate: DateObject;
+    homeworkDate: DateObject | null;
 }
 
 export const ClassAgenda: React.FC = () => {
@@ -63,14 +63,42 @@ export const ClassAgenda: React.FC = () => {
             }
 
             setLoading(false);
-            setRows(rowResponse)
+            setRows(addEmptyHour(rowResponse))
         } catch (error) {
             console.error(error);
         }
     }
 
+    const addEmptyHour = (rows: ClassAgendaRow[]) => {
+        let newRows: ClassAgendaRow[] = [];
+        let i = 0;
+        for (let hour = 1; hour < 8; hour++) {
+            if (i < rows.length && rows[i].hour == hour) {
+                newRows.push(rows[i]);
+                i++;
+            } else {
+                newRows.push({
+                    id: null,
+                    signed: false,
+                    hour: hour,
+                    isTeacherHour: true,
+                    name: '',
+                    subject: '',
+                    activityTitle: '',
+                    activityDesc: '',
+                    homeworkTitle: '',
+                    homeworkDesc: '',
+                    homeworkDate: null,
+                })
+            }
+        }
+
+        return newRows;
+    }
+
     const choseTeachingTimeslot = (slot: ClassAgendaRow) => {
         SelectedTeachingTimeslot.setSlot(slot);
+        SelectedTeachingTimeslot.date = date;
         navigate(`/teacher/ora`);
     };
 
@@ -126,14 +154,14 @@ export const ClassAgenda: React.FC = () => {
                             <CustomTableRow key={row.hour}>
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
-                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}/> :
+                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'} sx={{padding: '8px'}}/> :
                                             <IconButton disabled={!row.isTeacherHour} onClick={() => choseTeachingTimeslot(row)}>
                                                 <AddCircleOutlineIcon fontSize={'large'}/>
                                             </IconButton>
                                         }
 
                                         <Typography variant="caption" color={'textSecondary'}>
-                                            {(row.hour + 7) + ':00 - ' + (row.hour + 8) + ':00'}
+                                            {row.hour + ' ora'}
                                         </Typography>
                                     </Stack>
                                 </CustomTableCell>

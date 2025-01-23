@@ -9,6 +9,7 @@ import {Env} from "../../Env.ts";
 import YupPassword from "yup-password";
 import * as yup from "yup";
 import {useNavigate} from "react-router";
+import {SignHourRequest} from "../../entities/SignHourRequest.ts";
 
 YupPassword(yup)
 
@@ -47,8 +48,10 @@ export const SignHour: React.FC = () => {
         validationSchema,
         onSubmit: async (values) => {
             if (!dateError) {
-                const signHourRequest = {
+                const signHourRequest: SignHourRequest = {
                     slotId: SelectedTeachingTimeslot.id,
+                    hour: SelectedTeachingTimeslot.hour,
+                    date: SelectedTeachingTimeslot.date,
                     activityTitle: values.activityTitle,
                     activityDescription: values.activityDesc,
                     homeworkTitle: values.homeworkTitle,
