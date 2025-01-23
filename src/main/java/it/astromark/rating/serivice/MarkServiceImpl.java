@@ -2,16 +2,17 @@ package it.astromark.rating.serivice;
 
 
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
-import it.astromark.rating.dto.MarkRequest;
-import it.astromark.rating.dto.MarkResponse;
-import it.astromark.rating.dto.MarkUpdateRequest;
-import it.astromark.rating.dto.SemesterReportResponse;
+import it.astromark.classmanagement.repository.SchoolClassRepository;
+import it.astromark.classmanagement.repository.TeacherClassRepository;
+import it.astromark.rating.dto.*;
 import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.rating.model.Mark;
 import it.astromark.rating.repository.MarkRepository;
 import it.astromark.rating.repository.SemesterReportRepository;
 import it.astromark.user.commons.service.SchoolUserService;
+import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.service.StudentService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
@@ -39,9 +40,12 @@ public class MarkServiceImpl implements MarkService {
     private final AuthenticationService authenticationService;
     private final TeachingRepository teachingRepository;
     private final StudentService studentService;
+    private final TeacherClassRepository teacherClassRepository;
+    private final StudyPlanRepository studyPlanRepository;
+    private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentService studentService) {
+    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentService studentService, TeacherClassRepository teacherClassRepository, StudyPlanRepository studyPlanRepository, SchoolClassRepository schoolClassRepository) {
         this.markRepository = markRepository;
         this.markMapper = markMapper;
         this.schoolUserService = schoolUserService;
@@ -49,6 +53,9 @@ public class MarkServiceImpl implements MarkService {
         this.authenticationService = authenticationService;
         this.teachingRepository = teachingRepository;
         this.studentService = studentService;
+        this.teacherClassRepository = teacherClassRepository;
+        this.studyPlanRepository = studyPlanRepository;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
     @Override
@@ -108,6 +115,35 @@ public class MarkServiceImpl implements MarkService {
         semesterReportRepository.save(report);
 
         return markMapper.toSemesterReportResponse(report);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public List<RatingsResponse> getRatings(Integer classId, LocalDate date) {
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        if (teacherClassRepository.findByTeacher(teacher).stream()
+                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+            throw new AccessDeniedException("You are not allowed to see this timetable");
+        }
+
+        var subjects = studyPlanRepository.findBySchoolClass_Id(classId).stream()
+                .flatMap(sp -> sp.getSubjects().stream()).toList();
+
+        var teaching = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
+                .filter(c -> subjects.contains(c.getSubjectTitle()))
+                .findFirst().orElseThrow();
+
+        var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching(classId, date, teaching), teaching.getSubjectTitle().getTitle());
+
+        var copyMark = marks.stream().toList();
+        for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
+            if (copyMark.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
+                marks.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching.getSubjectTitle().getTitle(), null, null, "", null));
+            }
+        }
+
+        return marks;
     }
 
     @Override

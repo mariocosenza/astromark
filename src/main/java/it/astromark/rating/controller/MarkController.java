@@ -1,13 +1,11 @@
 package it.astromark.rating.controller;
 
-import it.astromark.rating.dto.MarkRequest;
-import it.astromark.rating.dto.MarkResponse;
-import it.astromark.rating.dto.MarkUpdateRequest;
-import it.astromark.rating.dto.SemesterReportResponse;
+import it.astromark.rating.dto.*;
 import it.astromark.rating.serivice.MarkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +40,11 @@ public class MarkController {
     @PatchMapping("/reports/{reportId}")
     public SemesterReportResponse viewReport(@PathVariable Integer reportId) {
         return markService.viewReport(reportId);
+    }
+
+    @GetMapping("classes/{classId}/ratings/{date}")
+    public List<RatingsResponse> getRatings(@PathVariable Integer classId, @PathVariable LocalDate date) {
+        return markService.getRatings(classId, date);
     }
 
     @PostMapping("/marks")

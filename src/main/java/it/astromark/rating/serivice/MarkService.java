@@ -1,12 +1,10 @@
 package it.astromark.rating.serivice;
 
-import it.astromark.rating.dto.MarkRequest;
-import it.astromark.rating.dto.MarkResponse;
-import it.astromark.rating.dto.MarkUpdateRequest;
-import it.astromark.rating.dto.SemesterReportResponse;
+import it.astromark.rating.dto.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +17,8 @@ public interface MarkService {
     SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, Boolean semester);
 
     SemesterReportResponse viewReport(Integer reportId);
+
+    List<RatingsResponse> getRatings(Integer classId, LocalDate date);
 
     MarkResponse create(MarkRequest mark);
 
