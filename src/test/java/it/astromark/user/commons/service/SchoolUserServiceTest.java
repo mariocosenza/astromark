@@ -5,13 +5,11 @@ import it.astromark.SpringTestConf;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.dto.SchoolUserResponse;
+import it.astromark.user.commons.dto.SchoolUserUpdate;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.commons.model.PendingState;
-import it.astromark.user.parent.repository.ParentRepository;
-import it.astromark.user.secretary.repository.SecretaryRepository;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
-import it.astromark.user.teacher.repository.TeacherRepository;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,26 +33,20 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @ActiveProfiles(value = "test")
 @ExtendWith(MockitoExtension.class)
-@WithMockUser(roles="student")
+@WithMockUser(roles = "STUDENT")
 @Import({SpringTestConf.class})
 class SchoolUserServiceTest {
 
     @Mock
-    private  AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
     @Mock
-    private  StudentRepository studentRepository;
+    private StudentRepository studentRepository;
     @Mock
     private SchoolUserMapper schoolUserMapper;
-    @Mock
-    private  TeacherRepository teacherRepository;
-    @Mock
-    private  SecretaryRepository secretaryRepository;
-    @Mock
-    private  ParentRepository parentRepository;
     @InjectMocks
     private SchoolUserServiceImpl schoolUserService;
 
-    private static School school;
+    private School school;
 
     private Student student;
 
@@ -72,7 +64,7 @@ class SchoolUserServiceTest {
         student = Student.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
-                .pendingState(PendingState.FIRST_LOGIN)
+                .pendingState(PendingState.NORMAL)
                 .surname(surname)
                 .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString()) //unsafe
                 .residentialAddress(faker.address().fullAddress())
@@ -92,7 +84,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress));
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress));
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -108,7 +100,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -124,7 +116,7 @@ class SchoolUserServiceTest {
         when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
         when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
 
-        assertDoesNotThrow(() ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertDoesNotThrow(() -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(1)).isStudent(); // Verify student check
         verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
@@ -135,7 +127,7 @@ class SchoolUserServiceTest {
     void tc2_04() {
         var newAddress = "Via";
 
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(0)).isStudent(); // Verify student check
         verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
@@ -146,7 +138,7 @@ class SchoolUserServiceTest {
     void tc2_05() {
         var newAddress = "Via Napoli#";
 
-        assertThrows(IllegalArgumentException.class, () ->  schoolUserService.updateAddress(newAddress)); // Verify address update
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updateAddress(newAddress)); // Verify address update
 
         verify(authenticationService, times(0)).isStudent(); // Verify student check
         verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
@@ -155,22 +147,53 @@ class SchoolUserServiceTest {
 
     @Test
     void tc3_01() {
+        when(authenticationService.isStudent()).thenReturn(true);
+        when(authenticationService.getStudent()).thenReturn(Optional.of(student));
+        when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
+        when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
+
+        assertDoesNotThrow(() -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto123!"))); // Verify password update
+
+        verify(authenticationService, times(1)).isStudent(); // Verify student check
+        verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
+        verify(studentRepository, times(1)).save(student); // Verify student save
     }
 
     @Test
     void tc3_02() {
+        when(authenticationService.isStudent()).thenReturn(true);
+        when(authenticationService.getStudent()).thenReturn(Optional.of(student));
+        when(studentRepository.save(any(Student.class))).thenReturn(student); // Mock save behavior
+        when(schoolUserMapper.toSchoolUserResponse(any(Student.class))).thenReturn(new SchoolUserResponse(student.getName(), student.getSurname(), student.getId())); // Mock mapper behavior
+
+        assertDoesNotThrow(() -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto12!"))); // Verify password update
+
+        verify(authenticationService, times(1)).isStudent(); // Verify student check
+        verify(authenticationService, times(1)).getStudent(); // Verify student retrieval
+        verify(studentRepository, times(1)).save(student); // Verify student save
     }
 
     @Test
     void tc3_03() {
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1!"))); // Verify password update
+
+        verify(authenticationService, times(0)).isStudent(); // Verify student check
+        verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
+        verify(studentRepository, times(0)).save(student); // Verify student save
     }
 
     @Test
     void tc3_04() {
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
+
+        verify(authenticationService, times(0)).isStudent(); // Verify student check
+        verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
+        verify(studentRepository, times(0)).save(student); // Verify student save
     }
 
     @Test
     void tc3_05() {
+        //This test is not applicable for the backend
     }
 
 }

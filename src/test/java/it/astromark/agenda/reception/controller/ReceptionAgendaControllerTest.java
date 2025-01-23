@@ -3,8 +3,6 @@ package it.astromark.agenda.reception.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ReceptionAgendaControllerTest {
 
     @BeforeEach
@@ -12,6 +10,38 @@ class ReceptionAgendaControllerTest {
     }
 
     @Test
-    void book() {
+    void tc4_01() {
+    }
+
+    @Test
+    void tc4_02() {
+    }
+
+    @Test
+    void tc4_03() {
+    }
+
+    @Test
+    void tc4_04() {
+    }
+
+    @Test
+    void tc4_05() {
+    }
+
+    @Test
+    void tc4_06() {
+    }
+
+    @Test
+    void tc4_07() {
+    }
+
+    @Test
+    void tc4_08() {
+    }
+
+    @Test
+    void tc4_09() {
     }
 }

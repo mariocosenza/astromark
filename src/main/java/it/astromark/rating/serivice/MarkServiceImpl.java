@@ -12,6 +12,7 @@ import it.astromark.rating.model.Mark;
 import it.astromark.rating.repository.MarkRepository;
 import it.astromark.rating.repository.SemesterReportRepository;
 import it.astromark.user.commons.service.SchoolUserService;
+import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.service.StudentService;
 import jakarta.transaction.Transactional;
@@ -39,24 +40,25 @@ public class MarkServiceImpl implements MarkService {
     private final SemesterReportRepository semesterReportRepository;
     private final AuthenticationService authenticationService;
     private final TeachingRepository teachingRepository;
-    private final StudentService studentService;
+    private final StudentRepository studentRepository;
     private final TeacherClassRepository teacherClassRepository;
     private final StudyPlanRepository studyPlanRepository;
     private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentService studentService, TeacherClassRepository teacherClassRepository, StudyPlanRepository studyPlanRepository, SchoolClassRepository schoolClassRepository) {
+    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentRepository studentRepository, TeacherClassRepository teacherClassRepository, StudyPlanRepository studyPlanRepository, SchoolClassRepository schoolClassRepository) {
         this.markRepository = markRepository;
         this.markMapper = markMapper;
         this.schoolUserService = schoolUserService;
         this.semesterReportRepository = semesterReportRepository;
         this.authenticationService = authenticationService;
         this.teachingRepository = teachingRepository;
-        this.studentService = studentService;
+        this.studentRepository = studentRepository;
         this.teacherClassRepository = teacherClassRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.schoolClassRepository = schoolClassRepository;
     }
+
 
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
@@ -150,6 +152,9 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse create(MarkRequest mark) {
+        if(mark.mark() < 0 || mark.mark() > 10) {
+            throw new IllegalArgumentException("Mark must be between 0 and 10");
+        }
         var teacher = authenticationService.getTeacher().orElseThrow();
         var teaching = teachingRepository.findById(mark.teachingId()).orElseThrow();
         if (!teaching.getTeacher().equals(teacher)) {
@@ -162,7 +167,7 @@ public class MarkServiceImpl implements MarkService {
         return markMapper.toMarkResponse(markRepository.save(Mark.builder()
                 .mark(mark.mark())
                 .date(mark.date())
-                .student(studentService.getById(mark.studentId()))
+                .student(studentRepository.findById(mark.studentId()).orElseThrow())
                 .teaching(teaching)
                 .type(mark.type())
                 .description(mark.description())
@@ -173,6 +178,9 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse update(MarkUpdateRequest mark, UUID studentId) {
+        if(mark.mark() < 0 || mark.mark() > 10) {
+            throw new IllegalArgumentException("Mark must be between 0 and 10");
+        }
         if(!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }

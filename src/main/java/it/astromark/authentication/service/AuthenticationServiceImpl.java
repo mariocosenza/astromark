@@ -48,6 +48,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SchoolUser login(UserLoginRequest user) {
+        if(user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
+                !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") ||
+                !user.schoolCode().matches("^SS\\d{5}$") ||
+                user.role().isBlank()) {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
         // Cerca l'utente nei vari repository
         var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
@@ -130,7 +136,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
+    public SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
         // Cerca l'utente in ciascun repository
         return switch (role.toLowerCase()) {
             case "student" -> studentRepository.findByUsernameAndSchoolCode(username, schoolCode);

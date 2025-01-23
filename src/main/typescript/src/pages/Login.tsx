@@ -163,10 +163,12 @@ export const Login = () => {
     };
 
     useEffect(() => {
-        localStorage.removeItem("studentId");
-        localStorage.removeItem("year");
         if (isLogged() && !isExpired()) {
             navigator("/" + getRole().toLowerCase() + "/dashboard");
+        } else {
+            localStorage.removeItem("user");
+            localStorage.removeItem("studentId");
+            localStorage.removeItem("year");
         }
     }, [navigator]);
 

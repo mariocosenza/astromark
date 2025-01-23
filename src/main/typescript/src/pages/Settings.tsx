@@ -7,6 +7,7 @@ import {Env} from "../Env.ts";
 import {AxiosResponse} from "axios";
 import YupPassword from "yup-password";
 import * as yup from "yup";
+import {useNavigate} from "react-router";
 
 
 export function validateAddress(address: string): boolean {
@@ -129,7 +130,9 @@ export const Settings: React.FC = () => {
                 password: password,
             });
             logout();
-            window.location.href = "/";
+            localStorage.removeItem("user");
+            const navigate = useNavigate();
+            navigate("/");
         } catch (error) {
             console.error("Error updating preferences:", error);
             setError(true);

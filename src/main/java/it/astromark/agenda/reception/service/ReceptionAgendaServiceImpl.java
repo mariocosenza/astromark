@@ -13,7 +13,6 @@ import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -110,11 +109,6 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
             teacher = authenticationService.getTeacher().orElseThrow();
         } else {
             teacher = teacherRepository.findById(teacherID).orElseThrow();
-            if (teacher
-                    .getTeacherClasses()
-                    .stream().anyMatch(c -> c.getSchoolClass().getStudents().stream().noneMatch(s -> parentService.getStudents().stream().anyMatch(p -> p.id().equals(s.getId()))))) {
-                throw new AccessDeniedException("Parent is not a student of the teacher");
-            }
         }
 
         var timeslot = receptionTimeslotRepository.findAllByReceptionTimetable_TeacherAndDateAfter(teacher, LocalDate.now().minusDays(200L));

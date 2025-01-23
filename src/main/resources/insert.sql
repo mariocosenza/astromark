@@ -114,6 +114,9 @@ VALUES
 
 INSERT INTO student (school_code, username, email, password, name, surname, tax_id, birth_date, residential_address, gender, pending_state)
 VALUES
+    ('SS12345', 'pluto.pippo', 'pluto.pippo@gmail.com', encode(sha512('Pluto123!'::bytea), 'hex'), 'Marco', 'Neri', 'PRIMRC10G06Z404T', '2010-06-06', 'Via Venezia 3, Roma', true, 'NORMAL'),
+    ('SS12345', 'pl.pi', 'pl.pi@gmail.com', encode(sha512('Pluto123!'::bytea), 'hex'), 'Marco', 'Neri', 'PRIMRC10G36Z404T', '2010-06-06', 'Via Venezia 3, Roma', true, 'NORMAL'),
+    ('SS12345', 'pluton.paperino', 'pluton.paperino@gmail.com', encode(sha512('Pluto123!'::bytea), 'hex'), 'Marco', 'Neri', 'PRIMRC10L06Z404T', '2010-06-06', 'Via Venezia 3, Roma', true, 'NORMAL'),
     ('SS12345', 'marco.neri', 'marco.neri@gmail.com', encode(sha512('Neri123*'::bytea), 'hex'), 'Marco', 'Neri', 'NRIMRC10G06Z404T', '2010-06-06', 'Via Venezia 3, Roma', true, 'NORMAL'),
     ('SS12345', 'luca.verdi', 'luca.verdi@gmail.com', encode(sha512('Verdi123*'::bytea), 'hex'), 'Luca', 'Verdi', 'VRDLCA08F06I123U', '2008-06-06', 'Via Firenze 4, Roma', true, 'NORMAL'),
     ('SS12345', 'sofia.bianchi', 'sofia.bianchi@gmail.com', encode(sha512('Bianchi123*'::bytea), 'hex'), 'Sofia', 'Bianchi', 'BNCSFA09L47Z404T', '2009-07-07', 'Via Torino 5, Roma', false, 'NORMAL'),

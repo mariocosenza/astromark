@@ -175,14 +175,14 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         if (!schoolUserService.isLoggedParentStudentClass(classID)) {
             throw new AccessDeniedException("You are not allowed to access this class");
         } else if (authenticationService.isStudent()) {
-            if (studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
+            if (!studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), classID)) {
                 throw new AccessDeniedException("You are not allowed to access this class");
             }
         }
 
         var weekStart = DayOfWeek.MONDAY;
         var week = date.with(TemporalAdjusters.previousOrSame(weekStart));
-        return timeslotMapper.toTeachingTimeslotResponseList(teachingTimeslotRepository.findTeachingTimeslotByClassTimetableSchoolClass_IdAndDateBetween(classID, week, week.plusDays(6)));
+        return timeslotMapper.toTeachingTimeslotResponseList(teachingTimeslotRepository.findByClassTimetable_SchoolClass_IdAndDateBetween(classID, week, week.plusDays(6)));
     }
 
     @Override
