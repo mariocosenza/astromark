@@ -33,6 +33,7 @@ INSERT INTO subject (title)
 VALUES
     ('Matematica'),
     ('Fisica'),
+    ('Geometria'),
     ('Chimica'),
     ('Italiano'),
     ('Inglese'),
@@ -57,7 +58,7 @@ VALUES
     ('Inglese', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
     ('Storia', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'A' AND year = 2024))),
     ('Informatica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024))),
-    ('Fisica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024))),
+    ('Geometria', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024))),
     ('Italiano', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 1 AND letter = 'C' AND year = 2024))),
     ('Storia', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024))),
     ('Matematica', (SELECT school_class_id FROM study_plan WHERE school_class_id = (SELECT id FROM school_class WHERE number = 3 AND letter = 'C' AND year = 2024))),
@@ -103,7 +104,7 @@ VALUES
 INSERT INTO teaching (subject_title, teacher_id, type_of_activity)
 VALUES
     ('Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Lezione'),
-    ('Fisica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Lezione'),
+    ('Geometria', (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Lezione'),
     ('Fisica', (SELECT id FROM teacher WHERE username = 'alessandro.rossi'), 'Lezione'),
     ('Chimica', (SELECT id FROM teacher WHERE username = 'maria.bianchi'), 'Laboratorio'),
     ('Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), 'Laboratorio'),
@@ -241,8 +242,8 @@ VALUES
     ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'A' AND year = 2024) AND end_validity IS NULL), 4, '2025-01-18', 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui')),
     ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 2, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui')),
     ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-18', 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-21', 'Fisica', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
-    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-23', 'Fisica', (SELECT id FROM teacher WHERE username = 'marco.gialli'));
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-21', 'Geometria', (SELECT id FROM teacher WHERE username = 'marco.gialli')),
+    ((SELECT id FROM class_timetable WHERE school_class_id = (SELECT id FROM school_class WHERE number = 5 AND letter = 'BS' AND year = 2024) AND end_validity IS NULL), 3, '2025-01-23', 'Geometria', (SELECT id FROM teacher WHERE username = 'marco.gialli'));
 
 INSERT INTO signed_hour (teaching_timeslot_id, teacher_id, time_sign, substitution)
 VALUES
@@ -271,8 +272,8 @@ VALUES
     ((SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese'),  (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-18 11:15', false),
     ((SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica'), (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-18 09:15', false),
     ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-18' AND teaching_subject_title = 'Informatica'), (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-18 10:15', false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-21 10:15', false),
-    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Fisica'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-23 10:15',  false);
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Geometria'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-21 10:15', false),
+    ((SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Geometria'), (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-23 10:15',  false);
 
 INSERT INTO reception_timetable(teacher_id, text_info_reception, start_validity)
 VALUES
@@ -319,8 +320,8 @@ VALUES
     ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-16' AND teaching_subject_title = 'Italiano')), 'Lezione di Italiano', 'Introduzione alla Divina Commedia di Dante Alighieri.'),
     ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-16' AND teaching_subject_title = 'Inglese')), 'Lezione di Inglese', 'Approfondimento sulla grammatica.'),
     ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese')), 'Lezione di Inglese', 'Studio e analisi di un testo letterario inglese.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica')),'Esercizi sul moto rettilineo uniforme','Lezione pratica sul moto rettilineo uniforme.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Fisica')),'Ripasso sul moto rettilineo uniforme','Esercizi avanzati sul moto rettilineo uniforme.');
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Geometria')),'Esercizi sul moto rettilineo uniforme','Lezione pratica sul moto rettilineo uniforme.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Geometria')),'Ripasso sul moto rettilineo uniforme','Esercizi avanzati sul moto rettilineo uniforme.');
 
 INSERT INTO homework (signed_hour_teaching_timeslot_id, due_date, title, description)
 VALUES
@@ -333,8 +334,8 @@ VALUES
     ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 2 AND date = '2025-01-23' AND teaching_subject_title = 'Chimica')), '2025-02-01', 'Relazione sull’elettrolisi', 'Scrivere una breve relazione sull’esperimento condotto in classe.'),
     ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 5 AND date = '2025-01-17' AND teaching_subject_title = 'Storia')), '2025-01-24', 'Esercizi Rivoluzione Francese', 'Completa le domande a pagina 150.'),
     ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 4 AND date = '2025-01-18' AND teaching_subject_title = 'Inglese')), '2025-02-15', 'Scrivi un saggio', 'Scrivi un saggio di 500 parole.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Fisica')),'2025-01-30','Esercizi sul moto rettilineo uniforme','Completa gli esercizi 1-10 del capitolo 3.'),
-    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Fisica')),'2025-02-02','Moto rettilineo uniforme','Risolvi i problemi 5-8 a pagina 85 del libro di testo.');
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-21' AND teaching_subject_title = 'Geometria')),'2025-01-30','Esercizi sul moto rettilineo uniforme','Completa gli esercizi 1-10 del capitolo 3.'),
+    ((SELECT teaching_timeslot_id FROM signed_hour WHERE teaching_timeslot_id = (SELECT id FROM teaching_timeslot WHERE hour = 3 AND date = '2025-01-23' AND teaching_subject_title = 'Geometria')),'2025-02-02','Moto rettilineo uniforme','Risolvi i problemi 5-8 a pagina 85 del libro di testo.');
 
 INSERT INTO homework_chat (homework_signed_hour_teaching_timeslot_id, title, student_id)
 VALUES
