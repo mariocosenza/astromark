@@ -1,12 +1,12 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import {IconButton} from "@mui/material";
-import {useState} from "react";
 import {changeStudentOrYear, SelectedStudent} from "../services/StateService.ts";
 
-export type SchoolUserDetail =  {
+export type SchoolUserDetail = {
     id: string;
     name: string;
     surname: string;
@@ -44,7 +44,7 @@ export const AccountMenu: React.FC<SchoolUserDetailProp> = ({data}) => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                <AccountCircleOutlinedIcon />
+                <AccountCircleOutlinedIcon/>
             </IconButton>
             <Menu
                 id="basic-menu"
@@ -57,7 +57,7 @@ export const AccountMenu: React.FC<SchoolUserDetailProp> = ({data}) => {
                 }}
             >
                 {
-                  data.map((student: SchoolUserDetail) => <MenuItem key={student.id} onClick={() => {
+                    data.map((student: SchoolUserDetail) => <MenuItem key={student.id} onClick={() => {
                         SelectedStudent.id = student.id
                         setToggle(!toggle)
                         handleClose()

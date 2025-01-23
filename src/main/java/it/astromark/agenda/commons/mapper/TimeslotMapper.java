@@ -12,5 +12,6 @@ public interface TimeslotMapper {
 
     @Mapping(target = "title", source = "timeslot.teaching.subjectTitle.title")
     TeachingTimeslotResponse toTeachingTimeslotResponse(TeachingTimeslot timeslot);
+
     List<TeachingTimeslotResponse> toTeachingTimeslotResponseList(List<TeachingTimeslot> timeslots);
 }

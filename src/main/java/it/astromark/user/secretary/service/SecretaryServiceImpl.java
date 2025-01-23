@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class SecretaryServiceImpl implements SecretaryService{
+public class SecretaryServiceImpl implements SecretaryService {
     private final SecretaryRepository secretaryRepository;
     private final AuthenticationService authenticationService;
     private final SchoolUserMapper schoolUserMapper;
@@ -32,7 +32,7 @@ public class SecretaryServiceImpl implements SecretaryService{
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary')")
+    @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(SecretaryRequest secretaryRequest) {
         var username = secretaryRequest.name() + "." + secretaryRequest.surname() + secretaryRepository.countByNameAndSurname(secretaryRequest.name(), secretaryRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();

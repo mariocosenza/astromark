@@ -10,9 +10,14 @@ import java.util.List;
 
 public interface ClassAgendaService {
     Integer getTotalHour(Integer classId);
+
     void addTimeslot(Integer classId, TeachingTimeslotRequest request);
+
     void sign(Integer classId, SignHourRequest request);
+
     boolean isSigned(Integer signedId, LocalDate date);
+
     List<TeachingTimeslotResponse> getWeekTimeslot(Integer classID, LocalDate date);
+
     List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(Integer classId, LocalDate localDate);
 }

@@ -15,6 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -37,14 +38,14 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    @PreAuthorize("hasRole('teacher') || hasRole('parent')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<TicketResponse> getTickets() {
         List<Ticket> ticketList = new ArrayList<>();
 
-        if(authenticationService.isTeacher()){
+        if (authenticationService.isTeacher()) {
             var teacher = authenticationService.getTeacher().orElseThrow();
             ticketList = ticketRepository.findByTeacherAndClosedAndSolved(teacher, false, false);
-        } else if(authenticationService.isParent()){
+        } else if (authenticationService.isParent()) {
             var parent = authenticationService.getParent().orElseThrow();
             ticketList = ticketRepository.findByParentAndClosedAndSolved(parent, false, false);
         }
@@ -55,31 +56,34 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent') || hasRole('secretary')")
-    public List<MessageResponse> getMessages(Ticket ticket){
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
+    public List<MessageResponse> getMessages(Ticket ticket) {
 
         var messages = messageRepository.findByTicket(ticket);
-        if(!messages.isEmpty())
+        if (!messages.isEmpty())
             messages.sort(Comparator.comparing(Message::getDateTime));
 
         return chatMapper.toMessageResponseList(messages, messageService);
     }
 
     @Override
-    @PreAuthorize("hasRole('teacher') || hasRole('parent') || hasRole('secretary')")
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
     public UUID sendMessage(UUID ticketId, String text) {
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
+        if (ticket.getClosed() || ticket.getSolved()) {
+            throw new IllegalArgumentException("Ticket is closed or solved");
+        }
         var message = new Message();
-        message.setId(UUID.randomUUID());
         message.setTicket(ticket);
-        message.setText(text.substring(1, text.length() - 1));
-        message.setDateTime(new Date().toInstant());
+        message.setText(text);
+        message.setDateTime(Instant.now());
 
-        if(authenticationService.isTeacher()){
+        if (authenticationService.isTeacher()) {
             message.setTeacher(authenticationService.getTeacher().orElseThrow());
-        } else if(authenticationService.isParent()){
+        } else if (authenticationService.isParent()) {
             message.setParent(authenticationService.getParent().orElseThrow());
-        } else if(authenticationService.isSecretary()){
+        } else if (authenticationService.isSecretary()) {
             message.setSecretary(authenticationService.getSecretary().orElseThrow());
         } else {
             throw new AccessDeniedException("Cannot send ticket");
@@ -90,7 +94,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('teacher') || hasRole('parent')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public void createTicket(String title) {
 
         var ticket = new Ticket();
@@ -98,9 +102,9 @@ public class TicketServiceImpl implements TicketService {
         ticket.setCategory("Category");
         ticket.setTitle(title.substring(1, title.length() - 1));
 
-        if(authenticationService.isTeacher()){
+        if (authenticationService.isTeacher()) {
             ticket.setTeacher(authenticationService.getTeacher().orElseThrow());
-        } else if(authenticationService.isParent()){
+        } else if (authenticationService.isParent()) {
             ticket.setParent(authenticationService.getParent().orElseThrow());
         } else return;
 

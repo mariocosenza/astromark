@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Alert, Box, Button, InputLabel, Stack, TextField, Typography } from "@mui/material";
-import { logout } from "../services/AuthService.ts";
-import DatePicker, { DateObject } from "react-multi-date-picker";
+import React, {useEffect, useState} from "react";
+import {Alert, Box, Button, InputLabel, Stack, TextField, Typography} from "@mui/material";
+import {logout} from "../services/AuthService.ts";
+import DatePicker, {DateObject} from "react-multi-date-picker";
 import axiosConfig from "../services/AxiosConfig.ts";
-import { Env } from "../Env.ts";
-import { AxiosResponse } from "axios";
+import {Env} from "../Env.ts";
+import {AxiosResponse} from "axios";
 import YupPassword from "yup-password";
 import * as yup from "yup";
 
@@ -71,7 +71,7 @@ export const Settings: React.FC = () => {
 
     const validatePassword = async (password: string): Promise<boolean> => {
         try {
-            await passwordValidation.validate({ password }, { abortEarly: false });
+            await passwordValidation.validate({password}, {abortEarly: false});
             return true;
         } catch (err) {
             if (err instanceof yup.ValidationError) {
@@ -214,18 +214,18 @@ export const Settings: React.FC = () => {
                             label="Indirizzo"
                             variant="outlined"
                         />
-                        <Box sx={{ mt: 2 }}>
+                        <Box sx={{mt: 2}}>
                             <InputLabel>Data di nascita</InputLabel>
-                            <DatePicker disabled value={new DateObject(schoolUser.birthDate)} />
+                            <DatePicker disabled value={new DateObject(schoolUser.birthDate)}/>
                         </Box>
                         {/* Alert per l'indirizzo */}
                         {addressSaved && (
-                            <Alert sx={{ mb: "1rem" }} severity="success">
+                            <Alert sx={{mb: "1rem"}} severity="success">
                                 Indirizzo corretto
                             </Alert>
                         )}
                         {addressError && (
-                            <Alert sx={{ mb: "1rem" }} severity="error">
+                            <Alert sx={{mb: "1rem"}} severity="error">
                                 {addressValidationMessage}
                             </Alert>
                         )}
@@ -245,7 +245,7 @@ export const Settings: React.FC = () => {
                                     setAddressError(true);
                                 }
                             }}
-                            style={{ maxHeight: "4rem" }}
+                            style={{maxHeight: "4rem"}}
                         >
                             Salva
                         </Button>
@@ -288,11 +288,11 @@ export const Settings: React.FC = () => {
                             variant="outlined"
                         />
                         {error && (
-                            <Alert id="errorLogin" sx={{ mb: "1rem" }} severity="error">
+                            <Alert id="errorLogin" sx={{mb: "1rem"}} severity="error">
                                 {validationMessage}
                             </Alert>
                         )}
-                        <Button variant="contained" style={{ maxHeight: "4rem" }}>
+                        <Button variant="contained" style={{maxHeight: "4rem"}}>
                             Consensi privacy
                         </Button>
                         <Button
@@ -300,7 +300,7 @@ export const Settings: React.FC = () => {
                             onClick={() =>
                                 address !== undefined ? sendPreferences(confirmPassword, newPassword) : null
                             }
-                            style={{ maxHeight: "4rem" }}
+                            style={{maxHeight: "4rem"}}
                         >
                             Salva
                         </Button>

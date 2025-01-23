@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router';
+import {Navigate, Outlet} from 'react-router';
 
 import React from "react";
 import {getRole, isExpired, isLogged} from "../../services/AuthService.ts";
@@ -6,20 +6,20 @@ import {getRole, isExpired, isLogged} from "../../services/AuthService.ts";
 export const ProtectedRoutePath: React.FC<ProtectedRoutePathProps> = ({role}: ProtectedRoutePathProps) => {
 
     if (!isLogged()) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/" replace/>;
     }
 
     const expired: boolean = isExpired()
 
-    if(expired || getRole().toUpperCase() !== role) {
-        if(expired) {
+    if (expired || getRole().toUpperCase() !== role) {
+        if (expired) {
             localStorage.removeItem("user")
         }
 
-        return <Navigate to="/" replace />;
+        return <Navigate to="/" replace/>;
     }
 
-    return <Outlet />;
+    return <Outlet/>;
 };
 
 export type ProtectedRoutePathProps = {

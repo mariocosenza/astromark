@@ -25,7 +25,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     @Override
     public Year getYear() {
         var month = LocalDate.now().getMonthValue();
-        if(month <= 9) {
+        if (month <= 9) {
             return Year.of(LocalDate.now().getYear());
         } else {
             return Year.of(LocalDate.now().getYear() - 1);
@@ -33,10 +33,10 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary') || hasRole('teacher')")
+    @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
     public List<SchoolClassResponse> getClasses() {
         SchoolUser user;
-        if(authenticationService.getSecretary().isPresent()) {
+        if (authenticationService.getSecretary().isPresent()) {
             user = authenticationService.getSecretary().get();
         } else {
             user = authenticationService.getTeacher().orElseThrow();

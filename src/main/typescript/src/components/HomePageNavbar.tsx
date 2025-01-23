@@ -5,9 +5,8 @@ import {Link} from "react-router";
 import {getRole, isLogged} from "../services/AuthService.ts";
 
 
-
-export const HomePageNavbar: React.FC= () => {
-    const path : string = `/${getRole().toLowerCase()}/dashboard`
+export const HomePageNavbar: React.FC = () => {
+    const path: string = `/${getRole().toLowerCase()}/dashboard`
     return (
         <header>
             <Box sx={{flexGrow: 1, width: '100%'}}>
@@ -26,11 +25,11 @@ export const HomePageNavbar: React.FC= () => {
                         </Typography>
 
                         {
-                            !isLogged()? <div> <Link to="/login" className={'whiteLink'}>
+                            !isLogged() ? <div><Link to="/login" className={'whiteLink'}>
                                 <Button color="inherit">Accedi</Button>
-                            </Link> </div> : <div> <Link to={path} className={'whiteLink'}>
-                            <Button color="inherit">Vai alla Dashboard</Button>
-                            </Link> </div>
+                            </Link></div> : <div><Link to={path} className={'whiteLink'}>
+                                <Button color="inherit">Vai alla Dashboard</Button>
+                            </Link></div>
                         }
                         <HelpIcon/>
                     </Toolbar>

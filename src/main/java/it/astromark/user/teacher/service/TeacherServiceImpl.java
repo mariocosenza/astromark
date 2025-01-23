@@ -45,7 +45,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @PreAuthorize("hasRole('secretary')")
+    @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(TeacherRequest teacherRequest) {
         var username = teacherRequest.name() + "." + teacherRequest.surname() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();
@@ -67,7 +67,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @PreAuthorize("hasRole('teacher')")
+    @PreAuthorize("hasRole('TEACHER')")
     @Transactional
     public List<TeacherClassResponse> getSchoolClasses(){
 

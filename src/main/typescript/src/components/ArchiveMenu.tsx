@@ -1,9 +1,9 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import {IconButton} from "@mui/material";
-import {useState} from "react";
 import {changeStudentOrYear, SelectedYear} from "../services/StateService.ts";
 
 
@@ -34,7 +34,7 @@ export const ArchiveMenu: React.FC<Year> = ({data}) => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                <ArchiveOutlinedIcon />
+                <ArchiveOutlinedIcon/>
             </IconButton>
             <Menu
                 id="basic-menu"
@@ -47,7 +47,7 @@ export const ArchiveMenu: React.FC<Year> = ({data}) => {
                 }}
             >
                 {
-                  data.map((year: number) => <MenuItem key={year} onClick={() => {
+                    data.map((year: number) => <MenuItem key={year} onClick={() => {
                         SelectedYear.year = year
                         setToggle(!toggle)
                         handleClose()

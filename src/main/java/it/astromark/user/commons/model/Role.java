@@ -18,10 +18,10 @@ public enum Role {
         }
 
         return switch (user) {
-            case Parent ignored -> "ROLE_" + Role.PARENT.toString().toLowerCase();
-            case Teacher ignored -> "ROLE_" + Role.TEACHER.toString().toLowerCase();
-            case Student ignored -> "ROLE_" + Role.STUDENT.toString().toLowerCase();
-            case Secretary ignored -> "ROLE_" + Role.SECRETARY.toString().toLowerCase();
+            case Parent ignored -> "ROLE_" + Role.PARENT.toString().toUpperCase();
+            case Teacher ignored -> "ROLE_" + Role.TEACHER.toString().toUpperCase();
+            case Student ignored -> "ROLE_" + Role.STUDENT.toString().toUpperCase();
+            case Secretary ignored -> "ROLE_" + Role.SECRETARY.toString().toUpperCase();
             default -> throw new IllegalStateException("Unexpected user type: " + user.getClass());
         };
     }

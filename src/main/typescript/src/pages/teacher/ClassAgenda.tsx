@@ -122,7 +122,7 @@ export const ClassAgenda: React.FC = () => {
                     </TableHead>
 
                     <TableBody>
-                        { loading ? null : rows.map((row) => (
+                        {loading ? null : rows.map((row) => (
                             <CustomTableRow key={row.hour}>
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
@@ -170,7 +170,7 @@ export const ClassAgenda: React.FC = () => {
             </TableContainer>
 
             <Grid container justifyContent={'center'} margin={'5%'}>
-                { loading ? <CircularProgress size={150}/>  : null}
+                {loading ? <CircularProgress size={150}/> : null}
             </Grid>
         </div>
     );

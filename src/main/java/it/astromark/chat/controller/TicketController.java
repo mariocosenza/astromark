@@ -30,7 +30,7 @@ public class TicketController {
 
     @GetMapping("/{ticketId}/messages")
     public List<MessageResponse> getMessages(@PathVariable UUID ticketId) {
-        if(ticketId == null)
+        if (ticketId == null)
             return null;
 
         var ticket = ticketRepository.findById(ticketId).orElseThrow();

@@ -58,7 +58,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent') || hasRole('teacher')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public List<NoteResponse> getNoteByStudentId(UUID studentId, Integer classId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
@@ -72,15 +72,15 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public void view(UUID studentId, UUID noteId) {
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(!schoolUserService.isLoggedStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         noteRepository.findById(noteId).ifPresent(note -> {
-            if(note.getStudent().getId().equals(studentId)) {
+            if (note.getStudent().getId().equals(studentId)) {
                 note.setViewed(true);
                 noteRepository.save(note);
             }

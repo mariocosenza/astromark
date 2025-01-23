@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ClassActivityRepository extends JpaRepository<ClassActivity, Integer> {
     List<ClassActivity> findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(Integer attr0);
+
     ClassActivity findBySignedHour(SignedHour signedHour);
 }

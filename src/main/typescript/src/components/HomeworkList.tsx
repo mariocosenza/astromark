@@ -25,12 +25,13 @@ export const HomeworkList: React.FC<HomeworkProp> = ({list}) => {
         <div>
             {
                 list.map((item, i) =>
-                    <Box className={'listItem'}  minWidth={open? '43vw': '90vw'}  flex={'auto'} sx={{mb: '0.5rem'}} key={i}>
-                        <Avatar sx={{ bgcolor: item.hexColor, ml: '1%', mt: '0.7%'}}>{item.avatar}</Avatar>
+                    <Box className={'listItem'} minWidth={open ? '43vw' : '90vw'} flex={'auto'} sx={{mb: '0.5rem'}}
+                         key={i}>
+                        <Avatar sx={{bgcolor: item.hexColor, ml: '1%', mt: '0.7%'}}>{item.avatar}</Avatar>
                         <div style={{flexDirection: 'column', marginLeft: '1%'}}>
                             <Typography variant={'h6'}>
                                 {
-                                   item.title + ' per ' + item.date
+                                    item.title + ' per ' + item.date
                                 }
                             </Typography>
                             <Typography variant={'h6'}>
@@ -38,10 +39,11 @@ export const HomeworkList: React.FC<HomeworkProp> = ({list}) => {
                                     item.description
                                 }
                                 {
-                                    getRole().toUpperCase() == Role.STUDENT && item.chat && <Button style={{alignContent:'end'}} onClick={() => {
+                                    getRole().toUpperCase() == Role.STUDENT && item.chat &&
+                                    <Button style={{alignContent: 'end'}} onClick={() => {
                                         setOpen(!open)
-                                        open? setChatId(-1): setChatId(item.id)
-                                    }}>{homewokId === item.id? 'Chiudi Chat' : 'Apri Chat'}</Button>
+                                        open ? setChatId(-1) : setChatId(item.id)
+                                    }}>{homewokId === item.id ? 'Chiudi Chat' : 'Apri Chat'}</Button>
                                 }
                             </Typography>
                         </div>

@@ -2,6 +2,8 @@ import {ClassAgendaRow} from "../pages/teacher/ClassAgenda.tsx";
 import {DateObject} from "react-multi-date-picker";
 
 export class SelectedSchoolClass {
+    private static _id: number | null = null;
+
     static get id(): number | null {
         return this._id;
     }
@@ -9,6 +11,8 @@ export class SelectedSchoolClass {
     static set id(value: number) {
         this._id = value;
     }
+
+    private static _title: string = '';
 
     static get title(): string {
         return this._title;
@@ -18,6 +22,8 @@ export class SelectedSchoolClass {
         this._title = value;
     }
 
+    private static _desc: string = '';
+
     static get desc(): string {
         return this._desc;
     }
@@ -25,10 +31,6 @@ export class SelectedSchoolClass {
     static set desc(value: string) {
         this._desc = value;
     }
-
-    private static _id: number | null = null;
-    private static _title: string = '';
-    private static _desc: string = '';
 }
 
 export const isSelectedClass = () => {
@@ -46,34 +48,39 @@ export class SelectedTeachingTimeslot {
         this._homeworkDate = slot.homeworkDate;
     }
 
+    private static _id: number | null = null;
+
     static get id(): number | null {
         return this._id;
     }
+
+    private static _activityTitle: string = '';
 
     static get activityTitle(): string {
         return this._activityTitle;
     }
 
+    private static _activityDesc: string = '';
+
     static get activityDesc(): string {
         return this._activityDesc;
     }
+
+    private static _homeworkTitle: string = '';
 
     static get homeworkTitle(): string {
         return this._homeworkTitle;
     }
 
+    private static _homeworkDesc: string = '';
+
     static get homeworkDesc(): string {
         return this._homeworkDesc;
     }
 
+    private static _homeworkDate: DateObject | null = null;
+
     static get homeworkDate(): DateObject | null {
         return this._homeworkDate;
     }
-
-    private static _id: number | null = null;
-    private static _activityTitle: string = '';
-    private static _activityDesc: string = '';
-    private static _homeworkTitle: string = '';
-    private static _homeworkDesc: string = '';
-    private static _homeworkDate: DateObject | null = null;
 }

@@ -19,7 +19,7 @@ export type SchoolClass = {
     number: number
 }
 
-export const Allert : React.FC = () => {
+export const Allert: React.FC = () => {
     const [allerts, setAllerts] = React.useState<Communication[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [toggle, _] = changeStudentOrYear();
@@ -30,8 +30,8 @@ export const Allert : React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const schoolClass: AxiosResponse<SchoolClass[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
-            const response: AxiosResponse<Communication[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/schoolClasses/${schoolClass.data[0].id}/communications`);
+            const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
+            const response: AxiosResponse<Communication[]> = await axiosConfig.get(`${Env.API_BASE_URL}/schoolClasses/${schoolClass.data[0].id}/communications`);
             setAllerts(response.data);
 
             setLoading(false);
@@ -46,7 +46,8 @@ export const Allert : React.FC = () => {
             <div className={'alert'}>
                 {
                     loading ? <div>Loading...</div> : allerts.map((allert: Communication, index: number) => {
-                        return <AccordionNotViewable key={index} date={allert.date} id={allert.id} title={allert.title} description={allert.description} avatar={'A'}/>
+                        return <AccordionNotViewable key={index} date={allert.date} id={allert.id} title={allert.title}
+                                                     description={allert.description} avatar={'A'}/>
                     })
                 }
             </div>

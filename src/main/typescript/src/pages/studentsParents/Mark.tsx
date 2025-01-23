@@ -11,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker"
-import { LineChart } from '@mui/x-charts/LineChart';
+import {LineChart} from '@mui/x-charts/LineChart';
 import MenuItem from "@mui/material/MenuItem";
 import {deepOrange, green} from "@mui/material/colors";
 import {ListGeneric, ListItemProp} from "../../components/ListGeneric.tsx";
@@ -22,17 +22,16 @@ import {AxiosResponse} from "axios";
 import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 
 
-const compareDate   = (date : Date, dateObject: DateObject)=> {
+const compareDate = (date: Date, dateObject: DateObject) => {
     return new DateObject(date).unix - dateObject.unix;
 }
 
 export const Mark: React.FC = () => {
-    const [data, setData]  = useState<ListItemProp[]>([]);
+    const [data, setData] = useState<ListItemProp[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [average, setAverage] = useState<number>(0);
     const [subject, setSubject] = useState('');
     const [toggle, _] = changeStudentOrYear();
-
 
 
     const [values, setValues] = useState<DateObject[]>([
@@ -47,14 +46,14 @@ export const Mark: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response: AxiosResponse<MarkResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}`);
-            const averageResponse: AxiosResponse<number>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
+            const response: AxiosResponse<MarkResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}`);
+            const averageResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
             const re = response.data;
             const correctedData: ListItemProp[] = re.map((mark: MarkResponse) => ({
                 avatar: mark.mark.toPrecision(2),
                 title: mark.title,
                 description: mark.description,
-                hexColor: mark.mark >= 6? green[500] : deepOrange[500],
+                hexColor: mark.mark >= 6 ? green[500] : deepOrange[500],
                 date: new Date(mark.date)
             }));
             setAverage(averageResponse.data);
@@ -88,9 +87,9 @@ export const Mark: React.FC = () => {
                         >
                             <MenuItem value={"Seleziona Materia"}>{"Seleziona Materia"}</MenuItem>
                             {
-                                loading? <CircularProgress/> :
-                                   Array.from(new Set (data.map((mark: ListItemProp) => mark.title))).map((sub, _) => {
-                                             return <MenuItem value={sub}>{sub}</MenuItem>
+                                loading ? <CircularProgress/> :
+                                    Array.from(new Set(data.map((mark: ListItemProp) => mark.title))).map((sub, _) => {
+                                        return <MenuItem value={sub}>{sub}</MenuItem>
                                     })
                             }
                         </Select>
@@ -101,7 +100,8 @@ export const Mark: React.FC = () => {
                         range
                     />
                 </Box>
-                <Box className={'centerBox secondary-container'} style={{flexDirection: 'column'}} height={'24vh'} width={'30%'}>
+                <Box className={'centerBox secondary-container'} style={{flexDirection: 'column'}} height={'24vh'}
+                     width={'30%'}>
                     <Typography variant={'h5'}>
                         Media voti annuale
                     </Typography>
@@ -111,25 +111,32 @@ export const Mark: React.FC = () => {
                     </Typography>
                 </Box>
                 <Box className={'centerBox surface-container'} height={'24vh'} width={'30%'}>
-                     <LineChart
-                         xAxis={[{ data: data.map((mark: ListItemProp) => new DateObject(mark.date).dayOfYear) }]}
-                         series={[
-                             {
-                                 data: data.map((mark: ListItemProp) => parseFloat(mark.avatar)),
-                             },
-                         ]}
-                         width={500}
-                         height={300}
-                     />
-                 </Box>
+                    <LineChart
+                        xAxis={[{data: data.map((mark: ListItemProp) => new DateObject(mark.date).dayOfYear)}]}
+                        series={[
+                            {
+                                data: data.map((mark: ListItemProp) => parseFloat(mark.avatar)),
+                            },
+                        ]}
+                        width={500}
+                        height={300}
+                    />
+                </Box>
             </Stack>
             <Divider sx={{mt: '1rem'}}/>
-            <div  style={{display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto', maxHeight: '66vh', marginTop: '1vh'}}>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                overflowY: 'auto',
+                maxHeight: '66vh',
+                marginTop: '1vh'
+            }}>
                 {
-                    loading? <CircularProgress/> : <ListGeneric
+                    loading ? <CircularProgress/> : <ListGeneric
                         list={data.filter((mark: ListItemProp) =>
                             compareDate(mark.date, values[0]) >= 0 &&
-                            compareDate(mark.date, values[1] === undefined? new DateObject(Date.now()): values[1]) <= 0
+                            compareDate(mark.date, values[1] === undefined ? new DateObject(Date.now()) : values[1]) <= 0
                         ).filter((mark: ListItemProp) => subject === "Seleziona Materia" || mark.title === subject || subject === "")
                         }/>
                 }

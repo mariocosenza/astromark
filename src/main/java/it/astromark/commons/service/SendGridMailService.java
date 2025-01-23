@@ -24,7 +24,7 @@ public class SendGridMailService {
         var from = new Email("noreply@astromark.it");
         var subject = "Credenziali Accesso AstroMark";
         var to = new Email(email);
-        Content content = new Content("text/html", "<b> La tua password temporanea è: </b> <br> <br>" + password  +
+        Content content = new Content("text/html", "<b> La tua password temporanea è: </b> <br> <br>" + password +
                 "<br><br>Per favore, cambiala al primo accesso!" + "<br><br>" + "Il tuo username è: " + username + "<br>" + "Il tuo codice scuola è: " + schoolCode + "<p> <br><a href='https://astromark.it/login'>Clicca qui per accedere</a>" + "<br><br> " + "AstroMark Team </p>");
         Mail mail = new Mail(from, subject, to, content);
 

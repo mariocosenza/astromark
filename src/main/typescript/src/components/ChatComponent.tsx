@@ -21,7 +21,7 @@ export const ChatComponent: React.FC<Props> = ({list, send}) => {
     const handleSendMessage = async () => {
         if (newMessage.trim() !== '') {
             const messageSent = await send(newMessage);
-            if (messageSent !== undefined){
+            if (messageSent !== undefined) {
                 messageList.push(messageSent)
                 setNewMessage('');
             }
@@ -47,7 +47,8 @@ export const ChatComponent: React.FC<Props> = ({list, send}) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                 />
 
-                <Button variant='contained' color='primary' sx={{marginLeft: '0.5rem', marginTop: '0.4rem'}} onClick={handleSendMessage}>
+                <Button variant='contained' color='primary' sx={{marginLeft: '0.5rem', marginTop: '0.4rem'}}
+                        onClick={handleSendMessage}>
                     <SendIcon/>
                 </Button>
             </Box>

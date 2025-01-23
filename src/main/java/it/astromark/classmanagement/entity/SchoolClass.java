@@ -66,7 +66,7 @@ public class SchoolClass {
     private StudyPlan studyPlan;
 
     @Builder.Default
-    @OneToMany(mappedBy = "schoolClass")
+    @OneToMany(mappedBy = "schoolClass", fetch = FetchType.EAGER)
     private Set<TeacherClass> teacherClasses = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "schoolClasses")
