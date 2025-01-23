@@ -12,6 +12,7 @@ import {Env} from "../../Env.ts";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import {RatingsResponse} from "../../entities/RatingsResponse.ts";
+import {RatingComponent} from "../../components/RatingComponent.tsx";
 
 export const formatMark = (num: number) :string => {
     let int = Math.floor(num)
@@ -87,9 +88,8 @@ export const Ratings: React.FC = () => {
             </Typography>
 
             {changeView ? (
-                <div>
-                    <h1>Ratings {selected?.name}</h1>
-                </div>
+                <RatingComponent row={selected || rows[0]} date={date}
+                                 returnBack={() => {setChangeView(false); fetchData(date.format("YYYY-MM-DD"))}}/>
             ) : (
                 <div>
                     <Grid container spacing={8} alignItems={'center'} justifyContent={'center'} margin={'1rem'}>
