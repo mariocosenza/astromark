@@ -75,6 +75,16 @@ export const TeacherSideNav = () => {
                                 </ListItemButton>
                             </ListItem>
                         </NavLink>
+                        <NavLink to="/teacher/valutazioni" end>
+                            <ListItem key="valutazioni" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <CoPresentIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Valutazioni"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
                     </>
                 )}
 
