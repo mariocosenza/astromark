@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink, useNavigate} from "react-router";
 import {AppBar, Box, Toolbar, Typography} from "@mui/material";
-import {logout} from "../services/AuthService.ts";
+import {asyncLogout} from "../services/AuthService.ts";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import {SecretarySideNav} from "./SecretarySideNav.tsx";
 
@@ -22,8 +22,7 @@ export const SecretaryDashboardNavbar: React.FC = () => {
                         <LogoutOutlinedIcon
                             sx={{ml: 1}}
                             onClick={() => {
-                                logout()
-                                navigator('/')
+                                asyncLogout(localStorage.getItem("user")).then(_ => navigator('/logout'))
                             }
                             }
                         />

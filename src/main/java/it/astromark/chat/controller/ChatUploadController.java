@@ -2,6 +2,7 @@ package it.astromark.chat.controller;
 
 import it.astromark.chat.service.MessageService;
 import it.astromark.commons.dto.APIResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -26,6 +27,10 @@ public class ChatUploadController {
         this.messageService = messageService;
     }
 
+    @Operation(
+            summary = "Upload a file to a message",
+            description = "Uploads an attachment to a specific message by its ID. Supported file extensions: pdf, txt, epub, csv, png, jpg, jpeg, doc, docx, ppt, pptx, xls, xlsx."
+    )
     @PostMapping("/upload/{messageId}")
     public ResponseEntity<APIResponse> uploadFile(@RequestParam("file") MultipartFile multipartFile, @PathVariable @NotNull UUID messageId) throws IOException {
         if (multipartFile.isEmpty()) {
@@ -63,5 +68,4 @@ public class ChatUploadController {
         }
         return !multipartFile.getOriginalFilename().trim().isEmpty();
     }
-
 }

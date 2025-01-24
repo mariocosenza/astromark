@@ -254,21 +254,17 @@ export const Dashboard: React.FC = () => {
                         </Typography>
                         <div style={{maxWidth: '80%', marginTop: '2%', alignContent: 'center', marginLeft: '1vw'}}>
                             <HomeworkList
-                                list={
-                                    (activity !== undefined ? [activity] : []).map(
-                                        (activity: HomeworkResponse) => ({
-                                            id: activity.id,
-                                            chat: activity.chat,
-                                            avatar: 'A',
-                                            title: activity.signedHour.title,
-                                            description:
-                                                activity.title + ': ' + activity.description,
-                                            hexColor: 'dodgerblue',
-                                            date: activity.signedHour.date,
-                                        })
-                                    )
-                                }
-                            />
+                                list={(activity !== undefined ? [activity] : []).map(
+                                    (activity: HomeworkResponse) => ({
+                                        id: activity.id,
+                                        chat: activity.chat,
+                                        avatar: 'A',
+                                        title: activity.signedHour.title,
+                                        description: activity.title + ': ' + activity.description,
+                                        hexColor: 'dodgerblue',
+                                        date: activity.signedHour.date,
+                                    })
+                                )} dashboard={true}                            />
                         </div>
                     </Box>
                 </Box>

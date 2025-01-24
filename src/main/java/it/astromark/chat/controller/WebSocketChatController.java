@@ -7,6 +7,7 @@ import it.astromark.chat.service.HomeworkChatService;
 import it.astromark.chat.service.MessageService;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.teacher.entity.Teacher;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -32,8 +33,12 @@ public class WebSocketChatController {
         this.authenticationService = authenticationService;
     }
 
+    @Operation(
+            summary = "Handle WebSocket chat messages",
+            description = "Handles incoming messages for a specific chat via WebSocket and validates the user's access based on their role and token."
+    )
     @MessageMapping("homeworks/chats/{chatId}")
-    @SendTo("/topic/chat/{chatId}") // Added leading '/'
+    @SendTo("/topic/chat/{chatId}")
     @Transactional
     public HomeworkChatResponse handleMessage(@DestinationVariable UUID chatId,
                                               @Header("Authorization") String token) {
@@ -58,5 +63,4 @@ public class WebSocketChatController {
             throw new IllegalArgumentException("Invalid token");
         }
     }
-
 }
