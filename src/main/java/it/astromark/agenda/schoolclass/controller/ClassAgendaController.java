@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("api/classes")
 public class ClassAgendaController {
@@ -21,19 +23,22 @@ public class ClassAgendaController {
         this.classAgendaService = classAgendaService;
     }
 
+    @Operation(summary = "Retrieve weekly timeslots", description = "Gets all teaching timeslots for the specified class and week starting from the given date.")
     @GetMapping("/{classId}/week-timeslots/{date}")
     public List<TeachingTimeslotResponse> getWeekTimeslots(@PathVariable Integer classId, @PathVariable LocalDate date) {
         return classAgendaService.getWeekTimeslot(classId, date);
     }
 
+    @Operation(summary = "Retrieve detailed teaching timeslots", description = "Gets detailed teaching timeslot information for the specified class and date.")
     @GetMapping("/{classId}/signedHours/{date}")
     public List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(@PathVariable Integer classId, @PathVariable LocalDate date) {
         return classAgendaService.getTeachingTimeslot(classId, date);
     }
 
+    @Operation(summary = "Sign teaching hour", description = "Signs a teaching hour for the specified class with the provided details.")
     @PostMapping("/{classId}/signHour")
-    void sign(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
+    public void sign(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
         classAgendaService.sign(classId, signHourRequest);
     }
-
 }
+
