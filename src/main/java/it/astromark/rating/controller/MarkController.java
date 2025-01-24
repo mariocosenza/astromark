@@ -59,14 +59,18 @@ public class MarkController {
     }
 
     @Operation(
-            summary = "Retrieve ratings for a class by date",
-            description = "Gets a list of ratings for a specific class on a given date."
+            summary = "Retrieve ratings for a class on a specific date",
+            description = "Gets a list of ratings for a specified class, teaching subject, and date."
     )
     @GetMapping("classes/{classId}/ratings/{teaching}/date/{date}")
     public List<RatingsResponse> getRatings(@PathVariable Integer classId, @PathVariable String teaching, @PathVariable LocalDate date) {
         return markService.getRatings(classId, teaching, date);
     }
 
+    @Operation(
+            summary = "Retrieve all ratings for a class",
+            description = "Gets a complete list of ratings for a specified class and teaching subject, regardless of date."
+    )
     @GetMapping("classes/{classId}/EveryRatings/{teaching}")
     public List<RatingsResponse> getEveryRatings(@PathVariable Integer classId, @PathVariable String teaching) {
         return markService.getEveryRatings(classId, teaching);
