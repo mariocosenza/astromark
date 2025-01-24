@@ -2,10 +2,10 @@ spring:
   application:
     name: astromark
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: ${SPRING_DATASOURCE_URL}
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: astromark
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,7 +17,7 @@ spring:
   sendgrid:
     api-key: ${SPRING_MAIL_KEY}
   jwt:
-    secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
+    secret: ${JWT_SECRET}
 server:
   error:
     path: /error
@@ -30,7 +30,7 @@ server:
   port: 8443
   ssl:
       key-store: classpath:keystore/astromark.p12
-      key-store-password: astromark
+      key-store-password: ${KEYSTORE_PASSWORD}
       keyStoreType: PKCS12
       keyAlias: astromark
       enabled: true
