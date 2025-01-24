@@ -1,10 +1,9 @@
 package it.astromark.agenda.schoolclass.service;
 
+import it.astromark.agenda.commons.entity.Timetable;
 import it.astromark.agenda.commons.mapper.TimeslotMapper;
-import it.astromark.agenda.schoolclass.dto.SignHourRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
+import it.astromark.agenda.schoolclass.dto.*;
+import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import it.astromark.agenda.schoolclass.entity.SignedHour;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
 import it.astromark.agenda.schoolclass.mapper.ClassAgendaMapper;
@@ -14,6 +13,7 @@ import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
+import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
@@ -51,9 +51,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final ClassTimetableRepository classTimetableRepository;
     private final StudyPlanRepository studyPlanRepository;
     private final TeachingRepository teachingRepository;
+    private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository, SchoolClassRepository schoolClassRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
@@ -67,6 +68,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         this.classTimetableRepository = classTimetableRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.teachingRepository = teachingRepository;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
 
@@ -200,8 +202,34 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     }
 
     @Override
-    public void createTimeTable(Integer classId, TeachingTimeslotRequest request) {
+    @Transactional
+    @PreAuthorize("hasRole('SECRETARY')")
+    public void createTimeTable(ClassTimeTableRequest request) {
+        String schoolClassString = request.schoolClass();
 
+        String numberPart = schoolClassString.replaceAll("\\D", ""); // Estrae solo i numeri
+        String letterPart = schoolClassString.replaceAll("\\d", ""); // Estrae solo le lettere
+
+        Short number = Short.valueOf(numberPart);
+
+        if (letterPart.isEmpty()) {
+            throw new IllegalArgumentException("Formato della classe non valido: " + schoolClassString);
+        }
+
+        System.out.println("Numero: " + number);
+        System.out.println("Lettere: " + letterPart);
+
+        var schoolClass = schoolClassRepository.findByNumberAndLetter(number, letterPart);
+
+
+        ClassTimetable classTimetable = ClassTimetable.builder()
+                .schoolClass(schoolClass)
+                .startValidity(request.startDate())
+                .endValidity(request.endDate())
+                .build();
+
+        classTimetableRepository.save(classTimetable);
     }
+
 
 }
