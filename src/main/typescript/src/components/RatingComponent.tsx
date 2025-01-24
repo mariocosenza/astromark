@@ -7,6 +7,7 @@ import {Env} from "../Env.ts";
 import {getId} from "../services/AuthService.ts";
 import {MarkRequest} from "../entities/MarkRequest.ts";
 import {MarkUpdateRequest} from "../entities/MarkUpdateRequest.ts";
+import {SelectedTeaching} from "../services/TeacherService.ts";
 
 export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void, date: DateObject }> = ({ row , returnBack, date}) => {
     const [mark, setMark] = useState<string>(row.mark ? row.mark.toString() : '');
@@ -27,7 +28,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
             studentId: row.student,
             teachingId: {
                 teacherId: getId(),
-                subjectTitle: row.subject,
+                subjectTitle: SelectedTeaching.teaching,
             },
             date: date.toDate(),
             description: note,

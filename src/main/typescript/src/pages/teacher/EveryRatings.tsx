@@ -36,7 +36,7 @@ export const EveryRatings: React.FC = () => {
             let MarkDates: DateObject[] = [];
             response.data.map((mark: RatingsResponse) => {
 
-                if (!MarkDates.includes(mark.date)){
+                if (mark.date && !MarkDates.includes(mark.date)){
                     MarkDates.push(mark.date)
                 }
 
@@ -47,7 +47,6 @@ export const EveryRatings: React.FC = () => {
                             id: mark.id,
                             student: mark.studentId,
                             name: mark.name + ' ' + mark.surname,
-                            subject: mark.subject,
                             mark: mark.mark,
                             type: mark.type,
                             desc: mark.description,
@@ -67,7 +66,6 @@ export const EveryRatings: React.FC = () => {
                             id: mark.id,
                             student: mark.studentId,
                             name: mark.name + ' ' + mark.surname,
-                            subject: mark.subject,
                             mark: mark.mark,
                             type: mark.type,
                             desc: mark.description,
@@ -110,7 +108,7 @@ export const EveryRatings: React.FC = () => {
                                         {dates.map((date) => {
                                             const rating = row.marks.find((mark) => mark.date === date);
                                             return (
-                                                <Stack key={row.studentId + date.toString()} alignItems={'center'} sx={{
+                                                <Stack key={row.studentId + date?.toString()} alignItems={'center'} sx={{
                                                     width: 100/dates.length + '%',
                                                     color: rating?.mark ? 'white' : 'black',
                                                     backgroundColor: (!rating?.mark ? '' : rating.mark < 6 ? 'var(--md-sys-color-error)' : 'green')
