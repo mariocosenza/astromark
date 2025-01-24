@@ -3,6 +3,7 @@ package it.astromark.attendance.controller;
 import it.astromark.attendance.dto.AttendanceRequest;
 import it.astromark.attendance.dto.AttendanceResponse;
 import it.astromark.attendance.service.AttendanceService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,21 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
+    @Operation(
+            summary = "Retrieve attendance records",
+            description = "Gets attendance records for a specified class and date."
+    )
     @GetMapping("{classId}/attendance/{date}")
-    List<AttendanceResponse> getAttendance(@PathVariable Integer classId, @PathVariable LocalDate date) {
+    public List<AttendanceResponse> getAttendance(@PathVariable Integer classId, @PathVariable LocalDate date) {
         return attendanceService.getAttendance(classId, date);
     }
 
+    @Operation(
+            summary = "Save attendance records",
+            description = "Saves attendance records for a specified class and date."
+    )
     @PostMapping("{classId}/attendance/{date}")
-    void saveAttendance(@PathVariable Integer classId, @PathVariable LocalDate date, @RequestBody List<AttendanceRequest> attendanceRequests) {
+    public void saveAttendance(@PathVariable Integer classId, @PathVariable LocalDate date, @RequestBody List<AttendanceRequest> attendanceRequests) {
         attendanceService.saveAttendance(classId, date, attendanceRequests);
     }
 
