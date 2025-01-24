@@ -12,4 +12,5 @@ import java.util.List;
 public interface TeacherClassRepository extends JpaRepository<TeacherClass, TeacherClassId> {
 
     List<TeacherClass> findByTeacher(Teacher teacher);
+
 }

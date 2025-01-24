@@ -82,4 +82,5 @@ public interface ClassAgendaService {
     void createTimeTable(ClassTimeTableRequest request);
 
 
+    List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now);
 }

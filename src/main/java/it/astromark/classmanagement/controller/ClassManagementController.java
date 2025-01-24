@@ -3,6 +3,7 @@ package it.astromark.classmanagement.controller;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.service.ClassManagementService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

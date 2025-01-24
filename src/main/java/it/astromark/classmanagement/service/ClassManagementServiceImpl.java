@@ -4,6 +4,7 @@ import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.user.commons.model.SchoolUser;
+import jakarta.transaction.Transactional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
+    @Transactional
     public List<SchoolClassResponse> getClasses() {
         SchoolUser user;
         if (authenticationService.getSecretary().isPresent()) {

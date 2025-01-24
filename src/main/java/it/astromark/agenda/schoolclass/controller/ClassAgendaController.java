@@ -1,8 +1,6 @@
 package it.astromark.agenda.schoolclass.controller;
 
-import it.astromark.agenda.schoolclass.dto.SignHourRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
+import it.astromark.agenda.schoolclass.dto.*;
 import it.astromark.agenda.schoolclass.service.ClassAgendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +38,25 @@ public class ClassAgendaController {
     public void sign(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
         classAgendaService.sign(classId, signHourRequest);
     }
+
+    @PostMapping("/createTimeTable")
+    public void createTimeTable(@RequestBody ClassTimeTableRequest classTimeTableRequest) {
+        classAgendaService.createTimeTable(classTimeTableRequest);
+
+    }
+
+    @PostMapping("/{classId}/createTimeSlot")
+    public void createTimeSlot(@PathVariable Integer classId, @RequestBody TeachingTimeslotRequest teachingTimeslotRequest) {
+
+        classAgendaService.addTimeslot(classId, teachingTimeslotRequest);
+    }
+
+    @GetMapping("/{classId}/class-schedule")
+    public List<TeachingTimeslotResponse> classSchedule(@PathVariable Integer classId) {
+
+        return classAgendaService.getClassTimeslot(classId, LocalDate.now());
+    }
+
+
 }
 
