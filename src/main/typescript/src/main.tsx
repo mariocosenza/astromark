@@ -33,8 +33,8 @@ import {SecretaryDashboard} from "./pages/secretary/SecretaryDashboard.tsx";
 import {ManageClass} from "./pages/secretary/ManageClass.tsx";
 import {SecretaryTicket} from "./pages/secretary/SecretaryTicket.tsx";
 import {CreateClass} from "./pages/secretary/CreateClass.tsx";
-import {ManageTimetable} from "./pages/secretary/ManageTimetable.tsx";
 import {ManageTeacher} from "./pages/secretary/ManageTeacher.tsx";
+import {ManageTimetable} from "./pages/secretary/ManageTimetable";
 
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
