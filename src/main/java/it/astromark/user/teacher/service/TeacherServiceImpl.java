@@ -100,7 +100,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<String> getTeaching() {
         var teachings = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow());
-        return teachings.stream().map(Teaching::getSubjectTitle).map(Subject::getTitle).toList();
+        return teachings.stream().map(Teaching::getSubjectTitle).map(Subject::getTitle).sorted().toList();
     }
 
     @Override

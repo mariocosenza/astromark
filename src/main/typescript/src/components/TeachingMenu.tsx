@@ -49,6 +49,7 @@ export const TeachingMenu: React.FC<Teachings> = ({data}) => {
                         SelectedTeaching.teaching = teaching
                         setToggle(!toggle)
                         handleClose()
+                        window.location.reload();
                     }}>{teaching}</MenuItem>)
                 }
             </Menu>

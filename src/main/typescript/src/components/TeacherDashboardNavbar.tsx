@@ -9,6 +9,7 @@ import {Role} from "./route/ProtectedRoute.tsx";
 import axiosConfig from "../services/AxiosConfig.ts";
 import {Env} from "../Env.ts";
 import {AxiosResponse} from "axios";
+import {SelectedTeaching} from "../services/TeacherService.ts";
 
 export const TeacherDashboardNavbar: React.FC = () => {
     const [teachings, setTeachings] = React.useState<string[]>([])
@@ -25,6 +26,9 @@ export const TeacherDashboardNavbar: React.FC = () => {
                 const response: AxiosResponse<string[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/teachings`);
                 if (response.data.length) {
                     setTeachings(response.data);
+                    if (SelectedTeaching.teaching === null) {
+                        SelectedTeaching.teaching = response.data[0]
+                    }
                 }
                 setLoading(false);
             }
