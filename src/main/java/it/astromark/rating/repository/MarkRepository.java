@@ -21,4 +21,11 @@ public interface MarkRepository extends JpaRepository<Mark, Integer> {
             "JOIN s.schoolClasses sc " +
             "WHERE sc.id = :schoolClassId AND m.date = :date AND m.teaching = :teaching")
     List<Mark> findAllMarksBySchoolClassAndDateAndTeaching(@Param("schoolClassId") Integer schoolClassId, @Param("date") LocalDate date, @Param("teaching") Teaching teaching);
+
+    @Query("SELECT m FROM Mark m " +
+            "JOIN m.student s " +
+            "JOIN s.schoolClasses sc " +
+            "WHERE sc.id = :schoolClassId AND m.date BETWEEN :startDate AND :endDate AND m.teaching = :teaching")
+    List<Mark> findAllMarksBySchoolClassAndDateRangeAndTeaching(@Param("schoolClassId") Integer schoolClassId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("teaching") Teaching teaching);
+
 }

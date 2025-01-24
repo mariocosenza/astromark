@@ -14,7 +14,6 @@ import it.astromark.rating.repository.SemesterReportRepository;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.student.entity.Student;
-import it.astromark.user.student.service.StudentService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -27,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -138,14 +138,50 @@ public class MarkServiceImpl implements MarkService {
 
         var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching(classId, date, teaching), teaching.getSubjectTitle().getTitle());
 
-        var copyMark = marks.stream().toList();
         for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
-            if (copyMark.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
+            if (marks.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
                 marks.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching.getSubjectTitle().getTitle(), null, null, "", null));
             }
         }
 
         return marks;
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public List<RatingsResponse> getEveryRatings(Integer classId) {
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        if (teacherClassRepository.findByTeacher(teacher).stream()
+                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+            throw new AccessDeniedException("You are not allowed to see this timetable");
+        }
+
+        var subjects = studyPlanRepository.findBySchoolClass_Id(classId).stream()
+                .flatMap(sp -> sp.getSubjects().stream()).toList();
+
+        var teaching = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
+                .filter(c -> subjects.contains(c.getSubjectTitle()))
+                .findFirst().orElseThrow();
+
+        var year = schoolClassRepository.findById(classId).orElseThrow().getYear();
+
+        var marks = markRepository.findAllMarksBySchoolClassAndDateRangeAndTeaching(classId,
+                LocalDate.of(year, Month.SEPTEMBER, 1),
+                LocalDate.of(year + 1, Month.AUGUST, 31),
+                teaching);
+
+        marks.sort(Comparator.comparing((Mark m) -> m.getStudent().getSurname()).thenComparing(Mark::getDate));
+
+        var ratings = markMapper.toRatingsResponseList(marks, teaching.getSubjectTitle().getTitle());
+
+        for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
+            if (ratings.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
+                ratings.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching.getSubjectTitle().getTitle(), null, null, "", null));
+            }
+        }
+
+        return ratings;
     }
 
     @Override

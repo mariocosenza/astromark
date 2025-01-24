@@ -20,6 +20,8 @@ public interface MarkService {
 
     List<RatingsResponse> getRatings(Integer classId, LocalDate date);
 
+    List<RatingsResponse> getEveryRatings(Integer classId);
+
     MarkResponse create(MarkRequest mark);
 
     MarkResponse update(MarkUpdateRequest mark, UUID studentId);

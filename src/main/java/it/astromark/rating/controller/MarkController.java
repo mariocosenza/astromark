@@ -47,6 +47,11 @@ public class MarkController {
         return markService.getRatings(classId, date);
     }
 
+    @GetMapping("classes/{classId}/EveryRatings")
+    public List<RatingsResponse> getEveryRatings(@PathVariable Integer classId) {
+        return markService.getEveryRatings(classId);
+    }
+
     @PostMapping("/marks")
     public MarkResponse create(@RequestBody MarkRequest mark) {
         return markService.create(mark);
