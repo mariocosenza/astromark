@@ -11,4 +11,5 @@ import java.util.UUID;
 
 public interface TeacherService extends CrudService<Teacher, TeacherRequest, SchoolUserDetailed, UUID> {
     List<TeacherClassResponse> getSchoolClasses();
+    List<String> getTeaching();
 }

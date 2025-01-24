@@ -2,7 +2,6 @@ package it.astromark.rating.serivice;
 
 
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
@@ -42,11 +41,10 @@ public class MarkServiceImpl implements MarkService {
     private final TeachingRepository teachingRepository;
     private final StudentRepository studentRepository;
     private final TeacherClassRepository teacherClassRepository;
-    private final StudyPlanRepository studyPlanRepository;
     private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentRepository studentRepository, TeacherClassRepository teacherClassRepository, StudyPlanRepository studyPlanRepository, SchoolClassRepository schoolClassRepository) {
+    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentRepository studentRepository, TeacherClassRepository teacherClassRepository, SchoolClassRepository schoolClassRepository) {
         this.markRepository = markRepository;
         this.markMapper = markMapper;
         this.schoolUserService = schoolUserService;
@@ -55,7 +53,6 @@ public class MarkServiceImpl implements MarkService {
         this.teachingRepository = teachingRepository;
         this.studentRepository = studentRepository;
         this.teacherClassRepository = teacherClassRepository;
-        this.studyPlanRepository = studyPlanRepository;
         this.schoolClassRepository = schoolClassRepository;
     }
 
@@ -122,25 +119,18 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public List<RatingsResponse> getRatings(Integer classId, LocalDate date) {
+    public List<RatingsResponse> getRatings(Integer classId, String teaching, LocalDate date) {
         var teacher = authenticationService.getTeacher().orElseThrow();
         if (teacherClassRepository.findByTeacher(teacher).stream()
                 .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
             throw new AccessDeniedException("You are not allowed to see this timetable");
         }
 
-        var subjects = studyPlanRepository.findBySchoolClass_Id(classId).stream()
-                .flatMap(sp -> sp.getSubjects().stream()).toList();
-
-        var teaching = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
-                .filter(c -> subjects.contains(c.getSubjectTitle()))
-                .findFirst().orElseThrow();
-
-        var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching(classId, date, teaching), teaching.getSubjectTitle().getTitle());
+        var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching_SubjectTitle_Title(classId, date, teaching), teaching);
 
         for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
             if (marks.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
-                marks.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching.getSubjectTitle().getTitle(), null, null, "", null));
+                marks.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching, null, null, "", null));
             }
         }
 
@@ -150,34 +140,25 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public List<RatingsResponse> getEveryRatings(Integer classId) {
+    public List<RatingsResponse> getEveryRatings(Integer classId, String teaching) {
         var teacher = authenticationService.getTeacher().orElseThrow();
         if (teacherClassRepository.findByTeacher(teacher).stream()
                 .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
             throw new AccessDeniedException("You are not allowed to see this timetable");
         }
 
-        var subjects = studyPlanRepository.findBySchoolClass_Id(classId).stream()
-                .flatMap(sp -> sp.getSubjects().stream()).toList();
-
-        var teaching = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
-                .filter(c -> subjects.contains(c.getSubjectTitle()))
-                .findFirst().orElseThrow();
-
         var year = schoolClassRepository.findById(classId).orElseThrow().getYear();
-
-        var marks = markRepository.findAllMarksBySchoolClassAndDateRangeAndTeaching(classId,
+        var marks = markRepository.findAllMarksBySchoolClassAndDateRangeAndTeaching_SubjectTitle_Title(classId,
                 LocalDate.of(year, Month.SEPTEMBER, 1),
                 LocalDate.of(year + 1, Month.AUGUST, 31),
                 teaching);
 
         marks.sort(Comparator.comparing((Mark m) -> m.getStudent().getSurname()).thenComparing(Mark::getDate));
-
-        var ratings = markMapper.toRatingsResponseList(marks, teaching.getSubjectTitle().getTitle());
+        var ratings = markMapper.toRatingsResponseList(marks, teaching);
 
         for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
             if (ratings.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
-                ratings.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching.getSubjectTitle().getTitle(), null, null, "", null));
+                ratings.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching, null, null, "", null));
             }
         }
 

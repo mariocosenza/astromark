@@ -1,5 +1,21 @@
 import {ClassAgendaRow} from "../pages/teacher/ClassAgenda.tsx";
 import {DateObject} from "react-multi-date-picker";
+import {createGlobalState} from "react-use";
+
+export class SelectedTeaching {
+    private static _teaching: string = localStorage.getItem("teaching") ? localStorage.getItem("teaching") as string : '';
+
+    static get teaching(): string {
+        return this._teaching;
+    }
+
+    static set teaching(value: string) {
+        this._teaching = value;
+        localStorage.setItem('teaching', value.toString());
+    }
+}
+
+export const changeTeaching = createGlobalState<boolean>(false)
 
 export class SelectedSchoolClass {
     private static _id: number | null = localStorage.getItem("schoolClassId") ? parseInt(localStorage.getItem("schoolClassId") as string) : null;

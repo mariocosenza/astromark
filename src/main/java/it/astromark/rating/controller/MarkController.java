@@ -42,14 +42,14 @@ public class MarkController {
         return markService.viewReport(reportId);
     }
 
-    @GetMapping("classes/{classId}/ratings/{date}")
-    public List<RatingsResponse> getRatings(@PathVariable Integer classId, @PathVariable LocalDate date) {
-        return markService.getRatings(classId, date);
+    @GetMapping("classes/{classId}/ratings/{teaching}/date/{date}")
+    public List<RatingsResponse> getRatings(@PathVariable Integer classId, @PathVariable String teaching, @PathVariable LocalDate date) {
+        return markService.getRatings(classId, teaching, date);
     }
 
-    @GetMapping("classes/{classId}/EveryRatings")
-    public List<RatingsResponse> getEveryRatings(@PathVariable Integer classId) {
-        return markService.getEveryRatings(classId);
+    @GetMapping("classes/{classId}/EveryRatings/{teaching}")
+    public List<RatingsResponse> getEveryRatings(@PathVariable Integer classId, @PathVariable String teaching) {
+        return markService.getEveryRatings(classId, teaching);
     }
 
     @PostMapping("/marks")

@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid2";
 import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedSchoolClass} from "../../services/TeacherService.ts";
+import {SelectedSchoolClass, SelectedTeaching} from "../../services/TeacherService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import {RatingsResponse} from "../../entities/RatingsResponse.ts";
 import {formatMark, formatType, RatingsRow} from "./Ratings.tsx";
@@ -31,7 +31,7 @@ export const EveryRatings: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/EveryRatings`);
+            const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/EveryRatings/${SelectedTeaching.teaching}`);
             let rowResponse : StudentRatingsRow[] = [];
             let MarkDates: DateObject[] = [];
             response.data.map((mark: RatingsResponse) => {
@@ -139,25 +139,3 @@ export const EveryRatings: React.FC = () => {
         </div>
     );
 };
-/*
-{dates.map((date) => (
-                                            row.marks.map((rating) => {
-                                                if(rating.date === date){
-                                                    return (
-                                                        <Stack direction={'column'} justifyContent={'center'} alignItems={'center'} sx={{
-                                                            color: rating.mark ? 'white' : 'black',
-                                                            backgroundColor: (!rating.mark ? '' : rating.mark < 6 ? 'var(--md-sys-color-error)' : 'green')
-                                                        }}>
-                                                            <Typography fontSize={'xx-large'}>
-                                                                {rating.mark ? formatMark(rating.mark) : ''}
-                                                            </Typography>
-                                                            <Typography fontSize={'small'} margin={'0.5rem'}>
-                                                                {rating.type}, {rating.date.toString()}
-                                                            </Typography>
-                                                        </Stack>
-
-                                                    )
-                                                }
-                                            }) || <Grid></Grid>
-                                        ))}
- */

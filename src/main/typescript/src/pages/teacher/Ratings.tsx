@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid2";
 import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedSchoolClass} from "../../services/TeacherService.ts";
+import {SelectedSchoolClass, SelectedTeaching} from "../../services/TeacherService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import {RatingsResponse} from "../../entities/RatingsResponse.ts";
 import {RatingComponent} from "../../components/RatingComponent.tsx";
@@ -61,7 +61,7 @@ export const Ratings: React.FC = () => {
     const fetchData = async (selectedDate: string) => {
         try {
             let rowResponse : RatingsRow[] = [];
-            const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/ratings/${selectedDate}`);
+            const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/ratings/${SelectedTeaching.teaching}/date/${selectedDate}`);
             if (response.data.length){
                 rowResponse = response.data.map((mark: RatingsResponse) => ({
                     id: mark.id,

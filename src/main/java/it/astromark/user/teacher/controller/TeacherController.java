@@ -29,6 +29,11 @@ public class TeacherController {
         return teacherService.getSchoolClasses();
     }
 
+    @GetMapping("/teachings")
+    public List<String> getTeachings() {
+        return teacherService.getTeaching();
+    }
+
     @PostMapping
     public SchoolUserDetailed create(@RequestBody @NotNull TeacherRequest teacherRequest) {
         return teacherService.create(teacherRequest);
