@@ -3,6 +3,7 @@ package it.astromark.agenda.reception.service;
 import com.google.common.hash.Hashing;
 import it.astromark.SpringTestConf;
 import it.astromark.agenda.reception.entity.ReceptionBooking;
+import it.astromark.agenda.reception.entity.ReceptionBookingId;
 import it.astromark.agenda.reception.entity.ReceptionTimeslot;
 import it.astromark.agenda.reception.entity.ReceptionTimetable;
 import it.astromark.agenda.reception.repository.ReceptionBookingRepository;
@@ -33,6 +34,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -90,6 +92,7 @@ class ReceptionAgendaServiceTest {
         schoolClass.setStudents(Collections.singleton(student));
         parent = Parent.builder()
                 .email(faker.internet().emailAddress())
+                .id(UUID.randomUUID())
                 .name(name)
                 .pendingState(PendingState.NORMAL)
                 .surname(surname)
@@ -123,88 +126,88 @@ class ReceptionAgendaServiceTest {
     @Test
     void tc4_01() {
         var slot = ReceptionTimeslot
-                .builder().date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 4).capacity((short) 6).build();
+                .builder().id(1).date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 4).capacity((short) 6).build();
 
         when(authenticationService.getParent()).thenReturn(Optional.of(parent));
         when(receptionTimeslotRepository.findByIdAndDateAfter(1, LocalDate.now())).thenReturn(slot);
-        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
+        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
 
         assertTrue(receptionAgendaService.book(1));
 
-        verify(receptionBookingRepository).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
+        verify(receptionBookingRepository, times(1)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
         verify(authenticationService).getParent();
     }
 
     @Test
     void tc4_02() {
         var slot = ReceptionTimeslot
-                .builder().date(LocalDate.now()).mode("Online").hour((short) 1).receptionTimetable(table).booked((short) 4).capacity((short) 6).build();
+                .builder().id(1).date(LocalDate.now()).mode("Online").hour((short) 1).receptionTimetable(table).booked((short) 4).capacity((short) 6).build();
 
         when(authenticationService.getParent()).thenReturn(Optional.of(parent));
         when(receptionTimeslotRepository.findByIdAndDateAfter(1, LocalDate.now())).thenReturn(slot);
-        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
+        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
 
         assertTrue(receptionAgendaService.book(1));
 
-        verify(receptionBookingRepository).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
+        verify(receptionBookingRepository, times(1)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
         verify(authenticationService).getParent();
     }
 
     @Test
     void tc4_03() {
         var slot = ReceptionTimeslot
-                .builder().date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 0).capacity((short) 6).build();
+                .builder().id(1).date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 0).capacity((short) 6).build();
 
         when(authenticationService.getParent()).thenReturn(Optional.of(parent));
         when(receptionTimeslotRepository.findByIdAndDateAfter(1, LocalDate.now())).thenReturn(slot);
-        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
+        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
 
         assertTrue(receptionAgendaService.book(1));
 
-        verify(receptionBookingRepository).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
+        verify(receptionBookingRepository, times(1)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
         verify(authenticationService).getParent();
     }
 
     @Test
     void tc4_04() {
         var slot = ReceptionTimeslot
-                .builder().date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 0).capacity((short) 1).build();
+                .builder().id(1).date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 0).capacity((short) 1).build();
 
         when(authenticationService.getParent()).thenReturn(Optional.of(parent));
         when(receptionTimeslotRepository.findByIdAndDateAfter(1, LocalDate.now())).thenReturn(slot);
-        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
+        when(receptionBookingRepository.save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build())).thenReturn(null);
 
         assertTrue(receptionAgendaService.book(1));
 
-        verify(receptionBookingRepository).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
+        verify(receptionBookingRepository, times(1)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
         verify(authenticationService).getParent();
     }
 
     @Test
     void tc4_05() {
         var slot = ReceptionTimeslot
-                .builder().date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 6).capacity((short) 6).build();
+                .builder().id(1).date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 6).capacity((short) 6).build();
 
         when(authenticationService.getParent()).thenReturn(Optional.of(parent));
         when(receptionTimeslotRepository.findByIdAndDateAfter(1, LocalDate.now())).thenReturn(slot);
 
         assertFalse(receptionAgendaService.book(1));
 
-        verify(receptionBookingRepository, times(0)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
+        verify(receptionBookingRepository, times(0)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
         verify(authenticationService).getParent();
     }
 
     @Test
     void tc4_06() {
         var slot = ReceptionTimeslot
-                .builder().date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 1).capacity((short) 1).build();
+                .builder().id(1).date(LocalDate.now()).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 1).capacity((short) 1).build();
 
         when(authenticationService.getParent()).thenReturn(Optional.of(parent));
         when(receptionTimeslotRepository.findByIdAndDateAfter(1, LocalDate.now())).thenReturn(slot);
 
         assertFalse(receptionAgendaService.book(1));
 
-        verify(receptionBookingRepository, times(0)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
+        verify(receptionBookingRepository, times(0)).save(ReceptionBooking.builder().bookingOrder(slot.getBooked()).id(new ReceptionBookingId(parent.getId(), slot.getId())).parent(parent).confirmed(false).refused(false).receptionTimeslot(slot).build());
         verify(authenticationService).getParent();
     }
 
