@@ -13,12 +13,26 @@ import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import {RatingsResponse} from "../../entities/RatingsResponse.ts";
 import {RatingComponent} from "../../components/RatingComponent.tsx";
+import {useNavigate} from "react-router";
 
 export const formatMark = (num: number) :string => {
     let int = Math.floor(num)
     let fract = num - int;
     let sign = (fract === 0.25) ? '+' : (fract === 0.75) ? '-' : (fract === 0.50) ? '.5' : ''
     return (sign === '-' ? int + 1 : int).toString() + sign
+}
+
+export const formatType = (type: string) => {
+    switch (type) {
+        case 'ORAL':
+            return 'Orale'
+        case 'WRITTEN':
+            return 'Scritto'
+        case 'LABORATORY':
+            return 'Laboratorio'
+        default:
+            return ''
+    }
 }
 
 export type RatingsRow = {
@@ -38,6 +52,7 @@ export const Ratings: React.FC = () => {
     const [date, setDate] = useState<DateObject>(new DateObject())
     const [changeView, setChangeView] = useState<boolean>(false)
     const [selected, setSelected] = useState<RatingsRow>()
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData(date.format("YYYY-MM-DD"));
@@ -111,7 +126,8 @@ export const Ratings: React.FC = () => {
                             </Stack>
                         </Grid>
                         <Grid justifyContent={'center'}>
-                            <Button variant="contained" size={'large'} sx={{borderRadius: 4, backgroundColor: 'var(--md-sys-color-primary)'}}>
+                            <Button variant="contained" size={'large'} onClick={() => navigate('/teacher/valutazioni/tutte')}
+                                    sx={{borderRadius: 4, backgroundColor: 'var(--md-sys-color-primary)'}}>
                                 Visualizza tutte le Valutazioni
                             </Button>
                         </Grid>
@@ -135,13 +151,17 @@ export const Ratings: React.FC = () => {
                                         <CustomTableCell>{row.name}</CustomTableCell>
                                         <CustomTableCell sx={{ color: row.mark ? 'white' : 'black',
                                             backgroundColor: (!row.mark ? '' : row.mark < 6 ? 'var(--md-sys-color-error)' : 'green')}}>
-                                            <Stack direction={'column'} justifyContent={'center'} alignItems={'center'}>
-                                                <IconButton color={'inherit'} sx={{borderRadius: 2}} onClick={() => {handleMark(row)}}>
-                                                    {row.mark ? formatMark(row.mark) : '+'}
+                                            <Stack>
+                                                <IconButton color={'inherit'} sx={{borderRadius: 0}} onClick={() => {handleMark(row)}}>
+                                                    <Stack>
+                                                        <Typography fontSize={'xx-large'} fontWeight={'bold'}>
+                                                            {row.mark ? formatMark(row.mark) : '+'}
+                                                        </Typography>
+                                                        <Typography fontSize={'small'}>
+                                                            {formatType(row.type)}
+                                                        </Typography>
+                                                    </Stack>
                                                 </IconButton>
-                                                <Typography fontSize={'small'}>
-                                                    {row.type}
-                                                </Typography>
                                             </Stack>
                                         </CustomTableCell>
                                         <CustomTableCell>{row.desc}</CustomTableCell>
