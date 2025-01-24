@@ -37,7 +37,7 @@ AstroMark was born from a simple yet powerful idea: create an open-source platfo
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/astromark.git
+git clone https://github.com/mariocosenza/astromark.git
 cd astromark
 ```
 
