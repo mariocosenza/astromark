@@ -1,6 +1,6 @@
 # AstroMark
 
-## Project Origin:
+## Project Origin
 
 In the bustling corridors of modern education, a group of passionate educators and technologists recognized a critical gap in school management systems. Traditional platforms like Argo and ClasseViva were expensive, rigid, and often disconnected from the real needs of schools and students.
 
