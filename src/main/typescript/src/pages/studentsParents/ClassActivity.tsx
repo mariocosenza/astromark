@@ -93,8 +93,7 @@ export const Homework: React.FC = () => {
                         <HomeworkList
                             list={activity
                                 .filter(
-                                    (v) =>
-                                        v.signedHour.title === subject || subject === 'Seleziona Materia'
+                                    (v) => v.signedHour.title === subject || subject === 'Seleziona Materia'
                                 )
                                 .map((activity: HomeworkResponse) => ({
                                     id: activity.id,
@@ -104,14 +103,12 @@ export const Homework: React.FC = () => {
                                     description: activity.title + ': ' + activity.description,
                                     hexColor: 'dodgerblue',
                                     date: activity.signedHour.date,
-                                }))}
-                        />
+                                }))} dashboard={false}                        />
                     ) : (
                         <HomeworkList
                             list={activity
                                 .filter(
-                                    (v) =>
-                                        v.signedHour.title === subject || subject === 'Seleziona Materia'
+                                    (v) => v.signedHour.title === subject || subject === 'Seleziona Materia'
                                 )
                                 .map((activity: HomeworkResponse) => ({
                                     id: activity.id,
@@ -122,8 +119,7 @@ export const Homework: React.FC = () => {
                                     hexColor: 'dodgerblue',
                                     date: activity.signedHour.date,
                                 }))
-                                .reverse()}
-                        />
+                                .reverse()} dashboard={false}                        />
                     )
                 }
 
