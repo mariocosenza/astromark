@@ -15,6 +15,7 @@ import java.util.Objects;
 @Setter
 @ToString(exclude = "teacher")
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "teaching", schema = "astromark")
