@@ -55,6 +55,10 @@ export const TeacherDashboardNavbar: React.FC = () => {
                         <LogoutOutlinedIcon
                             sx={{ml: 1}}
                             onClick={() => {
+                                localStorage.removeItem("teaching")
+                                localStorage.removeItem("schoolClassId")
+                                localStorage.removeItem("schoolClassTitle")
+                                localStorage.removeItem("schoolClassDesc")
                                 asyncLogout(localStorage.getItem("user")).then(_ => navigator('/logout'))
                             }
                             }

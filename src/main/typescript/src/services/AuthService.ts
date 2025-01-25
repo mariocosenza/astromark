@@ -14,7 +14,12 @@ export function logout(): void {
         if (localStorage.getItem("user") !== null) {
             axiosConfig.post(Env.API_BASE_URL + "/auth/logout").then(_ => localStorage.removeItem("user"))
         }
+        localStorage.removeItem("teaching")
+        localStorage.removeItem("schoolClassId")
+        localStorage.removeItem("schoolClassTitle")
+        localStorage.removeItem("schoolClassDesc")
     } catch (e) {
+        localStorage.removeItem("user")
         console.log("User not exist");
     }
 }
@@ -27,7 +32,12 @@ export async function asyncLogout(item: any) {
             await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
             localStorage.removeItem("user")
         }
+        localStorage.removeItem("teaching")
+        localStorage.removeItem("schoolClassId")
+        localStorage.removeItem("schoolClassTitle")
+        localStorage.removeItem("schoolClassDesc")
     } catch (e) {
+        localStorage.removeItem("user")
         console.log("User not exist");
     }
 }

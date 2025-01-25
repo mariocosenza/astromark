@@ -35,7 +35,7 @@ public class JWTService {
     /**
      * Constructs a JWTService with the required dependencies.
      *
-     * @param blackListedTokenRepository the repository for managing blacklisted tokens
+     * @param blackListedTokenRepository the repository for managing blocklisted tokens
      */
     public JWTService(final BlackListedTokenRepository blackListedTokenRepository) {
         this.blackListedTokenRepository = blackListedTokenRepository;
@@ -147,9 +147,9 @@ public class JWTService {
     }
 
     /**
-     * Blacklists the given JWT token to invalidate it.
+     * Blocklists the given JWT token to invalidate it.
      *
-     * @param jwtToken the JWT token to blacklist
+     * @param jwtToken the JWT token to blocklist
      */
     public void logOut(String jwtToken) {
         blackListedTokenRepository.save(new BlackListedToken(jwtToken));
