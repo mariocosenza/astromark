@@ -1,7 +1,7 @@
 {
   "name": "typescript",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,8 +15,9 @@
     "@fontsource/titillium-web": "^5.1.1",
     "@mui/icons-material": "^6.3.1",
     "@mui/material": "^6.3.1",
-    "@mui/x-charts": "^7.23.6",
-    "@mui/x-data-grid": "^7.24.0",
+    "@mui/styles": "^6.4.1",
+    "@mui/x-charts": "^8.0.0-alpha.7",
+    "@mui/x-data-grid": "^8.0.0-alpha.7",
     "@stomp/stompjs": "^7.0.0",
     "@types/sockjs-client": "^1.5.4",
     "axios": "^1.7.9",
@@ -44,5 +45,25 @@
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.19.1",
     "vite": "^6.0.7"
+  },
+  "overrides": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "@mui/*": {
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
+    },
+    "formik": {
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
+    },
+    "react-router": {
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
+    },
+    "react-use": {
+      "react": "19.0.0",
+      "react-dom": "19.0.0"
+    }
   }
 }
