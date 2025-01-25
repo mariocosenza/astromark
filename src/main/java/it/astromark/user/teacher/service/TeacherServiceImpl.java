@@ -2,6 +2,9 @@ package it.astromark.user.teacher.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.classmanagement.didactic.entity.Subject;
+import it.astromark.classmanagement.didactic.entity.Teaching;
+import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.dto.TeacherClassResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.entity.TeacherClass;
@@ -34,14 +37,16 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final SendGridMailService sendGridMailService;
     private final ClassManagementMapper classManagementMapper;
+    private final TeachingRepository teachingRepository;
 
-    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper) {
+    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper, TeachingRepository teachingRepository) {
         this.teacherClassRepository = teacherClassRepository;
         this.schoolUserMapper = schoolUserMapper;
         this.authenticationService = authenticationService;
         this.teacherRepository = teacherRepository;
         this.sendGridMailService = sendGridMailService;
         this.classManagementMapper = classManagementMapper;
+        this.teachingRepository = teachingRepository;
     }
 
     @Override
@@ -90,6 +95,12 @@ public class TeacherServiceImpl implements TeacherService {
                         .thenComparing(SchoolClass::getNumber))
                 .toList()
         );
+    }
+
+    @Override
+    public List<String> getTeaching() {
+        var teachings = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow());
+        return teachings.stream().map(Teaching::getSubjectTitle).map(Subject::getTitle).sorted().toList();
     }
 
     @Override

@@ -6,8 +6,9 @@ import {theme} from "./theme/GlobalTheme";
 import {App} from "./pages/App";
 import {Login} from "./pages/Login.tsx";
 import {ProtectedRoutePath, Role} from "./components/route/ProtectedRoute.tsx";
-import React, {StrictMode} from "react";
+import {StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
+import {ConditionalRoute} from "./components/route/ConditionalRoute.tsx";
 import {Dashboard} from "./pages/./studentsParents/Dashboard.tsx";
 import {Mark} from "./pages/./studentsParents/Mark.tsx";
 import {ClassActivity} from "./pages/./studentsParents/ClassActivity.tsx";
@@ -28,6 +29,8 @@ import {Reception} from "./pages/parents/Reception.tsx";
 import {SignHour} from "./pages/teacher/SignHour.tsx";
 import {Attendance} from "./pages/teacher/Attendance.tsx";
 import {Ratings} from "./pages/teacher/Ratings.tsx";
+import {EveryRatings} from "./pages/teacher/EveryRatings.tsx";
+import {TeacherNote} from "./pages/teacher/TeacherNote.tsx";
 import {ProtectedSecretaryRoute} from "./components/route/ProtectedSecretaryRoute.tsx";
 import {SecretaryDashboard} from "./pages/secretary/SecretaryDashboard.tsx";
 import {ManageClass} from "./pages/secretary/ManageClass.tsx";
@@ -71,10 +74,10 @@ ReactDOM.createRoot(root).render(
                         <Route path="agenda"
                                element={<ConditionalRoute node={<ClassAgenda/>} condition={isSelectedClass}/>}/>
                         <Route path="ora" element={<ConditionalRoute node={<SignHour/>} condition={isSelectedClass}/>}/>
-                        <Route path="appello"
-                               element={<ConditionalRoute node={<Attendance/>} condition={isSelectedClass}/>}/>
-                        <Route path="valutazioni"
-                               element={<ConditionalRoute node={<Ratings/>} condition={isSelectedClass}/>}/>
+                        <Route path="appello" element={<ConditionalRoute node={<Attendance/>} condition={isSelectedClass}/>}/>
+                        <Route path="valutazioni" element={<ConditionalRoute node={<Ratings/>} condition={isSelectedClass}/>}/>
+                        <Route path="valutazioni/tutte" element={<ConditionalRoute node={<EveryRatings/>} condition={isSelectedClass}/>}/>
+                        <Route path="note" element={<ConditionalRoute node={<TeacherNote/>} condition={isSelectedClass}/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace/>}/>
@@ -86,7 +89,6 @@ ReactDOM.createRoot(root).render(
                         <Route path='timetable' element={<ManageTimetable/>}/>
                         <Route path="teacher" element={<ManageTeacher/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
-                        <Route path="class-schedule/:classId" element={<ClassSchedule/>}/>
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace/>}/>
                     <Route path="/parent" element={<ProtectedStudentParentRoute role={Role.PARENT}/>}>

@@ -3,7 +3,6 @@ package it.astromark.classmanagement.controller;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.service.ClassManagementService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +36,14 @@ public class ClassManagementController {
     @GetMapping("/all")
     public List<SchoolClassResponse> getClasses() {
         return classManagementService.getClasses();
+    }
+
+    @Operation(
+            summary = "Retrieve students for a specific class",
+            description = "Gets a list of students enrolled in a specific class."
+    )
+    @GetMapping("/{classId}/students")
+    public List<SchoolClassStudentResponse> getStudents(@PathVariable Integer classId) {
+        return classManagementService.getStudents(classId);
     }
 }

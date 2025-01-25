@@ -36,8 +36,22 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
     public NoteResponse create(NoteRequest noteRequest) {
-        return null;
+        if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId())) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        var note = new Note();
+        note.setStudent(studentRepository.findById(noteRequest.studentId()).orElseThrow());
+        note.setDescription(noteRequest.description());
+        note.setDate(noteRequest.date());
+        note.setViewed(false);
+
+        noteRepository.save(note);
+
+        return noteMapper.toNoteResponse(note);
     }
 
     @Override

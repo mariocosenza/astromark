@@ -1,6 +1,7 @@
 package it.astromark.classmanagement.service;
 
 import it.astromark.classmanagement.dto.SchoolClassResponse;
+import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
 
 import java.time.Year;
 import java.util.List;
@@ -24,6 +25,8 @@ public interface ClassManagementService {
      * Post-condition: Returns a list of all existing school classes.
      */
     List<SchoolClassResponse> getClasses();
+
+    List<SchoolClassStudentResponse> getStudents(Integer classId);
 
 
 }

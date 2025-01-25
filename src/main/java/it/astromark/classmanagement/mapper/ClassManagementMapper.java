@@ -1,8 +1,10 @@
 package it.astromark.classmanagement.mapper;
 
 import it.astromark.classmanagement.dto.SchoolClassResponse;
+import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
 import it.astromark.classmanagement.dto.TeacherClassResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
+import it.astromark.user.student.entity.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -23,4 +25,8 @@ public interface ClassManagementMapper {
     TeacherClassResponse toTeacherClassResponse(SchoolClass schoolClass);
 
     List<TeacherClassResponse> toTeacherClassResponseList(List<SchoolClass> schoolClasses);
+
+    SchoolClassStudentResponse toSchoolClassStudentResponse(Student student);
+
+    List<SchoolClassStudentResponse> toSchoolClassStudentResponseList(List<Student> students);
 }

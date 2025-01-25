@@ -56,7 +56,9 @@ public interface MarkService  {
      */
     SemesterReportResponse viewReport(Integer reportId);
 
-    List<RatingsResponse> getRatings(Integer classId, LocalDate date);
+    List<RatingsResponse> getRatings(Integer classId, String subject, LocalDate date);
+
+    List<RatingsResponse> getEveryRatings(Integer classId, String subject);
 
     MarkResponse create(MarkRequest mark);
 
