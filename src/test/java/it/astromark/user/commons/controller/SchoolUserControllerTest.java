@@ -80,7 +80,6 @@ class SchoolUserControllerTest {
                         .content("{\"username\":\"" + student.getUsername() + "\",\"password\":\"" + password + "\",\"schoolCode\":\"" + school.getCode() + "\",\"role\":\"STUDENT\"}"))
                 .andReturn();
         token = result.getResponse().getContentAsString();
-
     }
 
 

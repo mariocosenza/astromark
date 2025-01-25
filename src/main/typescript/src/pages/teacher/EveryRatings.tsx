@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {CircularProgress, Stack, TableContainer, Typography,} from "@mui/material";
-import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -85,7 +84,6 @@ export const EveryRatings: React.FC = () => {
 
     return (
         <div>
-            <TeacherDashboardNavbar/>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
                 {SelectedSchoolClass.title + ' - ' + SelectedSchoolClass.desc}
             </Typography>

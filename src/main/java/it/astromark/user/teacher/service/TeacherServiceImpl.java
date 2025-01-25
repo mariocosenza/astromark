@@ -5,7 +5,7 @@ import it.astromark.authentication.utils.PasswordUtils;
 import it.astromark.classmanagement.didactic.entity.Subject;
 import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
-import it.astromark.classmanagement.dto.TeacherClassResponse;
+import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.entity.TeacherClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
@@ -74,7 +74,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('TEACHER')")
     @Transactional
-    public List<TeacherClassResponse> getSchoolClasses(){
+    public List<SchoolClassResponse> getSchoolClasses(){
 
         var schoolClasses = teacherClassRepository.findByTeacher(
                 authenticationService.getTeacher().orElseThrow()).stream()
@@ -89,7 +89,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .max(Comparator.comparingInt(SchoolClass::getYear))
                 .get().getYear();
 
-        return classManagementMapper.toTeacherClassResponseList(schoolClasses.stream()
+        return classManagementMapper.toSchoolClassResponseList(schoolClasses.stream()
                 .filter(c -> c.getYear() == schoolClassesMaxYear)
                 .sorted(Comparator.comparing(SchoolClass::getLetter)
                         .thenComparing(SchoolClass::getNumber))

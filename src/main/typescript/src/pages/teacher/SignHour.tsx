@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {Button, Card, CardContent, Divider, Stack, TextField, Typography,} from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker";
-import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useFormik} from "formik";
 import axiosConfig from "../../services/AxiosConfig.ts";
@@ -83,7 +82,6 @@ export const SignHour: React.FC = () => {
 
     return (
         <div>
-            <TeacherDashboardNavbar/>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
                 {SelectedSchoolClass.title + ' - ' + SelectedSchoolClass.desc}
             </Typography>

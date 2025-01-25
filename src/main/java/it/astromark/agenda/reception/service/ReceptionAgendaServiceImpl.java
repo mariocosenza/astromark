@@ -9,7 +9,6 @@ import it.astromark.agenda.reception.mapper.ReceptionAgendaMapper;
 import it.astromark.agenda.reception.repository.ReceptionBookingRepository;
 import it.astromark.agenda.reception.repository.ReceptionTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.user.parent.service.ParentService;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
@@ -32,15 +31,13 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     private final ReceptionBookingRepository receptionBookingRepository;
     private final ReceptionTimeslotRepository receptionTimeslotRepository;
     private final ReceptionAgendaMapper receptionAgendaMapper;
-    private final ParentService parentService;
 
-    public ReceptionAgendaServiceImpl(AuthenticationService authenticationService, TeacherRepository teacherRepository, ReceptionBookingRepository receptionBookingRepository, ReceptionTimeslotRepository receptionTimeslotRepository, ReceptionAgendaMapper receptionAgendaMapper, ParentService parentService) {
+    public ReceptionAgendaServiceImpl(AuthenticationService authenticationService, TeacherRepository teacherRepository, ReceptionBookingRepository receptionBookingRepository, ReceptionTimeslotRepository receptionTimeslotRepository, ReceptionAgendaMapper receptionAgendaMapper) {
         this.authenticationService = authenticationService;
         this.teacherRepository = teacherRepository;
         this.receptionBookingRepository = receptionBookingRepository;
         this.receptionTimeslotRepository = receptionTimeslotRepository;
         this.receptionAgendaMapper = receptionAgendaMapper;
-        this.parentService = parentService;
     }
 
     @Override
@@ -70,12 +67,12 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     }
 
     @Override
-    public boolean confirm(Integer receptionTimeslotID) {
+    public boolean confirm(ReceptionBookingId receptionTimeslotID) {
         return false;
     }
 
     @Override
-    public boolean refuse(Integer receptionTimeslotID) {
+    public boolean refuse(ReceptionBookingId receptionTimeslotID) {
         return false;
     }
 

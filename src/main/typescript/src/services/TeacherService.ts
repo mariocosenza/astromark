@@ -3,9 +3,9 @@ import {DateObject} from "react-multi-date-picker";
 import {createGlobalState} from "react-use";
 
 export class SelectedTeaching {
-    private static _teaching: string = localStorage.getItem("teaching") ? localStorage.getItem("teaching") as string : '';
+    private static _teaching: string | null = localStorage.getItem("teaching") ? localStorage.getItem("teaching") as string : null;
 
-    static get teaching(): string {
+    static get teaching(): string | null {
         return this._teaching;
     }
 
@@ -29,9 +29,9 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassId', value.toString());
     }
 
-    private static _title: string = localStorage.getItem("schoolClassTitle")  ? localStorage.getItem("schoolClassTitle") as string : '';
+    private static _title: string | null = localStorage.getItem("schoolClassTitle")  ? localStorage.getItem("schoolClassTitle") as string : null;
 
-    static get title(): string {
+    static get title(): string | null {
         return this._title;
     }
 
@@ -40,9 +40,9 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassTitle', value.toString());
     }
 
-    private static _desc: string = localStorage.getItem("schoolClassDesc")  ? localStorage.getItem("schoolClassDesc") as string : '';
+    private static _desc: string | null = localStorage.getItem("schoolClassDesc")  ? localStorage.getItem("schoolClassDesc") as string : null;
 
-    static get desc(): string {
+    static get desc(): string | null {
         return this._desc;
     }
 

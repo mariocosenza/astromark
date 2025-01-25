@@ -79,10 +79,13 @@ export const Mark: React.FC = () => {
                     <FormControl style={{width: '80%'}}>
                         <InputLabel id="demo-simple-select-label">Materia</InputLabel>
                         <Select
+                            color={'primary'}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={subject}
                             label="Materia"
+                            style={{backgroundColor: 'white'}}
+                            sx={{mb: '1rem'}}
                             onChange={handleChange}
                         >
                             <MenuItem value={"Seleziona Materia"}>{"Seleziona Materia"}</MenuItem>
@@ -102,7 +105,7 @@ export const Mark: React.FC = () => {
                 </Box>
                 <Box className={'centerBox secondary-container'} style={{flexDirection: 'column'}} height={'24vh'}
                      width={'30%'}>
-                    <Typography variant={'h5'}>
+                    <Typography variant={'h4'} color={'secondary'} fontWeight={600} sx={{mb: '1rem'}}>
                         Media voti annuale
                     </Typography>
                     <CircularProgress variant="determinate" value={average * 10}/>

@@ -3,7 +3,7 @@ import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HouseIcon from '@mui/icons-material/House';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
-import ArticleIcon from '@mui/icons-material/Article';
+import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
@@ -48,7 +48,7 @@ export const TeacherSideNav = () => {
                     <ListItem key="ticket" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ArticleIcon/>
+                                <ConfirmationNumberOutlinedIcon/>
                             </ListItemIcon>
                             <ListItemText primary={"Ticket"}/>
                         </ListItemButton>
@@ -100,8 +100,8 @@ export const TeacherSideNav = () => {
                     </>
                 )}
 
-                <Divider/>
-                <NavLink to={"/teacher/impostazioni"} end>
+                <NavLink to={`/teacher/impostazioni`} end style={{position: 'fixed', bottom: 0, width: '15vw'}}>
+                    <Divider/>
                     <ListItem key="impostazioni" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>

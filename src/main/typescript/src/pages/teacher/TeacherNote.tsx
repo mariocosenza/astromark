@@ -3,7 +3,6 @@ import {Card, CardContent, Typography, Stack, Button, Box, TextField, Autocomple
 import DatePicker, {DateObject} from "react-multi-date-picker";
 import Grid from "@mui/material/Grid2";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
-import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
@@ -79,7 +78,6 @@ export const TeacherNote: React.FC = () => {
 
     return (
         <div>
-            <TeacherDashboardNavbar/>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
                 Note
             </Typography>

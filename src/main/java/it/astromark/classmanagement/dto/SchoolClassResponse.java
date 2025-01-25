@@ -7,6 +7,7 @@ public record SchoolClassResponse(
         Integer id,
         Integer year,
         String letter,
-        Short number
+        Short number,
+        String description
 ) {
 }

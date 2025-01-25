@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useState} from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
+import SchoolIcon from '@mui/icons-material/School';
 import {IconButton} from "@mui/material";
 import {changeTeaching, SelectedTeaching} from "../services/TeacherService.ts";
 
@@ -32,7 +32,7 @@ export const TeachingMenu: React.FC<Teachings> = ({data}) => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
-                <ArchiveOutlinedIcon/>
+                <SchoolIcon/>
             </IconButton>
             <Menu
                 id="basic-menu"

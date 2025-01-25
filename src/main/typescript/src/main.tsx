@@ -5,8 +5,8 @@ import {ThemeProvider} from "@mui/material";
 import {theme} from "./theme/GlobalTheme";
 import {App} from "./pages/App";
 import {Login} from "./pages/Login.tsx";
-import {ProtectedRoutePath, Role} from "./components/route/ProtectedRoute.tsx";
-import {StrictMode} from "react";
+import {Role} from "./components/route/ProtectedRoute.tsx";
+import {ReactNode, StrictMode} from "react";
 import {MissingRoute} from "./components/route/MissingRoute.tsx";
 import {Dashboard} from "./pages/./studentsParents/Dashboard.tsx";
 import {Mark} from "./pages/./studentsParents/Mark.tsx";
@@ -38,11 +38,12 @@ import {CreateClass} from "./pages/secretary/CreateClass.tsx";
 import {ManageTeacher} from "./pages/secretary/ManageTeacher.tsx";
 import {ManageTimetable} from "./pages/secretary/ManageTimetable";
 import {ClassSchedule} from "./pages/secretary/ClassSchedule.tsx";
+import {ProtectedTeacherRoute} from "./components/route/ProtectedTeacherRoute.tsx";
 
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
 
-const ConditionalRoute = ({node, condition,}: { node: React.ReactNode; condition: () => boolean; }) => {
+const ConditionalRoute = ({node, condition,}: { node: ReactNode; condition: () => boolean; }) => {
     return condition() ? <>{node}</> : <Navigate to="/" replace/>;
 };
 
@@ -66,7 +67,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/teacher" element={<Navigate to="/teacher/dashboard" replace/>}/>
-                    <Route path="/teacher" element={<ProtectedRoutePath role={Role.TEACHER}/>}>
+                    <Route path="/teacher" element={<ProtectedTeacherRoute role={Role.TEACHER}/>}>
                         <Route path="dashboard" element={<TeacherDashboard/>}/>
                         <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="ticket" element={<TeacherTicket/>}/>

@@ -57,6 +57,7 @@ class ReceptionAgendaServiceIntegrationTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
+    private static int count;
     @Autowired
     private ReceptionTimeslotRepository receptionTimeslotRepository;
     @Autowired
@@ -79,7 +80,6 @@ class ReceptionAgendaServiceIntegrationTest {
     private ReceptionTimetableRepository receptionTimetableRepository;
     @Autowired
     private SchoolClassRepository schoolClassRepository;
-    private static int count;
     @Autowired
     private TeacherClassRepository teacherClassRepository;
 

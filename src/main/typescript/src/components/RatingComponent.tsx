@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Stack, Select, MenuItem, RadioGroup, FormControlLabel, Radio, Button, Box, TextField } from '@mui/material';
+import {Card, CardContent, Typography, Stack, RadioGroup, FormControlLabel, Radio, Button, Box, TextField, Autocomplete} from '@mui/material';
 import {formatMark, RatingsRow} from "../pages/teacher/Ratings.tsx";
 import {DateObject} from "react-multi-date-picker";
 import axiosConfig from "../services/AxiosConfig.ts";
@@ -10,9 +10,11 @@ import {MarkUpdateRequest} from "../entities/MarkUpdateRequest.ts";
 import {SelectedTeaching} from "../services/TeacherService.ts";
 
 export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void, date: DateObject }> = ({ row , returnBack, date}) => {
-    const [mark, setMark] = useState<string>(row.mark ? row.mark.toString() : '');
+    const [mark, setMark] = useState<number | null>(row.mark);
     const [type, setType] = useState<string>(row.type);
     const [note, setNote] = useState<string>(row.desc);
+
+    const marksList = Array.from({ length: 41 }, (_, i) => ((i) / 4));
 
     const handleSave = async () => {
         if (row.id === null){
@@ -28,7 +30,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
             studentId: row.student,
             teachingId: {
                 teacherId: getId(),
-                subjectTitle: SelectedTeaching.teaching,
+                subjectTitle: SelectedTeaching.teaching == null ? '' : SelectedTeaching.teaching,
             },
             date: date.toDate(),
             description: note,
@@ -87,18 +89,17 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
                         <Stack direction="row" justifyContent={'center'} alignItems={'center'} margin={2} spacing={10}>
                             <Box>
                                 <Typography variant="subtitle1">Voto:</Typography>
-                                <Select variant={'outlined'} fullWidth displayEmpty value={mark}
-                                        onChange={(e) => setMark(e.target.value)}>
+                                <Autocomplete
+                                    options={marksList}
+                                    getOptionLabel={(option) => `${formatMark(option)}`}
+                                    value={mark}
+                                    onChange={(_, newValue) => setMark(newValue)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} placeholder="Seleziona un voto" variant="outlined" />
+                                    )}
+                                    fullWidth
+                                />
 
-                                    <MenuItem value="" disabled>
-                                        Seleziona un voto
-                                    </MenuItem>
-                                    {Array.from({ length: 40 }, (_, i) => (i + 1) / 4).map((num) => (
-                                        <MenuItem key={num} value={num.toString()}>
-                                            {formatMark(num)}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
                             </Box>
                             <Box>
                                 <Typography variant="subtitle1">Tipo di prova:</Typography>

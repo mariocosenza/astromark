@@ -4,7 +4,6 @@ package it.astromark.rating.serivice;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
-import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.rating.dto.*;
 import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.rating.model.Mark;
@@ -40,11 +39,10 @@ public class MarkServiceImpl implements MarkService {
     private final AuthenticationService authenticationService;
     private final TeachingRepository teachingRepository;
     private final StudentRepository studentRepository;
-    private final TeacherClassRepository teacherClassRepository;
     private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentRepository studentRepository, TeacherClassRepository teacherClassRepository, SchoolClassRepository schoolClassRepository) {
+    public MarkServiceImpl(MarkRepository markRepository, MarkMapper markMapper, SchoolUserService schoolUserService, SemesterReportRepository semesterReportRepository, AuthenticationService authenticationService, TeachingRepository teachingRepository, StudentRepository studentRepository, SchoolClassRepository schoolClassRepository) {
         this.markRepository = markRepository;
         this.markMapper = markMapper;
         this.schoolUserService = schoolUserService;
@@ -52,7 +50,6 @@ public class MarkServiceImpl implements MarkService {
         this.authenticationService = authenticationService;
         this.teachingRepository = teachingRepository;
         this.studentRepository = studentRepository;
-        this.teacherClassRepository = teacherClassRepository;
         this.schoolClassRepository = schoolClassRepository;
     }
 
@@ -120,10 +117,8 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<RatingsResponse> getRatings(Integer classId, String teaching, LocalDate date) {
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        if (teacherClassRepository.findByTeacher(teacher).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
-            throw new AccessDeniedException("You are not allowed to see this timetable");
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
         var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching_SubjectTitle_Title(classId, date, teaching), teaching);
@@ -141,10 +136,8 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<RatingsResponse> getEveryRatings(Integer classId, String teaching) {
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        if (teacherClassRepository.findByTeacher(teacher).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
-            throw new AccessDeniedException("You are not allowed to see this timetable");
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
         var year = schoolClassRepository.findById(classId).orElseThrow().getYear();
@@ -169,6 +162,9 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse create(MarkRequest mark) {
+        if (!mark.date().isBefore(LocalDate.now().plusDays(1))) {
+            throw new IllegalArgumentException("Date must be in the past");
+        }
         if(mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }

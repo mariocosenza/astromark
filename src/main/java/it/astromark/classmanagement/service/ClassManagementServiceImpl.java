@@ -7,12 +7,12 @@ import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
 import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
-import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
+import it.astromark.user.commons.service.SchoolUserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -24,15 +24,15 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     private final AuthenticationService authenticationService;
     private final ClassManagementMapper classManagementMapper;
-    private final TeacherClassRepository teacherClassRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final SchoolUserService schoolUserService;
     private final TeachingRepository teachingRepository;
 
-    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, TeacherClassRepository teacherClassRepository, SchoolClassRepository schoolClassRepository, TeachingRepository teachingRepository) {
+    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository) {
         this.authenticationService = authenticationService;
         this.classManagementMapper = classManagementMapper;
-        this.teacherClassRepository = teacherClassRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.schoolUserService = schoolUserService;
         this.teachingRepository = teachingRepository;
     }
 
@@ -57,16 +57,14 @@ public class ClassManagementServiceImpl implements ClassManagementService {
             user = authenticationService.getTeacher().orElseThrow();
         }
 
-        return classManagementMapper.toSchoolClassResponseList(user.getSchool().getSchoolClasses());
+        return classManagementMapper.toSchoolClassResponseList(schoolClassRepository.findBySchool(user.getSchool()));
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
     public List<SchoolClassStudentResponse> getStudents(Integer classId) {
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        if (teacherClassRepository.findByTeacher(teacher).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
