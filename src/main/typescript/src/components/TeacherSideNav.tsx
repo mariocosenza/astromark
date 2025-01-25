@@ -100,8 +100,8 @@ export const TeacherSideNav = () => {
                     </>
                 )}
 
-                <Divider/>
-                <NavLink to={"/teacher/impostazioni"} end>
+                <NavLink to={`/teacher/impostazioni`} end style={{position: 'fixed', bottom: 0, width: '15vw'}}>
+                    <Divider/>
                     <ListItem key="impostazioni" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
