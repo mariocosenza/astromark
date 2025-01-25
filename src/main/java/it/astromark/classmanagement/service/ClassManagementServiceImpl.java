@@ -53,7 +53,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
             user = authenticationService.getTeacher().orElseThrow();
         }
 
-        return classManagementMapper.toSchoolClassResponseList(user.getSchool().getSchoolClasses());
+        return classManagementMapper.toSchoolClassResponseList(schoolClassRepository.findBySchool(user.getSchool()));
     }
 
     @Override
