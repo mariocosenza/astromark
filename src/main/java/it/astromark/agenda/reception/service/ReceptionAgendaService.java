@@ -3,6 +3,7 @@ package it.astromark.agenda.reception.service;
 import it.astromark.agenda.reception.dto.ReceptionBookingResponse;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotRequest;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
+import it.astromark.agenda.reception.entity.ReceptionBookingId;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public interface ReceptionAgendaService {
      * - The timeslot is marked as confirmed.
      * - Returns true if confirmation is successful, false otherwise.
      */
-    boolean confirm(Integer receptionTimeslotID);
+    boolean confirm(ReceptionBookingId receptionTimeslotID);
 
     /**
      * Refuses a reception timeslot for a given ID.
@@ -54,7 +55,7 @@ public interface ReceptionAgendaService {
      * - The timeslot is marked as refused.
      * - Returns true if refusal is successful, false otherwise.
      */
-    boolean refuse(Integer receptionTimeslotID);
+    boolean refuse(ReceptionBookingId receptionTimeslotID);
 
     /**
      * Adds a new reception timeslot.
