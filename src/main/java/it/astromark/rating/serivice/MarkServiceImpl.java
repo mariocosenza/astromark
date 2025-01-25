@@ -169,6 +169,9 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse create(MarkRequest mark) {
+        if (!mark.date().isBefore(LocalDate.now().plusDays(1))) {
+            throw new IllegalArgumentException("Date must be in the past");
+        }
         if(mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }
