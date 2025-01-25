@@ -26,7 +26,7 @@ export const TeacherDashboardNavbar: React.FC = () => {
                 const response: AxiosResponse<string[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/teachings`);
                 if (response.data.length) {
                     setTeachings(response.data);
-                    if (SelectedTeaching.teaching === null) {
+                    if(localStorage.getItem("teaching") === null){
                         SelectedTeaching.teaching = response.data[0]
                     }
                 }

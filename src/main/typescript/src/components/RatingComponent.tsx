@@ -30,7 +30,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
             studentId: row.student,
             teachingId: {
                 teacherId: getId(),
-                subjectTitle: SelectedTeaching.teaching,
+                subjectTitle: SelectedTeaching.teaching == null ? '' : SelectedTeaching.teaching,
             },
             date: date.toDate(),
             description: note,

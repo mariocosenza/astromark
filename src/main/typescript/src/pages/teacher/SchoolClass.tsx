@@ -3,7 +3,6 @@ import {CircularProgress, Typography,} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
-import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
 import {SchoolClassResponse} from "../../entities/SchoolClassResponse.ts";
 import {GridList, Item} from "../../components/GridList.tsx";
 import {useNavigate} from "react-router";
@@ -46,7 +45,6 @@ export const SchoolClass: React.FC = () => {
 
     return (
         <div>
-            <TeacherDashboardNavbar/>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
                 Scegli la classe
             </Typography>
