@@ -8,6 +8,8 @@ import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {SchoolClassStudentResponse} from "../../entities/SchoolClassStudentResponse.ts";
+import {NoteRequest} from "../../entities/NoteRequest.ts";
+import {useNavigate} from "react-router";
 
 export type StudentData = {
     id: string;
@@ -20,6 +22,7 @@ export const TeacherNote: React.FC = () => {
     const [note, setNote] = useState<string>("");
     const [date, setDate] = useState<DateObject>(new DateObject())
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData();
@@ -44,9 +47,25 @@ export const TeacherNote: React.FC = () => {
         }
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (selectedStudent && date){
-            console.log("save: " + selectedStudent.name + ' ' + date.format('YYYY-MM-DD'));
+            const noteRequest: NoteRequest = {
+                studentId: selectedStudent.id,
+                description: note,
+                date: date.toDate(),
+            }
+
+            try {
+                await axiosConfig.post(`${Env.API_BASE_URL}/students/note/create`, noteRequest, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                navigate('/teacher/dashboard')
+            } catch (e) {
+                console.log(e)
+            }
         }
     }
 
