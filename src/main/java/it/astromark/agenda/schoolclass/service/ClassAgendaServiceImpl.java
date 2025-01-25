@@ -1,10 +1,8 @@
 package it.astromark.agenda.schoolclass.service;
 
 import it.astromark.agenda.commons.mapper.TimeslotMapper;
-import it.astromark.agenda.schoolclass.dto.SignHourRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
+import it.astromark.agenda.schoolclass.dto.*;
+import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import it.astromark.agenda.schoolclass.entity.SignedHour;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
 import it.astromark.agenda.schoolclass.mapper.ClassAgendaMapper;
@@ -14,6 +12,7 @@ import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
+import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.repository.ClassActivityRepository;
@@ -31,6 +30,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -49,9 +49,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final ClassTimetableRepository classTimetableRepository;
     private final StudyPlanRepository studyPlanRepository;
     private final TeachingRepository teachingRepository;
+    private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository, SchoolClassRepository schoolClassRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
@@ -64,6 +65,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         this.classTimetableRepository = classTimetableRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.teachingRepository = teachingRepository;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
 
@@ -73,9 +75,39 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     }
 
     @Override
+    @Transactional
     public void addTimeslot(Integer classId, TeachingTimeslotRequest request) {
+        var timeTable = classTimetableRepository.findById(classId)
+                .orElseThrow(() -> new IllegalArgumentException("ClassTimetable not found for ID: " + classId));
 
+        var hour = request.hour();
+
+        var teaching = teachingRepository.findAll().stream()
+                .filter(t -> t.getSubjectTitle().getTitle().equals(request.subject())
+                        && t.getTeacher().getId().equals(request.idTeacher()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Teaching not found for subject: " + request.subject() + " and teacher ID: " + request.idTeacher()));
+
+        var startDate = timeTable.getStartValidity().plusDays(request.dayWeek() - 1);
+        var endDate = timeTable.getEndValidity();
+        var redDates = timeTable.getRedDates();
+
+        while (startDate.isBefore(endDate) || startDate.isEqual(endDate)) {
+            var finalStartDate = startDate;
+            if (redDates.stream().noneMatch(r -> r.getId().getDate().isEqual(finalStartDate))) {
+                var teachingTimeslot = TeachingTimeslot.builder()
+                        .classTimetable(timeTable)
+                        .hour(hour)
+                        .date(finalStartDate)
+                        .teaching(teaching)
+                        .build();
+
+                teachingTimeslotRepository.save(teachingTimeslot);
+            }
+            startDate = startDate.plusDays(7);
+        }
     }
+
 
     @Override
     @Transactional
@@ -135,7 +167,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         }
 
         if (!request.activityTitle().isEmpty()) {
-            if (activity == null){
+            if (activity == null) {
                 activity = new ClassActivity();
                 activity.setSignedHour(signedHour);
             }
@@ -147,7 +179,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         }
 
         if (!request.homeworkTitle().isEmpty()) {
-            if (homework == null){
+            if (homework == null) {
                 homework = new Homework();
                 homework.setSignedHour(signedHour);
             }
@@ -196,8 +228,46 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     }
 
     @Override
-    public void createTimeTable(Integer classId, TeachingTimeslotRequest request) {
+    @Transactional
+    @PreAuthorize("hasRole('SECRETARY')")
+    public void createTimeTable(ClassTimeTableRequest request) {
+        Integer schoolClassId = request.schoolClassId();
 
+        var schoolClass = schoolClassRepository.findById(schoolClassId).orElseThrow(
+                () -> new IllegalArgumentException("SchoolClass not found for ID: " + schoolClassId));
+
+
+        var classTimetable = ClassTimetable.builder()
+                .schoolClass(schoolClass)
+                .startValidity(request.startDate())
+                .endValidity(request.endDate())
+                .expectedHours(request.expectedHours() != null ? request.expectedHours() : 27) // Valore predefinito
+                .build();
+
+        classTimetableRepository.save(classTimetable);
     }
+
+    @Override
+    public List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now) {
+
+        var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
+        System.out.println(classTimeTable.getId());
+
+        var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())
+                .stream()
+                .sorted(Comparator.comparing(TeachingTimeslot::getDate))
+                .toList();
+
+        System.out.println(list);
+
+        return list.stream()
+                .map(timeslot -> new TeachingTimeslotResponse(
+                        timeslot.getHour(),
+                        timeslot.getDate(),
+                        timeslot.getTeaching().getSubjectTitle().getTitle()
+                ))
+                .toList();
+    }
+
 
 }

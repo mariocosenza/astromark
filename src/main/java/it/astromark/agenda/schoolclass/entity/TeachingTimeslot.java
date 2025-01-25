@@ -35,7 +35,7 @@ public class TeachingTimeslot extends Timeslot {
     private SignedHour signedHour;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumns({
             @JoinColumn(name = "teaching_teacher_id", referencedColumnName = "teacher_id", nullable = false),

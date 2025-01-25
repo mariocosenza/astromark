@@ -7,7 +7,6 @@ import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
-import it.astromark.user.student.entity.Student;
 import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,6 +44,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
+    @Transactional
     public List<SchoolClassResponse> getClasses() {
         SchoolUser user;
         if (authenticationService.getSecretary().isPresent()) {
@@ -64,8 +64,13 @@ public class ClassManagementServiceImpl implements ClassManagementService {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
-        var students = schoolClassRepository.findById(classId).orElseThrow().getStudents()
-                .stream().sorted(Comparator.comparing(Student::getSurname)).toList();
+        var students = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new IllegalArgumentException("Class not found with ID: " + classId))
+                .getStudents()
+                .stream()
+                .sorted(Comparator.comparing(SchoolUser::getSurname))
+                .toList();
+
 
         return classManagementMapper.toSchoolClassStudentResponseList(students);
     }

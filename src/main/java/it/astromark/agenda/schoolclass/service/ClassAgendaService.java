@@ -1,9 +1,6 @@
 package it.astromark.agenda.schoolclass.service;
 
-import it.astromark.agenda.schoolclass.dto.SignHourRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotRequest;
-import it.astromark.agenda.schoolclass.dto.TeachingTimeslotResponse;
+import it.astromark.agenda.schoolclass.dto.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -78,12 +75,12 @@ public interface ClassAgendaService {
 
     /**
      * Creates a timetable for a given class.
-     *
-     * @param classId the ID of the class
      * @param request the request containing timetable details
      * Pre-condition: The `classId` must not be null. The `request` must not be null and must contain valid timetable details.
      * Post-condition: A new timetable is created for the specified class.
      */
-    void createTimeTable(Integer classId, TeachingTimeslotRequest request);
+    void createTimeTable(ClassTimeTableRequest request);
 
+
+    List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now);
 }
