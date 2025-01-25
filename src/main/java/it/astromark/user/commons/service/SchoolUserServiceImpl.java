@@ -61,7 +61,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
 
     @Override
     public boolean isTeacherClass(Teacher teacher, Integer classId) {
-        return teacher.getTeacherClasses().stream().anyMatch(c -> Objects.equals(c.getSchoolClass().getId(), classId));
+        return teacherClassRepository.findByTeacher(teacher).stream().anyMatch(c -> Objects.equals(c.getSchoolClass().getId(), classId));
     }
 
     @Override

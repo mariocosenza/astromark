@@ -5,8 +5,8 @@ import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
-import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
+import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.entity.Student;
 import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,14 +23,14 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     private final AuthenticationService authenticationService;
     private final ClassManagementMapper classManagementMapper;
-    private final TeacherClassRepository teacherClassRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final SchoolUserService schoolUserService;
 
-    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, TeacherClassRepository teacherClassRepository, SchoolClassRepository schoolClassRepository) {
+    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService) {
         this.authenticationService = authenticationService;
         this.classManagementMapper = classManagementMapper;
-        this.teacherClassRepository = teacherClassRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.schoolUserService = schoolUserService;
     }
 
     @Override
@@ -60,9 +60,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     @Transactional
     @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
     public List<SchoolClassStudentResponse> getStudents(Integer classId) {
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        if (teacherClassRepository.findByTeacher(teacher).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 

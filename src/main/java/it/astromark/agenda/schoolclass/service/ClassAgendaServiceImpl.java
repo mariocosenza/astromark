@@ -14,7 +14,6 @@ import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
-import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.repository.ClassActivityRepository;
@@ -47,13 +46,12 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final ClassActivityRepository classActivityRepository;
     private final HomeworkRepository homeworkRepository;
     private final SignedHourRepository signedHourRepository;
-    private final TeacherClassRepository teacherClassRepository;
     private final ClassTimetableRepository classTimetableRepository;
     private final StudyPlanRepository studyPlanRepository;
     private final TeachingRepository teachingRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
@@ -63,7 +61,6 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         this.classActivityRepository = classActivityRepository;
         this.homeworkRepository = homeworkRepository;
         this.signedHourRepository = signedHourRepository;
-        this.teacherClassRepository = teacherClassRepository;
         this.classTimetableRepository = classTimetableRepository;
         this.studyPlanRepository = studyPlanRepository;
         this.teachingRepository = teachingRepository;
@@ -84,11 +81,11 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public void sign(Integer classId, SignHourRequest request) {
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        if (teacherClassRepository.findByTeacher(teacher).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
-            throw new AccessDeniedException("You are not allowed to sign this class");
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
         }
+
+        var teacher = authenticationService.getTeacher().orElseThrow();
 
         SignedHour signedHour = null;
         ClassActivity activity = null;
@@ -189,9 +186,8 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(Integer classId, LocalDate localDate) {
-        if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
-            throw new AccessDeniedException("You are not allowed to see this timetable");
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
         var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
