@@ -53,7 +53,6 @@ public class ClassAgendaController {
 
     @GetMapping("/{classId}/class-schedule")
     public List<TeachingTimeslotResponse> classSchedule(@PathVariable Integer classId) {
-
         return classAgendaService.getClassTimeslot(classId, LocalDate.now());
     }
 

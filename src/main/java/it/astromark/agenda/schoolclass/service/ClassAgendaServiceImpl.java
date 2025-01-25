@@ -270,15 +270,15 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Override
     public List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now) {
 
-        var classTimeTable = classTimetableRepository.findById(classId)
-                .orElseThrow(() -> new AccessDeniedException("Class not found"));
+        var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId , null);
+        System.out.println(classTimeTable.getId());
 
-
-        var list = teachingTimeslotRepository.findByClassTimetable(classTimeTable)
+        var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())
                 .stream()
                 .sorted(Comparator.comparing(TeachingTimeslot::getDate))
                 .toList();
 
+        System.out.println(list);
 
         return list.stream()
                 .map(timeslot -> new TeachingTimeslotResponse(
@@ -288,7 +288,6 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
                 ))
                 .toList();
     }
-
 
 
 }

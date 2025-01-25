@@ -28,7 +28,7 @@ import java.util.Set;
 )
 public class ClassTimetable extends Timetable {
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @ColumnDefault("nextval('astromark.class_timetable_school_class_id_seq')")
     @JoinColumn(name = "school_class_id", nullable = false)
     private SchoolClass schoolClass;

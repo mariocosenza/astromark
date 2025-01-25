@@ -34,8 +34,9 @@ const SchoolClassList = () => {
     }, []);
 
     const handleCardClick = (classId: number) => {
-        navigate(`/class-schedule/${classId}`);
+        navigate(`/secretary/class-schedule/${classId}`);
     };
+
 
 
 
