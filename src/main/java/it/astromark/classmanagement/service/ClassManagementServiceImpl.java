@@ -80,14 +80,16 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     }
 
     @Override
+    @Transactional
     public List<TeachingResponse> getTeachings() {
         return teachingRepository.findAll().stream()
                 .map(t -> new TeachingResponse(
-                        t.getTeacher().getName(),
-                        t.getTeacher().getSurname(),
+                        t.getTeacher().getUsername(),
                         t.getSubjectTitle().getTitle()
                 ))
+                .limit(20)
                 .toList();
     }
+
 
 }

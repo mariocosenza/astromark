@@ -1,4 +1,4 @@
 package it.astromark.classmanagement.dto;
 
-public record TeachingResponse(String teacherName , String teacherSurname , String subject) {
+public record TeachingResponse(String username ,  String subject) {
 }

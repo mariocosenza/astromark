@@ -77,36 +77,47 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Override
     @Transactional
     public void addTimeslot(Integer classId, TeachingTimeslotRequest request) {
-        var timeTable = classTimetableRepository.findById(classId)
-                .orElseThrow(() -> new IllegalArgumentException("ClassTimetable not found for ID: " + classId));
+        var timeTable = classTimetableRepository.findById(request.timetableId()).orElseThrow();
 
         var hour = request.hour();
 
         var teaching = teachingRepository.findAll().stream()
                 .filter(t -> t.getSubjectTitle().getTitle().equals(request.subject())
-                        && t.getTeacher().getId().equals(request.idTeacher()))
+                        && t.getTeacher().getUsername().equals(request.username()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Teaching not found for subject: " + request.subject() + " and teacher ID: " + request.idTeacher()));
+                .orElseThrow(() -> new IllegalArgumentException("Teaching not found for subject: " + request.subject() + " and teacher username: " + request.username()));
 
         var startDate = timeTable.getStartValidity().plusDays(request.dayWeek() - 1);
-        var endDate = timeTable.getEndValidity();
+        LocalDate endDate = timeTable.getEndValidity() != null ? timeTable.getEndValidity() : timeTable.getStartValidity().plusDays(270);
         var redDates = timeTable.getRedDates();
 
         while (startDate.isBefore(endDate) || startDate.isEqual(endDate)) {
             var finalStartDate = startDate;
             if (redDates.stream().noneMatch(r -> r.getId().getDate().isEqual(finalStartDate))) {
-                var teachingTimeslot = TeachingTimeslot.builder()
-                        .classTimetable(timeTable)
-                        .hour(hour)
-                        .date(finalStartDate)
-                        .teaching(teaching)
-                        .build();
+                // Cerca se il timeslot esiste già
+                var existingTimeslot = teachingTimeslotRepository.findByClassTimetableAndDateAndHour(timeTable, finalStartDate, hour);
 
-                teachingTimeslotRepository.save(teachingTimeslot);
+                if (existingTimeslot.isPresent()) {
+                    // Aggiorna il timeslot esistente
+                    var timeslotToUpdate = existingTimeslot.get();
+                    timeslotToUpdate.setTeaching(teaching);
+                    teachingTimeslotRepository.save(timeslotToUpdate);
+                } else {
+                    // Crea un nuovo timeslot
+                    var teachingTimeslot = TeachingTimeslot.builder()
+                            .classTimetable(timeTable)
+                            .hour(hour)
+                            .date(finalStartDate)
+                            .teaching(teaching)
+                            .build();
+
+                    teachingTimeslotRepository.save(teachingTimeslot);
+                }
             }
             startDate = startDate.plusDays(7);
         }
     }
+
 
 
     @Override
@@ -255,6 +266,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())
                 .stream()
                 .sorted(Comparator.comparing(TeachingTimeslot::getDate))
+                .filter(timeslot -> !timeslot.getDate().isBefore(now))
                 .toList();
 
         return list.stream()
@@ -265,6 +277,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
                 ))
                 .toList();
     }
+
 
     @Override
     public List<TimeTableResponse> getTimeTable(Integer classId) {
@@ -284,7 +297,6 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
                 })
                 .toList();
     }
-
 
 
 }

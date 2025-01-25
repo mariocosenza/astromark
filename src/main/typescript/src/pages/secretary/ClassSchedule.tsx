@@ -24,17 +24,16 @@ interface TeachingTimeslotResponse {
     hour: number;
     date: string;
     title: string;
+    timeTableId: number;
 }
 
 interface TeachingResponse {
-    teacherName: string;
-    teacherSurname: string;
+    username: string;
     subject: string;
-
 }
 
 interface TimeTableResponse {
-    schoolClassID: number;
+    timeTableId: number;
     startDate: string;
     endDate: string;
     number: number;
@@ -51,7 +50,7 @@ export const ClassSchedule = () => {
     const [error, setError] = useState<string | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [formData, setFormData] = useState({
-        teachingId: "",
+        teacherUsername: "",
         timetableId: "",
         dayWeek: "",
         hour: "",
@@ -72,6 +71,7 @@ export const ClassSchedule = () => {
                 setTeachings(teachingsRes.data);
                 setTimetables(timetablesRes.data);
                 setLoading(false);
+
             } catch (err) {
                 console.error("Failed to fetch data:", err);
                 setError("Failed to fetch class schedule or related data.");
@@ -96,26 +96,43 @@ export const ClassSchedule = () => {
     };
 
     const handleSelectChange = (e: SelectChangeEvent<string>) => {
-        setFormData({ ...formData, [e.target.name as string]: e.target.value });
+        console.log(`Field: ${e.target.name}, Value: ${e.target.value}` , formData.timetableId); // Debug
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+
+
     const handleSubmit = async () => {
+        console.log("Form Data:", formData); // Debug: controlla i valori
+
+        if (!formData.teacherUsername || !formData.timetableId || !formData.dayWeek || !formData.hour) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
         try {
             const requestData = {
                 dayWeek: parseInt(formData.dayWeek, 10),
                 hour: parseInt(formData.hour, 10),
-                idTeacher: formData.teachingId.split("-")[0],
-                subject: formData.teachingId.split("-")[1],
+                username: formData.teacherUsername.split("-")[0], // Controlla se `teacherUsername` contiene il valore corretto
+                subject: formData.teacherUsername.split("-")[1],  // Verifica il formato di `teacherUsername`
+                timetableId: parseInt(formData.timetableId, 10),  // Assicurati che `timetableId` sia valorizzato
             };
+
+            console.log("Request Data:", requestData); // Debug: controlla i dati inviati al backend
 
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${classId}/createTimeSlot`, requestData);
             handleCloseModal();
             alert("Timeslot added successfully!");
+
         } catch (err) {
             console.error("Failed to add timeslot:", err);
             alert("Failed to add timeslot.");
         }
     };
+
+
+
 
     if (loading) return <CircularProgress />;
     if (error) return <Alert severity="error">{error}</Alert>;
@@ -149,20 +166,29 @@ export const ClassSchedule = () => {
                         <InputLabel id="teaching-select-label">Teaching</InputLabel>
                         <Select
                             labelId="teaching-select-label"
-                            name="teachingId"
-                            value={formData.teachingId}
+                            name="teacherUsername"
+                            value={formData.teacherUsername}
                             onChange={handleSelectChange}
                         >
-                            {teachings.map((teaching) => (
-                                <MenuItem
-                                    key={`${teaching.teacherName}-${teaching.subject}`}
-                                    value={`${teaching.teacherName}-${teaching.subject}`}
-                                >
-                                    {teaching.subject} - {teaching.teacherName} {teaching.teacherSurname}
-                                </MenuItem>
-                            ))}
+                            {teachings.map((teaching) => {
+                                const formattedName = teaching.username
+                                    .split('.')
+                                    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                                    .join(' ');
+
+                                return (
+                                    <MenuItem
+                                        key={`${teaching.username}-${teaching.subject}`}
+                                        value={`${teaching.username}-${teaching.subject}`}
+                                    >
+                                        {teaching.subject} - {formattedName}
+                                    </MenuItem>
+                                );
+                            })}
                         </Select>
                     </FormControl>
+
+
                     <FormControl fullWidth margin="normal">
                         <InputLabel id="timetable-select-label">Timetable</InputLabel>
                         <Select
@@ -172,12 +198,15 @@ export const ClassSchedule = () => {
                             onChange={handleSelectChange}
                         >
                             {timetables.map((timetable) => (
-                                <MenuItem key={timetable.schoolClassID} value={timetable.schoolClassID.toString()}>
-                                    {timetable.number}{timetable.letter} [{timetable.startDate} - {timetable.endDate}]
+                                <MenuItem key={timetable.timeTableId} value={timetable.timeTableId.toString()}>
+                                    {timetable.number}{timetable.letter} [{timetable.startDate} - {timetable.endDate || "N/A"}]
                                 </MenuItem>
+
                             ))}
                         </Select>
                     </FormControl>
+
+
                     <TextField
                         fullWidth
                         label="Day of Week (1-7)"
@@ -238,4 +267,3 @@ export const ClassSchedule = () => {
         </Box>
     );
 };
-

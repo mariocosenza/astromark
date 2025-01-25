@@ -47,7 +47,6 @@ public class ClassAgendaController {
 
     @PostMapping("/{classId}/createTimeSlot")
     public void createTimeSlot(@PathVariable Integer classId, @RequestBody TeachingTimeslotRequest teachingTimeslotRequest) {
-
         classAgendaService.addTimeslot(classId, teachingTimeslotRequest);
     }
 
