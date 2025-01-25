@@ -7,6 +7,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
+import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import {useState} from "react";
 import {NavLink} from "react-router";
 import {isSelectedClass} from "../services/TeacherService.ts";
@@ -83,6 +84,16 @@ export const TeacherSideNav = () => {
                                         <ReceiptLongRoundedIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={"Valutazioni"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink to="/teacher/note" end>
+                            <ListItem key="note" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <DangerousOutlinedIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Note"}/>
                                 </ListItemButton>
                             </ListItem>
                         </NavLink>
