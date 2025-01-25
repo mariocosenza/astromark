@@ -1,8 +1,5 @@
 package it.astromark.agenda.schoolclass.service;
 
-import it.astromark.agenda.commons.entity.RedDate;
-import it.astromark.agenda.commons.entity.RedDateId;
-import it.astromark.agenda.commons.entity.Timetable;
 import it.astromark.agenda.commons.mapper.TimeslotMapper;
 import it.astromark.agenda.schoolclass.dto.*;
 import it.astromark.agenda.schoolclass.entity.ClassTimetable;
@@ -13,7 +10,6 @@ import it.astromark.agenda.schoolclass.repository.ClassTimetableRepository;
 import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
@@ -24,8 +20,6 @@ import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
-import it.astromark.user.teacher.entity.Teacher;
-import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -60,7 +54,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final SchoolClassRepository schoolClassRepository;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TeacherRepository teacherRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository, SchoolClassRepository schoolClassRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, TeacherClassRepository teacherClassRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository, SchoolClassRepository schoolClassRepository) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
