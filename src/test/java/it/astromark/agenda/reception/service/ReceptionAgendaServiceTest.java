@@ -64,11 +64,11 @@ class ReceptionAgendaServiceTest {
     void setUp() {
         var faker = new Faker();
         var school = School.builder()
-                    .code("SS23456")
-                    .name("Liceo Severi")
-                    .phoneNumber(432435L)
-                    .address("Viale L. D’Orsi, 5 80053 - Castellammare di Stabia (NA)")
-                    .email("naps110002@istruzione.it").build();
+                .code("SS23456")
+                .name("Liceo Severi")
+                .phoneNumber(432435L)
+                .address("Viale L. D’Orsi, 5 80053 - Castellammare di Stabia (NA)")
+                .email("naps110002@istruzione.it").build();
         var name = "pluto";
         var surname = "pippo";
         var password = "Pluto123!";

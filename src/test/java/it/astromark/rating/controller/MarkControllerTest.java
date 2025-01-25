@@ -53,6 +53,7 @@ class MarkControllerTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
+    private static int count = 0;
     @Autowired
     private TeachingRepository teachingRepository;
     @Autowired
@@ -69,7 +70,6 @@ class MarkControllerTest {
     private Teacher teacher;
     private Student student;
     private School school;
-    private static int count = 0;
     @Autowired
     private SubjectRepository subjectRepository;
     @Autowired
@@ -170,7 +170,7 @@ class MarkControllerTest {
     }
 
     @Test
-    void tc5_03()  throws Exception {
+    void tc5_03() throws Exception {
         var mark = new MarkRequest(student.getId(), teaching.getId(), LocalDate.of(2025, 1, 20), "Ottima Interrogazione sul Rinascimento", 0.15, MarkType.ORAL);
         mockMvc.perform(post("/api/students/marks")
                         .header("Authorization", "Bearer " + token)
@@ -200,7 +200,7 @@ class MarkControllerTest {
     }
 
     @Test
-    void tc5_06()  throws Exception{
+    void tc5_06() throws Exception {
         var mark = new MarkRequest(student.getId(), teaching.getId(), LocalDate.of(2025, 1, 20), "", 7.15, MarkType.ORAL);
         mockMvc.perform(post("/api/students/marks")
                         .header("Authorization", "Bearer " + token)
@@ -233,7 +233,7 @@ class MarkControllerTest {
     void tc5_09() throws Exception {
         var faker = new Faker();
         teaching.setTeacher(Teacher.builder().build());
-        var schoolClass =  schoolClassRepository.save(SchoolClass.builder()
+        var schoolClass = schoolClassRepository.save(SchoolClass.builder()
                 .letter("C")
                 .school(school)
                 .year(2024)

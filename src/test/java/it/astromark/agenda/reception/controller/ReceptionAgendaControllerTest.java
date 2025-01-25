@@ -54,6 +54,7 @@ class ReceptionAgendaControllerTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17.2");
+    private static int count;
     @Autowired
     private ReceptionTimeslotRepository receptionTimeslotRepository;
     private Parent parent;
@@ -73,7 +74,6 @@ class ReceptionAgendaControllerTest {
     @Autowired
     private MockMvc mockMvc;
     private String token;
-    private static int count;
     @Autowired
     private TeacherClassRepository teacherClassRepository;
     @Autowired
@@ -167,7 +167,7 @@ class ReceptionAgendaControllerTest {
         var slot = ReceptionTimeslot
                 .builder().date(LocalDate.now().plusDays(1)).mode("In Presenza").hour((short) 1).receptionTimetable(table).booked((short) 4).capacity((short) 6).build();
         receptionTimeslotRepository.save(slot);
-        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId()  + "/book")
+        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId() + "/book")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().contains("true"));
@@ -179,7 +179,7 @@ class ReceptionAgendaControllerTest {
                 .builder().date(LocalDate.now().plusDays(1)).mode("Online").hour((short) 2).receptionTimetable(table).booked((short) 4).capacity((short) 6).build();
 
         receptionTimeslotRepository.save(slot);
-        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId()  + "/book")
+        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId() + "/book")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().contains("true"));
@@ -191,7 +191,7 @@ class ReceptionAgendaControllerTest {
         var slot = ReceptionTimeslot
                 .builder().date(LocalDate.now().plusDays(1)).mode("In Presenza").hour((short) 3).receptionTimetable(table).booked((short) 0).capacity((short) 6).build();
         receptionTimeslotRepository.save(slot);
-        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId()  + "/book")
+        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId() + "/book")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().contains("true"));
@@ -203,7 +203,7 @@ class ReceptionAgendaControllerTest {
         var slot = ReceptionTimeslot
                 .builder().date(LocalDate.now().plusDays(1)).mode("In Presenza").hour((short) 4).receptionTimetable(table).booked((short) 0).capacity((short) 1).build();
         receptionTimeslotRepository.save(slot);
-        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId()  + "/book")
+        assertTrue(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId() + "/book")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().contains("true"));
@@ -215,7 +215,7 @@ class ReceptionAgendaControllerTest {
         var slot = ReceptionTimeslot
                 .builder().date(LocalDate.now().plusDays(1)).mode("In Presenza").hour((short) 5).receptionTimetable(table).booked((short) 6).capacity((short) 6).build();
         receptionTimeslotRepository.save(slot);
-        assertFalse(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId()  + "/book")
+        assertFalse(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId() + "/book")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().contains("true"));
@@ -227,7 +227,7 @@ class ReceptionAgendaControllerTest {
         var slot = ReceptionTimeslot
                 .builder().date(LocalDate.now().plusDays(1)).mode("In Presenza").hour((short) 6).receptionTimetable(table).booked((short) 1).capacity((short) 1).build();
         receptionTimeslotRepository.save(slot);
-        assertFalse(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId()  + "/book")
+        assertFalse(mockMvc.perform(patch("/api/agenda/reception/timeslot/" + slot.getId() + "/book")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.TEXT_HTML))
                 .andReturn().getResponse().getContentAsString().contains("true"));
