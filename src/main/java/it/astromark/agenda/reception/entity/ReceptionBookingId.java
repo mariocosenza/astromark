@@ -3,9 +3,7 @@ package it.astromark.agenda.reception.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.io.Serial;
@@ -17,6 +15,8 @@ import java.util.UUID;
 @Setter
 @ToString
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReceptionBookingId implements Serializable {
     @Serial
     private static final long serialVersionUID = -6673933355580646698L;

@@ -16,9 +16,10 @@ export type HomeworkItemProp = {
 
 export type HomeworkProp = {
     list: HomeworkItemProp[]
+    dashboard: boolean
 }
 
-export const HomeworkList: React.FC<HomeworkProp> = ({list}) => {
+export const HomeworkList: React.FC<HomeworkProp> = ({list, dashboard}) => {
     const [open, setOpen] = openChat()
     const [homewokId, setChatId] = homeworkChatId()
     return (
@@ -39,7 +40,7 @@ export const HomeworkList: React.FC<HomeworkProp> = ({list}) => {
                                     item.description
                                 }
                                 {
-                                    getRole().toUpperCase() == Role.STUDENT && item.chat &&
+                                    getRole().toUpperCase() == Role.STUDENT && item.chat && !dashboard &&
                                     <Button style={{alignContent: 'end'}} onClick={() => {
                                         setOpen(!open)
                                         open ? setChatId(-1) : setChatId(item.id)

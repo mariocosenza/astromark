@@ -41,8 +41,6 @@ class MarkServiceTest {
 
     private School school;
 
-    private Student student;
-
     @BeforeEach
     public void setUpUser() {
         school = School.builder()
@@ -54,7 +52,7 @@ class MarkServiceTest {
         var faker = new Faker();
         var name = faker.name().firstName();
         var surname = faker.name().lastName();
-        student = Student.builder()
+        Student student = Student.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .pendingState(PendingState.NORMAL)
