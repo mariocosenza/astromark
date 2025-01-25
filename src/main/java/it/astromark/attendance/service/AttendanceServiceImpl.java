@@ -7,10 +7,9 @@ import it.astromark.attendance.entity.Delay;
 import it.astromark.attendance.mapper.AttendanceMapper;
 import it.astromark.attendance.repository.AbsenceRepository;
 import it.astromark.attendance.repository.DelayRepository;
-import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
-import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
+import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,8 +25,7 @@ import java.util.List;
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
 
-    private final TeacherClassRepository teacherClassRepository;
-    private final AuthenticationService authenticationService;
+    private final SchoolUserService schoolUserService;
     private final SchoolClassRepository schoolClassRepository;
     private final AbsenceRepository absenceRepository;
     private final DelayRepository delayRepository;
@@ -35,9 +33,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final StudentRepository studentRepository;
 
     @Autowired
-    public AttendanceServiceImpl(TeacherClassRepository teacherClassRepository, AuthenticationService authenticationService, SchoolClassRepository schoolClassRepository, AbsenceRepository absenceRepository, DelayRepository delayRepository, AttendanceMapper attendanceMapper, StudentRepository studentRepository) {
-        this.teacherClassRepository = teacherClassRepository;
-        this.authenticationService = authenticationService;
+    public AttendanceServiceImpl(SchoolUserService schoolUserService, SchoolClassRepository schoolClassRepository, AbsenceRepository absenceRepository, DelayRepository delayRepository, AttendanceMapper attendanceMapper, StudentRepository studentRepository) {
+        this.schoolUserService = schoolUserService;
         this.schoolClassRepository = schoolClassRepository;
         this.absenceRepository = absenceRepository;
         this.delayRepository = delayRepository;
@@ -45,12 +42,12 @@ public class AttendanceServiceImpl implements AttendanceService {
         this.studentRepository = studentRepository;
     }
 
+
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<AttendanceResponse> getAttendance(Integer classId, LocalDate date) {
-        if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
@@ -65,8 +62,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public void saveAttendance(Integer classId, LocalDate date, List<AttendanceRequest> attendanceRequests) {
-        if (teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream()
-                .noneMatch(c -> c.getSchoolClass().getId().equals(classId))) {
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
