@@ -1,12 +1,12 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import { Typography, CircularProgress, Alert, Box } from "@mui/material";
+import { Typography, CircularProgress, Alert, Box, Card, CardContent, Stack } from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig";
 import { Env } from "../../Env.ts";
 
 interface TeachingTimeslotResponse {
-    hour: number; // Adattato da Short
-    date: string; // LocalDate verrà gestito come stringa ISO
+    hour: number;
+    date: string;
     title: string;
 }
 
@@ -28,7 +28,6 @@ export const ClassSchedule = () => {
                 const response = await axiosConfig.get<TeachingTimeslotResponse[]>(
                     `${Env.API_BASE_URL}/classes/${classId}/class-schedule`
                 );
-                console.log(response);
                 setSchedule(response.data);
                 setLoading(false);
             } catch (err) {
@@ -44,27 +43,55 @@ export const ClassSchedule = () => {
     if (loading) return <CircularProgress />;
     if (error) return <Alert severity="error">{error}</Alert>;
 
+    // Group schedule by date
+    const groupedSchedule = schedule.reduce((acc, timeslot) => {
+        if (!acc[timeslot.date]) {
+            acc[timeslot.date] = [];
+        }
+        acc[timeslot.date].push(timeslot);
+        return acc;
+    }, {} as Record<string, TeachingTimeslotResponse[]>);
+
+    const dates = Object.keys(groupedSchedule).slice(0, 6); // Limit to 6 columns
+
     return (
-        <div style={{ padding: "16px" }}>
+        <Box sx={{ padding: "16px" }}>
             <Typography variant="h4" gutterBottom>
-                Class Schedule for Class ID: {classId}
+                Class Schedule
             </Typography>
-            {schedule.length === 0 ? (
+            {dates.length === 0 ? (
                 <Typography>No schedule available.</Typography>
             ) : (
-                schedule.map((timeslot, index) => (
-                    <Box key={`${timeslot.date}-${index}`} mb={2}>
-                        <Typography variant="h6">Date: {timeslot.date}</Typography>
-                        <ul>
-                            <li>
-                                {timeslot.hour}: {timeslot.title}
-                            </li>
-                        </ul>
-                    </Box>
-                ))
+                <Box display="flex" flexWrap="wrap" gap={3}>
+                    {dates.map((date) => (
+                        <Card
+                            key={date}
+                            sx={{
+                                flex: "1 1 calc(33.33% - 24px)",
+                                minWidth: "300px",
+                                maxWidth: "400px",
+                                boxShadow: 2,
+                                borderRadius: "12px",
+                            }}
+                        >
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom>
+                                    {date}
+                                </Typography>
+                                <Stack spacing={1}>
+                                    {groupedSchedule[date].map((timeslot, index) => (
+                                        <Typography key={index}>
+                                            {timeslot.hour}: {timeslot.title}
+                                        </Typography>
+                                    ))}
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Box>
             )}
-        </div>
+        </Box>
     );
 };
 
-
+export default ClassSchedule;

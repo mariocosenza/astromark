@@ -241,27 +241,17 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Transactional
     @PreAuthorize("hasRole('SECRETARY')")
     public void createTimeTable(ClassTimeTableRequest request) {
-        String schoolClassString = request.schoolClass();
+        Integer schoolClassId = request.schoolClassId();
 
-        String numberPart = schoolClassString.replaceAll("\\D", "");
-        String letterPart = schoolClassString.replaceAll("\\d", "");
-
-        Short number = Short.valueOf(numberPart);
-
-        if (letterPart.isEmpty()) {
-            throw new IllegalArgumentException("Formato della classe non valido: " + schoolClassString);
-        }
-
-        System.out.println("Numero: " + number);
-        System.out.println("Lettere: " + letterPart);
-
-        var schoolClass = schoolClassRepository.findByNumberAndLetter(number, letterPart);
+        var schoolClass = schoolClassRepository.findById(schoolClassId).orElseThrow(
+                () -> new IllegalArgumentException("SchoolClass not found for ID: " + schoolClassId));
 
 
-        ClassTimetable classTimetable = ClassTimetable.builder()
+        var classTimetable = ClassTimetable.builder()
                 .schoolClass(schoolClass)
                 .startValidity(request.startDate())
                 .endValidity(request.endDate())
+                .expectedHours(request.expectedHours() != null ? request.expectedHours() : 27) // Valore predefinito
                 .build();
 
         classTimetableRepository.save(classTimetable);
@@ -270,7 +260,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Override
     public List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now) {
 
-        var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId , null);
+        var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
         System.out.println(classTimeTable.getId());
 
         var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())

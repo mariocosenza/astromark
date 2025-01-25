@@ -2,16 +2,19 @@ package it.astromark.classmanagement.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
+import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -63,8 +66,13 @@ public class ClassManagementServiceImpl implements ClassManagementService {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
-        var students = schoolClassRepository.findById(classId).orElseThrow().getStudents()
-                .stream().sorted(Comparator.comparing(Student::getSurname)).toList();
+        var students = schoolClassRepository.findById(classId)
+                .orElseThrow(() -> new IllegalArgumentException("Class not found with ID: " + classId))
+                .getStudents()
+                .stream()
+                .sorted(Comparator.comparing(SchoolUser::getSurname))
+                .toList();
+
 
         return classManagementMapper.toSchoolClassStudentResponseList(students);
     }

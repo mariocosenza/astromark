@@ -1,9 +1,23 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Box, CircularProgress, Alert } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Typography,
+    Box,
+    CircularProgress,
+    Alert,
+    Button,
+    Modal,
+    TextField,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
+    SelectChangeEvent
+} from "@mui/material";
 import { useNavigate } from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
 import { Env } from "../../Env.ts";
-
 
 interface SchoolClassResponse {
     id: number;
@@ -12,10 +26,17 @@ interface SchoolClassResponse {
     number: number;
 }
 
-const SchoolClassList = () => {
+export const ManageTimetable = () => {
     const [schoolClasses, setSchoolClasses] = useState<SchoolClassResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        schoolClassId: "",
+        startDate: "",
+        endDate: "",
+        expectedHours: "27" // Default value
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,9 +58,32 @@ const SchoolClassList = () => {
         navigate(`/secretary/class-schedule/${classId}`);
     };
 
+    const handleOpenModal = () => {
+        setModalOpen(true);
+    };
 
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
+    const handleClassChange = (e: SelectChangeEvent<string>) => {
+        setFormData({ ...formData, schoolClassId: e.target.value });
+    };
+
+    const handleSubmit = async () => {
+        try {
+            await axiosConfig.post(`${Env.API_BASE_URL}/classes/createTimeTable`, formData);
+            handleCloseModal();
+            alert("Class timetable created successfully!");
+        } catch (err) {
+            console.error("Failed to create class timetable:", err);
+            alert("Failed to create class timetable.");
+        }
+    };
 
     if (loading) return <CircularProgress />;
     if (error) return <Alert severity="error">{error}</Alert>;
@@ -49,6 +93,80 @@ const SchoolClassList = () => {
             <Typography variant="h4" gutterBottom>
                 School Classes
             </Typography>
+            <Button variant="contained" color="primary" onClick={handleOpenModal} style={{ marginBottom: "16px" }}>
+                Create Timetable
+            </Button>
+            <Modal open={modalOpen} onClose={handleCloseModal}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 400,
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2
+                    }}
+                >
+                    <Typography variant="h6" gutterBottom>
+                        Create Class Timetable
+                    </Typography>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="school-class-select-label">School Class</InputLabel>
+                        <Select
+                            labelId="school-class-select-label"
+                            value={formData.schoolClassId}
+                            onChange={handleClassChange}
+                        >
+                            {schoolClasses.map((schoolClass) => (
+                                <MenuItem key={schoolClass.id} value={schoolClass.id.toString()}>
+                                    {schoolClass.number} {schoolClass.letter} - Year {schoolClass.year}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        fullWidth
+                        type="date"
+                        label="Start Date"
+                        name="startDate"
+                        value={formData.startDate}
+                        onChange={handleInputChange}
+                        margin="normal"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                        fullWidth
+                        type="date"
+                        label="End Date"
+                        name="endDate"
+                        value={formData.endDate}
+                        onChange={handleInputChange}
+                        margin="normal"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                        fullWidth
+                        type="number"
+                        label="Expected Hours"
+                        name="expectedHours"
+                        value={formData.expectedHours}
+                        onChange={handleInputChange}
+                        margin="normal"
+                        InputProps={{ inputProps: { min: 0, max: 40 } }}
+                    />
+                    <Box mt={2} display="flex" justifyContent="flex-end">
+                        <Button onClick={handleCloseModal} style={{ marginRight: "8px" }}>
+                            Cancel
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={handleSubmit}>
+                            Submit
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
             <Box display="flex" flexWrap="wrap" gap={3}>
                 {schoolClasses.map((schoolClass) => (
                     <Box
@@ -60,7 +178,7 @@ const SchoolClassList = () => {
                         <Card>
                             <CardContent>
                                 <Typography variant="h6">
-                                    Number: {schoolClass.number} Letter: {schoolClass.letter}
+                                    {schoolClass.number} {schoolClass.letter}
                                 </Typography>
                                 <Typography>Year: {schoolClass.year}</Typography>
                             </CardContent>
@@ -72,6 +190,3 @@ const SchoolClassList = () => {
     );
 };
 
-export const ManageTimetable = SchoolClassList;
-
-export default SchoolClassList;
