@@ -56,6 +56,11 @@ public class ClassAgendaController {
         return classAgendaService.getClassTimeslot(classId, LocalDate.now());
     }
 
+    @GetMapping("/{classId}/timetable")
+    public List<TimeTableResponse> getTimeTable(@PathVariable Integer classId) {
+        return classAgendaService.getTimeTable(classId);
+    }
+
 
 }
 

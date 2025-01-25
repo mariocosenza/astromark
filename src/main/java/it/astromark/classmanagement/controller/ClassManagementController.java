@@ -1,7 +1,9 @@
 package it.astromark.classmanagement.controller;
 
+import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.service.ClassManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,5 +49,10 @@ public class ClassManagementController {
     @GetMapping("/{classId}/students")
     public List<SchoolClassStudentResponse> getStudents(@PathVariable Integer classId) {
         return classManagementService.getStudents(classId);
+    }
+
+    @GetMapping("/teaching")
+    public List<TeachingResponse> getTeachings() {
+        return classManagementService.getTeachings();
     }
 }

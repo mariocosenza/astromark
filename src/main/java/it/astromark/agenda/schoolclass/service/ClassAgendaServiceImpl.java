@@ -255,14 +255,11 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     public List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now) {
 
         var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
-        System.out.println(classTimeTable.getId());
 
         var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())
                 .stream()
                 .sorted(Comparator.comparing(TeachingTimeslot::getDate))
                 .toList();
-
-        System.out.println(list);
 
         return list.stream()
                 .map(timeslot -> new TeachingTimeslotResponse(
@@ -272,6 +269,26 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
                 ))
                 .toList();
     }
+
+    @Override
+    public List<TimeTableResponse> getTimeTable(Integer classId) {
+        return classTimetableRepository.getClassTimetableBySchoolClass_Id(classId).stream()
+                .map(timetable -> {
+                    var schoolClass = schoolClassRepository.findById(timetable.getSchoolClass().getId())
+                            .orElseThrow(() -> new IllegalArgumentException("SchoolClass not found for ID: " + timetable.getSchoolClass().getId()));
+
+                    return new TimeTableResponse(
+                            timetable.getId(),
+                            timetable.getStartValidity(),
+                            timetable.getEndValidity(),
+                            schoolClass.getNumber(),
+                            schoolClass.getLetter(),
+                            schoolClass.getYear()
+                    );
+                })
+                .toList();
+    }
+
 
 
 }

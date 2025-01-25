@@ -1,8 +1,10 @@
 package it.astromark.classmanagement.service;
 
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
@@ -24,12 +26,14 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     private final ClassManagementMapper classManagementMapper;
     private final TeacherClassRepository teacherClassRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final TeachingRepository teachingRepository;
 
-    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, TeacherClassRepository teacherClassRepository, SchoolClassRepository schoolClassRepository) {
+    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, TeacherClassRepository teacherClassRepository, SchoolClassRepository schoolClassRepository, TeachingRepository teachingRepository) {
         this.authenticationService = authenticationService;
         this.classManagementMapper = classManagementMapper;
         this.teacherClassRepository = teacherClassRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.teachingRepository = teachingRepository;
     }
 
     @Override
@@ -75,6 +79,17 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
 
         return classManagementMapper.toSchoolClassStudentResponseList(students);
+    }
+
+    @Override
+    public List<TeachingResponse> getTeachings() {
+        return teachingRepository.findAll().stream()
+                .map(t -> new TeachingResponse(
+                        t.getTeacher().getName(),
+                        t.getTeacher().getSurname(),
+                        t.getSubjectTitle().getTitle()
+                ))
+                .toList();
     }
 
 }
