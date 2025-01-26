@@ -49,14 +49,14 @@ public class ClassworkServiceImpl implements ClassworkService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<ClassworkResponse> getClassActivities(Integer classId) {
-        if(!schoolUserService.isLoggedParentStudentClass(classId)) {
+        if (!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");
-        } else if(authenticationService.isStudent()) {
-                if(studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
-                    throw new AccessDeniedException("You are not allowed to access this class");
-                }
+        } else if (authenticationService.isStudent()) {
+            if (studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
+                throw new AccessDeniedException("You are not allowed to access this class");
+            }
         }
 
         return classworkMapper.classActivityToClassworkResponseList(classActivityRepository.findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(classId)).stream().sorted(Comparator.comparing(s -> s.signedHour().date())).toList();
@@ -64,17 +64,17 @@ public class ClassworkServiceImpl implements ClassworkService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<HomeworkResponse> getHomework(Integer classId) {
-        if(!schoolUserService.isLoggedParentStudentClass(classId)) {
+        if (!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this class");
-        } else if(authenticationService.isStudent()) {
-            if(studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
+        } else if (authenticationService.isStudent()) {
+            if (studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
                 throw new AccessDeniedException("You are not allowed to access this class");
             }
         }
 
-        return classworkMapper.homeworkToHomeworkResponseList(homeworkRepository.findAllBySignedHour_TeachingTimeslot_ClassTimetableSchoolClass_Id(classId)).stream().sorted(Comparator.comparing(HomeworkResponse::dueDate)).toList();
+        return classworkMapper.homeworkToHomeworkResponseList(homeworkRepository.findAllBySignedHour_TeachingTimeslot_ClassTimetable_SchoolClass_Id(classId)).stream().sorted(Comparator.comparing(HomeworkResponse::dueDate)).toList();
     }
 
 

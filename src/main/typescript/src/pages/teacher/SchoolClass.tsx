@@ -1,14 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {
-    CircularProgress,
-    Typography,
-} from "@mui/material";
+import {CircularProgress, Typography,} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import {AxiosResponse} from "axios";
-import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
-import {TeacherClassResponse} from "../../entities/TeacherClassResponse.ts";
-import {Item, GridList} from "../../components/GridList.tsx";
+import {SchoolClassResponse} from "../../entities/SchoolClassResponse.ts";
+import {GridList, Item} from "../../components/GridList.tsx";
 import {useNavigate} from "react-router";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 
@@ -23,9 +19,9 @@ export const SchoolClass: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const response: AxiosResponse<TeacherClassResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/schoolClasses`);
-            if (response.data.length){
-                const correctedData: Item[] = response.data.map((schoolClass: TeacherClassResponse) => ({
+            const response: AxiosResponse<SchoolClassResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/schoolClasses`);
+            if (response.data.length) {
+                const correctedData: Item[] = response.data.map((schoolClass: SchoolClassResponse) => ({
                     id: schoolClass.id,
                     title: schoolClass.number.toString() + schoolClass.letter,
                     desc: schoolClass.description,
@@ -49,12 +45,11 @@ export const SchoolClass: React.FC = () => {
 
     return (
         <div>
-            <TeacherDashboardNavbar/>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
                 Scegli la classe
             </Typography>
 
-            <div className={'centerBox'} style={{marginTop:'4vh'}}>
+            <div className={'centerBox'} style={{marginTop: '4vh'}}>
                 {loading ? <CircularProgress/> :
                     <GridList items={data} onClick={chooseSchoolClass}></GridList>}
             </div>

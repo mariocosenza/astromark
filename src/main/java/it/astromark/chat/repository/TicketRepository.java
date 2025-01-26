@@ -14,5 +14,6 @@ import java.util.UUID;
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
 
     List<Ticket> findByTeacherAndClosedAndSolved(Teacher teacher, @NotNull Boolean closed, @NotNull Boolean solved);
+
     List<Ticket> findByParentAndClosedAndSolved(Parent parent, @NotNull Boolean closed, @NotNull Boolean solved);
 }

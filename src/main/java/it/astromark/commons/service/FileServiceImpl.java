@@ -6,11 +6,18 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -19,33 +26,55 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
+    private final S3Client s3Client;
     @Value("${aws.bucket.name}")
     private String bucketName;
 
-    private final S3Client s3Client;
-
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
-        // 1. Get a safe, sanitized file name (removing any path components)
+        // 1. Check file size (16MB = 16 * 1024 * 1024 bytes)
+        long maxSize =((long) 16) * 1024 * 1024;
+        if (multipartFile.getSize() > maxSize) {
+            throw new IllegalArgumentException("File size exceeds maximum limit of 16MB");
+        }
+
+        // 2. Get a safe, sanitized file name (removing any path components)
         String originalFilename = Objects.requireNonNull(multipartFile.getOriginalFilename(),
                 "File name cannot be null");
         String safeFilename = FilenameUtils.getName(originalFilename);
 
-        // 2. Generate a unique file name (e.g., using timestamp)
+        // 3. Generate a unique file name (e.g., using timestamp)
         String fileName = generateFileName(safeFilename);
 
-        // 3. Prepare the PutObjectRequest
+        // 4. Prepare metadata map with content type detection
+        String contentType = multipartFile.getContentType();
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", contentType);
+        metadata.put("Original-Filename", safeFilename);
+        metadata.put("Upload-Date", LocalDateTime.now().toString());
+        metadata.put("File-Size", String.valueOf(multipartFile.getSize()));
+
+        // 5. Prepare the PutObjectRequest
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
-                .contentType("plain/" + FilenameUtils.getExtension(safeFilename))
-                .metadata(Map.of("Title", "File Upload - " + fileName))
+                .contentType(contentType)
+                .metadata(metadata)
                 .build();
 
-        // 4. Upload the file directly from multipart bytes
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
+        // 6. Upload the file directly from multipart bytes
+        try {
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
+        } catch (SdkException e) {
+            log.error("Error uploading file to S3: {}", e.getMessage());
+            throw new IOException("Failed to upload file to S3", e);
+        }
 
-        // 5. Retrieve the file URL (assuming the object/bucket is publicly accessible)
+        // 7. Retrieve the file URL (assuming the object/bucket is publicly accessible)
         String fileUrl = s3Client.utilities()
                 .getUrl(GetUrlRequest.builder()
                         .bucket(bucketName)

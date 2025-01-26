@@ -73,5 +73,4 @@ public class Student extends SchoolUser {
     private Set<SchoolClass> schoolClasses = new LinkedHashSet<>();
 
 
-
 }

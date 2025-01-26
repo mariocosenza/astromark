@@ -7,6 +7,7 @@ import it.astromark.user.student.service.StudentService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import java.time.Year;
 import java.util.List;
@@ -29,15 +30,23 @@ public class StudentController {
         return studentService.getStudentYears(studentId);
     }
 
-
     @GetMapping("/{studentId}/classes/{year}")
     public List<SchoolClassResponse> getSchoolClassByYear(@PathVariable UUID studentId, @PathVariable Year year) {
         return studentService.getSchoolClassByYear(studentId, year);
     }
 
-
     @PostMapping
     public SchoolUserDetailed create(@RequestBody @NotNull StudentRequest studentRequest) {
         return studentService.create(studentRequest);
+    }
+
+    @GetMapping("/{studentId}")
+    public SchoolUserDetailed getById(@PathVariable UUID studentId) {
+        return studentService.getById(studentId);
+    }
+
+    @GetMapping("/{studentId}/attitude")
+    public String attitude(@PathVariable UUID studentId) {
+        return HtmlUtils.htmlEscape(studentService.attitude(studentId));
     }
 }

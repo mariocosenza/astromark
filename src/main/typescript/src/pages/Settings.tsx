@@ -7,21 +7,20 @@ import { Env } from "../Env.ts";
 import { AxiosResponse } from "axios";
 import YupPassword from "yup-password";
 import * as yup from "yup";
-
+import { useNavigate } from "react-router";
 
 export function validateAddress(address: string): boolean {
     if (address.length < 5) {
         return false;
     }
-    const addressRegex = /^[a-zA-Z0-9\s.]+$/;
+    const addressRegex = /^[a-zA-Z0-9\s.,]+$/;
     return addressRegex.test(address);
-
 }
 
 function sendAddress(address: string) {
     if (validateAddress(address)) {
         axiosConfig
-            .patch(Env.API_BASE_URL + "/school-users/address", address)
+            .patch(`${Env.API_BASE_URL}/school-users/address`, { address })
             .then(() => {
                 // eventuale logica di successo
             })
@@ -42,7 +41,7 @@ type SchoolUser = {
     birthDate: Date;
 };
 
-YupPassword(yup); // extend yup
+YupPassword(yup);
 
 const passwordValidation = yup.object().shape({
     password: yup
@@ -56,6 +55,8 @@ const passwordValidation = yup.object().shape({
 });
 
 export const Settings: React.FC = () => {
+    const navigate = useNavigate();
+
     // Stati relativi all'indirizzo
     const [address, setAddress] = useState<string>("");
     const [addressError, setAddressError] = useState<boolean>(false);
@@ -107,6 +108,7 @@ export const Settings: React.FC = () => {
         setError(!isValid);
     };
 
+    // Funzione per inviare le preferenze
     async function sendPreferences(
         confirmPassword: string | undefined,
         password: string | undefined
@@ -114,10 +116,12 @@ export const Settings: React.FC = () => {
         try {
             if (!password || !confirmPassword) {
                 setError(true);
+                setValidationMessage("Password e conferma password sono obbligatorie.");
                 return;
             }
             if (password !== confirmPassword) {
                 setError(true);
+                setValidationMessage("Le password non coincidono");
                 return;
             }
             const isValid = await validatePassword(password);
@@ -125,14 +129,16 @@ export const Settings: React.FC = () => {
                 setError(true);
                 return;
             }
-            await axiosConfig.patch(Env.API_BASE_URL + "/school-users/preferences", {
+            await axiosConfig.patch(`${Env.API_BASE_URL}/school-users/preferences`, {
                 password: password,
             });
             logout();
-            window.location.href = "/";
+            localStorage.removeItem("user");
+            navigate("/"); // Utilizza la funzione navigate ottenuta dall'hook useNavigate
         } catch (error) {
-            console.error("Error updating preferences:", error);
+            console.error("Errore nell'aggiornamento delle preferenze:", error);
             setError(true);
+            setValidationMessage("Errore nell'aggiornamento delle preferenze.");
         }
     }
 
@@ -143,13 +149,13 @@ export const Settings: React.FC = () => {
     const fetchData = async () => {
         try {
             const response: AxiosResponse<SchoolUser> = await axiosConfig.get(
-                Env.API_BASE_URL + "/school-users/detailed"
+                `${Env.API_BASE_URL}/school-users/detailed`
             );
             setSchoolUser(response.data);
-            // Rimuovo eventuali virgolette presenti
-            setAddress(response.data.residentialAddress.replaceAll('"', ""));
+            // Rimuovi eventuali virgolette presenti
+            setAddress(response.data.residentialAddress.replace(/"/g, ""));
         } catch (error) {
-            console.error(error);
+            console.error("Errore nel fetching dei dati:", error);
         }
     };
 
@@ -281,7 +287,7 @@ export const Settings: React.FC = () => {
                             variant="outlined"
                         />
                         <TextField
-                            id="checkPassoword"
+                            id="checkPassword" // Corretto l'ID da "checkPassoword" a "checkPassword"
                             type={"password"}
                             onChange={(e) => onConfirmPasswordChange(e.currentTarget.value)}
                             label="Conferma Password"
@@ -297,9 +303,7 @@ export const Settings: React.FC = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={() =>
-                                address !== undefined ? sendPreferences(confirmPassword, newPassword) : null
-                            }
+                            onClick={() => sendPreferences(confirmPassword, newPassword)}
                             style={{ maxHeight: "4rem" }}
                         >
                             Salva

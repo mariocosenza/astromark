@@ -8,5 +8,10 @@ import it.astromark.user.secretary.entity.Secretary;
 
 import java.util.UUID;
 
+/**
+ * Service interface for managing secretary-related operations.
+ * Extends the generic CrudService interface to provide basic CRUD functionality.
+ */
 public interface SecretaryService extends CrudService<Secretary, SecretaryRequest, SchoolUserDetailed, UUID> {
 }
+

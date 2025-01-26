@@ -1,6 +1,9 @@
 package it.astromark.authentication.service;
 
+import it.astromark.authentication.dto.UserFirstLoginRequest;
+import it.astromark.authentication.dto.UserLoginRequest;
 import it.astromark.authentication.utils.PasswordUtils;
+import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.commons.model.Role;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.parent.entity.Parent;
@@ -44,18 +47,49 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public SchoolUser login(String username, String password, String schoolCode, String role) {
+    public SchoolUser login(UserLoginRequest user) {
+        if(user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
+                !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") ||
+                !user.schoolCode().matches("^SS\\d{5}$") ||
+                user.role().isBlank()) {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
         // Cerca l'utente nei vari repository
-        var schoolUser = findUserInRepositories(username, schoolCode, role);
-        if (schoolUser == null) return null;
+        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+        if (schoolUser == null) {
+            return null;
+        }
 
-
-        var hashedPassword = PasswordUtils.hashPassword(password);
+        var hashedPassword = PasswordUtils.hashPassword(user.password());
         if (hashedPassword.equals(schoolUser.getPassword()))
             return schoolUser;
 
+        log.info("User not found in any repository");
         // Se nessun utente trovato o password non valida
+        return null;
+    }
+
+    @Override
+    public SchoolUser firstLogin(UserFirstLoginRequest user) {
+        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+
+        var hashedPassword = PasswordUtils.hashPassword(user.password());
+        if (schoolUser != null && hashedPassword.equals(schoolUser.getPassword())) {
+            schoolUser.setPassword(PasswordUtils.hashPassword(user.newPassword()));
+            schoolUser.setPendingState(PendingState.NORMAL);
+            SchoolUser updatedUser = switch (user.role().toLowerCase()) {
+                case "student" -> studentRepository.save((Student) schoolUser);
+                case "teacher" -> teacherRepository.save((Teacher) schoolUser);
+                case "parent" -> parentRepository.save((Parent) schoolUser);
+                case "secretary" -> secretaryRepository.save((Secretary) schoolUser);
+                default -> null;
+            };
+            if (updatedUser != null) {
+                return login(new UserLoginRequest(updatedUser.getUsername(), user.newPassword(), user.schoolCode(), user.role()));
+            }
+        }
+
         return null;
     }
 
@@ -66,10 +100,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         };
 
         return switch (role) {
-            case "ROLE_student" -> studentRepository.findById(id).orElseThrow(exceptionSupplier);
-            case "ROLE_teacher" -> teacherRepository.findById(id).orElseThrow(exceptionSupplier);
-            case "ROLE_parent" -> parentRepository.findById(id).orElseThrow(exceptionSupplier);
-            case "ROLE_secretary" -> secretaryRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_STUDENT" -> studentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_TEACHER" -> teacherRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_PARENT" -> parentRepository.findById(id).orElseThrow(exceptionSupplier);
+            case "ROLE_SECRETARY" -> secretaryRepository.findById(id).orElseThrow(exceptionSupplier);
             default -> throw exceptionSupplier.get();
         };
     }
@@ -77,7 +111,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String verify(String username, String password, String schoolCode, String role) {
 
-        var schoolUser = login(username, password, schoolCode, role);
+        var schoolUser = login(new UserLoginRequest(username, password, schoolCode, role));
         if (schoolUser != null)
             return jwtService.generateToken(schoolUser.getId(), getRole(schoolUser));
         else return null;
@@ -91,10 +125,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         return switch (user) {
-            case Parent ignored -> new SimpleGrantedAuthority("ROLE_" + Role.PARENT.toString().toLowerCase());
-            case Teacher ignored -> new SimpleGrantedAuthority("ROLE_" + Role.TEACHER.toString().toLowerCase());
-            case Student ignored -> new SimpleGrantedAuthority("ROLE_" + Role.STUDENT.toString().toLowerCase());
-            case Secretary ignored -> new SimpleGrantedAuthority("ROLE_" + Role.SECRETARY.toString().toLowerCase());
+            case Parent ignored -> new SimpleGrantedAuthority("ROLE_" + Role.PARENT.toString().toUpperCase());
+            case Teacher ignored -> new SimpleGrantedAuthority("ROLE_" + Role.TEACHER.toString().toUpperCase());
+            case Student ignored -> new SimpleGrantedAuthority("ROLE_" + Role.STUDENT.toString().toUpperCase());
+            case Secretary ignored -> new SimpleGrantedAuthority("ROLE_" + Role.SECRETARY.toString().toUpperCase());
             default ->
                     throw new IllegalStateException("Unexpected user type: " + user.getClass().toString().toLowerCase());
         };
@@ -102,7 +136,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
+    public SchoolUser findUserInRepositories(String username, String schoolCode, String role) {
         // Cerca l'utente in ciascun repository
         return switch (role.toLowerCase()) {
             case "student" -> studentRepository.findByUsernameAndSchoolCode(username, schoolCode);
@@ -114,34 +148,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public boolean isStudent() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Student;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Student;
     }
 
     public boolean isTeacher() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Teacher;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Teacher;
     }
 
     public boolean isParent() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Parent;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Parent;
     }
 
     public boolean isSecretary() {
-        return  SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Secretary;
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Secretary;
     }
 
     public Optional<Parent> getParent() {
-        return isParent() ? Optional.of((Parent)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isParent() ? Optional.of((Parent) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 
     public Optional<Student> getStudent() {
-        return isStudent() ? Optional.of((Student)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isStudent() ? Optional.of((Student) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 
     public Optional<Teacher> getTeacher() {
-        return isTeacher() ? Optional.of((Teacher)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isTeacher() ? Optional.of((Teacher) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 
     public Optional<Secretary> getSecretary() {
-        return isSecretary() ? Optional.of((Secretary)  SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
+        return isSecretary() ? Optional.of((Secretary) SecurityContextHolder.getContext().getAuthentication().getPrincipal()) : Optional.empty();
     }
 }

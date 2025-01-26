@@ -1,13 +1,14 @@
 package it.astromark.behavior.service;
 
 
+import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.behavior.dto.NoteRequest;
 import it.astromark.behavior.dto.NoteResponse;
 import it.astromark.behavior.entity.Note;
 import it.astromark.behavior.mapper.NoteMapper;
 import it.astromark.behavior.repository.NoteRepository;
 import it.astromark.user.commons.service.SchoolUserService;
-import it.astromark.user.student.service.StudentService;
+import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +24,37 @@ import java.util.UUID;
 public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
-    private final StudentService studentService;
     private final NoteMapper noteMapper;
     private final SchoolUserService schoolUserService;
+    private final StudentRepository studentRepository;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, StudentService studentService, NoteMapper noteMapper, SchoolUserService schoolUserService) {
+    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper, SchoolUserService schoolUserService, StudentRepository studentRepository, AuthenticationService authenticationService) {
         this.noteRepository = noteRepository;
-        this.studentService = studentService;
         this.noteMapper = noteMapper;
         this.schoolUserService = schoolUserService;
+        this.studentRepository = studentRepository;
+        this.authenticationService = authenticationService;
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
     public NoteResponse create(NoteRequest noteRequest) {
-        return null;
+        if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId())) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        var note = new Note();
+        note.setStudent(studentRepository.findById(noteRequest.studentId()).orElseThrow());
+        note.setDescription(noteRequest.description());
+        note.setDate(noteRequest.date());
+        note.setViewed(false);
+
+        noteRepository.save(note);
+
+        return noteMapper.toNoteResponse(note);
     }
 
     @Override
@@ -58,29 +75,31 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('student') || hasRole('parent') || hasRole('teacher')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public List<NoteResponse> getNoteByStudentId(UUID studentId, Integer classId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
+        } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        } else if (authenticationService.isStudent() && !schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
-        return studentService.getById(studentId).getNotes().stream()
+        return studentRepository.findById(studentId).orElseThrow().getNotes().stream()
                 .filter(m -> m.getStudent().getSchoolClasses().stream().anyMatch(c -> c.getId().equals(classId)))
                 .map(noteMapper::toNoteResponse)
                 .toList();
     }
 
     @Override
-    @PreAuthorize("hasRole('student') || hasRole('parent')")
+    @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public void view(UUID studentId, UUID noteId) {
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(!schoolUserService.isLoggedStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         noteRepository.findById(noteId).ifPresent(note -> {
-            if(note.getStudent().getId().equals(studentId)) {
+            if (note.getStudent().getId().equals(studentId)) {
                 note.setViewed(true);
                 noteRepository.save(note);
             }

@@ -10,21 +10,48 @@
     </parent>
     <groupId>it</groupId>
     <artifactId>astromark</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>astromark</name>
-    <description>astromark</description>
-    <url/>
+    <version>0.5.0</version>
+    <packaging>jar</packaging>
+    <name>AstroMark</name>
+    <description>AstroMark was born from a simple yet powerful idea:
+        create an open-source platform that empowers schools with flexible, affordable, and student-centric technology.
+        Our founders, a diverse team of teachers, developers, and education strategists,
+        shared a common belief that technology should simplify, not complicate, the educational experience.</description>
+    <url>https://github.com/mariocosenza/astromark</url>
     <licenses>
-        <license/>
-    </licenses>
+    <license>
+        <name>GNU Affero General Public License v3.0</name>
+        <url>https://www.gnu.org/licenses/agpl-3.0.txt</url>
+        <distribution>repo</distribution>
+    </license>
+</licenses>
     <developers>
-        <developer/>
+        <developer>
+            <id>GiuseppeCava03</id>
+            <name>Giuseppe Cavallaro</name>
+            <url>https://github.com/GiuseppeCava03</url>
+        </developer>
+        <developer>
+            <id>mariocosenza</id>
+            <name>Mario Cosenza</name>
+            <url>https://github.com/mariocosenza</url>
+            <email>cosenzamario@proton.me</email>
+        </developer>
+        <developer>
+            <id>MarioFas</id>
+            <name>Mario Fasolino</name>
+            <url>https://github.com/MarioFas</url>
+        </developer>
+        <developer>
+            <id>gsacrestano</id>
+            <name>Giulio Sacrestano</name>
+            <url>https://github.com/gsacrestano</url>
+        </developer>
     </developers>
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection>scm:git:https://github.com/mariocosenza/astromark.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/mariocosenza/astromark.git</developerConnection>
+        <url>https://github.com/mariocosenza/astromark</url>
     </scm>
     <properties>
         <java.version>21</java.version>

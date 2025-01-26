@@ -6,7 +6,8 @@ import {
     Divider,
     InputLabel,
     Select,
-    SelectChangeEvent, Stack,
+    SelectChangeEvent,
+    Stack,
     Tab,
     Tabs
 } from "@mui/material";
@@ -52,9 +53,9 @@ export const Homework: React.FC = () => {
     const [activity, setActivity] = React.useState<HomeworkResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
-    const [toggle, _] = changeStudentOrYear();
-    const [open, ] = openChat();
-    const [chatId, ] = homeworkChatId();
+    const [toggle,] = changeStudentOrYear();
+    const [open, setOpen] = openChat();
+    const [chatId,] = homeworkChatId();
 
     const handleChange = (event: SelectChangeEvent) => {
         setSubject(event.target.value as string);
@@ -67,10 +68,11 @@ export const Homework: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            const schoolClass: AxiosResponse<SchoolClass[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
-            const response: AxiosResponse<HomeworkResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/homeworks/all`);
+            const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
+            const response: AxiosResponse<HomeworkResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/homeworks/all`);
             setActivity(response.data);
             setLoading(false);
+            setOpen(false);
         } catch (error) {
             console.error(error);
         }
@@ -79,90 +81,92 @@ export const Homework: React.FC = () => {
 
     return (
         <Stack flex={'auto'} flexWrap={'wrap'} minWidth={'100%'} direction={'row'} spacing={'1'}>
-        <Box style={{justifyContent: 'center',  marginTop: '1rem',  marginRight: '5vw', marginLeft: open? '2vw' : '5vw'}}>
-            {
-                loading ? (
-                    <div>Loading...</div>
-                ) : !checked ? (
-                    <HomeworkList
-                        list={activity
-                            .filter(
-                                (v) =>
-                                    v.signedHour.title === subject || subject === 'Seleziona Materia'
-                            )
-                            .map((activity: HomeworkResponse) => ({
-                                id: activity.id,
-                                chat: activity.chat,
-                                avatar: 'A',
-                                title:  activity.signedHour.title,
-                                description: activity.title + ': ' + activity.description,
-                                hexColor: 'dodgerblue',
-                                date: activity.signedHour.date,
-                            }))}
-                    />
-                ) : (
-                    <HomeworkList
-                        list={activity
-                            .filter(
-                                (v) =>
-                                    v.signedHour.title === subject || subject === 'Seleziona Materia'
-                            )
-                            .map((activity: HomeworkResponse) => ({
-                                id: activity.id,
-                                chat: activity.chat,
-                                avatar: 'A',
-                                title:  activity.signedHour.title,
-                                description: activity.title + ': ' + activity.description,
-                                hexColor: 'dodgerblue',
-                                date: activity.signedHour.date,
-                            }))
-                            .reverse()}
-                    />
-                )
-            }
-
-            <Stack direction={'row'} className="stack-bottom">
-                <InputLabel>
-                    Ordine Inverso
-                    <Checkbox onClick={() => setChecked(!checked)} checked={checked} />
-                </InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={subject}
-                    label="Materia"
-                    onChange={handleChange}
-                >
-                    <MenuItem style={{color: 'grey'}} value={"Seleziona Materia"}>{"Seleziona Materia"}</MenuItem>
-                    <Divider/>
-                    {loading ? (
-                        <CircularProgress />
+            <Box style={{
+                justifyContent: 'center',
+                marginTop: '1rem',
+                marginRight: '5vw',
+                marginLeft: open ? '2vw' : '5vw'
+            }}>
+                {
+                    loading ? (
+                        <div>Loading...</div>
+                    ) : !checked ? (
+                        <HomeworkList
+                            list={activity
+                                .filter(
+                                    (v) => v.signedHour.title === subject || subject === 'Seleziona Materia'
+                                )
+                                .map((activity: HomeworkResponse) => ({
+                                    id: activity.id,
+                                    chat: activity.chat,
+                                    avatar: 'A',
+                                    title: activity.signedHour.title,
+                                    description: activity.title + ': ' + activity.description,
+                                    hexColor: 'dodgerblue',
+                                    date: activity.signedHour.date,
+                                }))} dashboard={false}                        />
                     ) : (
-                        Array.from(
-                            new Set(
-                                activity.map((a: ClassActivityResponse) => a.signedHour.title)
-                            )
-                        ).map((sub, _) => {
-                            return <MenuItem key={sub} value={sub}>{sub}</MenuItem>;
-                        })
-                    )}
-                </Select>
-            </Stack>
-        </Box>
-            { open &&
+                        <HomeworkList
+                            list={activity
+                                .filter(
+                                    (v) => v.signedHour.title === subject || subject === 'Seleziona Materia'
+                                )
+                                .map((activity: HomeworkResponse) => ({
+                                    id: activity.id,
+                                    chat: activity.chat,
+                                    avatar: 'A',
+                                    title: activity.signedHour.title,
+                                    description: activity.title + ': ' + activity.description,
+                                    hexColor: 'dodgerblue',
+                                    date: activity.signedHour.date,
+                                }))
+                                .reverse()} dashboard={false}                        />
+                    )
+                }
+
+                <Stack direction={'row'} className="stack-bottom">
+                    <InputLabel>
+                        Ordine Inverso
+                        <Checkbox onClick={() => setChecked(!checked)} checked={checked}/>
+                    </InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={subject}
+                        label="Materia"
+                        onChange={handleChange}
+                    >
+                        <MenuItem style={{color: 'grey'}} value={"Seleziona Materia"}>{"Seleziona Materia"}</MenuItem>
+                        <Divider/>
+                        {loading ? (
+                            <CircularProgress/>
+                        ) : (
+                            Array.from(
+                                new Set(
+                                    activity.map((a: ClassActivityResponse) => a.signedHour.title)
+                                )
+                            ).map((sub, _) => {
+                                return <MenuItem key={sub} value={sub}>{sub}</MenuItem>;
+                            })
+                        )}
+                    </Select>
+                </Stack>
+            </Box>
+            {open &&
                 <div style={{minWidth: '40vw', marginTop: '1rem'}}>
                     <ChatHomeworkComponent homeworkId={chatId}/>
                 </div>
             }
         </Stack>
-   );
+    );
 }
 
-const Activity : React.FC = () => {
+const Activity: React.FC = () => {
     const [loading, setLoading] = React.useState<boolean>(true);
     const [activity, setActivity] = React.useState<ClassActivityResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
+    const [toggle, _] = changeStudentOrYear();
 
     const handleChange = (event: SelectChangeEvent) => {
         setSubject(event.target.value as string);
@@ -170,12 +174,12 @@ const Activity : React.FC = () => {
 
     useEffect(() => {
         fetchData()
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {
-            const schoolClass: AxiosResponse<SchoolClass[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
-            const response: AxiosResponse<ClassActivityResponse[]>  = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/activities/all`);
+            const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
+            const response: AxiosResponse<ClassActivityResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/activities/all`);
             setActivity(response.data);
             setLoading(false);
         } catch (error) {
@@ -185,7 +189,7 @@ const Activity : React.FC = () => {
 
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center',  marginTop: '1rem'}}>
+        <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}>
             {
                 loading ? (
                     <div>Loading...</div>
@@ -225,7 +229,7 @@ const Activity : React.FC = () => {
             <Stack direction={'row'} className="stack-bottom">
                 <InputLabel>
                     Ordine Inverso
-                    <Checkbox onClick={() => setChecked(!checked)} checked={checked} />
+                    <Checkbox onClick={() => setChecked(!checked)} checked={checked}/>
                 </InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
@@ -237,7 +241,7 @@ const Activity : React.FC = () => {
                     <MenuItem style={{color: 'grey'}} value={"Seleziona Materia"}>{"Seleziona Materia"}</MenuItem>
                     <Divider/>
                     {loading ? (
-                        <CircularProgress />
+                        <CircularProgress/>
                     ) : (
                         Array.from(
                             new Set(
@@ -263,18 +267,18 @@ export const ClassActivity: React.FC = () => {
     return (
         <div>
 
-            <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <Box sx={{width: '100%', bgcolor: 'background.paper'}}>
                 <Tabs
                     value={value}
                     onChange={handleChange}
                     variant="fullWidth"
                 >
-                    <Tab label="Assegno e verifiche" />
-                    <Tab label="attività svolte" />
+                    <Tab label="Assegno e verifiche"/>
+                    <Tab label="attività svolte"/>
                 </Tabs>
                 <Divider/>
                 {
-                    value === 0? <Homework/> : <Activity/>
+                    value === 0 ? <Homework/> : <Activity/>
                 }
             </Box>
         </div>

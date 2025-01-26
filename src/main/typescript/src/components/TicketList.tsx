@@ -16,7 +16,7 @@ export type Props = {
     onTicketClick: () => void;
 }
 
-export const TicketList: React.FC<Props> = ({ list, onTicketClick }) => {
+export const TicketList: React.FC<Props> = ({list, onTicketClick}) => {
 
     const handleTicketClick = (id: string) => {
         SelectedTicket.ticketId = id;
@@ -24,14 +24,15 @@ export const TicketList: React.FC<Props> = ({ list, onTicketClick }) => {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{width: '100%'}}>
             {list.map((item) => (
-                <Box className={'listItem hover-animation'} justifyContent={'space-between'} margin={'0.5rem 0'} padding={'1rem'}
+                <Box className={'listItem hover-animation'} justifyContent={'space-between'} margin={'0.5rem 0'}
+                     padding={'1rem'}
                      key={item.id}
                      onClick={() => handleTicketClick(item.id)}>
 
                     <Box display={'flex'} alignItems={'center'}>
-                        <Avatar sx={{ bgcolor: item.hexColor, marginRight: '1rem' }}> {item.avatar} </Avatar>
+                        <Avatar sx={{bgcolor: item.hexColor, marginRight: '1rem'}}> {item.avatar} </Avatar>
                         <Box>
                             <Typography variant='subtitle1' fontWeight={'bold'}>
                                 {item.title}
@@ -43,7 +44,7 @@ export const TicketList: React.FC<Props> = ({ list, onTicketClick }) => {
                     </Box>
 
                     <IconButton>
-                        <ArrowForwardIosIcon />
+                        <ArrowForwardIosIcon/>
                     </IconButton>
                 </Box>
             ))}

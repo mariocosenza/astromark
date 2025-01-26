@@ -1,6 +1,6 @@
 spring:
   application:
-      name: astromark
+    name: astromark
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     driverClassName: org.postgresql.Driver
@@ -10,12 +10,12 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-        hibernate.default_schema: astromark
+      hibernate.default_schema: astromark
     show-sql: false
     open-in-view: false
     generate-ddl: true
   sendgrid:
-        api-key: ${SPRING_MAIL_KEY}
+    api-key: ${SPRING_MAIL_KEY}
   jwt:
     secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
 server:

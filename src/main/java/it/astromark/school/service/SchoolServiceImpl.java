@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SchoolServiceImpl implements SchoolService{
+public class SchoolServiceImpl implements SchoolService {
 
     private final SchoolRepository schoolRepository;
 
@@ -20,7 +20,7 @@ public class SchoolServiceImpl implements SchoolService{
 
 
     @Override
-    @PreAuthorize("hasRole('manager')")
+    @PreAuthorize("hasRole('MANAGER')")
     public SchoolResponse create(SchoolRequest schoolRequest) {
         return null;
     }

@@ -1,21 +1,21 @@
 spring:
   application:
-      name: astromark
+    name: astromark
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
-        hibernate.default_schema: astromark
+      hibernate.default_schema: astromark
     show-sql: true
     open-in-view: false
     generate-ddl: true
   sql:
-      init:
-        mode: always
+    init:
+      mode: always
   sendgrid:
-      api-key: ${SPRING_MAIL_KEY}
+    api-key: ${SPRING_MAIL_KEY}
   jwt:
-      secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
+    secret: Sh1Mgh11265Bgvd1iV2UoG4krDYe+UZX50L5aGDY09U= #Example secret key
 logging:
   level:
     root: info

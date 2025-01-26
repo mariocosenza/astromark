@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
-    Teacher findByUsernameAndSchoolCode(String username , String schoolCode);
+    Teacher findByUsernameAndSchoolCode(String username, String schoolCode);
 
     Integer countByNameAndSurname(@Size(max = 64) @NotNull @Pattern(regexp = "^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$", message = "Invalid name format") String name, @Size(max = 64) @NotNull @Pattern(regexp = "^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$", message = "Invalid surname format") String surname);
 

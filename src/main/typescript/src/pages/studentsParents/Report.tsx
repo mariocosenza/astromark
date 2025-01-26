@@ -34,12 +34,12 @@ export interface SemesterReportMarkResponse {
 }
 
 function view(id: number) {
-    axiosConfig.patch(Env.API_BASE_URL + '/students'+ '/reports/' + id)
+    axiosConfig.patch(Env.API_BASE_URL + '/students' + '/reports/' + id)
 }
 
 export const SemesterReport: React.FC = () => {
-    const [data, setData]  = useState<SemesterReportResponse>();
-    const [secondData, setSecondData]  = useState<SemesterReportResponse>();
+    const [data, setData] = useState<SemesterReportResponse>();
+    const [secondData, setSecondData] = useState<SemesterReportResponse>();
     const [loading, setLoading] = useState<boolean>(true);
     const [toggle, _] = changeStudentOrYear();
 
@@ -58,12 +58,12 @@ export const SemesterReport: React.FC = () => {
                 `${Env.API_BASE_URL}/students/${SelectedStudent.id}/reports/${SelectedYear.year}`, {params: {"firstSemester": false}}
             );
 
-           if(reportResponse.data) {
+            if (reportResponse.data) {
                 (reportResponse.data as SemesterReportResponse).semesterReportMarks = [...(reportResponse.data as SemesterReportResponse).semesterReportMarks].sort((a, b) => a.title.localeCompare(b.title));
                 setData(reportResponse.data as SemesterReportResponse);
             }
 
-            if(reportResponse1.data) {
+            if (reportResponse1.data) {
                 (reportResponse1.data as SemesterReportResponse).semesterReportMarks = [...(reportResponse1.data as SemesterReportResponse).semesterReportMarks].sort((a, b) => a.title.localeCompare(b.title));
                 setSecondData(reportResponse1.data as SemesterReportResponse);
             }
@@ -76,55 +76,69 @@ export const SemesterReport: React.FC = () => {
 
     return (
         <div>
- {
-            loading || data === undefined? <div>Nessuna pagella presente</div> :
-            <TableContainer style={{display: 'flex', margin: 'auto', background: '#FEF8C0', borderRadius: '1rem', maxWidth:'95vw', marginTop: '1rem'}} component={Paper}>
-                <Table sx={{ minWidth: 250 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell  style={{background: '#7D7842', color: 'white'}}><Typography variant={'h6'}>Pagella</Typography></TableCell>
-                            <TableCell style={{background: '#7D7842', color: 'white'}} align="right"><Typography variant={'h6'}>Primo Semestre</Typography></TableCell>
-                            <TableCell  style={{background: '#7D7842', color: 'white'}} align="right"><Typography variant={'h6'}>Secondo Semestre</Typography></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data?.semesterReportMarks.map((row, i) => (
-                            <TableRow
-                                key={row.title}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell align="left" component="th" scope="row">
-                                    <b>    {row.title} </b>
-                                </TableCell>
-                                <TableCell align="right" component="th" scope="row" style={{color: row.mark < 6? 'red' : 'green'}}>
-                                    {row.mark}
-                                </TableCell>
-                                {
-                                    secondData?.semesterReportMarks !== null && <TableCell align="right">{secondData?.semesterReportMarks[i].mark}</TableCell>
-                                }
+            {
+                loading || data === undefined ? <div>Nessuna pagella presente</div> :
+                    <TableContainer style={{
+                        display: 'flex',
+                        margin: 'auto',
+                        background: '#FEF8C0',
+                        borderRadius: '1rem',
+                        maxWidth: '95vw',
+                        marginTop: '1rem'
+                    }} component={Paper}>
+                        <Table sx={{minWidth: 250}} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{background: '#7D7842', color: 'white'}}><Typography
+                                        variant={'h6'}>Pagella</Typography></TableCell>
+                                    <TableCell style={{background: '#7D7842', color: 'white'}} align="right"><Typography
+                                        variant={'h6'}>Primo Semestre</Typography></TableCell>
+                                    <TableCell style={{background: '#7D7842', color: 'white'}} align="right"><Typography
+                                        variant={'h6'}>Secondo Semestre</Typography></TableCell>
                                 </TableRow>
-                        ))}
-                        { getRole().toUpperCase() === Role.PARENT &&
-                        <TableRow>
-                            <TableCell>
-                                Visualizza
-                            </TableCell>
-                            <TableCell align="right" style={{color: 'darkgreen'}}>
-                                {
-                                    data?.viewed === false && <RemoveRedEyeOutlinedIcon onClick={() => view(data.id)}/>
+                            </TableHead>
+                            <TableBody>
+                                {data?.semesterReportMarks.map((row, i) => (
+                                    <TableRow
+                                        key={row.title}
+                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    >
+                                        <TableCell align="left" component="th" scope="row">
+                                            <b>    {row.title} </b>
+                                        </TableCell>
+                                        <TableCell align="right" component="th" scope="row"
+                                                   style={{color: row.mark < 6 ? 'red' : 'green'}}>
+                                            {row.mark}
+                                        </TableCell>
+                                        {
+                                            secondData?.semesterReportMarks !== null && <TableCell
+                                                align="right">{secondData?.semesterReportMarks[i].mark}</TableCell>
+                                        }
+                                    </TableRow>
+                                ))}
+                                {getRole().toUpperCase() === Role.PARENT &&
+                                    <TableRow>
+                                        <TableCell>
+                                            Visualizza
+                                        </TableCell>
+                                        <TableCell align="right" style={{color: 'darkgreen'}}>
+                                            {
+                                                data?.viewed === false &&
+                                                <RemoveRedEyeOutlinedIcon onClick={() => view(data.id)}/>
+                                            }
+                                        </TableCell>
+                                        <TableCell align="right" style={{color: 'darkgreen'}}>
+                                            {
+                                                secondData?.viewed === false &&
+                                                <RemoveRedEyeOutlinedIcon onClick={() => view(secondData.id)}/>
+                                            }
+                                        </TableCell>
+                                    </TableRow>
                                 }
-                            </TableCell>
-                            <TableCell align="right" style={{color: 'darkgreen'}}>
-                                {
-                                    secondData?.viewed === false && <RemoveRedEyeOutlinedIcon onClick={() => view(secondData.id)}/>
-                                }
-                            </TableCell>
-                        </TableRow>
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+            }
         </div>
     );
 }

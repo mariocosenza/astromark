@@ -1,12 +1,7 @@
-import React from "react";
-import {TeacherDashboardNavbar} from "../../components/TeacherDashboardNavbar.tsx";
+import {Dashboard} from "../../components/Dashboard.tsx";
 
-
-export const TeacherDashboard: React.FC = () => {
+export const TeacherDashboard = () => {
     return (
-        <div>
-            <TeacherDashboardNavbar/>
-            <h1>Dashboard</h1>
-        </div>
+        <Dashboard isTeacher={true}/>
     );
 }

@@ -10,7 +10,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public abstract class SchoolUser {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
     private School school;
 
@@ -70,10 +71,11 @@ public abstract class SchoolUser {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Builder.Default
     @ColumnDefault("false")
     @NotNull
     @Column(name = "gender")
-    private Boolean male;
+    private Boolean male =false;
 
     @Size(max = 512)
     @NotBlank

@@ -8,26 +8,36 @@ export function isLogged(): boolean {
 }
 
 export function logout(): void {
+    localStorage.removeItem("year")
+    localStorage.removeItem("studentId")
     try {
-        if(localStorage.getItem("user") !== null) {
+        if (localStorage.getItem("user") !== null) {
             axiosConfig.post(Env.API_BASE_URL + "/auth/logout").then(_ => localStorage.removeItem("user"))
-            localStorage.removeItem("year")
-            localStorage.removeItem("studentId")
         }
+        localStorage.removeItem("teaching")
+        localStorage.removeItem("schoolClassId")
+        localStorage.removeItem("schoolClassTitle")
+        localStorage.removeItem("schoolClassDesc")
     } catch (e) {
+        localStorage.removeItem("user")
         console.log("User not exist");
     }
 }
 
-export async function asyncLogout(item : any) {
+export async function asyncLogout(item: any) {
     try {
         localStorage.removeItem("year")
         localStorage.removeItem("studentId")
-        if(item !== null) {
-          await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
+        if (item !== null) {
+            await axiosConfig.post(Env.API_BASE_URL + "/auth/logout")
             localStorage.removeItem("user")
         }
+        localStorage.removeItem("teaching")
+        localStorage.removeItem("schoolClassId")
+        localStorage.removeItem("schoolClassTitle")
+        localStorage.removeItem("schoolClassDesc")
     } catch (e) {
+        localStorage.removeItem("user")
         console.log("User not exist");
     }
 }
@@ -54,13 +64,24 @@ export function saveToken(token: string): void {
 }
 
 export function replaceToken(token: string): void {
-    logout();
     saveToken(token);
+    axiosConfig.interceptors.request.use(
+        (config) => {
+            const accessToken = localStorage.getItem('user'); // get stored access token
+            if (accessToken && !isExpired()) {
+                config.headers.Authorization = `Bearer ${getToken()}`; // set in header
+            }
+            return config;
+        },
+        (error) => {
+            return Promise.reject(error);
+        }
+    );
 }
 
 export function getCurrentUser(): JwtToken | null {
     const user = localStorage.getItem("user");
-    if(user === null) {
+    if (user === null) {
         return null;
     }
     return jwtDecode(user) as JwtToken;
@@ -68,7 +89,7 @@ export function getCurrentUser(): JwtToken | null {
 
 export function isExpired(): boolean {
     const user = getCurrentUser();
-    if(user !== null) {
+    if (user !== null) {
         return user.exp < Date.now() / 1000;
     }
     return true;

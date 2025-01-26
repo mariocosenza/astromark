@@ -22,16 +22,18 @@ public interface ClassworkMapper {
             @Mapping(target = "signedHour.date", source = "classwork.signedHour.teachingTimeslot.date"),
     })
     ClassworkResponse toClassworkResponse(ClassActivity classwork);
+
     @Mappings({
             @Mapping(target = "signedHour", source = "homework.signedHour.teachingTimeslot"),
             @Mapping(target = "signedHour.title", source = "homework.signedHour.teachingTimeslot.teaching.subjectTitle.title"),
             @Mapping(target = "signedHour.hour", source = "homework.signedHour.teachingTimeslot.hour"),
             @Mapping(target = "signedHour.date", source = "homework.signedHour.teachingTimeslot.date"),
-            @Mapping(target = "chat", expression = "java(homework.getHomeworkChats() != null)")
+            @Mapping(target = "chat", expression = "java(homework.getHomeworkChats().size() > 0)")
     })
     HomeworkResponse toHomeworkResponse(Homework homework);
 
     List<ClassworkResponse> classActivityToClassworkResponseList(List<ClassActivity> classworks);
+
     List<HomeworkResponse> homeworkToHomeworkResponseList(List<Homework> classworks);
 
 

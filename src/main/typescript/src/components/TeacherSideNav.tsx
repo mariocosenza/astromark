@@ -3,8 +3,11 @@ import ExploreIcon from '@mui/icons-material/ExploreOutlined';
 import HouseIcon from '@mui/icons-material/House';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined';
-import ArticleIcon from '@mui/icons-material/Article';
+import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
+import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
+import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import {useState} from "react";
 import {NavLink} from "react-router";
 import {isSelectedClass} from "../services/TeacherService.ts";
@@ -19,15 +22,15 @@ export const TeacherSideNav = () => {
 
     const DrawerList = (
 
-        <Box className={"drawer"} sx={{ width: '15vw' }} minWidth={250} role="presentation" onClick={toggleDrawer(false)}>
+        <Box className={"drawer"} sx={{width: '15vw'}} minWidth={250} role="presentation" onClick={toggleDrawer(false)}>
             <List>
                 <NavLink to="/teacher/dashboard" end>
                     <ListItem key="dashboard" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ExploreIcon />
+                                <ExploreIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Dashboard"} />
+                            <ListItemText primary={"Dashboard"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
@@ -35,9 +38,9 @@ export const TeacherSideNav = () => {
                     <ListItem key="classi" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <HouseIcon />
+                                <HouseIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Classi"} />
+                            <ListItemText primary={"Classi"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
@@ -45,34 +48,66 @@ export const TeacherSideNav = () => {
                     <ListItem key="ticket" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ArticleIcon />
+                                <ConfirmationNumberOutlinedIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Ticket"} />
+                            <ListItemText primary={"Ticket"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
 
                 {isSelectedClass() && (
-                    <NavLink to="/teacher/agenda" end>
-                        <ListItem key="agenda" disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <HistoryEduIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={"Agenda di Classe"} />
-                            </ListItemButton>
-                        </ListItem>
-                    </NavLink>
+                    <>
+                        <NavLink to="/teacher/agenda" end>
+                            <ListItem key="agenda" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <HistoryEduIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Agenda di Classe"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink to="/teacher/appello" end>
+                            <ListItem key="appello" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <CoPresentIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Appello"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink to="/teacher/valutazioni" end>
+                            <ListItem key="valutazioni" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <ReceiptLongRoundedIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Valutazioni"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                        <NavLink to="/teacher/note" end>
+                            <ListItem key="note" disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <DangerousOutlinedIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={"Note"}/>
+                                </ListItemButton>
+                            </ListItem>
+                        </NavLink>
+                    </>
                 )}
 
-                <Divider/>
-                <NavLink to={"/teacher/impostazioni"} end>
+                <NavLink to={`/teacher/impostazioni`} end style={{position: 'fixed', bottom: 0, width: '15vw'}}>
+                    <Divider/>
                     <ListItem key="impostazioni" disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
-                                <ManageAccountsOutlinedIcon />
+                                <ManageAccountsOutlinedIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={"Impostazioni"} />
+                            <ListItemText primary={"Impostazioni"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>

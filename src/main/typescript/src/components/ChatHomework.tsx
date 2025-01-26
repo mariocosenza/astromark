@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
-import { Client } from "@stomp/stompjs";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { AxiosResponse } from "axios";
-import { Env } from "../Env";
-import { getRole, getToken } from "../services/AuthService";
-import { Box, Avatar, Typography, TextField, Button, IconButton } from "@mui/material";
+import {AxiosResponse} from "axios";
+import {Env} from "../Env";
+import {getRole, getToken} from "../services/AuthService";
+import {Alert, Avatar, Box, Button, IconButton, Snackbar, TextField, Typography} from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile"; // Attachment icon
 import DownloadIcon from "@mui/icons-material/Download"; // Download icon
-import { Role } from "./route/ProtectedRoute.tsx";
+import {Role} from "./route/ProtectedRoute.tsx";
 import axiosConfig from "../services/AxiosConfig.ts";
 
 /**
@@ -62,7 +62,7 @@ const getAvatarColor = (name: string): string => {
  * @param homeworkId - The id of the homework.
  * @returns The ChatHomeworkComponent.
  */
-export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId }) => {
+export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId}) => {
     const [messages, setMessages] = useState<MessageResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [newMessage, setNewMessage] = useState<string>("");
@@ -71,6 +71,8 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
     const stompClientRef = useRef<Client | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+    const [error, setError] = useState<string>("");
+    const [showError, setShowError] = useState(false);
     const API_BASE_URL = Env.API_BASE_URL; // e.g. "http://localhost:8080"
 
     /**
@@ -116,7 +118,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
     const connectWebSocket = () => {
         const stompClient = new Client({
             webSocketFactory: () => new SockJS(`${Env.BASE_URL}/ws`),
-            connectHeaders: { Authorization: `Bearer ${getToken()}` },
+            connectHeaders: {Authorization: `Bearer ${getToken()}`},
             debug: (str) => console.log(str),
             reconnectDelay: 5000,
         });
@@ -169,11 +171,19 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
 
             // If a file is selected, proceed with the file upload.
             if (selectedFile) {
+                // Check file size (16MB = 16 * 1024 * 1024 bytes)
+                const maxSize = 16 * 1024 * 1024; // 16MB in bytes
+
+                if (selectedFile.size > maxSize) {
+                    setError("Il file è troppo grande. La dimensione massima consentita è 16MB.");
+                    setShowError(true);
+                    return;
+                }
+
                 try {
                     const formData = new FormData();
                     formData.append("file", selectedFile);
 
-                    // The upload endpoint expects the id returned from the previous call (response.data).
                     await axiosConfig.post(
                         `${API_BASE_URL}/chats/upload/${response.data}`,
                         formData,
@@ -186,14 +196,15 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                     );
                 } catch (error) {
                     console.error("Error uploading the file:", error);
+                    setError("Si è verificato un errore durante l'upload del file. Riprova più tardi.");
+                    setShowError(true);
                 }
             }
-
             if (stompClientRef.current && stompClientRef.current.connected) {
                 stompClientRef.current.publish({
                     destination: `/app/homeworks/chats/${chatId}`,
                     body: JSON.stringify(messagePayload),
-                    headers: { Authorization: `Bearer ${getToken()}` },
+                    headers: {Authorization: `Bearer ${getToken()}`},
                 });
             } else {
                 console.error("STOMP client is not connected");
@@ -297,9 +308,9 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                                         display={"flex"}
                                         alignItems={"center"}
                                         key={"list" + index}
-                                        style={{ marginBottom: "0.75rem" }}
+                                        style={{marginBottom: "0.75rem"}}
                                     >
-                                        <Avatar sx={{ bgcolor: getAvatarColor(msg.senderName), marginRight: "1rem" }}>
+                                        <Avatar sx={{bgcolor: getAvatarColor(msg.senderName), marginRight: "1rem"}}>
                                             {msg.senderName.charAt(0)}
                                         </Avatar>
                                         <Box>
@@ -310,7 +321,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                                                 <Typography
                                                     variant="caption"
                                                     color="textSecondary"
-                                                    style={{ marginLeft: "0.5rem", fontSize: "0.8rem" }}
+                                                    style={{marginLeft: "0.5rem", fontSize: "0.8rem"}}
                                                 >
                                                     {new Date(msg.timestamp).toLocaleString()}
                                                 </Typography>
@@ -323,7 +334,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                                                 onClick={() => handleDownload('https://api.astromark.it/' + msg.attachment!)}
                                                 title="Download attachment"
                                             >
-                                                <DownloadIcon />
+                                                <DownloadIcon/>
                                             </IconButton>
                                         )}
                                     </Box>
@@ -334,7 +345,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                 )}
             </Box>
 
-            <Box display={"flex"} alignItems={"center"} style={{ marginTop: "1rem" }}>
+            <Box display={"flex"} alignItems={"center"} style={{marginTop: "1rem"}}>
                 <TextField
                     className={"textfield-item"}
                     margin={"normal"}
@@ -354,30 +365,44 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({ homeworkId 
                 {/* Attachment button (to the right, before the send button) */}
                 <IconButton
                     onClick={handleAttachmentClick}
-                    sx={{ marginLeft: "0.5rem" }}
+                    sx={{marginLeft: "0.5rem"}}
                     // If a file is selected, change color (e.g., "secondary")
                     color={selectedFile ? "secondary" : "primary"}
                     title="Add attachment"
                 >
-                    <AttachFileIcon />
+                    <AttachFileIcon/>
                 </IconButton>
 
                 <Button
                     variant="contained"
                     color="primary"
-                    sx={{ marginLeft: "0.5rem", marginTop: "0.4rem" }}
+                    sx={{marginLeft: "0.5rem", marginTop: "0.4rem"}}
                     onClick={() => sendMessage(newMessage)}
                 >
-                    <SendIcon />
+                    <SendIcon/>
                 </Button>
 
                 {/* Hidden file input */}
                 <input
                     type="file"
-                    style={{ display: "none" }}
+                    accept={".pdf,.txt,.epub,.csv,.png,.jpg,.jpeg,.doc,.docx,.ppt,.pptx,.xls,.xlsx"}
+                    style={{display: "none"}}
                     ref={fileInputRef}
                     onChange={handleFileChange}
                 />
+                <Snackbar
+                    open={showError}
+                    autoHideDuration={6000}
+                    onClose={() => setShowError(false)}
+                >
+                    <Alert
+                        onClose={() => setShowError(false)}
+                        severity="error"
+                        sx={{width: '100%'}}
+                    >
+                        {error}
+                    </Alert>
+                </Snackbar>
             </Box>
         </Box>
     );

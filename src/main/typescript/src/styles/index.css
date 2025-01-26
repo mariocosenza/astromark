@@ -1,12 +1,9 @@
 :root {
-  @media (prefers-color-scheme: dark) {
     --md-sys-color-primary: rgb(66 94 145);
     --md-sys-color-surface-tint: rgb(66 94 145);
-    --md-sys-color-on-primary: rgb(255 255 255);
     --md-sys-color-primary-container: rgba(215, 226, 255, 0.51);
     --md-sys-color-on-primary-container: rgb(0 27 63);
     --md-sys-color-secondary: rgb(64 95 144);
-    --md-sys-color-on-secondary: rgb(255 255 255);
     --md-sys-color-secondary-container: rgb(214 227 255);
     --md-sys-color-on-secondary-container: rgb(0 27 61);
     --md-sys-color-tertiary: rgb(0 104 121);
@@ -14,21 +11,18 @@
     --md-sys-color-tertiary-container: rgb(169 237 255);
     --md-sys-color-on-tertiary-container: rgb(0 31 38);
     --md-sys-color-error: rgb(144 74 71);
-    --md-sys-color-on-error: rgb(255 255 255);
     --md-sys-color-error-container: rgb(255 218 215);
     --md-sys-color-on-error-container: rgb(59 8 9);
     --md-sys-color-background: rgb(249 249 255);
     --md-sys-color-on-background: rgb(26 28 32);
     --md-sys-color-surface: rgb(249 249 255);
     --md-sys-color-on-surface: rgb(25 28 32);
-    --md-sys-color-surface-variant: rgb(228 227 211);
     --md-sys-color-on-surface-variant: rgb(70 72 59);
     --md-sys-color-outline: rgb(119 120 106);
     --md-sys-color-outline-variant: rgb(199 199 183);
     --md-sys-color-shadow: rgb(0 0 0);
     --md-sys-color-scrim: rgb(0 0 0);
     --md-sys-color-inverse-surface: rgb(46 48 53);
-    --md-sys-color-inverse-on-surface: rgb(240 240 247);
     --md-sys-color-inverse-primary: rgb(171 199 255);
     --md-sys-color-primary-fixed: rgb(215 226 255);
     --md-sys-color-on-primary-fixed: rgb(0 27 63);
@@ -42,6 +36,11 @@
     --md-sys-color-on-tertiary-fixed: rgb(0 31 38);
     --md-sys-color-tertiary-fixed-dim: rgb(132 210 230);
     --md-sys-color-on-tertiary-fixed-variant: rgb(0 78 91);
+    --md-sys-color-on-primary: rgb(255 255 255);
+    --md-sys-color-on-secondary: rgb(255 255 255);
+    --md-sys-color-on-error: rgb(255 255 255);
+    --md-sys-color-surface-variant: rgb(228 227 211);
+    --md-sys-color-inverse-on-surface: rgb(240 240 247);
     --md-sys-color-surface-dim: rgb(217 218 224);
     --md-sys-color-surface-bright: rgb(249 249 255);
     --md-sys-color-surface-container-lowest: rgb(255 255 255);
@@ -49,76 +48,24 @@
     --md-sys-color-surface-container: rgb(237 237 244);
     --md-sys-color-surface-container-high: rgb(231 232 238);
     --md-sys-color-surface-container-highest: rgb(225 226 233);
-  }
-  @media (prefers-color-scheme: light) {
-    --md-sys-color-primary: rgb(171 199 255);
-    --md-sys-color-surface-tint: rgb(171 199 255);
-    --md-sys-color-on-primary: rgb(13 47 95);
-    --md-sys-color-primary-container: rgb(41 70 119);
-    --md-sys-color-on-primary-container: rgb(215 226 255);
-    --md-sys-color-secondary: rgb(169 199 255);
-    --md-sys-color-on-secondary: rgb(8 48 95);
-    --md-sys-color-secondary-container: rgb(38 71 119);
-    --md-sys-color-on-secondary-container: rgb(214 227 255);
-    --md-sys-color-tertiary: rgb(132 210 230);
-    --md-sys-color-on-tertiary: rgb(0 54 64);
-    --md-sys-color-tertiary-container: rgb(0 78 91);
-    --md-sys-color-on-tertiary-container: rgb(169 237 255);
-    --md-sys-color-error: rgb(255 179 174);
-    --md-sys-color-on-error: rgb(87 29 28);
-    --md-sys-color-error-container: rgb(115 51 49);
-    --md-sys-color-on-error-container: rgb(255 218 215);
-    --md-sys-color-background: rgb(17 19 24);
-    --md-sys-color-on-background: rgb(226 226 233);
-    --md-sys-color-surface: rgb(17 19 24);
-    --md-sys-color-on-surface: rgb(225 226 233);
-    --md-sys-color-surface-variant: rgb(70 72 59);
-    --md-sys-color-on-surface-variant: rgb(199 199 183);
-    --md-sys-color-outline: rgb(145 146 131);
-    --md-sys-color-outline-variant: rgb(70 72 59);
-    --md-sys-color-shadow: rgb(0 0 0);
-    --md-sys-color-scrim: rgb(0 0 0);
-    --md-sys-color-inverse-surface: rgb(225 226 233);
-    --md-sys-color-inverse-on-surface: rgb(46 48 53);
-    --md-sys-color-inverse-primary: rgb(66 94 145);
-    --md-sys-color-primary-fixed: rgb(215 226 255);
-    --md-sys-color-on-primary-fixed: rgb(0 27 63);
-    --md-sys-color-primary-fixed-dim: rgb(171 199 255);
-    --md-sys-color-on-primary-fixed-variant: rgb(41 70 119);
-    --md-sys-color-secondary-fixed: rgb(214 227 255);
-    --md-sys-color-on-secondary-fixed: rgb(0 27 61);
-    --md-sys-color-secondary-fixed-dim: rgb(169 199 255);
-    --md-sys-color-on-secondary-fixed-variant: rgb(38 71 119);
-    --md-sys-color-tertiary-fixed: rgb(169 237 255);
-    --md-sys-color-on-tertiary-fixed: rgb(0 31 38);
-    --md-sys-color-tertiary-fixed-dim: rgb(132 210 230);
-    --md-sys-color-on-tertiary-fixed-variant: rgb(0 78 91);
-    --md-sys-color-surface-dim: rgb(17 19 24);
-    --md-sys-color-surface-bright: rgb(55 57 62);
-    --md-sys-color-surface-container-lowest: rgb(12 14 19);
-    --md-sys-color-surface-container-low: rgb(25 28 32);
-    --md-sys-color-surface-container: rgb(29 32 36);
-    --md-sys-color-surface-container-high: rgb(40 42 47);
-    --md-sys-color-surface-container-highest: rgb(50 53 58);
-  }
 }
 
 html,
 body {
-  font-family: "Titillium Web", serif;
-  margin: 0;
-  width: 100%;
-  height: 100vh;
+    font-family: "Titillium Web", serif;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
 }
 
 
 footer {
-  background-color: var(--md-sys-color-primary) !important;
-  color: var(--md-sys-color-inverse-on-surface);
+    background-color: var(--md-sys-color-primary) !important;
+    color: var(--md-sys-color-inverse-on-surface);
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 a.whiteLink {
@@ -126,75 +73,76 @@ a.whiteLink {
 }
 
 #basic-button {
-  color: var(--md-sys-color-background);
+    color: var(--md-sys-color-background);
 }
 
 .drawer a {
     color: var(--md-sys-color-on-background);
 }
+
 .drawer a.active {
-  color: #700f11;
+    color: #700f11;
 }
 
 .centerBox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .surface-container {
-  background-color: var(--md-sys-color-surface-variant);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+    background-color: var(--md-sys-color-surface-variant);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
 }
 
 .secondary-container {
-  background-color: var(--md-sys-color-secondary-container);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+    background-color: var(--md-sys-color-secondary-container);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
 }
+
 .alert {
-  min-width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
-  padding-bottom: 1rem;
+    min-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .accordion {
-  margin-top: 1rem;
-  padding: 0.2%;
-  background-color: var(--md-sys-color-primary-container) !important;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25) !important;
+    margin-top: 1rem;
+    padding: 0.2%;
+    background-color: var(--md-sys-color-primary-container) !important;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25) !important;
 }
 
 .listItem {
-  display: flex;
-  flex-direction: row;
-  border-radius: 1rem;
-  background-color: var(--md-sys-color-primary-container);
-  border: 1px solid rgba(0, 0, 0, 0.56);
-  vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    border-radius: 1rem;
+    background-color: var(--md-sys-color-primary-container);
+    border: 1px solid rgba(0, 0, 0, 0.56);
+    vertical-align: middle;
 }
 
 form div.centerInForm {
-  margin-left: auto;
-  flex-direction: column;
-  flex-wrap: wrap;
-  overflow: hidden;
-  text-align: center;
-  justify-content: center;
+    margin-left: auto;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow: hidden;
+    text-align: center;
+    justify-content: center;
 }
 
 .sideContainer {
-  min-width: 30%;
-  background-color: var(--md-sys-color-surface-container);
+    min-width: 30%;
+    background-color: var(--md-sys-color-surface-container);
 }
 
 .stack-container {
-  margin: auto !important;
+    margin: auto !important;
 }
 
 .titleTable {
@@ -203,113 +151,111 @@ form div.centerInForm {
 }
 
 .classTimeslot {
-  background-color: var(--md-sys-color-surface-container);
-  max-width: 95%;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: var(--md-sys-color-surface-container);
+    max-width: 95%;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .stack-bottom {
-  margin-left: 2vw;
-  margin-bottom: 1rem;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+    margin-left: 2vw;
+    margin-bottom: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 .justifiableList {
-  min-height: 5rem !important;
+    min-height: 5rem !important;
 }
+
 .title {
-  text-align: center;
-  margin-top: 4vh;
-  font-weight: bold;
-  color: var(--md-sys-color-on-primary-fixed-variant);
+    text-align: center;
+    margin-top: 4vh;
+    font-weight: bold;
+    color: var(--md-sys-color-on-primary-fixed-variant);
 }
 
 .grid-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  width: 80%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 80%;
 }
 
-header  {
-  background-color: var(--md-sys-color-primary) !important;
+header {
+    background-color: var(--md-sys-color-primary) !important;
 }
+
 @media (min-width: 600px) {
-  .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .grid-item {
-  background-color: var(--md-sys-color-background);
-  border: 1px solid rgba(224, 224, 224, 1);
-  border-radius: 12px;
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  align-items: flex-start;
-  padding: 1vw 1vw 10%;
-  transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .grid-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 600px) {
-  .grid-item {
-    min-height: 180px;
-    padding-bottom: 20%;
-  }
+    .grid-item {
+        min-height: 180px;
+        padding-bottom: 20%;
+    }
 }
 
 .ticket-creation-box {
-  width: 45%;
-  padding: 1rem;
-  border-radius: 1rem;
-  background-color: var(--md-sys-color-secondary-fixed);
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    width: 45%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--md-sys-color-secondary-fixed);
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (min-width: 900px) {
-  .ticket-creation-box {
-    width: auto;
-  }
+    .ticket-creation-box {
+        width: auto;
+    }
 }
 
 .hover-animation {
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 }
 
 .textfield-item {
-  border-radius: 8px;
-  background-color: white;
-  width: 100%;
+    border-radius: 8px;
+    background-color: white;
+    width: 100%;
 }
 
 .chat-container {
-  width: 100%;
-  height: 100%;
-  margin-top: 1rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .message-item {
-  background-color: white;
-  padding: 0.5rem;
-  border-radius: 8px;
-  margin-top: 0.5rem;
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
 }

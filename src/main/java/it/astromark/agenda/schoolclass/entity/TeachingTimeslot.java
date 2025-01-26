@@ -4,7 +4,10 @@ import it.astromark.agenda.commons.entity.Timeslot;
 import it.astromark.classmanagement.didactic.entity.Teaching;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -32,7 +35,7 @@ public class TeachingTimeslot extends Timeslot {
     private SignedHour signedHour;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumns({
             @JoinColumn(name = "teaching_teacher_id", referencedColumnName = "teacher_id", nullable = false),

@@ -1,5 +1,6 @@
 package it.astromark.commons.security;
 
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 
 import java.util.List;
-
-import static java.util.Objects.nonNull;
+import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
@@ -80,26 +80,22 @@ public class SpringConfig implements WebMvcConfigurer {
      * @param registry map for cors policy
      */
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        this.serveDirectory(registry, "/", "classpath:/static/");
+    public void addResourceHandlers(@Nullable ResourceHandlerRegistry registry) {
+        this.serveDirectory(Objects.requireNonNull(registry));
     }
 
 
-
-
-    private void serveDirectory(ResourceHandlerRegistry registry, String endpoint, String location) {
-        String[] endpointPatterns = endpoint.endsWith("/")
-                ? new String[]{endpoint.substring(0, endpoint.length() - 1), endpoint, endpoint + "**"}
-                : new String[]{endpoint, endpoint + "/", endpoint + "/**"};
+    private void serveDirectory(ResourceHandlerRegistry registry) {
+        String[] endpointPatterns = new String[]{"/".substring(0, 0), "/", "/" + "**"};
         registry
                 .addResourceHandler(endpointPatterns)
-                .addResourceLocations(location.endsWith("/") ? location : location + "/")
+                .addResourceLocations("classpath:/static/")
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver() {
                     @Override
-                    public Resource resolveResource(HttpServletRequest request, String requestPath, List<? extends Resource> locations, ResourceResolverChain chain) {
-                        Resource resource = super.resolveResource(request, requestPath, locations, chain);
-                        if (nonNull(resource)) {
+                    public Resource resolveResource(HttpServletRequest request, @Nullable String requestPath, @Nullable List<? extends Resource> locations, @Nullable ResourceResolverChain chain) {
+                        Resource resource = super.resolveResource(request, Objects.requireNonNull(requestPath), Objects.requireNonNull(locations), Objects.requireNonNull(chain));
+                        if (Objects.nonNull(resource)) {
                             return resource;
                         }
                         return super.resolveResource(request, "/index.html", locations, chain);

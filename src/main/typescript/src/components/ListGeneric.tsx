@@ -18,11 +18,11 @@ export const ListGeneric: React.FC<ListProp> = ({list}) => {
             {
                 list.map((item, i) =>
                     <Box className={'listItem'} width={'90vw'} sx={{mb: '0.5rem'}} key={'list' + i}>
-                        <Avatar sx={{ bgcolor: item.hexColor, ml: '1%', mt: '0.7%'}}>{item.avatar}</Avatar>
+                        <Avatar sx={{bgcolor: item.hexColor, ml: '1%', mt: '0.7%'}}>{item.avatar}</Avatar>
                         <div style={{flexDirection: 'column', marginLeft: '1%'}}>
                             <Typography variant={'h6'}>
                                 {
-                                   item.title
+                                    item.title
                                 }
                             </Typography>
                             <Typography variant={'h6'}>

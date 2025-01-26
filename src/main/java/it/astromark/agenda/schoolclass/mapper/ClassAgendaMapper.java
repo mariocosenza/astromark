@@ -6,11 +6,13 @@ import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
 import org.mapstruct.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ClassAgendaMapper {
 
+    @Mapping(target = "teacherId", source = "teaching.teacher.id")
     @Mapping(target = "name", source = "teaching.teacher.name")
     @Mapping(target = "surname", source = "teaching.teacher.surname")
     @Mapping(target = "subject", source = "teaching.subjectTitle.title")
@@ -19,6 +21,7 @@ public interface ClassAgendaMapper {
     @Mapping(target = "activityDescription", source = "teachingTimeslot", qualifiedByName = "getActivityDesc")
     @Mapping(target = "homeworkTitle", source = "teachingTimeslot", qualifiedByName = "getHomeworkTitle")
     @Mapping(target = "homeworkDescription", source = "teachingTimeslot", qualifiedByName = "getHomeworkDesc")
+    @Mapping(target = "homeworkDueDate", source = "teachingTimeslot", qualifiedByName = "getHomeworkDate")
     TeachingTimeslotDetailedResponse toTeachingTimeslotDetailedResponse(TeachingTimeslot teachingTimeslot, @Context ClassActivityRepository classActivityRepository, @Context HomeworkRepository homeworkRepository);
 
     List<TeachingTimeslotDetailedResponse> toTeachingTimeslotDetailedResponseList(List<TeachingTimeslot> teachingTimeslot, @Context ClassActivityRepository classActivityRepository, @Context HomeworkRepository homeworkRepository);
@@ -73,7 +76,16 @@ public interface ClassAgendaMapper {
         return "";
     }
 
-
+    @Named("getHomeworkDate")
+    default LocalDate getHomeworkDate(TeachingTimeslot teachingTimeslot, @Context HomeworkRepository homeworkRepository) {
+        if (isSigned(teachingTimeslot)) {
+            var homework = homeworkRepository.findBySignedHour(teachingTimeslot.getSignedHour());
+            if (homework != null) {
+                return homework.getDueDate();
+            }
+        }
+        return null;
+    }
 
 }
 

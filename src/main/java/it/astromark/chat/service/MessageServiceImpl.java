@@ -53,7 +53,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageResponse create(String message, UUID chatId, boolean isHomework) {
-        if(isHomework) {
+        if (isHomework) {
             var save = Message.builder()
                     .text(message)
                     .homeworkChat(homeworkChatRepository.findById(chatId).orElseThrow())
@@ -64,8 +64,7 @@ public class MessageServiceImpl implements MessageService {
                     .dateTime(Instant.now())
                     .build();
             return chatMapper.toMessageResponse(messageRepository.save(save), this);
-        }
-        else {
+        } else {
             var save = Message.builder()
                     .text(message)
                     .ticket(ticketRepository.findById(chatId).orElseThrow())
@@ -83,13 +82,13 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public String addAttachment(UUID uuid, MultipartFile multipartFile) throws IOException {
         var message = messageRepository.findById(uuid).orElseThrow();
-        if(authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().equals(message.getStudent())){
+        if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().equals(message.getStudent())) {
             throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        } else if (authenticationService.isParent() && !authenticationService.getParent().orElseThrow().equals(message.getParent())){
+        } else if (authenticationService.isParent() && !authenticationService.getParent().orElseThrow().equals(message.getParent())) {
             throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().equals(message.getTeacher())){
+        } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().equals(message.getTeacher())) {
             throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        } else if (authenticationService.isSecretary() && !authenticationService.getSecretary().orElseThrow().equals(message.getSecretary())){
+        } else if (authenticationService.isSecretary() && !authenticationService.getSecretary().orElseThrow().equals(message.getSecretary())) {
             throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
         }
         message.setAttachment(fileService.uploadFile(multipartFile));
