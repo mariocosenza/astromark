@@ -1,12 +1,10 @@
 package it.astromark.communication.controller;
 
+import it.astromark.communication.dto.CommunicationRequest;
 import it.astromark.communication.dto.CommunicationResponse;
 import it.astromark.communication.service.CommunicationService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +25,24 @@ public class CommunicationController {
     @GetMapping("/{schoolClassId}/communications")
     public List<CommunicationResponse> getCommunicationBySchoolClassId(@PathVariable Integer schoolClassId) {
         return communicationService.getCommunicationBySchoolClassId(schoolClassId);
+    }
+
+    @Operation(
+            summary = "Create a new communication",
+            description = "Creates a new communication for a specific school class."
+    )
+    @PostMapping("/communication")
+    public CommunicationResponse create(@RequestBody CommunicationRequest communicationRequest) {
+        return communicationService.create(communicationRequest);
+    }
+
+    @Operation(
+            summary = "Update an existing communication",
+            description = "Updates a specific communication by its ID."
+    )
+    @PatchMapping("/communication/{communicationId}")
+    public CommunicationResponse update(@RequestBody CommunicationRequest communicationRequest, @PathVariable Integer communicationId) {
+        return communicationService.update(communicationId, communicationRequest);
     }
 
 }
