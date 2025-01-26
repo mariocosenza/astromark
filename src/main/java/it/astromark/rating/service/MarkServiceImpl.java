@@ -1,4 +1,4 @@
-package it.astromark.rating.serivice;
+package it.astromark.rating.service;
 
 
 import it.astromark.authentication.service.AuthenticationService;

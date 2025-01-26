@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("api/school-users")
 public class SchoolUserController {
@@ -20,16 +22,29 @@ public class SchoolUserController {
         this.schoolUserService = schoolUserService;
     }
 
+    @Operation(
+            summary = "Update user preferences",
+            description = "Updates the preferences for the logged-in school user."
+    )
     @PatchMapping("/preferences")
     public SchoolUserResponse updatePreferences(@RequestBody SchoolUserUpdate schoolUserUpdate) {
         return schoolUserService.updatePreferences(schoolUserUpdate);
     }
 
+    @Operation(
+            summary = "Update user address",
+            description = "Updates the address for the logged-in school user."
+    )
     @PatchMapping("/address")
-    public SchoolUserResponse updateAddress(@RequestBody @Size(min = 5) @Pattern(regexp = "^[a-zA-Z0-9\\s.]+$") String address) {
+    public SchoolUserResponse updateAddress(
+            @RequestBody @Size(min = 5) @Pattern(regexp = "^[a-zA-Z0-9\\s.]+$", message = "Address must be at least 5 characters and can only contain letters, numbers, spaces, and periods.") String address) {
         return schoolUserService.updateAddress(address);
     }
 
+    @Operation(
+            summary = "Retrieve detailed user information",
+            description = "Gets detailed information for the logged-in school user."
+    )
     @GetMapping("/detailed")
     public SchoolUserDetailed getByIdDetailed() {
         return schoolUserService.getByIdDetailed();

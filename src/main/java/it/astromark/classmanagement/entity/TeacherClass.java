@@ -3,20 +3,20 @@ package it.astromark.classmanagement.entity;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
+
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+
 @AllArgsConstructor
 @Table(name = "teacher_class", schema = "astromark")
 public class TeacherClass {
@@ -35,6 +35,7 @@ public class TeacherClass {
     @ColumnDefault("nextval('astromark.teacher_class_school_class_id_seq')")
     @JoinColumn(name = "school_class_id", nullable = false)
     private SchoolClass schoolClass;
+
 
     @NotNull
     @ColumnDefault("false")

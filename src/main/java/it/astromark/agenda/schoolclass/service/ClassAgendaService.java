@@ -75,14 +75,31 @@ public interface ClassAgendaService {
 
     /**
      * Creates a timetable for a given class.
+     *
      * @param request the request containing timetable details
-     * Pre-condition: The `classId` must not be null. The `request` must not be null and must contain valid timetable details.
+     * Pre-condition: The `request` must not be null and must contain valid timetable details.
      * Post-condition: A new timetable is created for the specified class.
      */
     void createTimeTable(ClassTimeTableRequest request);
 
-
+    /**
+     * Retrieves the teaching timeslots for a specific class at the current date.
+     *
+     * @param classId the ID of the class
+     * @param now the current date
+     * @return a list of `TeachingTimeslotResponse` objects representing the class's timeslots
+     * Pre-condition: The `classId` and `now` must not be null. The class associated with the `classId` must exist.
+     * Post-condition: Returns a list of timeslots for the specified class at the current date.
+     */
     List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now);
 
+    /**
+     * Retrieves the timetable for a specific class.
+     *
+     * @param classId the ID of the class
+     * @return a list of `TimeTableResponse` objects representing the class's timetable
+     * Pre-condition: The `classId` must not be null. The class associated with the `classId` must exist.
+     * Post-condition: Returns a list of timetables for the specified class.
+     */
     List<TimeTableResponse> getTimeTable(Integer classId);
 }

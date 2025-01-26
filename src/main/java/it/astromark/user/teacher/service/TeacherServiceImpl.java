@@ -19,6 +19,7 @@ import it.astromark.user.teacher.dto.TeacherRequest;
 import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
@@ -118,18 +119,18 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public TeacherDetailsResponse getTeacher(String teacheruuid) {
+    @Transactional
+    public TeacherDetailsResponse getTeacherTeaching(String teacheruuid) {
+        var teacher = teacherRepository.findById(UUID.fromString(teacheruuid))
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found for UUID: " + teacheruuid));
 
-        var teacher = teacherRepository.findById(UUID.fromString(teacheruuid)).orElseThrow(() ->
-                new IllegalArgumentException("Teacher Not Found"));
+        List<String> teachings = teacher.getTeachings().stream()
+                .map(teaching -> teaching.getSubjectTitle().getTitle() + " - " + teaching.getTypeOfActivity())
+                .toList();
 
-        var teacherTeachings = teachingRepository.findByTeacher(teacher).stream().map(Teaching::toString).toList();
-        return new TeacherDetailsResponse(
-                teacher.getUsername(),
-                teacherTeachings.toString()
-
-                );
+        return new TeacherDetailsResponse(teacher.getUsername(), teachings);
     }
+
 
     @Override
     public SchoolUserDetailed update(UUID uuid, TeacherRequest teacherRequest) {

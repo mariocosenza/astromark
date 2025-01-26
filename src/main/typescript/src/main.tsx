@@ -97,7 +97,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="teacher" element={<ManageTeacher/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                         <Route path="class-schedule/:classId" element={<ClassSchedule/>}/>
-                        <Route path="teachers/:uuid" element={<TeacherDetails/>}/>
+                        <Route path="/secretary/teachers/:teacheruuid" element={<TeacherDetails />} />
 
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace/>}/>

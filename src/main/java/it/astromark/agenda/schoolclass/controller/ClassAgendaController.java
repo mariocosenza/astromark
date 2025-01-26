@@ -39,27 +39,27 @@ public class ClassAgendaController {
         classAgendaService.sign(classId, signHourRequest);
     }
 
+    @Operation(summary = "Create class timetable", description = "Creates a timetable for the class based on the provided request details.")
     @PostMapping("/createTimeTable")
     public void createTimeTable(@RequestBody ClassTimeTableRequest classTimeTableRequest) {
         classAgendaService.createTimeTable(classTimeTableRequest);
-
     }
 
+    @Operation(summary = "Create a teaching timeslot", description = "Creates a new teaching timeslot for the specified class with the provided details.")
     @PostMapping("/{classId}/createTimeSlot")
     public void createTimeSlot(@PathVariable Integer classId, @RequestBody TeachingTimeslotRequest teachingTimeslotRequest) {
         classAgendaService.addTimeslot(classId, teachingTimeslotRequest);
     }
 
+    @Operation(summary = "Retrieve class schedule", description = "Gets the current schedule for the specified class.")
     @GetMapping("/{classId}/class-schedule")
     public List<TeachingTimeslotResponse> classSchedule(@PathVariable Integer classId) {
         return classAgendaService.getClassTimeslot(classId, LocalDate.now());
     }
 
+    @Operation(summary = "Retrieve class timetable", description = "Gets the complete timetable for the specified class.")
     @GetMapping("/{classId}/timetable")
     public List<TimeTableResponse> getTimeTable(@PathVariable Integer classId) {
         return classAgendaService.getTimeTable(classId);
     }
-
-
 }
-
