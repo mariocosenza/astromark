@@ -15,6 +15,7 @@ import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.rating.dto.MarkRequest;
 import it.astromark.rating.model.MarkType;
+import it.astromark.rating.service.MarkServiceImpl;
 import it.astromark.school.entity.School;
 import it.astromark.school.repository.SchoolRepository;
 import it.astromark.user.commons.model.PendingState;
