@@ -35,6 +35,7 @@ interface HomeworkChatResponse {
 
 interface ChatHomeworkProps {
     homeworkId: number;
+    studentId: string | null;
 }
 
 /**
@@ -60,9 +61,10 @@ const getAvatarColor = (name: string): string => {
  * and scrolls the message box to the bottom when new messages arrive.
  *
  * @param homeworkId - The id of the homework.
+ * @param studentId - The id of the student.
  * @returns The ChatHomeworkComponent.
  */
-export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId}) => {
+export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, studentId}) => {
     const [messages, setMessages] = useState<MessageResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [newMessage, setNewMessage] = useState<string>("");
@@ -81,12 +83,19 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
      */
     const fetchMessages = async () => {
         try {
-            // If student and chatId is not set, get the chatId.
+            // If student or teacher, and chatId is not set, get the chatId.
             if (getRole().toUpperCase() === Role.STUDENT && !chatId) {
                 const response: AxiosResponse<string> = await axiosConfig.get<string>(
                     `${API_BASE_URL}/homeworks/${homeworkId}/has-uncompleted-chat`
                 );
                 setChatId(response.data);
+            } else if (getRole().toUpperCase() === Role.TEACHER && !chatId) {
+                if (studentId){
+                    const response: AxiosResponse<string> = await axiosConfig.get<string>(
+                        `${API_BASE_URL}/homeworks/${homeworkId}/student/${studentId}`
+                    );
+                    setChatId(response.data);
+                }
             }
 
             // Proceed with the call only if chatId is set.

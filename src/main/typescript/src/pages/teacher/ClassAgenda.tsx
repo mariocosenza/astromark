@@ -105,6 +105,13 @@ export const ClassAgenda: React.FC = () => {
         navigate(`/teacher/ora`);
     };
 
+    const choseHomeworkChat = (slot: ClassAgendaRow) => {
+        if (slot.id) {
+            SelectedTeachingTimeslot.setSlot(slot);
+            navigate(`/teacher/agenda/chat`);
+        }
+    };
+
     const handleDateChange = (newDate: DateObject | null) => {
         if (newDate) {
             setLoading(true);
@@ -191,7 +198,7 @@ export const ClassAgenda: React.FC = () => {
                                             </Typography>
                                         </Grid>
                                         {row.homeworkNeedChat && row.isTeacherHour && (
-                                            <IconButton>
+                                            <IconButton onClick={() => choseHomeworkChat(row)}>
                                                 <ForumIcon/>
                                             </IconButton>
                                         )}

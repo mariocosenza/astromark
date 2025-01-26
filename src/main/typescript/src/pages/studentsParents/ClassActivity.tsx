@@ -153,7 +153,7 @@ export const Homework: React.FC = () => {
             </Box>
             {open &&
                 <div style={{minWidth: '40vw', marginTop: '1rem'}}>
-                    <ChatHomeworkComponent homeworkId={chatId}/>
+                    <ChatHomeworkComponent homeworkId={chatId} studentId={null}/>
                 </div>
             }
         </Stack>

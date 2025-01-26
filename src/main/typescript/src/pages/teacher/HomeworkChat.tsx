@@ -104,7 +104,7 @@ export const HomeworkChat: React.FC = () => {
                 </TableContainer>
 
                 { !loading && selected && homeworkId && (
-                    <ChatHomeworkComponent homeworkId={homeworkId}/>
+                    <ChatHomeworkComponent homeworkId={homeworkId} studentId={selected.id}/>
                 )}
 
             </Stack>
