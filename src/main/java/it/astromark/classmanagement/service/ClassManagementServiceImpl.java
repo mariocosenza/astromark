@@ -9,6 +9,7 @@ import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
+import it.astromark.school.service.SchoolService;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
 import jakarta.transaction.Transactional;
@@ -29,13 +30,15 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     private final SchoolClassRepository schoolClassRepository;
     private final SchoolUserService schoolUserService;
     private final TeachingRepository teachingRepository;
+    private final SchoolService schoolService;
 
-    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository) {
+    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository, SchoolService schoolService) {
         this.authenticationService = authenticationService;
         this.classManagementMapper = classManagementMapper;
         this.schoolClassRepository = schoolClassRepository;
         this.schoolUserService = schoolUserService;
         this.teachingRepository = teachingRepository;
+        this.schoolService = schoolService;
     }
 
     @Override
@@ -100,7 +103,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
                     .school(authenticationService.getSecretary().orElseThrow().getSchool())
                     .number(request.number())
                     .letter(request.letter())
-                    .year(request.year())
+                    .year(getYear().getValue())
                     .build());
     }
 
