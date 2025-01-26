@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Card, CardContent, Divider, Stack, TextField, Typography,} from "@mui/material";
+import {Button, Card, CardContent, Divider, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography,} from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker";
 import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useFormik} from "formik";
@@ -9,6 +9,8 @@ import YupPassword from "yup-password";
 import * as yup from "yup";
 import {useNavigate} from "react-router";
 import {SignHourRequest} from "../../entities/SignHourRequest.ts";
+import {AxiosResponse} from "axios";
+import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 
 YupPassword(yup)
 
@@ -32,6 +34,7 @@ const validationSchema = yup.object({
 
 export const SignHour: React.FC = () => {
     const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homeworkDate || new DateObject().add(1, 'days'))
+    const [needChat, setNeedChat] = useState<boolean>(SelectedTeachingTimeslot.homeworkNeedChat)
     const [dateError, setDateError] = useState<boolean>(false)
     const navigate = useNavigate();
 
@@ -59,11 +62,24 @@ export const SignHour: React.FC = () => {
                 };
 
                 try {
-                    await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signHour`, signHourRequest, {
+                    const response: AxiosResponse<TeachingTimeslotDetailedResponse> = await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signHour`, signHourRequest, {
                         headers: {
                             'Content-Type': 'application/json',
                         },
                     });
+
+                    if (needChat && response.data) {
+                        const homeworkIdResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${SelectedSchoolClass.id}/homeworks/${response.data.id}`);
+
+                        if (homeworkIdResponse.data) {
+                            const homeworkId: number = homeworkIdResponse.data
+                            await axiosConfig.post(`${Env.API_BASE_URL}/homeworks/${homeworkId}/chats`, {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            });
+                        }
+                    }
 
                     navigate(`/teacher/agenda`);
                 } catch (error) {
@@ -114,18 +130,32 @@ export const SignHour: React.FC = () => {
                                            value={formik.values.homeworkDesc}
                                            onChange={formik.handleChange}/>
 
-                                <Stack direction={'column'} justifyContent={'center'}>
-                                    <Typography variant="caption" color={'textSecondary'}>
-                                        Consegna
-                                    </Typography>
-                                    <DatePicker
-                                        value={dueDate}
-                                        onChange={handleDateChange}/>
-                                    {dateError && (
-                                        <Typography variant="caption" color={'error'}>
-                                            È possibile salvare solo date successive ad oggi.
+                                <Stack direction={'row'} spacing={4}>
+                                    <Stack direction={'column'} justifyContent={'center'}>
+                                        <Typography variant="caption" color={'textSecondary'}>
+                                            Consegna
                                         </Typography>
-                                    )}
+                                        <DatePicker
+                                            value={dueDate}
+                                            onChange={handleDateChange}/>
+                                        {dateError && (
+                                            <Typography variant="caption" color={'error'}>
+                                                È possibile salvare solo date successive ad oggi.
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                    <Stack alignItems={'flex-start'}>
+                                        <Typography variant="caption" color={'textSecondary'}>
+                                            Abilita chat
+                                        </Typography>
+                                        <RadioGroup row value={needChat ? 'yes' : 'no'}
+                                                    onChange={(e) => setNeedChat(e.target.value === 'yes')}>
+                                            <FormControlLabel label='Sì' value='yes' control={<Radio />}
+                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat} />
+                                            <FormControlLabel label='No' value='no' control={<Radio />}
+                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat} />
+                                        </RadioGroup>
+                                    </Stack>
                                 </Stack>
                             </Stack>
                         </Stack>
