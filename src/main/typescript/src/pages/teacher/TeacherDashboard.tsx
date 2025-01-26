@@ -47,7 +47,7 @@ export const TeacherDashboard = () => {
             textAlign="center"
         >
             <Typography variant="h4" mb={4} color="primary">
-                {loading ? "Caricamento..." : `Benvenuto, ${schoolUser?.name} ${schoolUser?.surname}!`}
+                {loading ? "Caricamento..." : `Benvenut${schoolUser?.male? 'o' : 'a'}, ${schoolUser?.name} ${schoolUser?.surname}!`}
             </Typography>
 
             <Stack
