@@ -1,6 +1,7 @@
 package it.astromark.behavior.service;
 
 
+import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.behavior.dto.NoteRequest;
 import it.astromark.behavior.dto.NoteResponse;
 import it.astromark.behavior.entity.Note;
@@ -26,13 +27,15 @@ public class NoteServiceImpl implements NoteService {
     private final NoteMapper noteMapper;
     private final SchoolUserService schoolUserService;
     private final StudentRepository studentRepository;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper, SchoolUserService schoolUserService, StudentRepository studentRepository) {
+    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper, SchoolUserService schoolUserService, StudentRepository studentRepository, AuthenticationService authenticationService) {
         this.noteRepository = noteRepository;
         this.noteMapper = noteMapper;
         this.schoolUserService = schoolUserService;
         this.studentRepository = studentRepository;
+        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -76,7 +79,9 @@ public class NoteServiceImpl implements NoteService {
     public List<NoteResponse> getNoteByStudentId(UUID studentId, Integer classId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
+        } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        } else if (authenticationService.isStudent() && !schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         return studentRepository.findById(studentId).orElseThrow().getNotes().stream()
