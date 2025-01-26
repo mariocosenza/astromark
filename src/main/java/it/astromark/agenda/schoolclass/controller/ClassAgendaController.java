@@ -35,8 +35,8 @@ public class ClassAgendaController {
 
     @Operation(summary = "Sign teaching hour", description = "Signs a teaching hour for the specified class with the provided details.")
     @PostMapping("/{classId}/signHour")
-    public void sign(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
-        classAgendaService.sign(classId, signHourRequest);
+    public TeachingTimeslotDetailedResponse sign(@PathVariable Integer classId, @RequestBody SignHourRequest signHourRequest) {
+        return classAgendaService.sign(classId, signHourRequest);
     }
 
     @PostMapping("/createTimeTable")

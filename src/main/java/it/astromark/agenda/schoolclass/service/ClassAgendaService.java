@@ -38,7 +38,7 @@ public interface ClassAgendaService {
      * Pre-condition: The `classId` must not be null. The `request` must not be null and must contain valid signing details.
      * Post-condition: The specified hours are signed for the given class.
      */
-    void sign(Integer classId, SignHourRequest request);
+    TeachingTimeslotDetailedResponse sign(Integer classId, SignHourRequest request);
 
     /**
      * Checks if a timeslot is signed for a given ID and date.

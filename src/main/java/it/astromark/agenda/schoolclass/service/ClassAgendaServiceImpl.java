@@ -112,7 +112,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public void sign(Integer classId, SignHourRequest request) {
+    public TeachingTimeslotDetailedResponse sign(Integer classId, SignHourRequest request) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
@@ -190,6 +190,8 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
             homeworkRepository.save(homework);
         }
+
+        return classAgendaMapper.toTeachingTimeslotDetailedResponse(signedHour.getTeachingTimeslot(), classActivityRepository, homeworkRepository);
     }
 
     @Override
