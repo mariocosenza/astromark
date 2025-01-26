@@ -33,7 +33,6 @@ import java.util.UUID;
 @Slf4j
 public class TeacherServiceImpl implements TeacherService {
 
-    private final TeacherRepository repository;
     private final TeacherClassRepository teacherClassRepository;
     private final SchoolUserMapper schoolUserMapper;
     private final AuthenticationService authenticationService;
@@ -42,8 +41,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final ClassManagementMapper classManagementMapper;
     private final TeachingRepository teachingRepository;
 
-    public TeacherServiceImpl(TeacherRepository repository, TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper, TeachingRepository teachingRepository) {
-        this.repository = repository;
+    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper, TeachingRepository teachingRepository) {
         this.teacherClassRepository = teacherClassRepository;
         this.schoolUserMapper = schoolUserMapper;
         this.authenticationService = authenticationService;
