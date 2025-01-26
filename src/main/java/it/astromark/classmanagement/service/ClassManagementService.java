@@ -1,5 +1,8 @@
 package it.astromark.classmanagement.service;
 
+import it.astromark.classmanagement.dto.SchoolClassResponse;
+import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.didactic.entity.Teaching;
 import it.astromark.classmanagement.dto.*;
 
@@ -30,6 +33,8 @@ public interface ClassManagementService {
     List<SchoolClassStudentResponse> getStudents(Integer classId);
 
     List<TeachingResponse> getTeachings();
+
+    SchoolClassResponse schoolClassResponse(SchoolClassRequest request);
 
 
     void addTeaching(UUID teacheruuid, TeachingRequest teaching);

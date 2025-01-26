@@ -1,9 +1,10 @@
 package it.astromark.classmanagement.controller;
 
-import it.astromark.classmanagement.didactic.entity.Teaching;
-import it.astromark.classmanagement.dto.*;
-import it.astromark.classmanagement.service.ClassManagementService;
 import io.swagger.v3.oas.annotations.Operation;
+import it.astromark.classmanagement.dto.SchoolClassResponse;
+import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
+import it.astromark.classmanagement.service.ClassManagementService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
@@ -75,4 +76,9 @@ public class ClassManagementController {
     }
 
 
+
+    @PostMapping("/class")
+    public SchoolClassResponse create(@RequestBody SchoolClassRequest schoolClassRequest) {
+        return classManagementService.schoolClassResponse(schoolClassRequest);
+    }
 }
