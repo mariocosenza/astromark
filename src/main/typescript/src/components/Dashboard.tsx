@@ -71,13 +71,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ isTeacher }) => {
                 style={{ cursor: "pointer" }}
                 justifyContent="center"
             >
-                <Stack direction="row" spacing={6}>
+                <Stack direction="row" spacing={3}>
                     {menuItems.slice(0, 2).map((item, index) => (
                         <Box
                             key={index}
                             display="flex"
                             flexDirection="column"
                             alignItems="center"
+                            className={'hover-animation'}
+                            sx = {{padding: '1rem', borderRadius: '1rem'}}
                             onClick={() => navigate(item.path)}
                         >
                             <img
@@ -100,13 +102,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ isTeacher }) => {
                     ))}
                 </Stack>
 
-                <Stack direction="row" spacing={6}>
+                <Stack direction="row" spacing={3}>
                     {menuItems.slice(2).map((item, index) => (
                         <Box
                             key={index}
                             display="flex"
                             flexDirection="column"
                             alignItems="center"
+                            className={'hover-animation'}
+                            sx = {{padding: '1rem', borderRadius: '1rem'}}
                             onClick={() => navigate(item.path)}
                         >
                             <img
