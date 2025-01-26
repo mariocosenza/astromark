@@ -21,9 +21,10 @@ import {TeacherTicket} from "./pages/teacher/TeacherTicket.tsx";
 import {Timetable} from "./pages/./studentsParents/Timetable.tsx";
 import {SemesterReport} from "./pages/./studentsParents/Report.tsx";
 import {isSelectedClass} from "./services/TeacherService.ts";
-import {ClassAgenda} from "./pages/teacher/ClassAgenda.tsx";
 import {ProtectedStudentParentRoute} from "./components/route/ProtectedStudentParentRoute.tsx";
 import {Ticket} from "./pages/parents/Ticket.tsx";
+import {ClassAgenda} from "./pages/teacher/ClassAgenda.tsx";
+import {HomeworkChat} from "./pages/teacher/HomeworkChat.tsx";
 import {Reception} from "./pages/parents/Reception.tsx";
 import {SignHour} from "./pages/teacher/SignHour.tsx";
 import {Attendance} from "./pages/teacher/Attendance.tsx";
@@ -73,6 +74,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="ticket" element={<TeacherTicket/>}/>
                         <Route path="agenda" element={<ConditionalRoute node={<ClassAgenda/>} condition={isSelectedClass}/>}/>
+                        <Route path="agenda/chat" element={<ConditionalRoute node={<HomeworkChat/>} condition={isSelectedClass}/>}/>
                         <Route path="ora" element={<ConditionalRoute node={<SignHour/>} condition={isSelectedClass}/>}/>
                         <Route path="appello" element={<ConditionalRoute node={<Attendance/>} condition={isSelectedClass}/>}/>
                         <Route path="valutazioni" element={<ConditionalRoute node={<Ratings/>} condition={isSelectedClass}/>}/>
