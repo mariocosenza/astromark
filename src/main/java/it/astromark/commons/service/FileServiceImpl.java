@@ -33,7 +33,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public String uploadFile(MultipartFile multipartFile) throws IOException {
         // 1. Check file size (16MB = 16 * 1024 * 1024 bytes)
-        long maxSize = 16 * 1024 * 1024;
+        long maxSize =((long) 16) * 1024 * 1024;
         if (multipartFile.getSize() > maxSize) {
             throw new IllegalArgumentException("File size exceeds maximum limit of 16MB");
         }

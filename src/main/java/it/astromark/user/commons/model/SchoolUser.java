@@ -3,10 +3,7 @@ package it.astromark.user.commons.model;
 import it.astromark.school.entity.School;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -74,10 +71,11 @@ public abstract class SchoolUser {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Builder.Default
     @ColumnDefault("false")
     @NotNull
     @Column(name = "gender")
-    private Boolean male;
+    private Boolean male =false;
 
     @Size(max = 512)
     @NotBlank

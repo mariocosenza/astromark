@@ -6,6 +6,7 @@ import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.commons.service.SendGridMailService;
+import it.astromark.orientation.OrientationService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.commons.model.PendingState;
@@ -41,15 +42,17 @@ public class StudentServiceImpl implements StudentService {
     private final AuthenticationService authenticationService;
     private final SendGridMailService sendGridMailService;
     private final SchoolUserMapper schoolUserMapper;
+    private final OrientationService orientationService;
 
     @Autowired
-    public StudentServiceImpl(SchoolUserService schoolUserService, StudentRepository studentRepository, ClassManagementMapper classManagementMapper, AuthenticationService authenticationService, SendGridMailService sendGridMailService, SchoolUserMapper schoolUserMapper) {
+    public StudentServiceImpl(SchoolUserService schoolUserService, StudentRepository studentRepository, ClassManagementMapper classManagementMapper, AuthenticationService authenticationService, SendGridMailService sendGridMailService, SchoolUserMapper schoolUserMapper, OrientationService orientationService) {
         this.schoolUserService = schoolUserService;
         this.studentRepository = studentRepository;
         this.classManagementMapper = classManagementMapper;
         this.authenticationService = authenticationService;
         this.sendGridMailService = sendGridMailService;
         this.schoolUserMapper = schoolUserMapper;
+        this.orientationService = orientationService;
     }
 
     @Override
@@ -130,6 +133,15 @@ public class StudentServiceImpl implements StudentService {
         } else if (authenticationService.isStudent()) {
             student = authenticationService.getStudent().orElseThrow();
         }
+
+        try {
+            var attitude = orientationService.attitude(student);
+            student.setAttitude(attitude);
+            studentRepository.save(student);
+        } catch (Exception e) {
+            log.error("Error while calculating attitude for student with ID: {}", studentId);
+        }
+
         return student.getAttitude();
     }
 }

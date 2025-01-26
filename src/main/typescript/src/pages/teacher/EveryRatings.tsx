@@ -40,7 +40,7 @@ export const EveryRatings: React.FC = () => {
                 }
 
                 let found = false
-                rowResponse.map((student: StudentRatingsRow)=> {
+                rowResponse.forEach((student: StudentRatingsRow)=> {
                     if (student.studentId === mark.studentId){
                         student.marks.push({
                             id: mark.id,

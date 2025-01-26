@@ -1,7 +1,9 @@
 package it.astromark.classmanagement.service;
 
+import it.astromark.classmanagement.dto.SchoolClassRequest;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
 
 import java.time.Year;
 import java.util.List;
@@ -36,4 +38,10 @@ public interface ClassManagementService {
      * Post-condition: Returns a list of students sorted by surname for the specified class.
      */
     List<SchoolClassStudentResponse> getStudents(Integer classId);
+
+    List<TeachingResponse> getTeachings();
+
+    SchoolClassResponse schoolClassResponse(SchoolClassRequest request);
+
+
 }

@@ -83,4 +83,6 @@ public interface ClassAgendaService {
 
 
     List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now);
+
+    List<TimeTableResponse> getTimeTable(Integer classId);
 }

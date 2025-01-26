@@ -47,13 +47,17 @@ public class ClassAgendaController {
 
     @PostMapping("/{classId}/createTimeSlot")
     public void createTimeSlot(@PathVariable Integer classId, @RequestBody TeachingTimeslotRequest teachingTimeslotRequest) {
-
         classAgendaService.addTimeslot(classId, teachingTimeslotRequest);
     }
 
     @GetMapping("/{classId}/class-schedule")
     public List<TeachingTimeslotResponse> classSchedule(@PathVariable Integer classId) {
         return classAgendaService.getClassTimeslot(classId, LocalDate.now());
+    }
+
+    @GetMapping("/{classId}/timetable")
+    public List<TimeTableResponse> getTimeTable(@PathVariable Integer classId) {
+        return classAgendaService.getTimeTable(classId);
     }
 
 

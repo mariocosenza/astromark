@@ -58,7 +58,7 @@ export const Attendance: React.FC = () => {
                     totalDelay: attendance.totalDelay,
                 }));
 
-                rowResponse.map((attendance) => {
+                rowResponse.forEach((attendance) => {
                     attendance.delayTimeHour = attendance.delayTimeHour - 1;
                 });
             }

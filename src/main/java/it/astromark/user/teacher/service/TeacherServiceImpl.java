@@ -14,7 +14,9 @@ import it.astromark.commons.service.SendGridMailService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.commons.model.PendingState;
+import it.astromark.user.teacher.dto.TeacherDetailsResponse;
 import it.astromark.user.teacher.dto.TeacherRequest;
+import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,9 +55,10 @@ public class TeacherServiceImpl implements TeacherService {
     @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(TeacherRequest teacherRequest) {
         var username = teacherRequest.name() + "." + teacherRequest.surname() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
-        var school = authenticationService.getSecretary().orElseThrow().getSchool();
+        var school = authenticationService.getSecretary().orElseThrow(() -> new IllegalArgumentException("Secretary not found")).getSchool();
         var password = new Faker().internet().password(8, 64, true, false, true);
-        var user = schoolUserMapper.toSchoolUserDetailed(teacherRepository.save(Teacher.builder().school(school)
+        var user = schoolUserMapper.toSchoolUserDetailed(teacherRepository.save(Teacher.builder()
+                .school(school)
                 .name(teacherRequest.name())
                 .surname(teacherRequest.surname())
                 .email(teacherRequest.email())
@@ -74,14 +77,14 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('TEACHER')")
     @Transactional
-    public List<SchoolClassResponse> getSchoolClasses(){
+    public List<SchoolClassResponse> getSchoolClasses() {
 
         var schoolClasses = teacherClassRepository.findByTeacher(
-                authenticationService.getTeacher().orElseThrow()).stream()
+                        authenticationService.getTeacher().orElseThrow()).stream()
                 .map(TeacherClass::getSchoolClass)
                 .toList();
 
-        if (schoolClasses.isEmpty()){
+        if (schoolClasses.isEmpty()) {
             return null;
         }
 
@@ -101,6 +104,31 @@ public class TeacherServiceImpl implements TeacherService {
     public List<String> getTeaching() {
         var teachings = teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow());
         return teachings.stream().map(Teaching::getSubjectTitle).map(Subject::getTitle).sorted().toList();
+    }
+
+    @Override
+    public List<TeacherResponse> getTeachers() {
+        return teacherRepository.findAll().stream().map(
+                t -> new TeacherResponse(
+                        t.getName(),
+                        t.getSurname(),
+                        t.getId()
+                )
+        ).toList();
+    }
+
+    @Override
+    public TeacherDetailsResponse getTeacher(String teacheruuid) {
+
+        var teacher = teacherRepository.findById(UUID.fromString(teacheruuid)).orElseThrow(() ->
+                new IllegalArgumentException("Teacher Not Found"));
+
+        var teacherTeachings = teachingRepository.findByTeacher(teacher).stream().map(Teaching::toString).toList();
+        return new TeacherDetailsResponse(
+                teacher.getUsername(),
+                teacherTeachings.toString()
+
+                );
     }
 
     @Override

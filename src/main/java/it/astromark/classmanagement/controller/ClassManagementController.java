@@ -1,13 +1,12 @@
 package it.astromark.classmanagement.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import it.astromark.classmanagement.dto.SchoolClassRequest;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.service.ClassManagementService;
-import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.List;
@@ -47,5 +46,15 @@ public class ClassManagementController {
     @GetMapping("/{classId}/students")
     public List<SchoolClassStudentResponse> getStudents(@PathVariable Integer classId) {
         return classManagementService.getStudents(classId);
+    }
+
+    @GetMapping("/teaching")
+    public List<TeachingResponse> getTeachings() {
+        return classManagementService.getTeachings();
+    }
+
+    @PostMapping("/class")
+    public SchoolClassResponse create(@RequestBody SchoolClassRequest schoolClassRequest) {
+        return classManagementService.schoolClassResponse(schoolClassRequest);
     }
 }

@@ -22,6 +22,7 @@ export type HomeworkProp = {
 export const HomeworkList: React.FC<HomeworkProp> = ({list, dashboard}) => {
     const [open, setOpen] = openChat()
     const [homewokId, setChatId] = homeworkChatId()
+console.log(list)
     return (
         <div>
             {

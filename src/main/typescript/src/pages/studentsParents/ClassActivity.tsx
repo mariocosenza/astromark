@@ -53,8 +53,8 @@ export const Homework: React.FC = () => {
     const [activity, setActivity] = React.useState<HomeworkResponse[]>([]);
     const [checked, setChecked] = React.useState<boolean>(false);
     const [subject, setSubject] = React.useState<string>('Seleziona Materia');
-    const [toggle, _] = changeStudentOrYear();
-    const [open,] = openChat();
+    const [toggle,] = changeStudentOrYear();
+    const [open, setOpen] = openChat();
     const [chatId,] = homeworkChatId();
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -72,6 +72,7 @@ export const Homework: React.FC = () => {
             const response: AxiosResponse<HomeworkResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/homeworks/all`);
             setActivity(response.data);
             setLoading(false);
+            setOpen(false);
         } catch (error) {
             console.error(error);
         }

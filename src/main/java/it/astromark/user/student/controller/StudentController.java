@@ -7,6 +7,7 @@ import it.astromark.user.student.service.StudentService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import java.time.Year;
 import java.util.List;
@@ -46,6 +47,6 @@ public class StudentController {
 
     @GetMapping("/{studentId}/attitude")
     public String attitude(@PathVariable UUID studentId) {
-        return studentService.attitude(studentId);
+        return HtmlUtils.htmlEscape(studentService.attitude(studentId));
     }
 }
