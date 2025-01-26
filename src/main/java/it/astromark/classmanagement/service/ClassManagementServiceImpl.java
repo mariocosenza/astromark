@@ -2,9 +2,11 @@ package it.astromark.classmanagement.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
+import it.astromark.classmanagement.dto.SchoolClassRequest;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
 import it.astromark.classmanagement.dto.TeachingResponse;
+import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
@@ -89,6 +91,17 @@ public class ClassManagementServiceImpl implements ClassManagementService {
                 ))
                 .limit(20)
                 .toList();
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SECRETARY')")
+    public SchoolClassResponse schoolClassResponse(SchoolClassRequest request)  {
+            return classManagementMapper.toSchoolClassResponse(SchoolClass.builder()
+                    .school(authenticationService.getSecretary().orElseThrow().getSchool())
+                    .number(request.number())
+                    .letter(request.letter())
+                    .year(request.year())
+                    .build());
     }
 
 
