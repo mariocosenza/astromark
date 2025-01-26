@@ -8,7 +8,9 @@ import it.astromark.chat.entity.Message;
 import it.astromark.chat.mapper.ChatMapper;
 import it.astromark.chat.repository.HomeworkChatRepository;
 import it.astromark.chat.repository.MessageRepository;
+import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
+import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotEmpty;
@@ -31,14 +33,18 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     private final HomeworkRepository homeworkRepository;
     private final AuthenticationService authenticationService;
     private final MessageRepository messageRepository;
+    private final SchoolUserService schoolUserService;
+    private final SchoolClassRepository schoolClassRepository;
 
-    public HomeworkChatServiceImpl(HomeworkChatRepository homeworkChatRepository, ChatMapper chatMapper, MessageService messageService, HomeworkRepository homeworkRepository, AuthenticationService authenticationService, MessageRepository messageRepository) {
+    public HomeworkChatServiceImpl(HomeworkChatRepository homeworkChatRepository, ChatMapper chatMapper, MessageService messageService, HomeworkRepository homeworkRepository, AuthenticationService authenticationService, MessageRepository messageRepository, SchoolUserService schoolUserService, SchoolClassRepository schoolClassRepository) {
         this.homeworkChatRepository = homeworkChatRepository;
         this.chatMapper = chatMapper;
         this.messageService = messageService;
         this.homeworkRepository = homeworkRepository;
         this.authenticationService = authenticationService;
         this.messageRepository = messageRepository;
+        this.schoolUserService = schoolUserService;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
     public HomeworkChatResponse getChatWithMessagesSocket(UUID chatId) {
@@ -86,18 +92,24 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public void addChat(@NotNull Integer homeworkId) {
         var homework = homeworkRepository.findById(homeworkId).orElseThrow();
-        if (!homework.getSignedHour().getTeachingTimeslot().getTeaching().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
+        var classId = homework.getSignedHour().getTeachingTimeslot().getClassTimetable().getSchoolClass().getId();
+
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this homework");
         }
-        for (var student : homework.getSignedHour().getTeachingTimeslot().getClassTimetable().getSchoolClass().getStudents()) {
-            var chat = HomeworkChat.builder()
-                    .homeworkSignedHourTeachingTimeslot(homework)
-                    .completed(false)
-                    .student(student)
-                    .build();
+
+        for (var student : schoolClassRepository.findById(classId).orElseThrow().getStudents()) {
+
+            var chat = new HomeworkChat();
+            chat.setHomeworkSignedHourTeachingTimeslot(homework);
+            chat.setCompleted(false);
+            chat.setStudent(student);
+            chat.setTitle(homework.getTitle());
+
             homeworkChatRepository.save(chat);
         }
     }
