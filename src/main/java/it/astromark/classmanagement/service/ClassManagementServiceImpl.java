@@ -1,15 +1,18 @@
 package it.astromark.classmanagement.service;
 
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classmanagement.didactic.entity.Subject;
+import it.astromark.classmanagement.didactic.entity.Teaching;
+import it.astromark.classmanagement.didactic.entity.TeachingId;
 import it.astromark.classmanagement.didactic.repository.SubjectRepository;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
-import it.astromark.classmanagement.dto.SchoolClassResponse;
-import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
-import it.astromark.classmanagement.dto.TeachingResponse;
+import it.astromark.classmanagement.dto.*;
+import it.astromark.classmanagement.entity.SchoolClass;
+import it.astromark.classmanagement.entity.TeacherClass;
+import it.astromark.classmanagement.entity.TeacherClassId;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
-import it.astromark.school.service.SchoolService;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.teacher.repository.TeacherRepository;
@@ -35,9 +38,8 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     private final SchoolClassRepository schoolClassRepository;
     private final SchoolUserService schoolUserService;
     private final TeachingRepository teachingRepository;
-    private final SchoolService schoolService;
 
-    public ClassManagementServiceImpl(TeacherClassRepository teacherClassRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository, AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository, SchoolService schoolService) {
+    public ClassManagementServiceImpl(TeacherClassRepository teacherClassRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository, AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository) {
         this.teacherClassRepository = teacherClassRepository;
         this.subjectRepository = subjectRepository;
         this.teacherRepository = teacherRepository;
@@ -46,7 +48,6 @@ public class ClassManagementServiceImpl implements ClassManagementService {
         this.schoolClassRepository = schoolClassRepository;
         this.schoolUserService = schoolUserService;
         this.teachingRepository = teachingRepository;
-        this.schoolService = schoolService;
 
     }
 
@@ -104,6 +105,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
                 .limit(20)
                 .toList();
     }
+
 
     @Override
     public void addTeaching(UUID teacheruuid, TeachingRequest teachingRequest) {

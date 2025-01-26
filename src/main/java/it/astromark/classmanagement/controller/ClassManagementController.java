@@ -1,9 +1,7 @@
 package it.astromark.classmanagement.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import it.astromark.classmanagement.dto.SchoolClassResponse;
-import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
-import it.astromark.classmanagement.dto.TeachingResponse;
+import it.astromark.classmanagement.dto.*;
 import it.astromark.classmanagement.service.ClassManagementService;
 import org.springframework.web.bind.annotation.*;
 
