@@ -68,7 +68,7 @@ export const SignHour: React.FC = () => {
                         },
                     });
 
-                    if (needChat && response.data) {
+                    if (needChat && !SelectedTeachingTimeslot.homeworkNeedChat && response.data) {
                         const homeworkIdResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${SelectedSchoolClass.id}/homeworks/${response.data.id}`);
 
                         if (homeworkIdResponse.data) {

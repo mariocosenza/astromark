@@ -33,7 +33,6 @@ export const HomeworkChat: React.FC = () => {
                 const homeworkIdResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${SelectedSchoolClass.id}/homeworks/${SelectedTeachingTimeslot.id}`);
 
                 if (homeworkIdResponse.data) {
-                    console.log("stuff ID yoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
                     setHomeworkId(homeworkIdResponse.data)
                 }
             }
