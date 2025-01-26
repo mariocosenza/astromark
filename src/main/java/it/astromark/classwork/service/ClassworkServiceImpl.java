@@ -1,5 +1,6 @@
 package it.astromark.classwork.service;
 
+import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classwork.dto.ClassworkResponse;
 import it.astromark.classwork.dto.HomeworkResponse;
@@ -27,16 +28,18 @@ public class ClassworkServiceImpl implements ClassworkService {
     private final StudentRepository studentRepository;
     private final ClassworkMapper classworkMapper;
     private final HomeworkRepository homeworkRepository;
+    private final SignedHourRepository signedHourRepository;
 
 
     @Autowired
-    public ClassworkServiceImpl(ClassActivityRepository classActivityRepository, AuthenticationService authenticationService, SchoolUserService schoolUserService, StudentRepository studentRepository, ClassworkMapper classworkMapper, HomeworkRepository homeworkRepository) {
+    public ClassworkServiceImpl(ClassActivityRepository classActivityRepository, AuthenticationService authenticationService, SchoolUserService schoolUserService, StudentRepository studentRepository, ClassworkMapper classworkMapper, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository) {
         this.classActivityRepository = classActivityRepository;
         this.authenticationService = authenticationService;
         this.schoolUserService = schoolUserService;
         this.studentRepository = studentRepository;
         this.classworkMapper = classworkMapper;
         this.homeworkRepository = homeworkRepository;
+        this.signedHourRepository = signedHourRepository;
     }
 
     public void updateDescription(Integer id, String description) {
@@ -77,5 +80,22 @@ public class ClassworkServiceImpl implements ClassworkService {
         return classworkMapper.homeworkToHomeworkResponseList(homeworkRepository.findAllBySignedHour_TeachingTimeslot_ClassTimetable_SchoolClass_Id(classId)).stream().sorted(Comparator.comparing(HomeworkResponse::dueDate)).toList();
     }
 
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public Integer getSignedHourHomeworkId(Integer classId, Integer signedHourId) {
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
 
+        var signedHour = signedHourRepository.findById(signedHourId).orElseThrow();
+        if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())) {
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        var homework = homeworkRepository.findBySignedHour(signedHour);
+        if (homework == null)
+            return null;
+        return homework.getId();
+    }
 }
