@@ -1,9 +1,6 @@
 package it.astromark.rating.mapper;
 
-import it.astromark.rating.dto.MarkResponse;
-import it.astromark.rating.dto.RatingsResponse;
-import it.astromark.rating.dto.SemesterReportMarkResponse;
-import it.astromark.rating.dto.SemesterReportResponse;
+import it.astromark.rating.dto.*;
 import it.astromark.rating.model.Mark;
 import it.astromark.rating.model.SemesterReport;
 import it.astromark.rating.model.SemesterReportMark;
@@ -39,5 +36,7 @@ public interface MarkMapper {
     RatingsResponse toRatingsResponse(Mark mark, @Context String  subject);
 
     List<RatingsResponse> toRatingsResponseList(List<Mark> marks, @Context String  subject);
+    MarkOrientationRequest toMarkOrientationRequest(Mark mark);
+    List<MarkOrientationRequest> toMarkOrientationRequestList(List<Mark> marks);
 
 }

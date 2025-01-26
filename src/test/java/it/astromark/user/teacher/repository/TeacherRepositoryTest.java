@@ -61,13 +61,14 @@ class TeacherRepositoryTest {
     @Test
     void save() {
         school = schoolRepository.save(school);
-        var name = faker.name().firstName();
-        var surname = faker.name().lastName();
+        var name = "Pippo";
+        var surname = "Pluto";
         var teacher = teacherRepository.save(Teacher.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .pendingState(PendingState.FIRST_LOGIN)
                 .surname(surname)
+                .taxId("PLTPPP00A01H501A")
                 .password(Hashing.sha512().hashString(faker.internet().password(8, 16, true, true), StandardCharsets.UTF_8).toString())
                 .residentialAddress(faker.address().fullAddress())
                 .male(true)

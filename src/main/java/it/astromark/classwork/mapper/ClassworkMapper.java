@@ -28,7 +28,7 @@ public interface ClassworkMapper {
             @Mapping(target = "signedHour.title", source = "homework.signedHour.teachingTimeslot.teaching.subjectTitle.title"),
             @Mapping(target = "signedHour.hour", source = "homework.signedHour.teachingTimeslot.hour"),
             @Mapping(target = "signedHour.date", source = "homework.signedHour.teachingTimeslot.date"),
-            @Mapping(target = "chat", expression = "java(homework.getHomeworkChats() != null)")
+            @Mapping(target = "chat", expression = "java(homework.getHomeworkChats().size() > 0)")
     })
     HomeworkResponse toHomeworkResponse(Homework homework);
 
