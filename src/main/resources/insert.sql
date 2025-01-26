@@ -151,20 +151,20 @@ VALUES
 
 INSERT INTO mark (student_id, teaching_subject_title, teaching_teacher_id, date, type, mark, description)
 VALUES
-    ((SELECT id FROM student WHERE username = 'luca.verdi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-22', 'ORAL', 8, 'Interrogazione su funzioni.'),
-    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-22', 'ORAL', 6, 'Interrogazione su funzioni incompleta.'),
-    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-02-01', 'WRITTEN', 7, 'Test sulle equazioni.'),
-    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-02-15', 'ORAL', 6, 'Interrogazione sul Rinascimento.'),
-    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-02-05', 'WRITTEN', 8, 'Compito sui sistemi lineari.'),
-    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-02-10', 'ORAL', 7, 'Analisi di un testo poetico.'),
-    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-02-12', 'WRITTEN', 6, 'Tema: il Romanticismo.'),
-    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-02-20', 'ORAL', 7, 'Dialogo su un testo letterario.'),
-    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-02-18', 'WRITTEN', 9, 'Traduzione di un brano.'),
-    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-02-25', 'WRITTEN', 8, 'Progetto: sviluppo di un algoritmo.'),
-    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-02-14', 'WRITTEN', 7, 'Compito sulla programmazione.'),
-    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-02-22', 'ORAL', 8, 'Esposizione di un argomento a scelta.'),
-    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-02-13', 'WRITTEN', 8, 'Analisi di un testo narrativo.'),
-    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-02-21', 'ORAL', 7, 'Interrogazione sulla Rivoluzione Francese.');
+    ((SELECT id FROM student WHERE username = 'luca.verdi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-22', 'ORAL', 5.75, 'Interrogazione su funzioni.'),
+    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-22', 'ORAL', 4.50, 'Interrogazione su funzioni incompleta.'),
+    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-25', 'WRITTEN', 6.25, 'Test sulle equazioni.'),
+    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-24', 'ORAL', 5.0, 'Interrogazione sul Rinascimento.'),
+    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-23', 'WRITTEN', 8.0, 'Compito sui sistemi lineari.'),
+    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-20', 'ORAL', 6.75, 'Analisi di un testo poetico.'),
+    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-19', 'WRITTEN', 4.75, 'Tema: il Romanticismo.'),
+    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-18', 'ORAL', 7.25, 'Dialogo su un testo letterario.'),
+    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-15', 'WRITTEN', 5.50, 'Traduzione di un brano.'),
+    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-16', 'WRITTEN', 7.75, 'Progetto: sviluppo di un algoritmo.'),
+    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-17', 'WRITTEN', 3.25, 'Compito sulla programmazione.'),
+    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-14', 'ORAL', 6.0, 'Esposizione di un argomento a scelta.'),
+    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-13', 'WRITTEN', 5.0, 'Analisi di un testo narrativo.'),
+    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-12', 'ORAL', 6.50, 'Interrogazione sulla Rivoluzione Francese.');
 
 INSERT INTO semester_report (first_semester, public, passed, year, student_id)
 VALUES
