@@ -1,18 +1,14 @@
 package it.astromark.classmanagement.controller;
 
 import it.astromark.classmanagement.didactic.entity.Teaching;
-import it.astromark.classmanagement.dto.SchoolClassResponse;
-import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
-import it.astromark.classmanagement.dto.TeachingResponse;
+import it.astromark.classmanagement.dto.*;
 import it.astromark.classmanagement.service.ClassManagementService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/class-management")
@@ -42,6 +38,18 @@ public class ClassManagementController {
         return classManagementService.getClasses();
     }
 
+    @GetMapping("/{teacheruuid}/class")
+    public List<SchoolClassResponse> getTeacherClasses(@PathVariable String teacheruuid) {
+        return classManagementService.getTeacherClasses(UUID.fromString(teacheruuid));
+
+    }
+
+    @PostMapping("/{teacheruuid}/add-teacher-to-class")
+    public void addTeacherToClass(@PathVariable String teacheruuid, @RequestBody AddToClassRequest addToClassRequest) {
+
+        classManagementService.addTeacherToClass(UUID.fromString(teacheruuid), addToClassRequest);
+    }
+
     @Operation(
             summary = "Retrieve students for a specific class",
             description = "Gets a list of students enrolled in a specific class."
@@ -55,4 +63,16 @@ public class ClassManagementController {
     public List<TeachingResponse> getTeachings() {
         return classManagementService.getTeachings();
     }
+
+    @GetMapping("/subject")
+    public List<String> getSubject() {
+        return classManagementService.getSubject();
+    }
+
+    @PostMapping("/{teacheruuid}/add-teaching")
+    public void addTeaching(@PathVariable UUID teacheruuid, @RequestBody TeachingRequest teaching) {
+        classManagementService.addTeaching(teacheruuid, teaching);
+    }
+
+
 }

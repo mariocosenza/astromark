@@ -1,12 +1,11 @@
 package it.astromark.classmanagement.service;
 
 import it.astromark.classmanagement.didactic.entity.Teaching;
-import it.astromark.classmanagement.dto.SchoolClassResponse;
-import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
-import it.astromark.classmanagement.dto.TeachingResponse;
+import it.astromark.classmanagement.dto.*;
 
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 
 public interface ClassManagementService {
 
@@ -33,4 +32,11 @@ public interface ClassManagementService {
     List<TeachingResponse> getTeachings();
 
 
+    void addTeaching(UUID teacheruuid, TeachingRequest teaching);
+
+    List<String> getSubject();
+
+    List<SchoolClassResponse> getTeacherClasses(UUID teacheruuid);
+
+    void addTeacherToClass(UUID uuid, AddToClassRequest addToClassRequest);
 }

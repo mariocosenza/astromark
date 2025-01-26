@@ -36,6 +36,7 @@ public class SchoolClass {
     @JoinColumn(name = "school_code", nullable = false)
     private School school;
 
+
     @NotNull
     @PositiveOrZero
     @Column(name = "number", nullable = false)
