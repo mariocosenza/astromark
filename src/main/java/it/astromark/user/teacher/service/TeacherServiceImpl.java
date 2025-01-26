@@ -120,7 +120,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional
-    public TeacherDetailsResponse getTeacher(String teacheruuid) {
+    public TeacherDetailsResponse getTeacherTeaching(String teacheruuid) {
         var teacher = teacherRepository.findById(UUID.fromString(teacheruuid))
                 .orElseThrow(() -> new EntityNotFoundException("Teacher not found for UUID: " + teacheruuid));
 

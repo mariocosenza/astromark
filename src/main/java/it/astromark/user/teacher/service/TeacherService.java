@@ -22,5 +22,5 @@ public interface TeacherService extends CrudService<Teacher, TeacherRequest, Sch
 
     List<TeacherResponse> getTeachers();
 
-    TeacherDetailsResponse getTeacher(String teacheruuid);
+    TeacherDetailsResponse getTeacherTeaching(String teacheruuid);
 }

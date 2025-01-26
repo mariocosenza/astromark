@@ -42,10 +42,10 @@ public class TeacherController {
         return teacherService.create(teacherRequest);
     }
 
-    @GetMapping("/{teacheruuid}")
+    @GetMapping("/{teacheruuid}/teachings")
     public TeacherDetailsResponse getTeacher(@PathVariable String teacheruuid) {
 
-        return teacherService.getTeacher(teacheruuid);
+        return teacherService.getTeacherTeaching(teacheruuid);
     }
 
 }
