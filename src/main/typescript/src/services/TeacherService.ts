@@ -66,6 +66,7 @@ export class SelectedTeachingTimeslot {
         this._homeworkTitle = slot.homeworkTitle;
         this._homeworkDesc = slot.homeworkDesc;
         this._homeworkDate = slot.homeworkDate;
+        this._homeworkNeedChat = slot.homeworkNeedChat
     }
 
     private static _id: number | null = null;
@@ -108,6 +109,12 @@ export class SelectedTeachingTimeslot {
 
     static get homeworkDate(): DateObject | null {
         return this._homeworkDate;
+    }
+
+    private static _homeworkNeedChat: boolean = false;
+
+    static get homeworkNeedChat(): boolean {
+        return this._homeworkNeedChat;
     }
 
     private static _date: DateObject | null = null;

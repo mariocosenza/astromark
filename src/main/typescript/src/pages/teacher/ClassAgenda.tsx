@@ -16,6 +16,7 @@ import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/Teac
 import {useNavigate} from "react-router";
 import {getId} from "../../services/AuthService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
+import ForumIcon from '@mui/icons-material/Forum';
 
 export interface ClassAgendaRow {
     id: number | null;
@@ -29,6 +30,7 @@ export interface ClassAgendaRow {
     homeworkTitle: string;
     homeworkDesc: string;
     homeworkDate: DateObject | null;
+    homeworkNeedChat: boolean;
 }
 
 export const ClassAgenda: React.FC = () => {
@@ -58,6 +60,7 @@ export const ClassAgenda: React.FC = () => {
                     homeworkTitle: teachingSlot.homeworkTitle,
                     homeworkDesc: teachingSlot.homeworkDescription,
                     homeworkDate: teachingSlot.homeworkDueDate,
+                    homeworkNeedChat: teachingSlot.homeworkNeedChat,
                 }));
             }
 
@@ -88,6 +91,7 @@ export const ClassAgenda: React.FC = () => {
                     homeworkTitle: '',
                     homeworkDesc: '',
                     homeworkDate: null,
+                    homeworkNeedChat: false,
                 })
             }
         }
@@ -140,9 +144,9 @@ export const ClassAgenda: React.FC = () => {
                         <CustomTableRow>
                             <CustomTableCell width={'8%'}>Firma</CustomTableCell>
                             <CustomTableCell width={'13%'}>Docente</CustomTableCell>
-                            <CustomTableCell width={'13%'}>Materia</CustomTableCell>
-                            <CustomTableCell width={'30%'}>Attività Svolta</CustomTableCell>
-                            <CustomTableCell width={'30%'}>Compiti Assegnati</CustomTableCell>
+                            <CustomTableCell width={'10%'}>Materia</CustomTableCell>
+                            <CustomTableCell width={'31%'}>Attività Svolta</CustomTableCell>
+                            <CustomTableCell width={'32%'}>Compiti Assegnati</CustomTableCell>
                             <CustomTableCell width={'6%'}></CustomTableCell>
                         </CustomTableRow>
                     </TableHead>
@@ -175,13 +179,23 @@ export const ClassAgenda: React.FC = () => {
                                 </CustomTableCell>
 
                                 <CustomTableCell>
-                                    <Typography fontWeight={'bold'} fontSize={'large'}>
-                                        {row.homeworkTitle + (row.homeworkTitle === '' ? '' : ':')}
-                                    </Typography>
-                                    {row.homeworkDesc}
-                                    <Typography fontSize={'small'} color={'textSecondary'}>
-                                        {row.homeworkDate ? 'Per il ' + row.homeworkDate.toString() : ''}
-                                    </Typography>
+
+                                    <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                                        <Grid>
+                                            <Typography fontWeight={'bold'} fontSize={'large'}>
+                                                {row.homeworkTitle + (row.homeworkTitle === '' ? '' : ':')}
+                                            </Typography>
+                                            {row.homeworkDesc}
+                                            <Typography fontSize={'small'} color={'textSecondary'}>
+                                                {row.homeworkDate ? 'Per il ' + row.homeworkDate.toString() : ''}
+                                            </Typography>
+                                        </Grid>
+                                        {row.homeworkNeedChat && row.isTeacherHour && (
+                                            <IconButton>
+                                                <ForumIcon/>
+                                            </IconButton>
+                                        )}
+                                    </Stack>
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>

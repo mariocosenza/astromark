@@ -17,6 +17,7 @@ public record TeachingTimeslotDetailedResponse(
         String activityDescription,
         String homeworkTitle,
         String homeworkDescription,
-        LocalDate homeworkDueDate
+        LocalDate homeworkDueDate,
+        Boolean homeworkNeedChat
 ) {
 }

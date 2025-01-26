@@ -13,5 +13,6 @@ export type TeachingTimeslotDetailedResponse = {
     homeworkTitle: string;
     homeworkDescription: string;
     homeworkDueDate: DateObject;
+    homeworkNeedChat: boolean;
 }
 
