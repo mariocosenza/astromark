@@ -26,7 +26,14 @@ public interface ClassManagementService {
      */
     List<SchoolClassResponse> getClasses();
 
+
+    /**
+     * Retrieves a list of students for a specific class.
+     *
+     * @param classId the ID of the class
+     * @return a list of `SchoolClassStudentResponse` objects representing the students in the specified class
+     * Pre-condition: The `classId` must not be null and must refer to an existing class.
+     * Post-condition: Returns a list of students sorted by surname for the specified class.
+     */
     List<SchoolClassStudentResponse> getStudents(Integer classId);
-
-
 }
