@@ -72,4 +72,14 @@ public interface HomeworkChatService {
      */
     UUID hasUncompletedHomeworkChat(Integer homeworkId);
 
+    /**
+     * Retrieves the chat ID for a specific student's homework chat.
+     *
+     * @param homeworkId the ID of the homework
+     * @param studentId the UUID of the student
+     * @return the UUID of the student's homework chat
+     * Pre-condition: The `homeworkId` and `studentId` must not be null. The caller must have permission to access the specified student's homework chat.
+     * Post-condition: Returns the UUID of the homework chat associated with the specified student and homework, or throws an exception if not found.
+     */
+    UUID getStudentHomeworkChatId(Integer homeworkId, UUID studentId);
 }

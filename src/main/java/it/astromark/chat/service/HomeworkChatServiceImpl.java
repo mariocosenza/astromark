@@ -141,4 +141,19 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
         return homeworkChatRepository.findByHomeworkSignedHourTeachingTimeslot_IdAndStudent(homeworkId, authenticationService.getStudent().orElseThrow()).getId();
     }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public UUID getStudentHomeworkChatId(@NotNull Integer homeworkId, @NotNull UUID studentId) {
+        if(!schoolUserService.isLoggedTeacherStudent(studentId)){
+            throw new AccessDeniedException("You are not allowed to access this chat");
+        }
+
+        var homework = homeworkRepository.findById(homeworkId).orElse(null);
+        if (homework == null)
+            return null;
+
+        return homework.getHomeworkChats().stream().filter(c -> c.getStudent().getId().equals(studentId)).findFirst().orElseThrow().getId();
+    }
 }

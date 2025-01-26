@@ -54,4 +54,13 @@ public class HomeworkChatController {
         return homeworkChatService.hasUncompletedHomeworkChat(homeworkId);
     }
 
+    @Operation(
+            summary = "Retrieve student's homework chat ID",
+            description = "Gets the chat ID for a specific student's homework chat by the homework ID and student ID."
+    )
+    @GetMapping("/{homeworkId}/student/{studentId}")
+    public UUID getStudentHomeworkChatId(@PathVariable Integer homeworkId, @PathVariable UUID studentId) {
+        return homeworkChatService.getStudentHomeworkChatId(homeworkId, studentId);
+    }
+
 }
