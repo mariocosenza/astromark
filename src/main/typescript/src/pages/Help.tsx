@@ -230,12 +230,13 @@ const HelpPage: React.FC = () => {
 export const Help = () => {
     return (
         <main style={{
+            overflowX: 'hidden',
             height: '100vh',
             display: 'flex',
             flexDirection: 'column'
         }}>
             <HomePageNavbar/>
-            <Box sx={{height: '70vh', width: '80vw', m: 'auto', flex: 1}}>
+            <Box sx={{height: '70vh', width: '100vw', m: 'auto', flex: 1}}>
                 <HelpPage/>
             </Box>
         </main>

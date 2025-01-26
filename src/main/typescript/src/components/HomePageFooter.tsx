@@ -1,8 +1,10 @@
 import {Container, Stack, Typography} from "@mui/material";
 import React from "react";
+import {useNavigate} from "react-router";
 
 
 export const HomePageFooter: React.FC = () => {
+    const navigator = useNavigate();
     return (
         <footer style={{backgroundColor: 'var(--md-sys-color-primary-container)'}}>
             <Container maxWidth={false}>
@@ -23,9 +25,9 @@ export const HomePageFooter: React.FC = () => {
                             Lunedì a Venerdì: 09:00 - 18:00
                         </Typography>
                     </Typography>
-                    <Typography variant={"h4"}>
+                    <Typography variant={"h4"} style={{cursor: 'pointer'}}>
                         Link Utili
-                        <Typography variant={"body1"}>
+                        <Typography variant={"body1"} onClick={() => navigator("/help")}>
                             Termini e Condizioni <br/>
                             Informativa sulla Privacy <br/>
                             FAQ o Guida all'Utilizzo
