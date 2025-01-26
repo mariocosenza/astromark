@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, CircularProgress, IconButton, Stack, TableContainer, Typography,} from "@mui/material";
+import {CircularProgress, IconButton, Stack, TableContainer, Typography,} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -12,12 +12,13 @@ import {SelectedSchoolClass} from "../../services/TeacherService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import {Communication} from "../studentsParents/Communication.tsx";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import {CommunicationComponent} from "../../components/CommunicationComponent.tsx";
 
 export const TeacherCommunication: React.FC = () => {
     const [rows, setRows] = useState<Communication[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [changeView, setChangeView] = useState<boolean>(false)
-    const [_selected, setSelected] = useState<Communication>()
+    const [selected, setSelected] = useState<Communication>()
 
     useEffect(() => {
         fetchData();
@@ -47,17 +48,14 @@ export const TeacherCommunication: React.FC = () => {
         setChangeView(true)
     }
 
-
     return (
         <div>
             <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
-                Valutazioni
+                Comunicazioni
             </Typography>
 
             {changeView ? (
-                <Button onClick={() => {setChangeView(false)}}>
-                    Click
-                </Button>
+                <CommunicationComponent row={selected || rows[0]} returnBack={() => {setChangeView(false); fetchData()}}/>
             ) : (
                 <div>
                     <Grid container spacing={8} alignItems={'center'} justifyContent={'center'} margin={'1rem'}>
@@ -72,7 +70,7 @@ export const TeacherCommunication: React.FC = () => {
                                 <CustomTableRow>
                                     <CustomTableCell width={'20%'}>Giorno</CustomTableCell>
                                     <CustomTableCell width={'65%'}>Avviso</CustomTableCell>
-                                    <CustomTableCell width={'15%'}>Note</CustomTableCell>
+                                    <CustomTableCell width={'15%'}></CustomTableCell>
                                 </CustomTableRow>
                             </TableHead>
 
