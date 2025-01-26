@@ -37,15 +37,21 @@ public class ClassManagementController {
         return classManagementService.getClasses();
     }
 
+    @Operation(
+            summary = "Retrieve classes for a specific teacher",
+            description = "Gets a list of classes assigned to the teacher with the specified UUID."
+    )
     @GetMapping("/{teacheruuid}/class")
     public List<SchoolClassResponse> getTeacherClasses(@PathVariable String teacheruuid) {
         return classManagementService.getTeacherClasses(UUID.fromString(teacheruuid));
-
     }
 
+    @Operation(
+            summary = "Add a teacher to a class",
+            description = "Assigns a teacher with the specified UUID to a class based on the provided details."
+    )
     @PostMapping("/{teacheruuid}/add-teacher-to-class")
     public void addTeacherToClass(@PathVariable String teacheruuid, @RequestBody AddToClassRequest addToClassRequest) {
-
         classManagementService.addTeacherToClass(UUID.fromString(teacheruuid), addToClassRequest);
     }
 
@@ -58,23 +64,37 @@ public class ClassManagementController {
         return classManagementService.getStudents(classId);
     }
 
+    @Operation(
+            summary = "Retrieve all teachings",
+            description = "Gets a list of all teachings managed by the class management system."
+    )
     @GetMapping("/teaching")
     public List<TeachingResponse> getTeachings() {
         return classManagementService.getTeachings();
     }
 
+    @Operation(
+            summary = "Retrieve all subjects",
+            description = "Gets a list of all subjects managed by the class management system."
+    )
     @GetMapping("/subject")
     public List<String> getSubject() {
         return classManagementService.getSubject();
     }
 
+    @Operation(
+            summary = "Add a teaching",
+            description = "Adds a new teaching for the teacher with the specified UUID based on the provided details."
+    )
     @PostMapping("/{teacheruuid}/add-teaching")
     public void addTeaching(@PathVariable UUID teacheruuid, @RequestBody TeachingRequest teaching) {
         classManagementService.addTeaching(teacheruuid, teaching);
     }
 
-
-
+    @Operation(
+            summary = "Create a class",
+            description = "Creates a new class based on the provided details and returns the created class."
+    )
     @PostMapping("/class")
     public SchoolClassResponse create(@RequestBody SchoolClassRequest schoolClassRequest) {
         return classManagementService.schoolClassResponse(schoolClassRequest);
