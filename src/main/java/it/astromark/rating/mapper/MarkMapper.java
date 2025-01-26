@@ -36,6 +36,7 @@ public interface MarkMapper {
     RatingsResponse toRatingsResponse(Mark mark, @Context String  subject);
 
     List<RatingsResponse> toRatingsResponseList(List<Mark> marks, @Context String  subject);
+    @Mapping(target = "title", source = "teaching.id.subjectTitle")
     MarkOrientationRequest toMarkOrientationRequest(Mark mark);
     List<MarkOrientationRequest> toMarkOrientationRequestList(List<Mark> marks);
 
