@@ -75,7 +75,7 @@ export const CreateClass = () => {
                     marginTop: 4
                 }}
             >
-                <Typography variant="h5" gutterBottom>
+                <Typography variant="h5" gutterBottom color={'primary'}>
                     Crea Nuova Classe
                 </Typography>
 
@@ -104,12 +104,14 @@ export const CreateClass = () => {
                         label="Lettera"
                         variant="outlined"
                         value={letter}
-                        onChange={(e) => setLetter(e.target.value.toUpperCase())}
-                        error={!isValidLetter(letter)}
-                        helperText={!isValidLetter(letter) ? "Inserire 1-2 lettere maiuscole" : ""}
-                        inputProps={{
-                            maxLength: 2
+                        onChange={(e) => {
+                            const value = e.target.value.toUpperCase();
+                            if (value.length <= 2) {
+                                setLetter(value);
+                            }
                         }}
+                        error={letter !== "" && !isValidLetter(letter)}
+                        helperText={letter !== "" && !isValidLetter(letter) ? "Inserire 1-2 lettere maiuscole" : ""}
                     />
 
                     <TextField
@@ -119,8 +121,8 @@ export const CreateClass = () => {
                         variant="outlined"
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
-                        error={!number}
-                        helperText={!number ? "Il numero è obbligatorio" : ""}
+                        error={!number && number !== ''}
+                        helperText={!number && number !== ''? "Il numero è obbligatorio" : ""}
                     />
 
                     <Button
