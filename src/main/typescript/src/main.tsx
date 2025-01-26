@@ -39,6 +39,7 @@ import {ManageTeacher} from "./pages/secretary/ManageTeacher.tsx";
 import {ManageTimetable} from "./pages/secretary/ManageTimetable";
 import {ClassSchedule} from "./pages/secretary/ClassSchedule.tsx";
 import {ProtectedTeacherRoute} from "./components/route/ProtectedTeacherRoute.tsx";
+import {TeacherDetails} from "./pages/secretary/TeacherDetails.tsx";
 
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
@@ -94,6 +95,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="teacher" element={<ManageTeacher/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                         <Route path="class-schedule/:classId" element={<ClassSchedule/>}/>
+                        <Route path="teachers/:uuid" element={<TeacherDetails/>}/>
 
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace/>}/>

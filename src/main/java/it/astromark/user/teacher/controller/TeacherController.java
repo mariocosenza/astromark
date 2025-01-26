@@ -2,15 +2,13 @@ package it.astromark.user.teacher.controller;
 
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
+import it.astromark.user.teacher.dto.TeacherDetailsResponse;
 import it.astromark.user.teacher.dto.TeacherRequest;
+import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.service.TeacherService;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -34,9 +32,20 @@ public class TeacherController {
         return teacherService.getTeaching();
     }
 
-    @PostMapping
+    @GetMapping("/all")
+    public List<TeacherResponse> getTeachers() {
+        return teacherService.getTeachers();
+    }
+
+    @PostMapping("/create")
     public SchoolUserDetailed create(@RequestBody @NotNull TeacherRequest teacherRequest) {
         return teacherService.create(teacherRequest);
+    }
+
+    @GetMapping("/{teacheruuid}")
+    public TeacherDetailsResponse getTeacher(@PathVariable String teacheruuid) {
+
+        return teacherService.getTeacher(teacheruuid);
     }
 
 }

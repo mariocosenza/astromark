@@ -1,8 +1,10 @@
 package it.astromark.classmanagement.service;
 
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
+import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.user.commons.model.SchoolUser;
@@ -24,12 +26,14 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     private final ClassManagementMapper classManagementMapper;
     private final SchoolClassRepository schoolClassRepository;
     private final SchoolUserService schoolUserService;
+    private final TeachingRepository teachingRepository;
 
-    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService) {
+    public ClassManagementServiceImpl(AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository) {
         this.authenticationService = authenticationService;
         this.classManagementMapper = classManagementMapper;
         this.schoolClassRepository = schoolClassRepository;
         this.schoolUserService = schoolUserService;
+        this.teachingRepository = teachingRepository;
     }
 
     @Override
@@ -74,5 +78,18 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
         return classManagementMapper.toSchoolClassStudentResponseList(students);
     }
+
+    @Override
+    @Transactional
+    public List<TeachingResponse> getTeachings() {
+        return teachingRepository.findAll().stream()
+                .map(t -> new TeachingResponse(
+                        t.getTeacher().getUsername(),
+                        t.getSubjectTitle().getTitle()
+                ))
+                .limit(20)
+                .toList();
+    }
+
 
 }
