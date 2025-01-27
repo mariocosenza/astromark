@@ -9,6 +9,10 @@ import java.util.UUID;
 public record TicketResponse(
         UUID id,
         String title,
-        Instant datetime
+        Instant datetime,
+        String category,
+        Boolean closed,
+        Boolean solved,
+        Boolean isTeacher
 ) {
 }

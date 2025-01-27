@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+
+
+    <!-- Main helmet shape -->
+    <path d="M50 100 Q50 60 100 60 Q150 60 150 100 Q150 140 100 140 Q50 140 50 100"
+          fill="none" stroke="white" stroke-width="8"/>
+
+    <!-- Blue circular interface -->
+    <circle cx="100" cy="100" r="25" fill="#4A90E2" stroke="#87CEEB" stroke-width="4"/>
+
+    <!-- Center star -->
+    <path d="M100 85 L105 95 L115 95 L107 102 L110 112 L100 106 L90 112 L93 102 L85 95 L95 95 Z"
+          fill="white"/>
+
+    <!-- Decorative stars -->
+    <g fill="#FF6B6B">
+        <path d="M40 60 L43 67 L50 67 L44 72 L47 79 L40 75 L33 79 L36 72 L30 67 L37 67 Z"/>
+        <path d="M160 60 L163 67 L170 67 L164 72 L167 79 L160 75 L153 79 L156 72 L150 67 L157 67 Z"/>
+        <path d="M100 30 L103 37 L110 37 L104 42 L107 49 L100 45 L93 49 L96 42 L90 37 L97 37 Z"/>
+    </g>
+
+    <!-- Small decorative circles -->
+    <g fill="white">
+        <circle cx="40" cy="100" r="3"/>
+        <circle cx="160" cy="100" r="3"/>
+        <circle cx="70" cy="70" r="3"/>
+        <circle cx="130" cy="70" r="3"/>
+    </g>
+
+    <!-- Blue dots -->
+    <g fill="#4A90E2">
+        <circle cx="30" cy="120" r="2"/>
+        <circle cx="170" cy="120" r="2"/>
+        <circle cx="50" cy="50" r="2"/>
+        <circle cx="150" cy="50" r="2"/>
+    </g>
+</svg>

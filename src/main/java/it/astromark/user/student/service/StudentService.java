@@ -23,15 +23,6 @@ public interface StudentService {
      */
     List<Integer> getStudentYears(@NotNull UUID studentId);
     /**
-     * Retrieves the school classes associated with a specific student for a given year.
-     *
-     * @param studentId the UUID of the student
-     * @param year the year to filter school classes
-     * @return a list of `SchoolClassResponse` objects representing the classes of the student for the specified year
-     * Pre-condition: The `studentId` and `year` must not be null. The student associated with the `studentId` must exist.
-     * Post-condition: Returns a list of school classes associated with the specified student and year.
-     */
-    /**
      * Retrieves a list of school classes for a specific student in a given year.
      *
      * @param studentId The unique identifier of the student (must not be null)

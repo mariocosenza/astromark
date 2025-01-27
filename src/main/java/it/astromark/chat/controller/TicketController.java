@@ -63,4 +63,22 @@ public class TicketController {
     public void createTicket(@RequestBody String title) {
         ticketService.createTicket(title);
     }
+
+    @Operation(
+            summary = "Close an unsolved ticket",
+            description = "Closes an unsolved ticket by its ID."
+    )
+    @PatchMapping("/{ticketId}/closeUnsolved")
+    public boolean closeUnsolved(@PathVariable UUID ticketId) {
+        return ticketService.closeUnsolved(ticketId);
+    }
+
+    @Operation(
+            summary = "Close and solve a ticket",
+            description = "Closes and marks a ticket as solved by its ID."
+    )
+    @PatchMapping("/{ticketId}/closeAndSolve")
+    public boolean closeAndSolve(@PathVariable UUID ticketId) {
+        return ticketService.closeAndSolve(ticketId);
+    }
 }

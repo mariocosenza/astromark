@@ -5,7 +5,6 @@ import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.JWTService;
 import it.astromark.chat.dto.HomeworkChatResponse;
 import it.astromark.chat.service.HomeworkChatService;
-import it.astromark.chat.service.MessageService;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.transaction.Transactional;
@@ -14,7 +13,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.UUID;
@@ -27,7 +25,7 @@ public class WebSocketChatController {
     private final JWTService jwtService;
     private final AuthenticationService authenticationService;
 
-    public WebSocketChatController(SimpMessagingTemplate messagingTemplate, HomeworkChatService homeworkChatService, MessageService messageService, JWTService jwtService, AuthenticationService authenticationService) {
+    public WebSocketChatController(HomeworkChatService homeworkChatService, JWTService jwtService, AuthenticationService authenticationService) {
         this.homeworkChatService = homeworkChatService;
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;

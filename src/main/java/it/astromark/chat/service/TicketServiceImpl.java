@@ -8,6 +8,7 @@ import it.astromark.chat.entity.Ticket;
 import it.astromark.chat.mapper.ChatMapper;
 import it.astromark.chat.repository.MessageRepository;
 import it.astromark.chat.repository.TicketRepository;
+import it.astromark.school.repository.SchoolRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +28,20 @@ public class TicketServiceImpl implements TicketService {
     private final MessageRepository messageRepository;
     private final ChatMapper chatMapper;
     private final MessageService messageService;
+    private final SchoolRepository schoolRepository;
 
     @Autowired
-    public TicketServiceImpl(TicketRepository ticketRepository, AuthenticationService authenticationService, MessageRepository messageRepository, ChatMapper chatMapper, MessageService messageService) {
+    public TicketServiceImpl(TicketRepository ticketRepository, AuthenticationService authenticationService, MessageRepository messageRepository, ChatMapper chatMapper, MessageService messageService, SchoolRepository schoolRepository) {
         this.ticketRepository = ticketRepository;
         this.authenticationService = authenticationService;
         this.messageRepository = messageRepository;
         this.chatMapper = chatMapper;
         this.messageService = messageService;
+        this.schoolRepository = schoolRepository;
     }
 
     @Override
-    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
     public List<TicketResponse> getTickets() {
         List<Ticket> ticketList = new ArrayList<>();
 
@@ -48,6 +51,10 @@ public class TicketServiceImpl implements TicketService {
         } else if (authenticationService.isParent()) {
             var parent = authenticationService.getParent().orElseThrow();
             ticketList = ticketRepository.findByParentAndClosedAndSolved(parent, false, false);
+        } else if (authenticationService.isSecretary()) {
+            var secretary = authenticationService.getSecretary().orElseThrow();
+            var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
+            ticketList = ticketRepository.findByTeacher_SchoolOrParent_School(school, school);
         }
 
         ticketList.sort(Comparator.comparing(Ticket::getDatetime));
@@ -109,6 +116,41 @@ public class TicketServiceImpl implements TicketService {
         } else return;
 
         ticketRepository.save(ticket);
+    }
+
+
+    @Override
+    @PreAuthorize("hasRole('SECRETARY')")
+    public boolean closeUnsolved(UUID ticketId) {
+        var secretary = authenticationService.getSecretary().orElseThrow();
+        var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
+        var ticket = ticketRepository.findById(ticketId).orElseThrow();
+        if(ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
+            return closeTicket(ticket, false);
+        }
+        return false;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SECRETARY')")
+    public boolean closeAndSolve(UUID ticketId) {
+        var secretary = authenticationService.getSecretary().orElseThrow();
+        var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
+        var ticket = ticketRepository.findById(ticketId).orElseThrow();
+        if(ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
+            return closeTicket(ticket, true);
+        }
+        return false;
+    }
+
+    private boolean closeTicket(Ticket ticket, boolean solved) {
+        if (!ticket.getClosed() && !ticket.getSolved()) {
+            ticket.setClosed(true);
+            ticket.setSolved(solved);
+            ticketRepository.save(ticket);
+            return true;
+        }
+        return false;
     }
 
     @Override
