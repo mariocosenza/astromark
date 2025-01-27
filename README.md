@@ -1,4 +1,8 @@
 # AstroMark
+<p style="align-items: center; text-align: center; font-family: cursive;">
+  <img src="src/main/typescript/public/logo.svg" alt="AstroMark Logo" width="200" height="200"/> <br/>
+AstroMark
+</p>
 
 ## Project Origin
 
