@@ -80,12 +80,10 @@ export const Homework: React.FC = () => {
 
 
     return (
-        <Stack flex={'auto'} flexWrap={'wrap'} minWidth={'100%'} direction={'row'} spacing={'1'}>
+        <Stack flex={'auto'} flexWrap={'wrap'} justifyContent={'space-around'} minWidth={'100%'} direction={'row'} spacing={3}>
             <Box style={{
                 justifyContent: 'center',
                 marginTop: '1rem',
-                marginRight: '5vw',
-                marginLeft: open ? '2vw' : '5vw'
             }}>
                 {
                     loading ? (
@@ -153,7 +151,7 @@ export const Homework: React.FC = () => {
                 </Stack>
             </Box>
             {open &&
-                <div style={{minWidth: '40vw', marginTop: '1rem'}}>
+                <div style={{minWidth: '35vw', marginTop: '1rem', marginRight: '2rem'}}>
                     <ChatHomeworkComponent homeworkId={chatId} studentId={null}/>
                 </div>
             }
