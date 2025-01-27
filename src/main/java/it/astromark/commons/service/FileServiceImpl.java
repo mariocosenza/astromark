@@ -6,7 +6,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -16,7 +15,6 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +25,7 @@ import java.util.Objects;
 public class FileServiceImpl implements FileService {
 
     private final S3Client s3Client;
+
     @Value("${aws.bucket.name}")
     private String bucketName;
 
@@ -43,7 +42,7 @@ public class FileServiceImpl implements FileService {
                 "File name cannot be null");
         String safeFilename = FilenameUtils.getName(originalFilename);
 
-        // 3. Generate a unique file name (e.g., using timestamp)
+        // 3. Generate a unique file name (e.g., using timestamp or UUID)
         String fileName = generateFileName(safeFilename);
 
         // 4. Prepare metadata map with content type detection
@@ -69,7 +68,7 @@ public class FileServiceImpl implements FileService {
         // 6. Upload the file directly from multipart bytes
         try {
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
-        } catch (SdkException e) {
+        } catch (S3Exception e) {
             log.error("Error uploading file to S3: {}", e.getMessage());
             throw new IOException("Failed to upload file to S3", e);
         }
@@ -83,8 +82,19 @@ public class FileServiceImpl implements FileService {
                 .toExternalForm();
 
         log.info("File successfully uploaded: {}", fileUrl);
-        return safeFilename;
+        return fileName; // Changed from safeFilename to fileName
     }
+
+    /**
+     * Method to generate a unique file name using a timestamp or UUID.
+     * You can customize this method to add additional unique components if necessary.
+     */
+    private String generateFileName(String safeFilename) {
+        // Option 1: Using timestamp
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        return timestamp + "-" + safeFilename;
+    }
+
 
     @Override
     public boolean delete(String fileName) {
@@ -102,10 +112,4 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    /**
-     * Generates a timestamp-based file name.
-     */
-    private String generateFileName(String safeFilename) {
-        return new Date().getTime() + "-" + safeFilename.replace(" ", "_");
-    }
 }

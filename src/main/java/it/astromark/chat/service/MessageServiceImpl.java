@@ -11,6 +11,7 @@ import it.astromark.commons.service.FileService;
 import it.astromark.user.commons.model.SchoolUser;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,16 +90,13 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
     public String addAttachment(UUID uuid, MultipartFile multipartFile) throws IOException {
         var message = messageRepository.findById(uuid).orElseThrow();
         Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().equals(message.getStudent())) {
+        if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().getId().equals(message.getStudent().getId())) {
             throw exceptionSupplier.get();
-        } else if (authenticationService.isParent() && !authenticationService.getParent().orElseThrow().equals(message.getParent())) {
-            throw exceptionSupplier.get();
-        } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().equals(message.getTeacher())) {
-            throw exceptionSupplier.get();
-        } else if (authenticationService.isSecretary() && !authenticationService.getSecretary().orElseThrow().equals(message.getSecretary())) {
+        } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().getId().equals(message.getTeacher().getId())) {
             throw exceptionSupplier.get();
         }
         message.setAttachment(fileService.uploadFile(multipartFile));
