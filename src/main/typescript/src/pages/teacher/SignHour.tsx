@@ -44,16 +44,16 @@ const validationSchema = yup.object({
 });
 
 export const SignHour: React.FC = () => {
-    const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homeworkDate || new DateObject().add(1, 'days'))
-    const [needChat, setNeedChat] = useState<boolean>(SelectedTeachingTimeslot.homeworkNeedChat)
+    const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homework?.dueDate || new DateObject().add(1, 'days'))
+    const [needChat, setNeedChat] = useState<boolean>(!!SelectedTeachingTimeslot.homework?.hasChat)
     const [dateError, setDateError] = useState<boolean>(false)
     const navigate = useNavigate();
 
     const initialValues = {
-        activityTitle: SelectedTeachingTimeslot.activityTitle,
-        activityDesc: SelectedTeachingTimeslot.activityDesc,
-        homeworkTitle: SelectedTeachingTimeslot.homeworkTitle,
-        homeworkDesc: SelectedTeachingTimeslot.homeworkDesc,
+        activityTitle: SelectedTeachingTimeslot.activity?.title || '',
+        activityDesc: SelectedTeachingTimeslot.activity?.description || '',
+        homeworkTitle: SelectedTeachingTimeslot.homework?.title || '',
+        homeworkDesc: SelectedTeachingTimeslot.homework?.description || '',
     };
 
     const formik = useFormik({
@@ -79,7 +79,7 @@ export const SignHour: React.FC = () => {
                         },
                     });
 
-                    if (needChat && !SelectedTeachingTimeslot.homeworkNeedChat && response.data) {
+                    if (needChat && !SelectedTeachingTimeslot.homework?.hasChat && response.data) {
                         const homeworkIdResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${SelectedSchoolClass.id}/homeworks/${response.data.id}`);
 
                         if (homeworkIdResponse.data) {
@@ -164,9 +164,9 @@ export const SignHour: React.FC = () => {
                                         <RadioGroup row value={needChat ? 'yes' : 'no'}
                                                     onChange={(e) => setNeedChat(e.target.value === 'yes')}>
                                             <FormControlLabel label='Sì' value='yes' control={<Radio/>}
-                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat}/>
+                                                              disabled={SelectedTeachingTimeslot.homework?.hasChat}/>
                                             <FormControlLabel label='No' value='no' control={<Radio/>}
-                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat}/>
+                                                              disabled={SelectedTeachingTimeslot.homework?.hasChat}/>
                                         </RadioGroup>
                                     </Stack>
                                 </Stack>

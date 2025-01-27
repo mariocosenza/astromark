@@ -2,106 +2,67 @@ package it.astromark.agenda.schoolclass.mapper;
 
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
-import it.astromark.classwork.entity.ClassActivity;
-import it.astromark.classwork.entity.Homework;
+import it.astromark.classwork.dto.ClassActivityResponse;
+import it.astromark.classwork.dto.HomeworkBriefResponse;
+import it.astromark.classwork.mapper.ClassworkMapper;
 import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
+import it.astromark.user.commons.dto.SchoolUserResponse;
+import it.astromark.user.commons.mapper.SchoolUserMapper;
+import it.astromark.user.teacher.entity.Teacher;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface ClassAgendaMapper {
+public abstract class ClassAgendaMapper {
 
-    @Mapping(target = "teacherId", source = "teaching.teacher.id")
-    @Mapping(target = "name", source = "teaching.teacher.name")
-    @Mapping(target = "surname", source = "teaching.teacher.surname")
+    @Autowired
+    private ClassActivityRepository classActivityRepository;
+
+    @Autowired
+    private HomeworkRepository homeworkRepository;
+
+    @Autowired
+    private ClassworkMapper classworkMapper;
+
+    @Autowired
+    private SchoolUserMapper schoolUserMapper;
+
     @Mapping(target = "subject", source = "teaching.subjectTitle.title")
-    @Mapping(target = "signed", source = "teachingTimeslot", qualifiedByName = "isSigned")
-    @Mapping(target = "activityTitle", source = "teachingTimeslot", qualifiedByName = "getActivityTitle")
-    @Mapping(target = "activityDescription", source = "teachingTimeslot", qualifiedByName = "getActivityDesc")
-    @Mapping(target = "homeworkTitle", source = "teachingTimeslot", qualifiedByName = "getHomeworkTitle")
-    @Mapping(target = "homeworkDescription", source = "teachingTimeslot", qualifiedByName = "getHomeworkDesc")
-    @Mapping(target = "homeworkDueDate", source = "teachingTimeslot", qualifiedByName = "getHomeworkDate")
-    @Mapping(target = "homeworkNeedChat", source = "teachingTimeslot", qualifiedByName = "getHomeworkNeedChat")
-    TeachingTimeslotDetailedResponse toTeachingTimeslotDetailedResponse(TeachingTimeslot teachingTimeslot, @Context ClassActivityRepository classActivityRepository, @Context HomeworkRepository homeworkRepository);
+    @Mapping(target = "signed", expression = "java(teachingTimeslot.getSignedHour() != null)")
+    @Mapping(target = "teacher", source = "teaching.teacher", qualifiedByName = "mapTeacher")
+    @Mapping(target = "activity", source = "teachingTimeslot", qualifiedByName = "mapActivity")
+    @Mapping(target = "homework", source = "teachingTimeslot", qualifiedByName = "mapHomework")
+    public abstract TeachingTimeslotDetailedResponse toTeachingTimeslotDetailedResponse(TeachingTimeslot teachingTimeslot);
 
-    List<TeachingTimeslotDetailedResponse> toTeachingTimeslotDetailedResponseList(List<TeachingTimeslot> teachingTimeslot, @Context ClassActivityRepository classActivityRepository, @Context HomeworkRepository homeworkRepository);
+    public abstract List<TeachingTimeslotDetailedResponse> toTeachingTimeslotDetailedResponseList(List<TeachingTimeslot> teachingTimeslots);
 
-
-    @Named("isSigned")
-    default boolean isSigned(TeachingTimeslot teachingTimeslot) {
-        return teachingTimeslot.getSignedHour() != null;
+    @Named("mapTeacher")
+    SchoolUserResponse mapTeacher(Teacher teacher) {
+        return schoolUserMapper.toSchoolUserResponse(teacher);
     }
 
-    @Named("getActivityTitle")
-    default String getActivityTitle(TeachingTimeslot teachingTimeslot, @Context ClassActivityRepository classActivityRepository) {
-        var activity = getActivity(teachingTimeslot, classActivityRepository);
-        if (activity != null) {
-            return activity.getTitle();
-        }
-        return "";
-    }
-
-    @Named("getActivityDesc")
-    default String getActivityDesc(TeachingTimeslot teachingTimeslot, @Context ClassActivityRepository classActivityRepository) {
-        var activity = getActivity(teachingTimeslot, classActivityRepository);
-        if (activity != null) {
-            return activity.getDescription();
-        }
-        return "";
-    }
-
-    @Named("getHomeworkTitle")
-    default String getHomeworkTitle(TeachingTimeslot teachingTimeslot, @Context HomeworkRepository homeworkRepository) {
-        var homework = getHomework(teachingTimeslot, homeworkRepository);
-        if (homework != null) {
-            return homework.getTitle();
-        }
-        return "";
-    }
-
-    @Named("getHomeworkDesc")
-    default String getHomeworkDesc(TeachingTimeslot teachingTimeslot, @Context HomeworkRepository homeworkRepository) {
-        var homework = getHomework(teachingTimeslot, homeworkRepository);
-        if (homework != null) {
-            return homework.getDescription();
-        }
-        return "";
-    }
-
-    @Named("getHomeworkDate")
-    default LocalDate getHomeworkDate(TeachingTimeslot teachingTimeslot, @Context HomeworkRepository homeworkRepository) {
-        var homework = getHomework(teachingTimeslot, homeworkRepository);
-        if (homework != null) {
-            return homework.getDueDate();
+    @Named("mapActivity")
+    ClassActivityResponse mapActivity(TeachingTimeslot teachingTimeslot) {
+        if (teachingTimeslot.getSignedHour() != null) {
+            var activity = classActivityRepository.findBySignedHour(teachingTimeslot.getSignedHour());
+            if (activity != null) {
+                return classworkMapper.toClassActivityResponse(activity);
+            }
         }
         return null;
     }
 
-    @Named("getHomeworkNeedChat")
-    default boolean getHomeworkNeedChat(TeachingTimeslot teachingTimeslot, @Context HomeworkRepository homeworkRepository) {
-        var homework = getHomework(teachingTimeslot, homeworkRepository);
-        if (homework != null) {
-            return !homework.getHomeworkChats().isEmpty();
-        }
-        return false;
-    }
-
-    default ClassActivity getActivity(TeachingTimeslot teachingTimeslot, ClassActivityRepository classActivityRepository) {
-        if (isSigned(teachingTimeslot)) {
-            return classActivityRepository.findBySignedHour(teachingTimeslot.getSignedHour());
+    @Named("mapHomework")
+    HomeworkBriefResponse mapHomework(TeachingTimeslot teachingTimeslot) {
+        if (teachingTimeslot.getSignedHour() != null) {
+            var homework = homeworkRepository.findBySignedHour(teachingTimeslot.getSignedHour());
+            if (homework != null) {
+                return classworkMapper.toHomeworkBriefResponse(homework);
+            }
         }
         return null;
     }
-
-    default Homework getHomework(TeachingTimeslot teachingTimeslot, HomeworkRepository homeworkRepository) {
-        if (isSigned(teachingTimeslot)) {
-            return homeworkRepository.findBySignedHour(teachingTimeslot.getSignedHour());
-        }
-        return null;
-    }
-
 }
-

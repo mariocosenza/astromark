@@ -202,7 +202,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
             homeworkRepository.save(homework);
         }
 
-        return classAgendaMapper.toTeachingTimeslotDetailedResponse(signedHour.getTeachingTimeslot(), classActivityRepository, homeworkRepository);
+        return classAgendaMapper.toTeachingTimeslotDetailedResponse(signedHour.getTeachingTimeslot());
     }
 
     @Override
@@ -237,7 +237,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
         var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
         var teachingTimeslotList = teachingTimeslotRepository.findTeachingTimeslotByClassTimetableAndDate(classTimetable, localDate);
-        return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList, classActivityRepository, homeworkRepository);
+        return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList);
     }
 
     @Override

@@ -18,23 +18,9 @@ import {getId} from "../../services/AuthService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import ForumIcon from '@mui/icons-material/Forum';
 
-export interface ClassAgendaRow {
-    id: number | null;
-    signed: boolean;
-    hour: number;
-    isTeacherHour: boolean;
-    name: string;
-    subject: string;
-    activityTitle: string
-    activityDesc: string;
-    homeworkTitle: string;
-    homeworkDesc: string;
-    homeworkDate: DateObject | null;
-    homeworkNeedChat: boolean;
-}
 
 export const ClassAgenda: React.FC = () => {
-    const [rows, setRows] = useState<ClassAgendaRow[]>([]);
+    const [rows, setRows] = useState<TeachingTimeslotDetailedResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject())
     const navigate = useNavigate();
@@ -45,34 +31,16 @@ export const ClassAgenda: React.FC = () => {
 
     const fetchData = async (selectedDate: string) => {
         try {
-            let rowResponse: ClassAgendaRow[] = [];
             const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${selectedDate}`);
-            if (response.data.length) {
-                rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
-                    id: teachingSlot.id,
-                    signed: teachingSlot.signed,
-                    hour: teachingSlot.hour,
-                    isTeacherHour: teachingSlot.teacherId === getId(),
-                    name: teachingSlot.name + ' ' + teachingSlot.surname,
-                    subject: teachingSlot.subject,
-                    activityTitle: teachingSlot.activityTitle,
-                    activityDesc: teachingSlot.activityDescription,
-                    homeworkTitle: teachingSlot.homeworkTitle,
-                    homeworkDesc: teachingSlot.homeworkDescription,
-                    homeworkDate: teachingSlot.homeworkDueDate,
-                    homeworkNeedChat: teachingSlot.homeworkNeedChat,
-                }));
-            }
-
+            setRows(addEmptyHour(response.data))
             setLoading(false);
-            setRows(addEmptyHour(rowResponse))
         } catch (error) {
             console.error(error);
         }
     }
 
-    const addEmptyHour = (rows: ClassAgendaRow[]) => {
-        let newRows: ClassAgendaRow[] = [];
+    const addEmptyHour = (rows: TeachingTimeslotDetailedResponse[]) => {
+        let newRows: TeachingTimeslotDetailedResponse[] = [];
         let i = 0;
         for (let hour = 1; hour < 8; hour++) {
             if (i < rows.length && rows[i].hour == hour) {
@@ -81,17 +49,16 @@ export const ClassAgenda: React.FC = () => {
             } else {
                 newRows.push({
                     id: null,
-                    signed: false,
                     hour: hour,
-                    isTeacherHour: true,
-                    name: '',
                     subject: '',
-                    activityTitle: '',
-                    activityDesc: '',
-                    homeworkTitle: '',
-                    homeworkDesc: '',
-                    homeworkDate: null,
-                    homeworkNeedChat: false,
+                    signed: false,
+                    teacher: {
+                        id: '',
+                        name: '',
+                        surname: '',
+                    },
+                    activity: null,
+                    homework: null,
                 })
             }
         }
@@ -99,13 +66,13 @@ export const ClassAgenda: React.FC = () => {
         return newRows;
     }
 
-    const choseTeachingTimeslot = (slot: ClassAgendaRow) => {
+    const choseTeachingTimeslot = (slot: TeachingTimeslotDetailedResponse) => {
         SelectedTeachingTimeslot.setSlot(slot);
         SelectedTeachingTimeslot.date = date;
         navigate(`/teacher/ora`);
     };
 
-    const choseHomeworkChat = (slot: ClassAgendaRow) => {
+    const choseHomeworkChat = (slot: TeachingTimeslotDetailedResponse) => {
         if (slot.id) {
             SelectedTeachingTimeslot.setSlot(slot);
             navigate(`/teacher/agenda/chat`);
@@ -165,7 +132,7 @@ export const ClassAgenda: React.FC = () => {
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
                                         {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}
                                                                               sx={{padding: '8px'}}/> :
-                                            <IconButton disabled={!row.isTeacherHour}
+                                            <IconButton disabled={!(!row.teacher.id || getId() === row.teacher.id)}
                                                         onClick={() => choseTeachingTimeslot(row)}>
                                                 <AddCircleOutlineIcon fontSize={'large'}/>
                                             </IconButton>
@@ -177,14 +144,14 @@ export const ClassAgenda: React.FC = () => {
                                     </Stack>
                                 </CustomTableCell>
 
-                                <CustomTableCell>{row.name}</CustomTableCell>
+                                <CustomTableCell>{row.teacher.name + ' ' + row.teacher.surname}</CustomTableCell>
                                 <CustomTableCell>{row.subject}</CustomTableCell>
 
                                 <CustomTableCell>
                                     <Typography fontWeight={'bold'} fontSize={'large'}>
-                                        {row.activityTitle + (row.activityTitle === '' ? '' : ':')}
+                                        {row.activity ? row.activity.title + ':' : ''}
                                     </Typography>
-                                    {row.activityDesc}
+                                    {row.activity?.description}
                                 </CustomTableCell>
 
                                 <CustomTableCell>
@@ -192,15 +159,16 @@ export const ClassAgenda: React.FC = () => {
                                     <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
                                         <Grid>
                                             <Typography fontWeight={'bold'} fontSize={'large'}>
-                                                {row.homeworkTitle + (row.homeworkTitle === '' ? '' : ':')}
+                                                {row.homework ? row.homework.title + ':' : ''}
                                             </Typography>
-                                            {row.homeworkDesc}
+                                            {row.homework?.description}
                                             <Typography fontSize={'small'} color={'textSecondary'}>
-                                                {row.homeworkDate ? 'Per il ' + row.homeworkDate.toString() : ''}
+                                                {row.homework ? 'Per il ' + row.homework.dueDate.toString() : ''}
                                             </Typography>
                                         </Grid>
-                                        {row.homeworkNeedChat && row.isTeacherHour && (
-                                            <IconButton onClick={() => choseHomeworkChat(row)}>
+                                        {row.homework?.hasChat && (
+                                            <IconButton disabled={getId() !== row.teacher.id}
+                                                        onClick={() => choseHomeworkChat(row)}>
                                                 <ForumIcon/>
                                             </IconButton>
                                         )}
@@ -208,7 +176,7 @@ export const ClassAgenda: React.FC = () => {
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
-                                    <IconButton disabled={!(row.signed && row.isTeacherHour)}
+                                    <IconButton disabled={!(row.signed && getId() === row.teacher.id)}
                                                 onClick={() => choseTeachingTimeslot(row)}>
                                         <EditOutlinedIcon fontSize={'large'}/>
                                     </IconButton>

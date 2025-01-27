@@ -1,6 +1,6 @@
-import {ClassAgendaRow} from "../pages/teacher/ClassAgenda.tsx";
 import {DateObject} from "react-multi-date-picker";
 import {createGlobalState} from "react-use";
+import {ClassActivityResponse, HomeworkBriefResponse, TeachingTimeslotDetailedResponse} from "../entities/TeachingTimeslotDetailedResponse.ts";
 
 export class SelectedTeaching {
     private static _teaching: string | null = localStorage.getItem("teaching") ? localStorage.getItem("teaching") as string : null;
@@ -70,40 +70,16 @@ export class SelectedTeachingTimeslot {
         return this._hour;
     }
 
-    private static _activityTitle: string = '';
+    private static _homework: HomeworkBriefResponse | null = null;
 
-    static get activityTitle(): string {
-        return this._activityTitle;
+    static get homework(): HomeworkBriefResponse | null {
+        return this._homework;
     }
 
-    private static _activityDesc: string = '';
+    private static _activity: ClassActivityResponse | null = null;
 
-    static get activityDesc(): string {
-        return this._activityDesc;
-    }
-
-    private static _homeworkTitle: string = '';
-
-    static get homeworkTitle(): string {
-        return this._homeworkTitle;
-    }
-
-    private static _homeworkDesc: string = '';
-
-    static get homeworkDesc(): string {
-        return this._homeworkDesc;
-    }
-
-    private static _homeworkDate: DateObject | null = null;
-
-    static get homeworkDate(): DateObject | null {
-        return this._homeworkDate;
-    }
-
-    private static _homeworkNeedChat: boolean = false;
-
-    static get homeworkNeedChat(): boolean {
-        return this._homeworkNeedChat;
+    static get activity(): ClassActivityResponse | null {
+        return this._activity;
     }
 
     private static _date: DateObject | null = null;
@@ -116,14 +92,11 @@ export class SelectedTeachingTimeslot {
         this._date = value;
     }
 
-    static setSlot(slot: ClassAgendaRow) {
+    static setSlot(slot: TeachingTimeslotDetailedResponse) {
         this._id = slot.id
         this._hour = slot.hour
-        this._activityTitle = slot.activityTitle;
-        this._activityDesc = slot.activityDesc;
-        this._homeworkTitle = slot.homeworkTitle;
-        this._homeworkDesc = slot.homeworkDesc;
-        this._homeworkDate = slot.homeworkDate;
-        this._homeworkNeedChat = slot.homeworkNeedChat
+        this._activity = slot.activity
+        this._homework = slot.homework
     }
+
 }

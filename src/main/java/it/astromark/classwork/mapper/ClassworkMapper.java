@@ -1,6 +1,8 @@
 package it.astromark.classwork.mapper;
 
+import it.astromark.classwork.dto.ClassActivityResponse;
 import it.astromark.classwork.dto.ClassworkResponse;
+import it.astromark.classwork.dto.HomeworkBriefResponse;
 import it.astromark.classwork.dto.HomeworkResponse;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
@@ -36,5 +38,8 @@ public interface ClassworkMapper {
 
     List<HomeworkResponse> homeworkToHomeworkResponseList(List<Homework> classworks);
 
+    ClassActivityResponse toClassActivityResponse(ClassActivity classActivity);
 
+    @Mapping(target = "hasChat", expression = "java(homework.getHomeworkChats().size() > 0)")
+    HomeworkBriefResponse toHomeworkBriefResponse(Homework homework);
 }
