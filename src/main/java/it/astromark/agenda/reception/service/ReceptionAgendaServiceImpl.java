@@ -124,7 +124,9 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
         }
 
         return receptionAgendaMapper.toReceptionBookingResponseList(booking.stream()
-                .sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate()))
+                .sorted(Comparator.comparing((ReceptionBooking b) -> b.getReceptionTimeslot().getDate())
+                        .thenComparing(b -> b.getReceptionTimeslot().getHour())
+                        .thenComparing(ReceptionBooking::getBookingOrder))
                 .toList(), authenticationService);
     }
 
