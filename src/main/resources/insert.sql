@@ -281,6 +281,8 @@ VALUES
 INSERT INTO reception_timetable(teacher_id, text_info_reception, start_validity)
 VALUES
     ((SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Ricevimento per genitori.', '2024-10-12'),
+    ((SELECT id FROM teacher WHERE username = 'alessandro.rossi'), 'Ricevimento per matematica e fisica.', '2024-11-01'),
+    ((SELECT id FROM teacher WHERE username = 'maria.bianchi'), 'Ricevimento per scienze e chimica.', '2024-11-01'),
     ((SELECT id FROM teacher WHERE username = 'elena.blui'), 'Ricevimento per i progetti di informatica.', '2024-11-01'),
     ((SELECT id FROM teacher WHERE username = 'riccardo.blui'), 'Ricevimento per discussione di storia.', '2024-11-01'),
     ((SELECT id FROM teacher WHERE username = 'elisa.gialli'), 'Ricevimento per italiano e letteratura.', '2024-11-01'),
