@@ -8,6 +8,7 @@ import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.commons.service.SendGridMailService;
 import it.astromark.orientation.OrientationService;
+import it.astromark.school.repository.SchoolRepository;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.commons.model.PendingState;
@@ -27,10 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -44,9 +42,10 @@ public class StudentServiceImpl implements StudentService {
     private final SendGridMailService sendGridMailService;
     private final SchoolUserMapper schoolUserMapper;
     private final OrientationService orientationService;
+    private final SchoolRepository schoolRepository;
 
     @Autowired
-    public StudentServiceImpl(SchoolUserService schoolUserService, StudentRepository studentRepository, ClassManagementMapper classManagementMapper, AuthenticationService authenticationService, SendGridMailService sendGridMailService, SchoolUserMapper schoolUserMapper, OrientationService orientationService) {
+    public StudentServiceImpl(SchoolUserService schoolUserService, StudentRepository studentRepository, ClassManagementMapper classManagementMapper, AuthenticationService authenticationService, SendGridMailService sendGridMailService, SchoolUserMapper schoolUserMapper, OrientationService orientationService, SchoolRepository schoolRepository) {
         this.schoolUserService = schoolUserService;
         this.studentRepository = studentRepository;
         this.classManagementMapper = classManagementMapper;
@@ -54,6 +53,7 @@ public class StudentServiceImpl implements StudentService {
         this.sendGridMailService = sendGridMailService;
         this.schoolUserMapper = schoolUserMapper;
         this.orientationService = orientationService;
+        this.schoolRepository = schoolRepository;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public SchoolUserDetailed create(@NotNull StudentRequest studentRequest) {
         var username = studentRequest.name() + "." + studentRequest.surname() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
-        var school = authenticationService.getSecretary().orElseThrow().getSchool();
+        var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var schoolClass = school.getSchoolClasses().stream().filter(c -> c.getId().equals(studentRequest.classId())).findFirst().orElseThrow();
         var password = new Faker().internet().password(8, 64, true, false, true);
         var user = schoolUserMapper.toSchoolUserDetailed(studentRepository.save(Student.builder().school(school)
