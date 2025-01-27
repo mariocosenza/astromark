@@ -5,9 +5,11 @@ import it.astromark.agenda.reception.dto.ReceptionTimeslotRequest;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
 import it.astromark.agenda.reception.entity.ReceptionBooking;
 import it.astromark.agenda.reception.entity.ReceptionBookingId;
+import it.astromark.agenda.reception.entity.ReceptionTimeslot;
 import it.astromark.agenda.reception.mapper.ReceptionAgendaMapper;
 import it.astromark.agenda.reception.repository.ReceptionBookingRepository;
 import it.astromark.agenda.reception.repository.ReceptionTimeslotRepository;
+import it.astromark.agenda.reception.repository.ReceptionTimetableRepository;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
@@ -31,13 +33,15 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     private final ReceptionBookingRepository receptionBookingRepository;
     private final ReceptionTimeslotRepository receptionTimeslotRepository;
     private final ReceptionAgendaMapper receptionAgendaMapper;
+    private final ReceptionTimetableRepository receptionTimetableRepository;
 
-    public ReceptionAgendaServiceImpl(AuthenticationService authenticationService, TeacherRepository teacherRepository, ReceptionBookingRepository receptionBookingRepository, ReceptionTimeslotRepository receptionTimeslotRepository, ReceptionAgendaMapper receptionAgendaMapper) {
+    public ReceptionAgendaServiceImpl(AuthenticationService authenticationService, TeacherRepository teacherRepository, ReceptionBookingRepository receptionBookingRepository, ReceptionTimeslotRepository receptionTimeslotRepository, ReceptionAgendaMapper receptionAgendaMapper, ReceptionTimetableRepository receptionTimetableRepository) {
         this.authenticationService = authenticationService;
         this.teacherRepository = teacherRepository;
         this.receptionBookingRepository = receptionBookingRepository;
         this.receptionTimeslotRepository = receptionTimeslotRepository;
         this.receptionAgendaMapper = receptionAgendaMapper;
+        this.receptionTimetableRepository = receptionTimetableRepository;
     }
 
     @Override
@@ -77,8 +81,25 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     }
 
     @Override
-    public ReceptionTimeslotResponse addTimeslot(Integer id, ReceptionTimeslotRequest request) {
-        return null;
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public ReceptionTimeslotResponse addTimeslot(ReceptionTimeslotRequest request) {
+
+        var timetable = receptionTimetableRepository.findByEndValidityAndTeacher(null, authenticationService.getTeacher().orElseThrow());
+
+        if (timetable == null)
+            return null;
+
+        return receptionAgendaMapper.toReceptionTimeslotResponse(
+                receptionTimeslotRepository.save(ReceptionTimeslot.builder()
+                        .receptionTimetable(timetable)
+                        .date(request.date())
+                        .hour(request.hour())
+                        .booked((short) 0)
+                        .capacity(request.capacity())
+                        .mode(request.mode())
+                        .build()
+                ));
     }
 
     @Override

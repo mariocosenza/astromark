@@ -60,16 +60,14 @@ public interface ReceptionAgendaService {
     /**
      * Adds a new reception timeslot.
      *
-     * @param id the ID of the teacher or entity associated with the timeslot
      * @param request the request containing timeslot details
      * @return the added `ReceptionTimeslotResponse` object
      * Pre-condition:
-     * - The `id` must not be null.
      * - The `request` must not be null and must contain valid timeslot details.
      * Post-condition:
      * - A new timeslot is added and returned as a response object.
      */
-    ReceptionTimeslotResponse addTimeslot(Integer id, ReceptionTimeslotRequest request);
+    ReceptionTimeslotResponse addTimeslot(ReceptionTimeslotRequest request);
 
     /**
      * Retrieves a list of not confirmed bookings for a given table.
