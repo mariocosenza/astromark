@@ -28,7 +28,7 @@ public abstract class SchoolUser {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
     private School school;
 

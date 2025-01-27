@@ -3,6 +3,7 @@ package it.astromark.classmanagement.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.classmanagement.dto.*;
 import it.astromark.classmanagement.service.ClassManagementService;
+import it.astromark.user.student.dto.StudentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,7 @@ public class ClassManagementController {
         return classManagementService.getStudents(classId);
     }
 
+
     @Operation(
             summary = "Retrieve all teachings",
             description = "Gets a list of all teachings managed by the class management system."
@@ -97,6 +99,7 @@ public class ClassManagementController {
     public void addTeaching(@PathVariable UUID teacheruuid, @RequestBody TeachingRequest teaching) {
         classManagementService.addTeaching(teacheruuid, teaching);
     }
+
 
     @Operation(
             summary = "Create a class",

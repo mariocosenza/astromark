@@ -49,7 +49,7 @@ public class StudentController {
             summary = "Create a student",
             description = "Creates a new student account with the provided details."
     )
-    @PostMapping
+    @PostMapping("/create-student")
     public SchoolUserDetailed create(@RequestBody @NotNull StudentRequest studentRequest) {
         return studentService.create(studentRequest);
     }

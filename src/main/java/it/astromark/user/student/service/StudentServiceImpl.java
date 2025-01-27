@@ -57,6 +57,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
+    @Transactional
     public SchoolUserDetailed create(@NotNull StudentRequest studentRequest) {
         var username = studentRequest.name() + "." + studentRequest.surname() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
         var school = authenticationService.getSecretary().orElseThrow().getSchool();
