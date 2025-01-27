@@ -72,9 +72,9 @@ public class AttendanceServiceImpl implements AttendanceService {
                 throw new AccessDeniedException("This student it's not in this class");
             }
 
-            if (attendance.isAbsent()){
+            if (attendance.isAbsent()) {
                 var absence = absenceRepository.findAbsenceByStudentAndDate(student, date);
-                if (absence == null){
+                if (absence == null) {
                     absence = new Absence();
                     absence.setStudent(student);
                     absence.setDate(date);
@@ -85,13 +85,13 @@ public class AttendanceServiceImpl implements AttendanceService {
                 }
             }
 
-            if (attendance.isDelayed()){
+            if (attendance.isDelayed()) {
                 var dateStart = date.atStartOfDay().toInstant(ZoneOffset.UTC);
                 var dateEnd = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
                 var delays = delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(dateStart, dateEnd, student.getId());
                 var delay = delays.isEmpty() ? null : delays.getFirst();
 
-                if (delay == null){
+                if (delay == null) {
                     delay = new Delay();
                     delay.setStudent(student);
                 }

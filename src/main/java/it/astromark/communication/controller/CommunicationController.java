@@ -1,9 +1,9 @@
 package it.astromark.communication.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.communication.dto.CommunicationRequest;
 import it.astromark.communication.dto.CommunicationResponse;
 import it.astromark.communication.service.CommunicationService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

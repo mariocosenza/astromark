@@ -1,5 +1,6 @@
 package it.astromark.user.teacher.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.teacher.dto.TeacherDetailsResponse;
@@ -7,10 +8,8 @@ import it.astromark.user.teacher.dto.TeacherRequest;
 import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.service.TeacherService;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

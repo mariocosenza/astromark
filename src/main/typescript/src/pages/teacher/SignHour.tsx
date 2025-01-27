@@ -1,5 +1,16 @@
 import React, {useState} from "react";
-import {Button, Card, CardContent, Divider, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography,} from "@mui/material";
+import {
+    Button,
+    Card,
+    CardContent,
+    Divider,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
+    Stack,
+    TextField,
+    Typography,
+} from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker";
 import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useFormik} from "formik";
@@ -115,7 +126,8 @@ export const SignHour: React.FC = () => {
                                            error={!!formik.errors.activityTitle}
                                            helperText={formik.errors.activityTitle}/>
 
-                                <TextField fullWidth variant="outlined" multiline rows={4} label="Attività Svolta" name="activityDesc"
+                                <TextField fullWidth variant="outlined" multiline rows={4} label="Attività Svolta"
+                                           name="activityDesc"
                                            value={formik.values.activityDesc}
                                            onChange={formik.handleChange}/>
                             </Stack>
@@ -126,7 +138,8 @@ export const SignHour: React.FC = () => {
                                            error={!!formik.errors.homeworkTitle}
                                            helperText={formik.errors.homeworkTitle}/>
 
-                                <TextField fullWidth variant="outlined" multiline rows={4} label="Compiti Assegnati" name="homeworkDesc"
+                                <TextField fullWidth variant="outlined" multiline rows={4} label="Compiti Assegnati"
+                                           name="homeworkDesc"
                                            value={formik.values.homeworkDesc}
                                            onChange={formik.handleChange}/>
 
@@ -150,10 +163,10 @@ export const SignHour: React.FC = () => {
                                         </Typography>
                                         <RadioGroup row value={needChat ? 'yes' : 'no'}
                                                     onChange={(e) => setNeedChat(e.target.value === 'yes')}>
-                                            <FormControlLabel label='Sì' value='yes' control={<Radio />}
-                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat} />
-                                            <FormControlLabel label='No' value='no' control={<Radio />}
-                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat} />
+                                            <FormControlLabel label='Sì' value='yes' control={<Radio/>}
+                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat}/>
+                                            <FormControlLabel label='No' value='no' control={<Radio/>}
+                                                              disabled={SelectedTeachingTimeslot.homeworkNeedChat}/>
                                         </RadioGroup>
                                     </Stack>
                                 </Stack>
@@ -161,7 +174,9 @@ export const SignHour: React.FC = () => {
                         </Stack>
 
                         <Stack direction="row" justifyContent="flex-end" spacing={2} mt={4}>
-                            <Button variant="contained" color="error" sx={{borderRadius: 5}} onClick={() => {navigate(`/teacher/agenda`)}}>
+                            <Button variant="contained" color="error" sx={{borderRadius: 5}} onClick={() => {
+                                navigate(`/teacher/agenda`)
+                            }}>
                                 Elimina
                             </Button>
                             <Button variant="contained" color="primary" sx={{borderRadius: 5}} type={'submit'}>

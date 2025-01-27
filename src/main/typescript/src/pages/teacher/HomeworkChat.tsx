@@ -43,7 +43,7 @@ export const HomeworkChat: React.FC = () => {
         }
     }
 
-    const handleToggle = (row: SchoolClassStudentResponse)=> {
+    const handleToggle = (row: SchoolClassStudentResponse) => {
         setSelected(selected ? null : row)
     }
 
@@ -102,7 +102,7 @@ export const HomeworkChat: React.FC = () => {
                     </Table>
                 </TableContainer>
 
-                { !loading && selected && homeworkId && (
+                {!loading && selected && homeworkId && (
                     <ChatHomeworkComponent homeworkId={homeworkId} studentId={selected.id}/>
                 )}
 

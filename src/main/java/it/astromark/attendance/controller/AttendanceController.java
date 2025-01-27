@@ -1,9 +1,9 @@
 package it.astromark.attendance.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.attendance.dto.AttendanceRequest;
 import it.astromark.attendance.dto.AttendanceResponse;
 import it.astromark.attendance.service.AttendanceService;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,5 +1,6 @@
 package it.astromark.user.parent.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.parent.dto.ParentDetailedResponse;
@@ -7,8 +8,6 @@ import it.astromark.user.parent.dto.ParentRequest;
 import it.astromark.user.parent.service.ParentService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
 

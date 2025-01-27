@@ -1,8 +1,8 @@
 package it.astromark.attendance.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.attendance.dto.JustifiableResponse;
 import it.astromark.attendance.service.JustifiableService;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

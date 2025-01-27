@@ -1,8 +1,8 @@
 package it.astromark.rating.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.rating.dto.*;
 import it.astromark.rating.service.MarkService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

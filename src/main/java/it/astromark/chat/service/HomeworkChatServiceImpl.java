@@ -146,7 +146,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public UUID getStudentHomeworkChatId(@NotNull Integer homeworkId, @NotNull UUID studentId) {
-        if(!schoolUserService.isLoggedTeacherStudent(studentId)){
+        if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this chat");
         }
 

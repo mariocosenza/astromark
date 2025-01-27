@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Stack, Paper, Typography, Box, CircularProgress } from '@mui/material';
-import { blue, red } from '@mui/material/colors';
-import { changeStudentOrYear, SelectedStudent, SelectedYear } from "../../services/StateService.ts";
-import { AxiosResponse } from "axios";
+import React, {useEffect, useState} from 'react';
+import {Box, CircularProgress, Paper, Stack, Typography} from '@mui/material';
+import {blue, red} from '@mui/material/colors';
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
-import { Env } from "../../Env.ts";
-import { SchoolUserDetail } from "../../components/AccountMenu.tsx";
-import { Communication, SchoolClass } from "./Communication.tsx";
-import { AccordionNotViewable } from "../../components/AccordionNotViewable.tsx";
-import { isRole } from "../../services/AuthService.ts";
-import { Role } from "../../components/route/ProtectedRoute.tsx";
-import { getStudentYears } from "../../services/StudentService.ts";
-import { HomeworkResponse } from "./ClassActivity.tsx";
-import { HomeworkList } from "../../components/HomeworkList.tsx";
+import {Env} from "../../Env.ts";
+import {SchoolUserDetail} from "../../components/AccountMenu.tsx";
+import {Communication, SchoolClass} from "./Communication.tsx";
+import {AccordionNotViewable} from "../../components/AccordionNotViewable.tsx";
+import {isRole} from "../../services/AuthService.ts";
+import {Role} from "../../components/route/ProtectedRoute.tsx";
+import {getStudentYears} from "../../services/StudentService.ts";
+import {HomeworkResponse} from "./ClassActivity.tsx";
+import {HomeworkList} from "../../components/HomeworkList.tsx";
 
 // react-use hook for responsive behavior
-import { useMedia } from 'react-use';
+import {useMedia} from 'react-use';
 
 export const Dashboard: React.FC = () => {
     // This hook checks if the screen size is below 768 px (mobile view)
@@ -209,16 +209,16 @@ export const Dashboard: React.FC = () => {
                                 filterUnits="userSpaceOnUse"
                                 colorInterpolationFilters="sRGB"
                             >
-                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                                <feFlood floodOpacity="0" result="BackgroundImageFix"/>
                                 <feColorMatrix
                                     in="SourceAlpha"
                                     type="matrix"
                                     values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                                     result="hardAlpha"
                                 />
-                                <feOffset dy="4" />
-                                <feGaussianBlur stdDeviation="2" />
-                                <feComposite in2="hardAlpha" operator="out" />
+                                <feOffset dy="4"/>
+                                <feGaussianBlur stdDeviation="2"/>
+                                <feComposite in2="hardAlpha" operator="out"/>
                                 <feColorMatrix
                                     type="matrix"
                                     values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
@@ -264,7 +264,7 @@ export const Dashboard: React.FC = () => {
                                         hexColor: 'dodgerblue',
                                         date: activity.signedHour.date,
                                     })
-                                )} dashboard={true}                            />
+                                )} dashboard={true}/>
                         </div>
                     </Box>
                 </Box>
@@ -295,7 +295,7 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={blue[800]}>
                             Media
                         </Typography>
-                        <CircularProgress variant="determinate" value={average * 10} size={50} />
+                        <CircularProgress variant="determinate" value={average * 10} size={50}/>
                         <Typography variant="h5">{average}</Typography>
                     </Paper>
 
@@ -318,7 +318,7 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={red[800]}>
                             Avvisi
                         </Typography>
-                        <div style={{ maxWidth: '80%', marginLeft: isMobile? '5%' : '10%' , marginRight: '10%' }}>
+                        <div style={{maxWidth: '80%', marginLeft: isMobile ? '5%' : '10%', marginRight: '10%'}}>
                             {!loading && allerts.length > 0 && (
                                 <AccordionNotViewable
                                     key={allerts[0].id}
@@ -349,7 +349,7 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={blue[800]}>
                             Orientamento
                         </Typography>
-                        <Typography variant="body1" sx={{ ml: '2%' }}>
+                        <Typography variant="body1" sx={{ml: '2%'}}>
                             {attitude}
                         </Typography>
                     </Paper>

@@ -89,14 +89,14 @@ public interface ClassAgendaMapper {
         return false;
     }
 
-    default ClassActivity getActivity(TeachingTimeslot teachingTimeslot, ClassActivityRepository classActivityRepository){
+    default ClassActivity getActivity(TeachingTimeslot teachingTimeslot, ClassActivityRepository classActivityRepository) {
         if (isSigned(teachingTimeslot)) {
             return classActivityRepository.findBySignedHour(teachingTimeslot.getSignedHour());
         }
         return null;
     }
 
-    default Homework getHomework(TeachingTimeslot teachingTimeslot, HomeworkRepository homeworkRepository){
+    default Homework getHomework(TeachingTimeslot teachingTimeslot, HomeworkRepository homeworkRepository) {
         if (isSigned(teachingTimeslot)) {
             return homeworkRepository.findBySignedHour(teachingTimeslot.getSignedHour());
         }

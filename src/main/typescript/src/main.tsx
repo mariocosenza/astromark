@@ -79,14 +79,21 @@ ReactDOM.createRoot(root).render(
                         <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="ticket" element={<TeacherTicket/>}/>
                         <Route path="ricevimento" element={<TeacherReception/>}/>
-                        <Route path="agenda" element={<ConditionalRoute node={<ClassAgenda/>} condition={isSelectedClass}/>}/>
-                        <Route path="agenda/chat" element={<ConditionalRoute node={<HomeworkChat/>} condition={isSelectedClass}/>}/>
+                        <Route path="agenda"
+                               element={<ConditionalRoute node={<ClassAgenda/>} condition={isSelectedClass}/>}/>
+                        <Route path="agenda/chat"
+                               element={<ConditionalRoute node={<HomeworkChat/>} condition={isSelectedClass}/>}/>
                         <Route path="ora" element={<ConditionalRoute node={<SignHour/>} condition={isSelectedClass}/>}/>
-                        <Route path="appello" element={<ConditionalRoute node={<Attendance/>} condition={isSelectedClass}/>}/>
-                        <Route path="valutazioni" element={<ConditionalRoute node={<Ratings/>} condition={isSelectedClass}/>}/>
-                        <Route path="valutazioni/tutte" element={<ConditionalRoute node={<EveryRatings/>} condition={isSelectedClass}/>}/>
-                        <Route path="note" element={<ConditionalRoute node={<TeacherNote/>} condition={isSelectedClass}/>}/>
-                        <Route path="avvisi" element={<ConditionalRoute node={<TeacherCommunication/>} condition={isSelectedClass}/>}/>
+                        <Route path="appello"
+                               element={<ConditionalRoute node={<Attendance/>} condition={isSelectedClass}/>}/>
+                        <Route path="valutazioni"
+                               element={<ConditionalRoute node={<Ratings/>} condition={isSelectedClass}/>}/>
+                        <Route path="valutazioni/tutte"
+                               element={<ConditionalRoute node={<EveryRatings/>} condition={isSelectedClass}/>}/>
+                        <Route path="note"
+                               element={<ConditionalRoute node={<TeacherNote/>} condition={isSelectedClass}/>}/>
+                        <Route path="avvisi" element={<ConditionalRoute node={<TeacherCommunication/>}
+                                                                        condition={isSelectedClass}/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                     </Route>
                     <Route path="/secretary" element={<Navigate to="/secretary/dashboard" replace/>}/>
@@ -99,8 +106,8 @@ ReactDOM.createRoot(root).render(
                         <Route path="teacher" element={<ManageTeacher/>}/>
                         <Route path="impostazioni" element={<Settings/>}/>
                         <Route path="class-schedule/:classId" element={<ClassSchedule/>}/>
-                        <Route path="/secretary/teachers/:teacheruuid" element={<TeacherDetails />} />
-                        <Route path="class-info/:classId" element={<DetailsSchoolClass />}/>
+                        <Route path="/secretary/teachers/:teacheruuid" element={<TeacherDetails/>}/>
+                        <Route path="class-info/:classId" element={<DetailsSchoolClass/>}/>
 
 
                     </Route>

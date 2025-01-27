@@ -48,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SchoolUser login(UserLoginRequest user) {
-        if(user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
+        if (user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
                 !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") ||
                 !user.schoolCode().matches("^SS\\d{5}$") ||
                 user.role().isBlank()) {

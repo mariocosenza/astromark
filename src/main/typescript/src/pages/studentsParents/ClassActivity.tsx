@@ -104,7 +104,7 @@ export const Homework: React.FC = () => {
                                     description: activity.title + ': ' + activity.description,
                                     hexColor: 'dodgerblue',
                                     date: activity.signedHour.date,
-                                }))} dashboard={false}                        />
+                                }))} dashboard={false}/>
                     ) : (
                         <HomeworkList
                             list={activity
@@ -120,7 +120,7 @@ export const Homework: React.FC = () => {
                                     hexColor: 'dodgerblue',
                                     date: activity.signedHour.date,
                                 }))
-                                .reverse()} dashboard={false}                        />
+                                .reverse()} dashboard={false}/>
                     )
                 }
 

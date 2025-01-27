@@ -71,6 +71,7 @@ public interface ReceptionAgendaService {
 
     /**
      * Retrieves a list of not confirmed bookings for a given table.
+     *
      * @param tableId the ID of the table to retrieve bookings for
      * @return a list of `ReceptionBookingResponse` objects representing not confirmed bookings
      * Pre-condition:

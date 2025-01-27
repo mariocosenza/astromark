@@ -10,8 +10,8 @@ import it.astromark.rating.model.Mark;
 import it.astromark.rating.repository.MarkRepository;
 import it.astromark.rating.repository.SemesterReportRepository;
 import it.astromark.user.commons.service.SchoolUserService;
-import it.astromark.user.student.repository.StudentRepository;
 import it.astromark.user.student.entity.Student;
+import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -123,7 +123,7 @@ public class MarkServiceImpl implements MarkService {
 
         var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching_SubjectTitle_Title(classId, date, teaching), teaching);
 
-        for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
+        for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()) {
             if (marks.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
                 marks.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching, null, null, "", null));
             }
@@ -149,7 +149,7 @@ public class MarkServiceImpl implements MarkService {
         marks.sort(Comparator.comparing((Mark m) -> m.getStudent().getSurname()).thenComparing(Mark::getDate));
         var ratings = markMapper.toRatingsResponseList(marks, teaching);
 
-        for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()){
+        for (Student student : schoolClassRepository.findById(classId).orElseThrow().getStudents()) {
             if (ratings.stream().noneMatch(m -> m.studentId().equals(student.getId()))) {
                 ratings.add(new RatingsResponse(null, student.getId(), student.getName(), student.getSurname(), teaching, null, null, "", null));
             }
@@ -165,7 +165,7 @@ public class MarkServiceImpl implements MarkService {
         if (!mark.date().isBefore(LocalDate.now().plusDays(1))) {
             throw new IllegalArgumentException("Date must be in the past");
         }
-        if(mark.mark() < 0 || mark.mark() > 10) {
+        if (mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }
         var teacher = authenticationService.getTeacher().orElseThrow();
@@ -173,7 +173,7 @@ public class MarkServiceImpl implements MarkService {
         if (!teaching.getTeacher().equals(teacher)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
-        if(!schoolUserService.isLoggedTeacherStudent(mark.studentId())) {
+        if (!schoolUserService.isLoggedTeacherStudent(mark.studentId())) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
@@ -191,15 +191,15 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public MarkResponse update(MarkUpdateRequest mark, UUID studentId) {
-        if(mark.mark() < 0 || mark.mark() > 10) {
+        if (mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }
-        if(!schoolUserService.isLoggedTeacherStudent(studentId)) {
+        if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
         var markEntity = markRepository.findById(mark.id()).orElseThrow();
         var teacher = authenticationService.getTeacher().orElseThrow();
-        if(!markEntity.getTeaching().getTeacher().equals(teacher)) {
+        if (!markEntity.getTeaching().getTeacher().equals(teacher)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
@@ -216,7 +216,7 @@ public class MarkServiceImpl implements MarkService {
     public boolean delete(Integer id) {
         var mark = markRepository.findById(id).orElseThrow();
         var teacher = authenticationService.getTeacher().orElseThrow();
-        if(!mark.getTeaching().getTeacher().equals(teacher)) {
+        if (!mark.getTeaching().getTeacher().equals(teacher)) {
             return false;
         }
 

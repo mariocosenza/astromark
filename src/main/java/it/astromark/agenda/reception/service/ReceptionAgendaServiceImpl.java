@@ -78,7 +78,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
         var receptionBooking = receptionBookingRepository.findById(receptionTimeslotID).orElseThrow();
 
         if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
-                .equals(authenticationService.getTeacher().orElseThrow().getId())){
+                .equals(authenticationService.getTeacher().orElseThrow().getId())) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 
@@ -96,7 +96,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
         var receptionBooking = receptionBookingRepository.findById(receptionTimeslotID).orElseThrow();
 
         if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
-                .equals(authenticationService.getTeacher().orElseThrow().getId())){
+                .equals(authenticationService.getTeacher().orElseThrow().getId())) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         }
 

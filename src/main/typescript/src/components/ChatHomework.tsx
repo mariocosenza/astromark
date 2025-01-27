@@ -92,7 +92,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                 );
                 setChatId(response.data);
             } else if (getRole().toUpperCase() === Role.TEACHER && !chatId) {
-                if (studentId){
+                if (studentId) {
                     const response: AxiosResponse<string> = await axiosConfig.get<string>(
                         `${API_BASE_URL}/homeworks/${homeworkId}/student/${studentId}`
                     );

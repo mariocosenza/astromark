@@ -86,10 +86,10 @@ public class StudentServiceImpl implements StudentService {
         var student = studentRepository.findById(uuid).orElse(null);
         if (!schoolUserService.isLoggedUserParent(uuid)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
-        } else if(authenticationService.isStudent()) {
+        } else if (authenticationService.isStudent()) {
             student = authenticationService.getStudent().orElseThrow();
-        } else if(authenticationService.isSecretary()) {
-            if(!authenticationService.getSecretary().orElseThrow().getSchool().getCode().equals(Objects.requireNonNull(student).getSchool().getCode())) {
+        } else if (authenticationService.isSecretary()) {
+            if (!authenticationService.getSecretary().orElseThrow().getSchool().getCode().equals(Objects.requireNonNull(student).getSchool().getCode())) {
                 throw new AccessDeniedException("You are not allowed to access this resource");
             }
         }
@@ -112,7 +112,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     @Transactional
-    public List<SchoolClassResponse> getSchoolClassByYear(@NotNull UUID studentId,@PastOrPresent Year year) {
+    public List<SchoolClassResponse> getSchoolClassByYear(@NotNull UUID studentId, @PastOrPresent Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
@@ -129,7 +129,7 @@ public class StudentServiceImpl implements StudentService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public String attitude(UUID studentId) {
         var student = studentRepository.findById(studentId).orElseThrow();
-        if(!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException("You are not allowed to access this resource");
         } else if (authenticationService.isStudent()) {
             student = authenticationService.getStudent().orElseThrow();

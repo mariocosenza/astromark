@@ -3,8 +3,8 @@ package it.astromark.commons.service;
 /**
  * Generic service interface for managing CRUD (Create, Read, Update, Delete) operations.
  *
- * @param <T> the entity type
- * @param <R> the request type for creating or updating an entity
+ * @param <T>  the entity type
+ * @param <R>  the request type for creating or updating an entity
  * @param <RS> the response type for returning entity details
  * @param <ID> the identifier type used for the entity
  */
@@ -23,7 +23,7 @@ public interface CrudService<T, R, RS, ID> {
      * Updates an existing resource by its ID.
      *
      * @param id the ID of the resource to be updated
-     * @param r the updated resource data
+     * @param r  the updated resource data
      * @return an `RS` object representing the updated resource
      * Pre-condition: The `id` must not be null and must refer to an existing resource. The `r` must not be null and must contain valid data for updating.
      * Post-condition: The resource is updated and returned as an `RS` object.

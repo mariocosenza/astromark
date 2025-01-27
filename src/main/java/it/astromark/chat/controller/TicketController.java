@@ -1,10 +1,10 @@
 package it.astromark.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.dto.TicketResponse;
 import it.astromark.chat.repository.TicketRepository;
 import it.astromark.chat.service.TicketService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -45,9 +45,9 @@ export const ClassAgenda: React.FC = () => {
 
     const fetchData = async (selectedDate: string) => {
         try {
-            let rowResponse : ClassAgendaRow[] = [];
+            let rowResponse: ClassAgendaRow[] = [];
             const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${selectedDate}`);
-            if (response.data.length){
+            if (response.data.length) {
                 rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
                     id: teachingSlot.id,
                     signed: teachingSlot.signed,
@@ -145,7 +145,7 @@ export const ClassAgenda: React.FC = () => {
                 </Grid>
             </Grid>
 
-            <TableContainer sx={{ width: '90%', margin: '0 5%'}}>
+            <TableContainer sx={{width: '90%', margin: '0 5%'}}>
                 <Table>
                     <TableHead>
                         <CustomTableRow>
@@ -163,8 +163,10 @@ export const ClassAgenda: React.FC = () => {
                             <CustomTableRow key={row.hour}>
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
-                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'} sx={{padding: '8px'}}/> :
-                                            <IconButton disabled={!row.isTeacherHour} onClick={() => choseTeachingTimeslot(row)}>
+                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}
+                                                                              sx={{padding: '8px'}}/> :
+                                            <IconButton disabled={!row.isTeacherHour}
+                                                        onClick={() => choseTeachingTimeslot(row)}>
                                                 <AddCircleOutlineIcon fontSize={'large'}/>
                                             </IconButton>
                                         }
@@ -206,7 +208,8 @@ export const ClassAgenda: React.FC = () => {
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
-                                    <IconButton disabled={!(row.signed && row.isTeacherHour)} onClick={() => choseTeachingTimeslot(row)}>
+                                    <IconButton disabled={!(row.signed && row.isTeacherHour)}
+                                                onClick={() => choseTeachingTimeslot(row)}>
                                         <EditOutlinedIcon fontSize={'large'}/>
                                     </IconButton>
                                 </CustomTableCell>

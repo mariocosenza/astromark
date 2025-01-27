@@ -4,7 +4,10 @@ import it.astromark.rating.dto.*;
 import it.astromark.rating.model.Mark;
 import it.astromark.rating.model.SemesterReport;
 import it.astromark.rating.model.SemesterReportMark;
-import org.mapstruct.*;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 import java.util.Set;
@@ -33,11 +36,13 @@ public interface MarkMapper {
     @Mapping(target = "name", source = "student.name")
     @Mapping(target = "surname", source = "student.surname")
     @Mapping(target = "subject", expression = "java(subject)")
-    RatingsResponse toRatingsResponse(Mark mark, @Context String  subject);
+    RatingsResponse toRatingsResponse(Mark mark, @Context String subject);
 
-    List<RatingsResponse> toRatingsResponseList(List<Mark> marks, @Context String  subject);
+    List<RatingsResponse> toRatingsResponseList(List<Mark> marks, @Context String subject);
+
     @Mapping(target = "title", source = "teaching.id.subjectTitle")
     MarkOrientationRequest toMarkOrientationRequest(Mark mark);
+
     List<MarkOrientationRequest> toMarkOrientationRequestList(List<Mark> marks);
 
 }

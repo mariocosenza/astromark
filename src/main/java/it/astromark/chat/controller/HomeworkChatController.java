@@ -1,8 +1,8 @@
 package it.astromark.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.service.HomeworkChatService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

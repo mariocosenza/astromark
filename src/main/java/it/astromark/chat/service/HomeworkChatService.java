@@ -26,7 +26,7 @@ public interface HomeworkChatService {
      * Sends a message to a specific homework chat.
      *
      * @param chatId the UUID of the chat
-     * @param text the message text to be sent
+     * @param text   the message text to be sent
      * @return the UUID of the sent message
      * Pre-condition: The `chatId` and `text` must not be null or empty. The chat associated with the `chatId` must exist.
      * Post-condition: The message is sent and its UUID is returned.
@@ -47,8 +47,8 @@ public interface HomeworkChatService {
      * Adds a new chat for a specific homework.
      *
      * @param homeworkId the ID of the homework
-     * Pre-condition: The `homeworkId` must not be null. The homework associated with the `homeworkId` must exist.
-     * Post-condition: A new chat is created and associated with the specified homework.
+     *                   Pre-condition: The `homeworkId` must not be null. The homework associated with the `homeworkId` must exist.
+     *                   Post-condition: A new chat is created and associated with the specified homework.
      */
     void addChat(Integer homeworkId);
 
@@ -76,7 +76,7 @@ public interface HomeworkChatService {
      * Retrieves the chat ID for a specific student's homework chat.
      *
      * @param homeworkId the ID of the homework
-     * @param studentId the UUID of the student
+     * @param studentId  the UUID of the student
      * @return the UUID of the student's homework chat
      * Pre-condition: The `homeworkId` and `studentId` must not be null. The caller must have permission to access the specified student's homework chat.
      * Post-condition: Returns the UUID of the homework chat associated with the specified student and homework, or throws an exception if not found.

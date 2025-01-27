@@ -1,5 +1,17 @@
-import React, { useState } from 'react';
-import {Card, CardContent, Typography, Stack, RadioGroup, FormControlLabel, Radio, Button, Box, TextField, Autocomplete} from '@mui/material';
+import React, {useState} from 'react';
+import {
+    Autocomplete,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
+    Stack,
+    TextField,
+    Typography
+} from '@mui/material';
 import {formatMark, RatingsRow} from "../pages/teacher/Ratings.tsx";
 import {DateObject} from "react-multi-date-picker";
 import axiosConfig from "../services/AxiosConfig.ts";
@@ -9,15 +21,19 @@ import {MarkRequest} from "../entities/MarkRequest.ts";
 import {MarkUpdateRequest} from "../entities/MarkUpdateRequest.ts";
 import {SelectedTeaching} from "../services/TeacherService.ts";
 
-export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void, date: DateObject }> = ({ row , returnBack, date}) => {
+export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void, date: DateObject }> = ({
+                                                                                                             row,
+                                                                                                             returnBack,
+                                                                                                             date
+                                                                                                         }) => {
     const [mark, setMark] = useState<number | null>(row.mark);
     const [type, setType] = useState<string>(row.type);
     const [note, setNote] = useState<string>(row.desc);
 
-    const marksList = Array.from({ length: 41 }, (_, i) => ((i) / 4));
+    const marksList = Array.from({length: 41}, (_, i) => ((i) / 4));
 
     const handleSave = async () => {
-        if (row.id === null){
+        if (row.id === null) {
             await CreateMark();
         } else {
             await UpdateMark();
@@ -38,7 +54,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
             type: type
         }
 
-        try{
+        try {
             await axiosConfig.post(`${Env.API_BASE_URL}/students/marks`, markRequest, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +74,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
             type: type
         }
 
-        try{
+        try {
             await axiosConfig.patch(`${Env.API_BASE_URL}/students/marks/${row.student}`, markUpdateRequest, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,9 +88,10 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
 
     return (
         <div>
-            <Card elevation={10} sx={{ margin: '2rem 30%', borderRadius: 2 }}>
+            <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 2}}>
                 <CardContent>
-                    <Stack direction="row" justifyContent={'space-between'} alignItems={'center'} margin={2} padding={2}>
+                    <Stack direction="row" justifyContent={'space-between'} alignItems={'center'} margin={2}
+                           padding={2}>
                         <Typography variant="h5" fontWeight="bold">
                             {row.name}
                         </Typography>
@@ -83,7 +100,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
                 </CardContent>
             </Card>
 
-            <Card elevation={10} sx={{ margin: '2rem 30%', borderRadius: 2 }}>
+            <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 2}}>
                 <CardContent>
                     <Stack spacing={3}>
                         <Stack direction="row" justifyContent={'center'} alignItems={'center'} margin={2} spacing={10}>
@@ -95,7 +112,7 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
                                     value={mark}
                                     onChange={(_, newValue) => setMark(newValue)}
                                     renderInput={(params) => (
-                                        <TextField {...params} placeholder="Seleziona un voto" variant="outlined" />
+                                        <TextField {...params} placeholder="Seleziona un voto" variant="outlined"/>
                                     )}
                                     fullWidth
                                 />
@@ -104,21 +121,21 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
                             <Box>
                                 <Typography variant="subtitle1">Tipo di prova:</Typography>
                                 <RadioGroup row value={type}
-                                    onChange={(e) => setType(e.target.value)}>
+                                            onChange={(e) => setType(e.target.value)}>
 
                                     <FormControlLabel
                                         value='ORAL'
-                                        control={<Radio />}
+                                        control={<Radio/>}
                                         label="Orale"
                                     />
                                     <FormControlLabel
                                         value='WRITTEN'
-                                        control={<Radio />}
+                                        control={<Radio/>}
                                         label="Scritto"
                                     />
                                     <FormControlLabel
                                         value='LABORATORY'
-                                        control={<Radio />}
+                                        control={<Radio/>}
                                         label="Laboratorio"
                                     />
                                 </RadioGroup>
@@ -129,11 +146,12 @@ export const RatingComponent: React.FC<{row: RatingsRow, returnBack: () => void,
                             <Box width={'100%'}>
                                 <Typography variant="subtitle1">Nota:</Typography>
                                 <TextField fullWidth multiline minRows={3} value={note}
-                                    onChange={(e) => setNote(e.target.value)}
+                                           onChange={(e) => setNote(e.target.value)}
                                 />
                             </Box>
 
-                            <Button variant="contained" color="primary" sx={{ alignSelf: 'flex-end', borderRadius: 5 }} onClick={handleSave}>
+                            <Button variant="contained" color="primary" sx={{alignSelf: 'flex-end', borderRadius: 5}}
+                                    onClick={handleSave}>
                                 Salva
                             </Button>
                         </Stack>

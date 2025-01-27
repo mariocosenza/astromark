@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
-    Box,
-    Typography,
-    CircularProgress,
     Alert,
+    Box,
+    Button,
     Card,
     CardContent,
-    Button,
+    Checkbox,
+    CircularProgress,
+    FormControlLabel,
     Modal,
     TextField,
-    FormControlLabel,
-    Checkbox,
+    Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import {useNavigate} from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env";
+import {Env} from "../../Env";
 
 interface TeacherResponse {
     name: string;
@@ -59,12 +59,12 @@ export const ManageTeacher = () => {
     const handleCloseModal = () => setModalOpen(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, male: e.target.checked });
+        setFormData({...formData, male: e.target.checked});
     };
 
     const handleSubmit = async () => {
@@ -85,16 +85,16 @@ export const ManageTeacher = () => {
         navigate(`/secretary/teachers/${uuid}`);
     };
 
-    if (loading) return <CircularProgress />;
+    if (loading) return <CircularProgress/>;
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <Box sx={{ padding: "16px" }}>
+        <Box sx={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
-            Professori
+                Professori
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
-             Aggiungi professore
+            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{mb: 2}}>
+                Aggiungi professore
             </Button>
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
@@ -153,7 +153,7 @@ export const ManageTeacher = () => {
                         value={formData.birthDate}
                         onChange={handleInputChange}
                         margin="normal"
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={{shrink: true}}
                     />
                     <FormControlLabel
                         control={
@@ -174,7 +174,7 @@ export const ManageTeacher = () => {
                         margin="normal"
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
+                        <Button onClick={handleCloseModal} sx={{mr: 2}}>
                             Chiudi
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
@@ -195,7 +195,7 @@ export const ManageTeacher = () => {
                             borderRadius: "12px",
                         }}
                         onClick={() => handleCardClick(teacher.uuid)} // Gestisce il click sulla card
-                        style={{ cursor: "pointer" }}
+                        style={{cursor: "pointer"}}
                     >
                         <CardContent>
                             <Typography variant="h6" gutterBottom>

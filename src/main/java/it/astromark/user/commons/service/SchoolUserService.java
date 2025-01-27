@@ -16,7 +16,7 @@ public interface SchoolUserService {
     /**
      * Checks if the specified parent is the parent of a specific student.
      *
-     * @param parent the `Parent` object
+     * @param parent    the `Parent` object
      * @param studentId the UUID of the student
      * @return true if the parent is the parent of the student, false otherwise
      * Pre-condition: The `parent` and `studentId` must not be null. The student must exist.

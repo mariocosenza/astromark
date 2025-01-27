@@ -20,11 +20,11 @@ import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
-import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
+import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;

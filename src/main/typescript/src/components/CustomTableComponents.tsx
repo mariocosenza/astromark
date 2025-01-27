@@ -2,7 +2,7 @@ import {styled, tableCellClasses} from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 
-export const CustomTableRow = styled(TableRow)(({ theme }) => ({
+export const CustomTableRow = styled(TableRow)(({theme}) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },

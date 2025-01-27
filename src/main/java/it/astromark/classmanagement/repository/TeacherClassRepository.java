@@ -13,6 +13,7 @@ import java.util.List;
 public interface TeacherClassRepository extends JpaRepository<TeacherClass, TeacherClassId> {
 
     List<TeacherClass> findByTeacher(Teacher teacher);
+
     void deleteById(@NonNull TeacherClassId id);
 
 }

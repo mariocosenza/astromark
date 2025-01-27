@@ -42,9 +42,9 @@ export const Attendance: React.FC = () => {
 
     const fetchData = async (selectedDate: string) => {
         try {
-            let rowResponse : AttendanceRow[] = [];
+            let rowResponse: AttendanceRow[] = [];
             const response: AxiosResponse<AttendanceResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/attendance/${selectedDate}`);
-            if (response.data.length){
+            if (response.data.length) {
                 rowResponse = response.data.map((attendance: AttendanceResponse) => ({
                     id: attendance.id,
                     name: attendance.name + ' ' + attendance.surname,
@@ -81,7 +81,7 @@ export const Attendance: React.FC = () => {
             delayNeedJustification: attendance.delayNeedJustification,
         }));
 
-        try{
+        try {
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/attendance/${date.format("YYYY-MM-DD")}`, attendanceRequest, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,7 +122,9 @@ export const Attendance: React.FC = () => {
 
             {changeView ? (
                 <div>
-                    <DelayComponent row={selected || rows[0]} returnBack={() => {setChangeView(false)}}/>
+                    <DelayComponent row={selected || rows[0]} returnBack={() => {
+                        setChangeView(false)
+                    }}/>
                 </div>
             ) : (
                 <div>
@@ -197,7 +199,8 @@ export const Attendance: React.FC = () => {
                                                     {row.totalAbsence}
                                                 </Stack>
                                                 <Stack alignItems="center">
-                                                    <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}} fontSize={'large'}/>
+                                                    <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}}
+                                                                             fontSize={'large'}/>
                                                     {row.totalDelay}
                                                 </Stack>
                                             </Stack>
@@ -209,7 +212,8 @@ export const Attendance: React.FC = () => {
                     </TableContainer>
 
                     <Stack direction="row" justifyContent="flex-end" margin={'2rem 10%'}>
-                        <Button variant="contained" color="primary" sx={{borderRadius: 5, width: '10%'}} onClick={handleSave}>
+                        <Button variant="contained" color="primary" sx={{borderRadius: 5, width: '10%'}}
+                                onClick={handleSave}>
                             Salva
                         </Button>
                     </Stack>

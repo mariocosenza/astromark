@@ -15,8 +15,8 @@ public interface FileService {
      * @param multipartFile the file to be uploaded
      * @return a string representing the file's identifier or storage path
      * @throws IOException if an error occurs during file upload
-     * Pre-condition: The `multipartFile` must not be null and must contain valid file data.
-     * Post-condition: The file is uploaded, and its identifier or path is returned.
+     *                     Pre-condition: The `multipartFile` must not be null and must contain valid file data.
+     *                     Post-condition: The file is uploaded, and its identifier or path is returned.
      */
     String uploadFile(MultipartFile multipartFile) throws IOException;
 

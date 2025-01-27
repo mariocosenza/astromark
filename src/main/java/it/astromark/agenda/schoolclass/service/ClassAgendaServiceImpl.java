@@ -119,7 +119,6 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     }
 
 
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
