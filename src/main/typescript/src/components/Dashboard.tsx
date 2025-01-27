@@ -37,7 +37,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ isTeacher }) => {
 
     const menuItems = isTeacher
         ? [
-            { img: timetable, label: "Orario", color: theme.palette.primary.main, path: "/teacher/timetable" },
+            { img: timetable, label: "Ricevimenti", color: theme.palette.primary.main, path: "/teacher/ricevimento" },
             { img: classroom, label: "Classi", color: theme.palette.primary.main, path: "/teacher/classi" },
             { img: ticket, label: "Ticket", color: theme.palette.info.main, path: "/teacher/ticket" },
             { img: setting, label: "Impostazioni", color: theme.palette.info.main, path: "/teacher/impostazioni" }
