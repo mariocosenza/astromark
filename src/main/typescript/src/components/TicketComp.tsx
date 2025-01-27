@@ -10,7 +10,7 @@ import {Env} from "../Env.ts";
 import {SelectedTicket} from "../services/TicketService.ts";
 import {MessageResponse} from "../entities/MessageResponse.ts";
 import {TicketResponse} from "../entities/TicketResponse.ts";
-import {isRole} from "../services/AuthService.ts";
+import {getRole, isRole} from "../services/AuthService.ts";
 import {Role} from "./route/ProtectedRoute.tsx";
 
 export const TicketComp: React.FC = () => {
@@ -33,7 +33,8 @@ export const TicketComp: React.FC = () => {
                     title: "Ticket del " + ticket.datetime.toString().substring(0, 10),
                     description: ticket.title,
                     hexColor: lightBlue[500],
-                    id: ticket.id
+                    id: ticket.id,
+                    ticket: ticket
                 }));
 
                 if (SelectedTicket.ticketId === null) {
@@ -95,9 +96,11 @@ export const TicketComp: React.FC = () => {
                 <Box padding={'1rem'}>
                     {loading ? <CircularProgress/> : <TicketList list={ticketData} onTicketClick={fetchMessages}/>}
                 </Box>
+                { getRole().toUpperCase() !== Role.SECRETARY &&
                 <Box padding={'1rem'}>
                     <TicketCreation/>
                 </Box>
+                }
             </Box>
 
             <Box width={{xs: '100%', md: '45%'}}>
