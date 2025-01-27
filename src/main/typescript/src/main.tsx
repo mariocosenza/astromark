@@ -43,6 +43,7 @@ import {ClassSchedule} from "./pages/secretary/ClassSchedule.tsx";
 import {ProtectedTeacherRoute} from "./components/route/ProtectedTeacherRoute.tsx";
 import {TeacherDetails} from "./pages/secretary/TeacherDetails.tsx";
 import {Help} from "./pages/Help.tsx";
+import {TeacherReception} from "./pages/teacher/TeacherReception.tsx";
 
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
@@ -76,6 +77,7 @@ ReactDOM.createRoot(root).render(
                         <Route path="dashboard" element={<TeacherDashboard/>}/>
                         <Route path="classi" element={<SchoolClass/>}/>
                         <Route path="ticket" element={<TeacherTicket/>}/>
+                        <Route path="ricevimento" element={<TeacherReception/>}/>
                         <Route path="agenda" element={<ConditionalRoute node={<ClassAgenda/>} condition={isSelectedClass}/>}/>
                         <Route path="agenda/chat" element={<ConditionalRoute node={<HomeworkChat/>} condition={isSelectedClass}/>}/>
                         <Route path="ora" element={<ConditionalRoute node={<SignHour/>} condition={isSelectedClass}/>}/>

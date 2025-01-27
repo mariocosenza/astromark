@@ -9,6 +9,7 @@ import CoPresentIcon from '@mui/icons-material/CoPresent';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import AddAlertOutlinedIcon from "@mui/icons-material/AddAlertOutlined";
+import GroupsIcon from "@mui/icons-material/Groups";
 import {useState} from "react";
 import {NavLink} from "react-router";
 import {isSelectedClass} from "../services/TeacherService.ts";
@@ -52,6 +53,16 @@ export const TeacherSideNav = () => {
                                 <ConfirmationNumberOutlinedIcon/>
                             </ListItemIcon>
                             <ListItemText primary={"Ticket"}/>
+                        </ListItemButton>
+                    </ListItem>
+                </NavLink>
+                <NavLink to="/teacher/ricevimento" end>
+                    <ListItem key="ricevimento" disablePadding>
+                        <ListItemButton>
+                            <ListItemIcon>
+                                <GroupsIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Ricevimento"}/>
                         </ListItemButton>
                     </ListItem>
                 </NavLink>
