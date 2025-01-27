@@ -26,7 +26,7 @@ export const AccordionViewable: React.FC<AccordionViewableProps> = (props: Accor
             >
                 <Avatar sx={{bgcolor: '#df3466'}}>{props.avatar}</Avatar>
                 <Typography variant={'h6'} sx={{ml: '1vw'}}
-                            component="span">{props.title} del {props.date.toString()} </Typography>
+                            component="span">{props.title} del {new Date(props.date).toLocaleDateString()} </Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Stack spacing={1} direction="row">

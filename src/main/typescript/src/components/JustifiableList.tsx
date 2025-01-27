@@ -22,6 +22,7 @@ export type JustificationListProp = {
     absence: boolean;
 };
 
+
 function justify(justification: string, id: string, absence: boolean): boolean {
     try {
         if (justification === "") {
@@ -81,7 +82,7 @@ export const JustifiableList: React.FC<JustificationListProp> = (props) => {
                     <Avatar sx={{bgcolor: item.hexColor, ml: "1%", mt: "0.8rem"}}>{item.avatar}</Avatar>
                     <div style={{marginLeft: "1%", display: "flex", flexDirection: "column"}}>
                         <Typography variant="h6" ml={"1vw"} mt={"0.8rem"}>
-                            {props.absence ? 'Assenza del' : 'Ritardo del'} {item.date} {
+                            {props.absence ? 'Assenza del' : 'Ritardo del'} {new Date(Date.parse(item.date)).toLocaleString()} {
                             item.justified && '- Giustifica: ' + item.justificationText
 
                         }

@@ -11,7 +11,7 @@ import {AccordionNotViewable} from "../../components/AccordionNotViewable.tsx";
 import {isRole} from "../../services/AuthService.ts";
 import {Role} from "../../components/route/ProtectedRoute.tsx";
 import {getStudentYears} from "../../services/StudentService.ts";
-import {HomeworkResponse} from "./ClassActivity.tsx";
+import {HomeworkResponse, openChat} from "./ClassActivity.tsx";
 import {HomeworkList} from "../../components/HomeworkList.tsx";
 
 // react-use hook for responsive behavior
@@ -27,7 +27,8 @@ export const Dashboard: React.FC = () => {
     const [user, setUser] = useState<SchoolUserDetail>();
     const [totAbsences, setTotAbsences] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [activity, setActivity] = React.useState<HomeworkResponse>();
+    const [activity, setActivity] = useState<HomeworkResponse>();
+    const [, setOpen] = openChat();
     const [toggle, _] = changeStudentOrYear();
 
     useEffect(() => {
@@ -47,6 +48,7 @@ export const Dashboard: React.FC = () => {
                             }
                         });
                     });
+                setOpen(false);
             }
         } catch (error) {
             console.error(error);
@@ -59,9 +61,7 @@ export const Dashboard: React.FC = () => {
             // Fetch user data
             const responseUser: AxiosResponse<SchoolUserDetail> =
                 await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}`);
-            // Fetch attitude
-            const responseAttitude: AxiosResponse<string> =
-                await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/attitude`);
+
             // Fetch average marks
             const averageResponse: AxiosResponse<number> =
                 await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
@@ -81,9 +81,12 @@ export const Dashboard: React.FC = () => {
             setAllerts(response.data);
             setAverage(averageResponse.data);
             setUser(responseUser.data);
-            setAttitude(responseAttitude.data);
             setTotAbsences(responseAbsences.data);
             setLoading(false);
+            // Fetch attitude
+            const responseAttitude: AxiosResponse<string> =
+                await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/attitude`);
+            setAttitude(responseAttitude.data);
         } catch (error) {
             console.error(error);
         }
@@ -287,7 +290,7 @@ export const Dashboard: React.FC = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            justifyContent: 'center',
+
                             marginBottom: isMobile ? '1rem' : 0, // spacing on mobile
                             padding: '1rem',
                         }}
@@ -296,7 +299,7 @@ export const Dashboard: React.FC = () => {
                             Media
                         </Typography>
                         <CircularProgress variant="determinate" value={average * 10} size={50}/>
-                        <Typography variant="h5">{average}</Typography>
+                        <Typography variant="h5" mt="1rem">{average}</Typography>
                     </Paper>
 
                     <Paper

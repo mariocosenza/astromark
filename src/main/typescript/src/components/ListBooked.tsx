@@ -47,7 +47,7 @@ export const ListBooked: React.FC<ListBookedProp> = ({list}) => {
                             <div style={{flexDirection: 'column'}}>
                                 <Typography variant={'h6'} fontWeight={700}>
                                     {
-                                        'Ricevimento del ' + item.date + ' ora ' + item.hour + 'ª'
+                                        'Ricevimento del ' + new Date(item.date).toLocaleDateString() + ' ora ' + item.hour + 'ª'
                                     }
                                 </Typography>
                                 <Typography variant={'h6'}>

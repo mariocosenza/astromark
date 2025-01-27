@@ -50,7 +50,7 @@ export const Mark: React.FC = () => {
             const averageResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
             const re = response.data;
             const correctedData: ListItemProp[] = re.map((mark: MarkResponse) => ({
-                avatar: mark.mark.toPrecision(2),
+                avatar: mark.mark.toPrecision(3),
                 title: mark.title,
                 description: mark.description,
                 hexColor: mark.mark >= 6 ? green[500] : deepOrange[500],
@@ -109,7 +109,7 @@ export const Mark: React.FC = () => {
                         Media voti annuale
                     </Typography>
                     <CircularProgress variant="determinate" value={average * 10}/>
-                    <Typography variant={'h6'}>
+                    <Typography variant={'h6'} mt="0.5rem">
                         {average}
                     </Typography>
                 </Box>

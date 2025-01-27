@@ -33,15 +33,15 @@ export interface SemesterReportMarkResponse {
     mark: number;
 }
 
-function view(id: number) {
-    axiosConfig.patch(Env.API_BASE_URL + '/students' + '/reports/' + id)
-}
-
 export const SemesterReport: React.FC = () => {
     const [data, setData] = useState<SemesterReportResponse>();
     const [secondData, setSecondData] = useState<SemesterReportResponse>();
     const [loading, setLoading] = useState<boolean>(true);
     const [toggle, _] = changeStudentOrYear();
+    const view = async (id: number)=> {
+        await axiosConfig.patch(Env.API_BASE_URL + '/students' + '/reports/' + id)
+        await fetchData()
+    }
 
 
     useEffect(() => {
@@ -124,7 +124,7 @@ export const SemesterReport: React.FC = () => {
                                         <TableCell align="right" style={{color: 'darkgreen'}}>
                                             {
                                                 data?.viewed === false &&
-                                                <RemoveRedEyeOutlinedIcon onClick={() => view(data.id)}/>
+                                                <RemoveRedEyeOutlinedIcon onClick={() => {view(data.id)}}/>
                                             }
                                         </TableCell>
                                         <TableCell align="right" style={{color: 'darkgreen'}}>
