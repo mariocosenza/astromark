@@ -2,7 +2,6 @@
 
 <div align="center">
   <img src="src/main/typescript/public/logo.svg" alt="AstroMark Logo" width="200" height="200">
-  <h3 style="font-family: cursive">AstroMark</h3>
 </div>
 
 ## Project Origin

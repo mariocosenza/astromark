@@ -38,7 +38,7 @@
             x="100"
             y="180"
             text-anchor="middle"
-            font-family="Titillium Web, Cursive, 'Brush Script MT', sans-serif"
+            font-family="Cursive, 'Brush Script MT', sans-serif"
             font-size="20"
             fill="white"
             stroke="black"
