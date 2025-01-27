@@ -189,21 +189,21 @@ export const TeacherReception: React.FC = () => {
                             <Card className={'hover-animation'} key={timeslot.id} sx={{borderRadius: 4}}
                                   onClick={() => handleSelect(timeslot)}>
 
-                                <CardContent sx={{backgroundColor: 'var(--md-sys-color-tertiary-container)'}}>
-                                    <Typography variant="h6">
+                                <CardContent sx={{backgroundColor: 'var(--md-sys-color-surface-container)'}}>
+                                    <Typography variant={'h6'} fontWeight={'bold'}>
                                         Slot del {timeslot.date}
                                     </Typography>
-                                    <Typography variant="body2" color="textSecondary">
+                                    <Typography variant="body2">
                                         Modalità: {timeslot.mode}
                                     </Typography>
-                                    <Typography variant="body2" color="textSecondary">
+                                    <Typography variant="body2">
                                         Capacità: {timeslot.booked}/{timeslot.capacity}
                                     </Typography>
                                 </CardContent>
                             </Card>
                         ))}
                     </Box>
-                    {loading ? <CircularProgress size={150}/> : timeslots.length ? (
+                    {loading ? <CircularProgress size={150}/> :
                         <Button variant={'outlined'} size={'large'} onClick={() => setOpen(true)}
                                 sx={{borderColor: 'white', borderRadius: '2rem', padding: '2rem'}}>
                             <Stack alignItems={'center'}>
@@ -213,11 +213,7 @@ export const TeacherReception: React.FC = () => {
                                 </Typography>
                             </Stack>
                         </Button>
-                    ) : (
-                        <Typography variant="body1" color="textSecondary" align="center">
-                            Nessun orario disponibile al momento.
-                        </Typography>
-                    )}
+                    }
                 </Stack>
             )}
         </div>
