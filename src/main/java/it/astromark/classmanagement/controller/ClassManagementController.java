@@ -3,12 +3,14 @@ package it.astromark.classmanagement.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.classmanagement.dto.*;
 import it.astromark.classmanagement.service.ClassManagementService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("api/class-management")
 public class ClassManagementController {
@@ -99,4 +101,15 @@ public class ClassManagementController {
     public SchoolClassResponse create(@RequestBody SchoolClassRequest schoolClassRequest) {
         return classManagementService.schoolClassResponse(schoolClassRequest);
     }
+
+
+    @Operation(
+            summary = "Delete a class from a teacher",
+            description = "Removes a class associated with a specific teacher using the teacher UUID and class ID."
+    )
+    @DeleteMapping("/{teacheruuid}/{schoolClassId}/delete-from-class")
+    public void deleteFromClass(@PathVariable String teacheruuid, @PathVariable Integer schoolClassId) {
+        classManagementService.removeClass(teacheruuid, schoolClassId);
+    }
+
 }

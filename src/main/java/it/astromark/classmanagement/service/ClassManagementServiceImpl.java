@@ -172,6 +172,16 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
+    public void removeClass(String teacheruuid, Integer schoolClassId) {
+        teacherClassRepository.deleteById(new TeacherClassId(
+                UUID.fromString(teacheruuid),
+                schoolClassId
+        ));
+
+    }
+
+    @Override
+    @PreAuthorize("hasRole('SECRETARY')")
     public SchoolClassResponse schoolClassResponse(SchoolClassRequest request)  {
             return classManagementMapper.toSchoolClassResponse(SchoolClass.builder()
                     .school(authenticationService.getSecretary().orElseThrow().getSchool())

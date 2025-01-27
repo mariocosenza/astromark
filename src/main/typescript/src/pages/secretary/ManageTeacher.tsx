@@ -91,10 +91,10 @@ export const ManageTeacher = () => {
     return (
         <Box sx={{ padding: "16px" }}>
             <Typography variant="h4" gutterBottom>
-                Teacher List
+            Professori
             </Typography>
             <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
-                Add Teacher
+             Aggiungi professore
             </Button>
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
@@ -111,7 +111,7 @@ export const ManageTeacher = () => {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Create Teacher
+                        Crea professore
                     </Typography>
                     <TextField
                         fullWidth
@@ -123,7 +123,7 @@ export const ManageTeacher = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Name"
+                        label="Nome"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
@@ -131,7 +131,7 @@ export const ManageTeacher = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Surname"
+                        label="Cognome"
                         name="surname"
                         value={formData.surname}
                         onChange={handleInputChange}
@@ -139,7 +139,7 @@ export const ManageTeacher = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Tax ID"
+                        label="CF"
                         name="taxId"
                         value={formData.taxId}
                         onChange={handleInputChange}
@@ -148,7 +148,7 @@ export const ManageTeacher = () => {
                     <TextField
                         fullWidth
                         type="date"
-                        label="Birth Date"
+                        label="Data di nascita"
                         name="birthDate"
                         value={formData.birthDate}
                         onChange={handleInputChange}
@@ -163,11 +163,11 @@ export const ManageTeacher = () => {
                                 name="male"
                             />
                         }
-                        label="Male"
+                        label="Uomo"
                     />
                     <TextField
                         fullWidth
-                        label="Residential Address"
+                        label="Indirizzo"
                         name="residentialAddress"
                         value={formData.residentialAddress}
                         onChange={handleInputChange}
@@ -175,10 +175,10 @@ export const ManageTeacher = () => {
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
-                            Cancel
+                            Chiudi
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit
+                            Invia
                         </Button>
                     </Box>
                 </Box>
@@ -200,9 +200,6 @@ export const ManageTeacher = () => {
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 {teacher.name} {teacher.surname}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                UUID: {teacher.uuid}
                             </Typography>
                         </CardContent>
                     </Card>
