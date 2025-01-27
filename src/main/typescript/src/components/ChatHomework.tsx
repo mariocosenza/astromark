@@ -168,13 +168,9 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
      */
     const sendMessage = async (text: string) => {
         // Check that the message is not empty
-        if (!text.trim()) {
+        if (!text.trim() || isCompleted) {
             console.warn("The message is empty. No request sent.");
             return;
-        }
-
-        if (isCompleted) {
-            return
         }
 
         const messagePayload = {
@@ -401,6 +397,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                     fullWidth
                     placeholder="Scrivi il tuo messaggio"
                     value={newMessage}
+                    disabled={isCompleted}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {

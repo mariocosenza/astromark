@@ -27,7 +27,7 @@ import java.util.UUID;
 @Service
 public class HomeworkChatServiceImpl implements HomeworkChatService {
 
-    private static final String CHAT_ACCESS_DENIED = "You are not allowed to access this chat";;
+    private static final String CHAT_ACCESS_DENIED = "You are not allowed to access this chat";
     private final HomeworkChatRepository homeworkChatRepository;
     private final ChatMapper chatMapper;
     private final MessageService messageService;
@@ -160,11 +160,13 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasRole('TEACHER') || hasRole('STUDENT')")
     public boolean isCompleted(UUID chatId) {
         var chat = homeworkChatRepository.findById(chatId).orElseThrow();
-        if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
-                .equals(authenticationService.getTeacher().orElseThrow())) {
+        if (authenticationService.isTeacher() && !chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
+                .getId().equals(authenticationService.getTeacher().orElseThrow().getId())
+        || authenticationService.isStudent() && !chat.getStudent().getId()
+                .equals(authenticationService.getStudent().orElseThrow().getId())) {
             throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
 
