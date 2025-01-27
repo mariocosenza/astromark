@@ -173,6 +173,10 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
             return;
         }
 
+        if (isCompleted) {
+            return
+        }
+
         const messagePayload = {
             chatId,
             text,
