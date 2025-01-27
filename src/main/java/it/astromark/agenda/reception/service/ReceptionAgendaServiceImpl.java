@@ -11,6 +11,7 @@ import it.astromark.agenda.reception.repository.ReceptionBookingRepository;
 import it.astromark.agenda.reception.repository.ReceptionTimeslotRepository;
 import it.astromark.agenda.reception.repository.ReceptionTimetableRepository;
 import it.astromark.authentication.service.AuthenticationService;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
@@ -79,7 +80,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
 
         if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
                 .equals(authenticationService.getTeacher().orElseThrow().getId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         receptionBooking.setConfirmed(true);
@@ -97,7 +98,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
 
         if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
                 .equals(authenticationService.getTeacher().orElseThrow().getId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         receptionBooking.setRefused(true);

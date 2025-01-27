@@ -13,6 +13,7 @@ import it.astromark.classmanagement.entity.TeacherClassId;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.teacher.repository.TeacherRepository;
@@ -80,7 +81,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
     public List<SchoolClassStudentResponse> getStudents(Integer classId) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var students = schoolClassRepository.findById(classId)

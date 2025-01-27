@@ -17,6 +17,7 @@ import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -124,7 +125,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @PreAuthorize("hasRole('TEACHER')")
     public TeachingTimeslotDetailedResponse sign(Integer classId, SignHourRequest request) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var teacher = authenticationService.getTeacher().orElseThrow();
@@ -231,7 +232,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @PreAuthorize("hasRole('TEACHER')")
     public List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(Integer classId, LocalDate localDate) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);

@@ -27,6 +27,7 @@ import java.util.UUID;
 @Service
 public class HomeworkChatServiceImpl implements HomeworkChatService {
 
+    private static final String CHAT_ACCESS_DENIED = "You are not allowed to access this chat";;
     private final HomeworkChatRepository homeworkChatRepository;
     private final ChatMapper chatMapper;
     private final MessageService messageService;
@@ -69,9 +70,9 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
             throw new IllegalArgumentException("Chat is completed");
         }
         if (authenticationService.isStudent() && !homeworkChat.getStudent().equals(authenticationService.getStudent().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         } else if (authenticationService.isTeacher() && !homeworkChat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
         var message = messageRepository.findById(messageService.create(text, chatId, true).id())
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));
@@ -120,10 +121,10 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     public List<MessageResponse> getMessageList(UUID chatId) {
         if (authenticationService.isStudent() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getStudent().equals(authenticationService.getStudent().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         } else if (authenticationService.isTeacher() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
         return chatMapper.toMessageResponseList(messageRepository.findByHomeworkChat_IdOrderByDateTimeAsc(chatId), messageService);
     }
@@ -147,7 +148,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @PreAuthorize("hasRole('TEACHER')")
     public UUID getStudentHomeworkChatId(@NotNull Integer homeworkId, @NotNull UUID studentId) {
         if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
 
         var homework = homeworkRepository.findById(homeworkId).orElse(null);
@@ -164,7 +165,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         var chat = homeworkChatRepository.findById(chatId).orElseThrow();
         if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
                 .equals(authenticationService.getTeacher().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
 
         return chat.getCompleted();
@@ -177,7 +178,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         var chat = homeworkChatRepository.findById(chatId).orElseThrow();
         if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
                 .equals(authenticationService.getTeacher().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
 
         chat.setCompleted(true);

@@ -2,6 +2,7 @@ package it.astromark.communication.service;
 
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.communication.dto.CommunicationRequest;
 import it.astromark.communication.dto.CommunicationResponse;
 import it.astromark.communication.entity.Communication;
@@ -44,7 +45,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @PreAuthorize("hasRole('TEACHER')")
     public CommunicationResponse create(CommunicationRequest communicationRequest) {
         if (!schoolUserService.isLoggedTeacherClass(communicationRequest.classId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var communication = new Communication();
@@ -64,7 +65,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @PreAuthorize("hasRole('TEACHER')")
     public CommunicationResponse update(Integer integer, CommunicationRequest communicationRequest) {
         if (!schoolUserService.isLoggedTeacherClass(communicationRequest.classId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var communication = communicationRepository.findById(integer).orElseThrow();
@@ -91,11 +92,11 @@ public class CommunicationServiceImpl implements CommunicationService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public List<CommunicationResponse> getCommunicationBySchoolClassId(Integer schoolClassId) {
         if (!schoolUserService.isLoggedTeacherClass(schoolClassId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedParentStudentClass(schoolClassId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent() && !studentRepository.existsStudentByIdAndSchoolClasses_Id(authenticationService.getStudent().orElseThrow().getId(), schoolClassId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var communications = communicationRepository.findBySchoolClass_Id(schoolClassId)

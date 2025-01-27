@@ -5,6 +5,7 @@ import it.astromark.authentication.utils.PasswordUtils;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.classmanagement.entity.SchoolClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.commons.service.SendGridMailService;
 import it.astromark.orientation.OrientationService;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
@@ -85,12 +86,12 @@ public class StudentServiceImpl implements StudentService {
     public SchoolUserDetailed getById(UUID uuid) {
         var student = studentRepository.findById(uuid).orElse(null);
         if (!schoolUserService.isLoggedUserParent(uuid)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent()) {
             student = authenticationService.getStudent().orElseThrow();
         } else if (authenticationService.isSecretary()) {
             if (!authenticationService.getSecretary().orElseThrow().getSchool().getCode().equals(Objects.requireNonNull(student).getSchool().getCode())) {
-                throw new AccessDeniedException("You are not allowed to access this resource");
+                throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
             }
         }
         return schoolUserMapper.toSchoolUserDetailed(student);
@@ -100,11 +101,11 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public List<Integer> getStudentYears(@NotNull UUID studentId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
-        Supplier<DataAccessException> exception = () -> new DataAccessException("You are not allowed to access this resource") {
+        Supplier<DataAccessException> exception = () -> new DataAccessException(GlobalExceptionHandler.AUTHORIZATION_DENIED) {
         };
         return studentRepository.findById(studentId).orElseThrow(exception).getSchoolClasses().stream().map(SchoolClass::getYear).toList();
     }
@@ -114,11 +115,11 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public List<SchoolClassResponse> getSchoolClassByYear(@NotNull UUID studentId, @PastOrPresent Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
-        Supplier<DataAccessException> exception = () -> new DataAccessException("You are not allowed to access this resource") {
+        Supplier<DataAccessException> exception = () -> new DataAccessException(GlobalExceptionHandler.AUTHORIZATION_DENIED) {
         };
         return classManagementMapper.toSchoolClassResponseList(studentRepository.findById(studentId).orElseThrow(exception).getSchoolClasses().stream()
                 .filter(c -> c.getYear() == year.getValue()).toList());
@@ -130,7 +131,7 @@ public class StudentServiceImpl implements StudentService {
     public String attitude(UUID studentId) {
         var student = studentRepository.findById(studentId).orElseThrow();
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent()) {
             student = authenticationService.getStudent().orElseThrow();
         }

@@ -7,6 +7,7 @@ import it.astromark.behavior.dto.NoteResponse;
 import it.astromark.behavior.entity.Note;
 import it.astromark.behavior.mapper.NoteMapper;
 import it.astromark.behavior.repository.NoteRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -43,7 +44,7 @@ public class NoteServiceImpl implements NoteService {
     @PreAuthorize("hasRole('TEACHER')")
     public NoteResponse create(NoteRequest noteRequest) {
         if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var note = new Note();
@@ -78,11 +79,11 @@ public class NoteServiceImpl implements NoteService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public List<NoteResponse> getNoteByStudentId(UUID studentId, Integer classId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent() && !schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return studentRepository.findById(studentId).orElseThrow().getNotes().stream()
                 .filter(m -> m.getStudent().getSchoolClasses().stream().anyMatch(c -> c.getId().equals(classId)))
@@ -94,9 +95,9 @@ public class NoteServiceImpl implements NoteService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public void view(UUID studentId, UUID noteId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         noteRepository.findById(noteId).ifPresent(note -> {
             if (note.getStudent().getId().equals(studentId)) {

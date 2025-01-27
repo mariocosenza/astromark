@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -82,14 +83,15 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public String addAttachment(UUID uuid, MultipartFile multipartFile) throws IOException {
         var message = messageRepository.findById(uuid).orElseThrow();
+        Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException("You can't add an attachment to a message that is not yours");
         if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().equals(message.getStudent())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
+            throw exceptionSupplier.get();
         } else if (authenticationService.isParent() && !authenticationService.getParent().orElseThrow().equals(message.getParent())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
+            throw exceptionSupplier.get();
         } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().equals(message.getTeacher())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
+            throw exceptionSupplier.get();
         } else if (authenticationService.isSecretary() && !authenticationService.getSecretary().orElseThrow().equals(message.getSecretary())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
+            throw exceptionSupplier.get();
         }
         message.setAttachment(fileService.uploadFile(multipartFile));
         messageRepository.save(message);

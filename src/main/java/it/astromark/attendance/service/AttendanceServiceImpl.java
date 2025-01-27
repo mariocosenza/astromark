@@ -8,6 +8,7 @@ import it.astromark.attendance.mapper.AttendanceMapper;
 import it.astromark.attendance.repository.AbsenceRepository;
 import it.astromark.attendance.repository.DelayRepository;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
@@ -48,7 +49,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @PreAuthorize("hasRole('TEACHER')")
     public List<AttendanceResponse> getAttendance(Integer classId, LocalDate date) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var students = schoolClassRepository.findById(classId).orElseThrow()
@@ -63,7 +64,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @PreAuthorize("hasRole('TEACHER')")
     public void saveAttendance(Integer classId, LocalDate date, List<AttendanceRequest> attendanceRequests) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         for (AttendanceRequest attendance : attendanceRequests) {

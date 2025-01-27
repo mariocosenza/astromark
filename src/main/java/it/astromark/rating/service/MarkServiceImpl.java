@@ -4,6 +4,7 @@ package it.astromark.rating.service;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.rating.dto.*;
 import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.rating.model.Mark;
@@ -27,6 +28,7 @@ import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -58,7 +60,7 @@ public class MarkServiceImpl implements MarkService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<MarkResponse> getMarkByYear(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return markMapper.toMarkResponseList(markRepository.findMarkByStudentIdAndDateBetween(studentId, LocalDate.of(year.getValue(), Month.SEPTEMBER, 1),
                 LocalDate.of(year.getValue() + 1, Month.AUGUST, 31)));
@@ -77,20 +79,20 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, Boolean semester) {
+        Supplier<AccessDeniedException> accessDeniedException = () -> new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw accessDeniedException.get();
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw accessDeniedException.get();
         } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw accessDeniedException.get();
         }
 
         var report = semesterReportRepository.findByStudent_IdAndFirstSemesterAndYear(studentId, semester, year);
         if (report.isEmpty()) {
             return null;
         } else if (!report.getFirst().getPublicField() && authenticationService.isStudent()) {
-            throw new AccessDeniedException("You are not allowed to access this resource") {
-            };
+            throw accessDeniedException.get();
         }
 
 
@@ -104,7 +106,7 @@ public class MarkServiceImpl implements MarkService {
         var report = semesterReportRepository.findById(reportId).orElseThrow();
 
         if (!schoolUserService.isLoggedUserParent(report.getStudent().getId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         report.setViewed(true);
@@ -118,7 +120,7 @@ public class MarkServiceImpl implements MarkService {
     @PreAuthorize("hasRole('TEACHER')")
     public List<RatingsResponse> getRatings(Integer classId, String teaching, LocalDate date) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var marks = markMapper.toRatingsResponseList(markRepository.findAllMarksBySchoolClassAndDateAndTeaching_SubjectTitle_Title(classId, date, teaching), teaching);
@@ -137,7 +139,7 @@ public class MarkServiceImpl implements MarkService {
     @PreAuthorize("hasRole('TEACHER')")
     public List<RatingsResponse> getEveryRatings(Integer classId, String teaching) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var year = schoolClassRepository.findById(classId).orElseThrow().getYear();
@@ -171,10 +173,10 @@ public class MarkServiceImpl implements MarkService {
         var teacher = authenticationService.getTeacher().orElseThrow();
         var teaching = teachingRepository.findById(mark.teachingId()).orElseThrow();
         if (!teaching.getTeacher().equals(teacher)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         if (!schoolUserService.isLoggedTeacherStudent(mark.studentId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         return markMapper.toMarkResponse(markRepository.save(Mark.builder()
@@ -195,12 +197,12 @@ public class MarkServiceImpl implements MarkService {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }
         if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         var markEntity = markRepository.findById(mark.id()).orElseThrow();
         var teacher = authenticationService.getTeacher().orElseThrow();
         if (!markEntity.getTeaching().getTeacher().equals(teacher)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         markEntity.setMark(mark.mark());
