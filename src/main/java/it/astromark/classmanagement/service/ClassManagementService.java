@@ -110,5 +110,15 @@ public interface ClassManagementService {
      */
     void removeClass(String teacheruuid, Integer schoolClassId);
 
+    /**
+     * Retrieves the list of teachings associated with a specific class.
+     *
+     * @param classId the ID of the class for which teachings are to be retrieved
+     * Pre-condition: The `classId` must not be null. The class must exist.
+     * Post-condition: Returns a list of `TeachingResponse` objects containing details about the teachings of the specified class.
+     *
+     * @return a list of `TeachingResponse` objects representing the teachings of the class
+     */
     List<TeachingResponse> getClassTeachings(Integer classId);
+
 }
