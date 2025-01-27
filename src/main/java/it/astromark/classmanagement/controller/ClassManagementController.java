@@ -75,6 +75,11 @@ public class ClassManagementController {
         return classManagementService.getTeachings();
     }
 
+    @GetMapping("/{classId}/teaching")
+    public List<TeachingResponse> getClassTeachings(@PathVariable Integer classId) {
+        return classManagementService.getClassTeachings(classId);
+    }
+
     @Operation(
             summary = "Retrieve all subjects",
             description = "Gets a list of all subjects managed by the class management system."

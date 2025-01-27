@@ -44,6 +44,7 @@ import {ProtectedTeacherRoute} from "./components/route/ProtectedTeacherRoute.ts
 import {TeacherDetails} from "./pages/secretary/TeacherDetails.tsx";
 import {Help} from "./pages/Help.tsx";
 import {TeacherReception} from "./pages/teacher/Reception.tsx";
+import {DetailsSchoolClass} from "./pages/secretary/DetailsShoolClass.tsx";
 
 
 const root: HTMLElement = document.getElementById("root") as HTMLElement;
@@ -99,6 +100,8 @@ ReactDOM.createRoot(root).render(
                         <Route path="impostazioni" element={<Settings/>}/>
                         <Route path="class-schedule/:classId" element={<ClassSchedule/>}/>
                         <Route path="/secretary/teachers/:teacheruuid" element={<TeacherDetails />} />
+                        <Route path="class-info/:classId" element={<DetailsSchoolClass />}/>
+
 
                     </Route>
                     <Route path="/parent" element={<Navigate to="/parent/dashboard" replace/>}/>

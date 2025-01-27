@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -181,14 +182,35 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     }
 
     @Override
+    @Transactional
+    public List<TeachingResponse> getClassTeachings(Integer classId) {
+        System.out.println(classId);
+        var teacherList = teacherClassRepository.findAll().stream()
+                .filter(t -> t.getSchoolClass().getId().equals(classId))
+                .map(TeacherClass::getTeacher)
+                .toList();
+
+        return teacherList.stream().map(teacher -> new TeachingResponse(
+                teacher.getUsername(),
+                teacher.getTeachings().stream()
+                        .map(teaching -> teaching.getSubjectTitle().getTitle() + "-" + teaching.getTypeOfActivity())
+                        .toList()
+                        .toString()
+        )).toList();
+
+
+    }
+
+
+    @Override
     @PreAuthorize("hasRole('SECRETARY')")
-    public SchoolClassResponse schoolClassResponse(SchoolClassRequest request)  {
-            return classManagementMapper.toSchoolClassResponse(SchoolClass.builder()
-                    .school(authenticationService.getSecretary().orElseThrow().getSchool())
-                    .number(request.number())
-                    .letter(request.letter())
-                    .year(getYear().getValue())
-                    .build());
+    public SchoolClassResponse schoolClassResponse(SchoolClassRequest request) {
+        return classManagementMapper.toSchoolClassResponse(schoolClassRepository.save(SchoolClass.builder()
+                .school(authenticationService.getSecretary().orElseThrow().getSchool())
+                .number(request.number())
+                .letter(request.letter())
+                .year(getYear().getValue())
+                .build()));
     }
 
 

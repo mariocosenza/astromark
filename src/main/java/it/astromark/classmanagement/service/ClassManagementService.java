@@ -110,4 +110,5 @@ public interface ClassManagementService {
      */
     void removeClass(String teacheruuid, Integer schoolClassId);
 
+    List<TeachingResponse> getClassTeachings(Integer classId);
 }

@@ -2,6 +2,7 @@ package it.astromark.classmanagement.repository;
 
 import it.astromark.classmanagement.entity.TeacherClass;
 import it.astromark.classmanagement.entity.TeacherClassId;
+import it.astromark.school.entity.School;
 import it.astromark.user.teacher.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
