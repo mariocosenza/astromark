@@ -9,6 +9,13 @@ import {getId} from "../../services/AuthService.ts";
 import {ListBooked} from "../../components/ListBooked.tsx";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
+export type ReceptionTimeslotRequest = {
+    capacity: number,
+    mode: string,
+    hour: number,
+    date: Date,
+}
+
 
 export const TeacherReception: React.FC = () => {
     const [timeslots, setTimeslots] = useState<ReceptionTimeslotResponse[]>([]);
@@ -20,6 +27,7 @@ export const TeacherReception: React.FC = () => {
     const [changeView, setChangeView] = useState<boolean>(false);
     const [selected, setSelected] = useState<ReceptionTimeslotResponse | null>(null);
     const [booked, setBooked] = useState<Booking[]>([])
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [loadingBooked, setLoadingBooked] = useState<boolean>(true);
 
@@ -57,8 +65,40 @@ export const TeacherReception: React.FC = () => {
         }
     }
 
-    const handleAddTimeslot = () => {
-        alert("add slot")
+    const handleAddTimeslot = async () => {
+        setError(null);
+        if (!newDate || newDate <= new DateObject()) {
+            setError("La data deve essere successiva ad oggi.");
+            return;
+        }
+        if (newHour < 1 || newHour > 8) {
+            setError("L'ora deve essere compresa tra 1 e 8.");
+            return;
+        }
+        if (newCapacity <= 0) {
+            setError("La capacità deve essere maggiore di 0.");
+            return;
+        }
+
+        const receptionTimeslotRequest: ReceptionTimeslotRequest = {
+            capacity: newCapacity,
+            mode: newMode,
+            hour: newHour,
+            date: newDate.toDate(),
+        };
+
+        try {
+            await axiosConfig.post(`${Env.API_BASE_URL}/agenda/reception/timeslot/add`, receptionTimeslotRequest, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            fetchData()
+        } catch (error) {
+            console.log(error);
+        }
+
         setOpen(false)
     };
 
@@ -120,6 +160,11 @@ export const TeacherReception: React.FC = () => {
                         onChange={(e) => setNewMode(e.target.value)}
                         margin="normal"
                     />
+                    {error && (
+                        <Typography color="error" variant="body2">
+                            {error}
+                        </Typography>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>Annulla</Button>
