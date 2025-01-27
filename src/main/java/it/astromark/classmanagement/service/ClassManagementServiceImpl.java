@@ -155,9 +155,6 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     @Override
     @Transactional
     public void addTeacherToClass(UUID uuid, AddToClassRequest addToClassRequest) {
-
-        System.out.println(uuid + " " + addToClassRequest);
-
         var teacher = teacherRepository.findById(uuid).orElseThrow();
         var teacherClass = schoolClassRepository.findById(addToClassRequest.classId()).orElseThrow();
         var teacherClassId = new TeacherClassId(teacher.getId(), teacherClass.getId());
@@ -183,7 +180,6 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     @Override
     @Transactional
     public List<TeachingResponse> getClassTeachings(Integer classId) {
-        System.out.println(classId);
         var teacherList = teacherClassRepository.findAll().stream()
                 .filter(t -> t.getSchoolClass().getId().equals(classId))
                 .map(TeacherClass::getTeacher)

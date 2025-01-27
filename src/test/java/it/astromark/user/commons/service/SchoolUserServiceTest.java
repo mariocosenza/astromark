@@ -191,7 +191,12 @@ class SchoolUserServiceTest {
 
     @Test
     void tc3_05() {
-        //This test is not applicable for the backend
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
+
+        verify(authenticationService, times(0)).isStudent(); // Verify student check
+        verify(authenticationService, times(0)).getStudent(); // Verify student retrieval
+        verify(studentRepository, times(0)).save(student); // Verify student save
+
     }
 
 }

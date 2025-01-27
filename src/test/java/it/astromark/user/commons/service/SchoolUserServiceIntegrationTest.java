@@ -156,7 +156,9 @@ class SchoolUserServiceIntegrationTest {
 
     @Test
     void tc3_05() {
-        //This test is not applicable for the backend
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(student, null, List.of(authenticationService.getRole(student)));
+        SecurityContextHolder.getContext().setAuthentication(token);
+        assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
     }
 
 }
