@@ -4,6 +4,7 @@ import it.astromark.agenda.reception.dto.ReceptionBookingResponse;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotRequest;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
 import it.astromark.agenda.reception.entity.ReceptionBookingId;
+import it.astromark.agenda.reception.entity.ReceptionTimetable;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -115,5 +116,20 @@ public interface ReceptionAgendaService {
      * - Returns a list of timeslots associated with the specified teacher.
      */
     List<ReceptionTimeslotResponse> getSlots(@NotNull UUID teacherID);
+
+    /**
+     * Creates a reception timetable for a specific teacher with the provided text information.
+     *
+     * @param teacherId the UUID of the teacher for whom the timetable is being created
+     * @param textInfo the text information about the reception timetable
+     * @return the created `ReceptionTimetable` object
+     * Pre-condition:
+     * - The `teacherId` and `textInfo` must not be null.
+     * - The teacher with the specified `teacherId` must exist.
+     * Post-condition:
+     * - A new reception timetable is created, associated with the specified teacher, and saved in the repository.
+     * - The timetable includes the provided text information and has a start validity date of the current day.
+     */
+    ReceptionTimetable createReceptionTimetable(UUID teacherId, String textInfo);
 
 }
