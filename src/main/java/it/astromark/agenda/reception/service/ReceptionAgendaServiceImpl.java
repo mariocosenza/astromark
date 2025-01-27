@@ -6,6 +6,7 @@ import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
 import it.astromark.agenda.reception.entity.ReceptionBooking;
 import it.astromark.agenda.reception.entity.ReceptionBookingId;
 import it.astromark.agenda.reception.entity.ReceptionTimeslot;
+import it.astromark.agenda.reception.entity.ReceptionTimetable;
 import it.astromark.agenda.reception.mapper.ReceptionAgendaMapper;
 import it.astromark.agenda.reception.repository.ReceptionBookingRepository;
 import it.astromark.agenda.reception.repository.ReceptionTimeslotRepository;
@@ -113,10 +114,11 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     @PreAuthorize("hasRole('TEACHER')")
     public ReceptionTimeslotResponse addTimeslot(ReceptionTimeslotRequest request) {
 
-        var timetable = receptionTimetableRepository.findByEndValidityAndTeacher(null, authenticationService.getTeacher().orElseThrow());
+        var teacher = authenticationService.getTeacher().orElseThrow();
+        var timetable = receptionTimetableRepository.findByEndValidityAndTeacher(null, teacher);
 
         if (timetable == null)
-            return null;
+            timetable = createReceptionTimetable(teacher.getId(), "Orario di Ricevimento di " + teacher.getName() + ' ' +teacher.getSurname());
 
         return receptionAgendaMapper.toReceptionTimeslotResponse(
                 receptionTimeslotRepository.save(ReceptionTimeslot.builder()
@@ -172,5 +174,28 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
         var timeslot = receptionTimeslotRepository.findAllByReceptionTimetable_TeacherAndDateAfter(teacher, LocalDate.now());
 
         return timeslot.stream().map(receptionAgendaMapper::toReceptionTimeslotResponse).toList();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER') || hasRole('SECRETARY')")
+    public ReceptionTimetable createReceptionTimetable(UUID teacherId, String textInfo) {
+        Teacher teacher = null;
+        if (authenticationService.isTeacher() && authenticationService.getTeacher().orElseThrow().getId().equals(teacherId)) {
+            teacher = authenticationService.getTeacher().orElseThrow();
+        } else if (authenticationService.isSecretary() && authenticationService.getSecretary().orElseThrow()
+                .getSchool().getTeachers().stream().anyMatch(t -> t.getId().equals(teacherId))) {
+            teacher = teacherRepository.findById(teacherId).orElseThrow();
+        }
+
+        var receptionTimetable = ReceptionTimetable.builder()
+                .teacher(teacher)
+                .startValidity(LocalDate.now())
+                .textInfoReception(textInfo)
+                .build();
+
+        receptionTimetableRepository.save(receptionTimetable);
+
+        return receptionTimetable;
     }
 }
