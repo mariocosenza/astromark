@@ -95,11 +95,16 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
     public List<ReceptionBookingResponse> getBookedSlots() {
+        List<ReceptionBooking> booking;
         if (authenticationService.isTeacher()) {
-            return receptionAgendaMapper.toReceptionBookingResponseList(receptionBookingRepository.findByReceptionTimeslot_ReceptionTimetable_Teacher(authenticationService.getTeacher().orElseThrow()).stream().sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate())).toList());
+            booking = receptionBookingRepository.findByReceptionTimeslot_ReceptionTimetable_Teacher(authenticationService.getTeacher().orElseThrow());
         } else {
-            return receptionAgendaMapper.toReceptionBookingResponseList(receptionBookingRepository.findByParent(authenticationService.getParent().orElseThrow()).stream().sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate())).toList());
+            booking = receptionBookingRepository.findByParent(authenticationService.getParent().orElseThrow());
         }
+
+        return receptionAgendaMapper.toReceptionBookingResponseList(booking.stream()
+                .sorted(Comparator.comparing(a -> a.getReceptionTimeslot().getDate()))
+                .toList(), authenticationService);
     }
 
     @Override
