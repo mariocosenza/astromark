@@ -1,5 +1,6 @@
 package it.astromark.user.commons.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.dto.SchoolUserResponse;
 import it.astromark.user.commons.dto.SchoolUserUpdate;
@@ -8,8 +9,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("api/school-users")

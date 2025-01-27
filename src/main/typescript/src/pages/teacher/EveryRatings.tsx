@@ -31,17 +31,17 @@ export const EveryRatings: React.FC = () => {
     const fetchData = async () => {
         try {
             const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/EveryRatings/${SelectedTeaching.teaching}`);
-            let rowResponse : StudentRatingsRow[] = [];
+            let rowResponse: StudentRatingsRow[] = [];
             let MarkDates: DateObject[] = [];
             response.data.map((mark: RatingsResponse) => {
 
-                if (mark.date && !MarkDates.includes(mark.date)){
+                if (mark.date && !MarkDates.includes(mark.date)) {
                     MarkDates.push(mark.date)
                 }
 
                 let found = false
-                rowResponse.forEach((student: StudentRatingsRow)=> {
-                    if (student.studentId === mark.studentId){
+                rowResponse.forEach((student: StudentRatingsRow) => {
+                    if (student.studentId === mark.studentId) {
                         student.marks.push({
                             id: mark.id,
                             student: mark.studentId,
@@ -102,15 +102,16 @@ export const EveryRatings: React.FC = () => {
                             <CustomTableRow key={row.studentId}>
                                 <CustomTableCell>{row.name}</CustomTableCell>
                                 <CustomTableCell sx={{padding: '0'}}>
-                                    <Stack direction="row" sx={{ padding: '0' }}>
+                                    <Stack direction="row" sx={{padding: '0'}}>
                                         {dates.map((date) => {
                                             const rating = row.marks.find((mark) => mark.date === date);
                                             return (
-                                                <Stack key={row.studentId + date?.toString()} alignItems={'center'} sx={{
-                                                    width: 100/dates.length + '%',
-                                                    color: rating?.mark ? 'white' : 'black',
-                                                    backgroundColor: (!rating?.mark ? '' : rating.mark < 6 ? 'var(--md-sys-color-error)' : 'green')
-                                                }}>
+                                                <Stack key={row.studentId + date?.toString()} alignItems={'center'}
+                                                       sx={{
+                                                           width: 100 / dates.length + '%',
+                                                           color: rating?.mark ? 'white' : 'black',
+                                                           backgroundColor: (!rating?.mark ? '' : rating.mark < 6 ? 'var(--md-sys-color-error)' : 'green')
+                                                       }}>
                                                     <Typography fontSize={'xx-large'} fontWeight={'bold'}>
                                                         {rating?.mark ? formatMark(rating.mark) : ''}
                                                     </Typography>

@@ -27,7 +27,7 @@ export const TeacherCommunication: React.FC = () => {
     const fetchData = async () => {
         try {
             const response: AxiosResponse<Communication[]> = await axiosConfig.get(`${Env.API_BASE_URL}/schoolClasses/${SelectedSchoolClass.id}/communications`);
-            if (response.data.length){
+            if (response.data.length) {
                 setRows(response.data)
             }
 
@@ -37,8 +37,8 @@ export const TeacherCommunication: React.FC = () => {
         }
     }
 
-    const handleEdit = (row: Communication | null)=> {
-        setSelected( row || {
+    const handleEdit = (row: Communication | null) => {
+        setSelected(row || {
             id: 0,
             title: '',
             description: '',
@@ -55,7 +55,10 @@ export const TeacherCommunication: React.FC = () => {
             </Typography>
 
             {changeView ? (
-                <CommunicationComponent row={selected || rows[0]} returnBack={() => {setChangeView(false); fetchData()}}/>
+                <CommunicationComponent row={selected || rows[0]} returnBack={() => {
+                    setChangeView(false);
+                    fetchData()
+                }}/>
             ) : (
                 <div>
                     <Grid container spacing={8} alignItems={'center'} justifyContent={'center'} margin={'1rem'}>

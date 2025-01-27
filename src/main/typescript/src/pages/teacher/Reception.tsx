@@ -1,5 +1,18 @@
 import React, {useEffect, useState} from "react";
-import {Box, Button, Card, CardContent, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
@@ -38,7 +51,7 @@ export const TeacherReception: React.FC = () => {
     const fetchData = async () => {
         try {
             const response: AxiosResponse<ReceptionTimeslotResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/agenda/reception/teacher/${getId()}/timeslots`);
-            if (response.data.length){
+            if (response.data.length) {
                 setTimeslots(response.data)
             }
 
@@ -48,10 +61,10 @@ export const TeacherReception: React.FC = () => {
         }
     }
 
-    const fetchBooked = async ()  => {
+    const fetchBooked = async () => {
         try {
             const response: AxiosResponse<Booking[]> = await axiosConfig.get(`${Env.API_BASE_URL}/agenda/reception/timeslot/booked`);
-            if (response.data.length){
+            if (response.data.length) {
                 const selectedBooked = response.data.filter(
                     (slot) => (slot.date === selected?.date) && (slot.hour === selected.hour)
                 );
@@ -94,7 +107,7 @@ export const TeacherReception: React.FC = () => {
                 },
             });
 
-            fetchData()
+            await fetchData()
         } catch (error) {
             console.log(error);
         }
@@ -134,7 +147,9 @@ export const TeacherReception: React.FC = () => {
                         <DatePicker
                             style={{width: '97%'}}
                             value={newDate}
-                            onChange={(selectedDate) => {selectedDate && setNewDate(selectedDate)}}
+                            onChange={(selectedDate) => {
+                                selectedDate && setNewDate(selectedDate)
+                            }}
                         />
                     </Stack>
                     <TextField
@@ -175,13 +190,13 @@ export const TeacherReception: React.FC = () => {
             </Dialog>
 
             {changeView ? (
-                    <Stack justifyContent="center" alignItems={'center'} margin={'1rem'} spacing={'3rem'}>
-                        {loadingBooked ? <CircularProgress size={100}/> : <ListBooked list={booked}/>}
-                        <Button variant="contained" size={'large'} onClick={() => handleReturnBack()}
-                                sx={{borderRadius: 4, backgroundColor: 'var(--md-sys-color-primary)'}}>
-                            Torna indietro
-                        </Button>
-                    </Stack>
+                <Stack justifyContent="center" alignItems={'center'} margin={'1rem'} spacing={'3rem'}>
+                    {loadingBooked ? <CircularProgress size={100}/> : <ListBooked list={booked}/>}
+                    <Button variant="contained" size={'large'} onClick={() => handleReturnBack()}
+                            sx={{borderRadius: 4, backgroundColor: 'var(--md-sys-color-primary)'}}>
+                        Torna indietro
+                    </Button>
+                </Stack>
             ) : (
                 <Stack justifyContent={'center'} alignItems={'center'}>
                     <Box className={'grid-container'} justifyContent={'center'} width={'80%'} margin={'1rem 10%'}>

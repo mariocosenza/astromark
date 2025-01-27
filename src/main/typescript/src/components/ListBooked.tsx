@@ -31,10 +31,19 @@ export const ListBooked: React.FC<ListBookedProp> = ({list}) => {
             {
                 list.map((item, i) =>
                     <Box className={'listItem'} width={'70vw'} key={'list' + i}
-                         sx={{ mb: '0.8rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                         sx={{
+                             mb: '0.8rem',
+                             display: 'flex',
+                             flexDirection: 'row',
+                             justifyContent: 'space-between',
+                             alignItems: 'flex-start'
+                         }}>
 
                         <div style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-start'}}>
-                            <Avatar sx={{bgcolor: (item.refused ? '#C04040' : item.confirmed ? '#408540' : '#405f90'), margin: '1rem'}}>B</Avatar>
+                            <Avatar sx={{
+                                bgcolor: (item.refused ? '#C04040' : item.confirmed ? '#408540' : '#405f90'),
+                                margin: '1rem'
+                            }}>B</Avatar>
                             <div style={{flexDirection: 'column'}}>
                                 <Typography variant={'h6'} fontWeight={700}>
                                     {

@@ -11,6 +11,7 @@ import it.astromark.classmanagement.entity.TeacherClass;
 import it.astromark.classmanagement.mapper.ClassManagementMapper;
 import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.commons.service.SendGridMailService;
+import it.astromark.school.repository.SchoolRepository;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.commons.mapper.SchoolUserMapper;
 import it.astromark.user.commons.model.PendingState;
@@ -20,14 +21,15 @@ import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
-import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
+import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -41,8 +43,9 @@ public class TeacherServiceImpl implements TeacherService {
     private final SendGridMailService sendGridMailService;
     private final ClassManagementMapper classManagementMapper;
     private final TeachingRepository teachingRepository;
+    private final SchoolRepository schoolRepository;
 
-    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper, TeachingRepository teachingRepository) {
+    public TeacherServiceImpl(TeacherClassRepository teacherClassRepository, SchoolUserMapper schoolUserMapper, AuthenticationService authenticationService, TeacherRepository teacherRepository, SendGridMailService sendGridMailService, ClassManagementMapper classManagementMapper, TeachingRepository teachingRepository, SchoolRepository schoolRepository) {
         this.teacherClassRepository = teacherClassRepository;
         this.schoolUserMapper = schoolUserMapper;
         this.authenticationService = authenticationService;
@@ -50,13 +53,14 @@ public class TeacherServiceImpl implements TeacherService {
         this.sendGridMailService = sendGridMailService;
         this.classManagementMapper = classManagementMapper;
         this.teachingRepository = teachingRepository;
+        this.schoolRepository = schoolRepository;
     }
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(TeacherRequest teacherRequest) {
         var username = teacherRequest.name() + "." + teacherRequest.surname() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
-        var school = authenticationService.getSecretary().orElseThrow(() -> new IllegalArgumentException("Secretary not found")).getSchool();
+        var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var password = new Faker().internet().password(8, 64, true, false, true);
         var user = schoolUserMapper.toSchoolUserDetailed(teacherRepository.save(Teacher.builder()
                 .school(school)

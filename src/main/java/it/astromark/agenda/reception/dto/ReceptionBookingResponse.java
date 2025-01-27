@@ -1,10 +1,7 @@
 package it.astromark.agenda.reception.dto;
 
-import it.astromark.agenda.reception.entity.ReceptionBookingId;
-
-import java.time.LocalDate;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import it.astromark.agenda.reception.entity.ReceptionBookingId;
 
 import java.time.LocalDate;
 

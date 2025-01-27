@@ -1,5 +1,9 @@
+import {TicketComp} from "../../components/TicketComp.tsx";
+
 export const SecretaryTicket = () => {
     return (
-        <div></div>
+        <div>
+            <TicketComp/>
+        </div>
     );
 };

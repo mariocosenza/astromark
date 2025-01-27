@@ -28,7 +28,7 @@ public abstract class SchoolUser {
     private UUID id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "school_code", nullable = false)
     private School school;
 
@@ -75,7 +75,7 @@ public abstract class SchoolUser {
     @ColumnDefault("false")
     @NotNull
     @Column(name = "gender")
-    private Boolean male =false;
+    private Boolean male = false;
 
     @Size(max = 512)
     @NotBlank

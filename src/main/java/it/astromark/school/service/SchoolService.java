@@ -4,9 +4,6 @@ import it.astromark.commons.service.CrudService;
 import it.astromark.school.dto.SchoolRequest;
 import it.astromark.school.dto.SchoolResponse;
 import it.astromark.school.entity.School;
-import it.astromark.user.teacher.entity.Teacher;
-
-import java.util.List;
 
 /**
  * Service interface for managing school entities.

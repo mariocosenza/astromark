@@ -1,8 +1,8 @@
 package it.astromark.user.teacher.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 
 @Schema(description = "Request containing details for creating a teacher account")

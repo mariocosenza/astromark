@@ -18,9 +18,13 @@ export const GridList: React.FC<Props> = ({items, onClick}) => {
         <Box className="grid-container">
             {items.map((item) => (
                 <Button key={item.id} className={"grid-item"} color={'inherit'} variant={'outlined'}
-                        sx={{justifyContent: 'flex-start', alignItems: 'flex-start', padding: '1vw 1vw 10%',
-                            borderColor: 'lightgray', borderRadius:'17px'}}
-                        onClick={() => {onClick(item.id, item.title, item.desc)}}>
+                        sx={{
+                            justifyContent: 'flex-start', alignItems: 'flex-start', padding: '1vw 1vw 10%',
+                            borderColor: 'lightgray', borderRadius: '17px'
+                        }}
+                        onClick={() => {
+                            onClick(item.id, item.title, item.desc)
+                        }}>
 
                     <Typography variant="h5" className="title" fontWeight="bold">
                         {item.title}

@@ -14,7 +14,7 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class SendGridMailService {
-    SendGrid sendGrid;
+    private final SendGrid sendGrid;
 
     public SendGridMailService(SendGrid sendGrid) {
         this.sendGrid = sendGrid;
@@ -35,7 +35,7 @@ public class SendGridMailService {
             request.setBody(mail.build());
             sendGrid.api(request);
         } catch (IOException ex) {
-            log.warn("Errore nell'invio della mail", ex);
+            log.warn("Error sending the email", ex);
         }
     }
 }

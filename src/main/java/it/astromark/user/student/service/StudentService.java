@@ -26,10 +26,10 @@ public interface StudentService {
      * Retrieves a list of school classes for a specific student in a given year.
      *
      * @param studentId The unique identifier of the student (must not be null)
-     * @param year The academic year to retrieve classes for (must be in the past or present)
+     * @param year      The academic year to retrieve classes for (must be in the past or present)
      * @return A list of {@link SchoolClassResponse} objects representing the student's classes
      * @throws IllegalArgumentException if the student ID is not found
-     * @throws ValidationException if the input parameters do not meet validation constraints
+     * @throws ValidationException      if the input parameters do not meet validation constraints
      */
     List<SchoolClassResponse> getSchoolClassByYear(@NotNull UUID studentId, @PastOrPresent Year year);
 

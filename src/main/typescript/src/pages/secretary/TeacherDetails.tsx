@@ -1,21 +1,21 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
-    Box,
-    Typography,
-    CircularProgress,
     Alert,
-    Card,
+    Box,
     Button,
-    Modal,
-    Select,
-    MenuItem,
-    InputLabel,
+    Card,
+    Checkbox,
+    CircularProgress,
     FormControl,
     FormControlLabel,
-    Checkbox,
+    InputLabel,
+    MenuItem,
+    Modal,
+    Select,
+    SelectChangeEvent,
     TextField,
+    Typography,
 } from "@mui/material";
-import {SelectChangeEvent} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig";
 import {Env} from "../../Env";
 import {useParams} from "react-router";
@@ -124,7 +124,8 @@ export const TeacherDetails = () => {
         setIsCoordinator(false);
         setClassModalOpen(false);
     };
-    function handleDeleteFromClass( schoolClassId: number) {
+
+    function handleDeleteFromClass(schoolClassId: number) {
         console.log("School Class ID:", schoolClassId);
         console.log("Teacher UUID:", teacheruuid);
 
@@ -154,7 +155,7 @@ export const TeacherDetails = () => {
     };
 
 
-    const handleClassChange = (event: SelectChangeEvent<string>) => {
+    const handleClassChange = (event: SelectChangeEvent) => {
         setSelectedClassId(event.target.value);
     };
 
@@ -164,7 +165,7 @@ export const TeacherDetails = () => {
     };
 
 
-    const handleSubjectChange = (event: SelectChangeEvent<string>) => {
+    const handleSubjectChange = (event: SelectChangeEvent) => {
         setTeachingFormData((prev) => ({
             ...prev,
             subjectTitle: event.target.value,

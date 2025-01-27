@@ -1,5 +1,6 @@
 package it.astromark.user.student.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.classmanagement.dto.SchoolClassResponse;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.student.dto.StudentRequest;
@@ -8,8 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 import java.time.Year;
 import java.util.List;
@@ -69,6 +68,7 @@ public class StudentController {
     )
     @GetMapping("/{studentId}/attitude")
     public String attitude(@PathVariable UUID studentId) {
-        return HtmlUtils.htmlEscape(studentService.attitude(studentId));
+        var attitude = studentService.attitude(studentId);
+        return HtmlUtils.htmlEscape(attitude == null ? "" : attitude);
     }
 }

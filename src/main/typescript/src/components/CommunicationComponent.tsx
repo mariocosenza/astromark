@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import {Card, CardContent, Stack, Button, TextField} from '@mui/material';
+import React, {useState} from 'react';
+import {Button, Card, CardContent, Stack, TextField} from '@mui/material';
 import axiosConfig from "../services/AxiosConfig.ts";
 import {Env} from "../Env.ts";
 import {SelectedSchoolClass} from "../services/TeacherService.ts";
 import {Communication} from "../pages/studentsParents/Communication.tsx";
 import {CommunicationRequest} from "../entities/CommunicationRequest.ts";
 
-export const CommunicationComponent: React.FC<{row: Communication, returnBack: () => void}> = ({row , returnBack}) => {
+export const CommunicationComponent: React.FC<{ row: Communication, returnBack: () => void }> = ({row, returnBack}) => {
     const [title, setTitle] = useState<string>(row.title);
     const [text, setText] = useState<string>(row.description);
     const [error, setError] = useState<boolean>(false)
@@ -19,8 +19,8 @@ export const CommunicationComponent: React.FC<{row: Communication, returnBack: (
                 description: text,
             }
 
-            try{
-                if (row.id === 0){
+            try {
+                if (row.id === 0) {
                     await axiosConfig.post(`${Env.API_BASE_URL}/schoolClasses/communication`, communication, {
                         headers: {
                             'Content-Type': 'application/json',
@@ -43,22 +43,28 @@ export const CommunicationComponent: React.FC<{row: Communication, returnBack: (
 
 
     return (
-        <Card elevation={10} sx={{ margin: '2rem 30%', borderRadius: 4 }}>
+        <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 4}}>
             <CardContent>
                 <Stack marginTop={2} padding={1} spacing={3} flex={1}>
                     <TextField fullWidth variant="outlined" label="Titolo"
                                value={title}
                                error={error}
                                helperText={error ? 'Titolo non può essere vuoto' : ''}
-                               onChange={(e) => {setTitle(e.target.value); setError(!e.target.value)}}/>
+                               onChange={(e) => {
+                                   setTitle(e.target.value);
+                                   setError(!e.target.value)
+                               }}/>
 
                     <TextField fullWidth variant="outlined" multiline rows={4} label="Testo"
                                value={text}
-                               onChange={(e) => {setText(e.target.value); setError(!title)}}/>
+                               onChange={(e) => {
+                                   setText(e.target.value);
+                                   setError(!title)
+                               }}/>
                 </Stack>
-                <Stack justifyContent={'flex-end'} margin={2} >
+                <Stack justifyContent={'flex-end'} margin={2}>
                     <Button variant="contained" color="primary"
-                            sx={{ alignSelf: 'flex-end', borderRadius: 5, justifySelf: '' }} onClick={handleSave} >
+                            sx={{alignSelf: 'flex-end', borderRadius: 5, justifySelf: ''}} onClick={handleSave}>
                         Salva
                     </Button>
                 </Stack>

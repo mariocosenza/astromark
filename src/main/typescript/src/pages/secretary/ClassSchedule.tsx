@@ -1,24 +1,24 @@
-import { useParams } from "react-router";
-import { useEffect, useState } from "react";
+import {useParams} from "react-router";
+import React, {useEffect, useState} from "react";
 import {
-    Typography,
-    CircularProgress,
     Alert,
     Box,
+    Button,
     Card,
     CardContent,
-    Stack,
-    Button,
-    Modal,
-    Select,
-    MenuItem,
+    CircularProgress,
     FormControl,
     InputLabel,
+    MenuItem,
+    Modal,
+    Select,
+    Stack,
     TextField,
+    Typography,
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
+import {SelectChangeEvent} from "@mui/material/Select";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env.ts";
+import {Env} from "../../Env.ts";
 
 interface TeachingTimeslotResponse {
     hour: number;
@@ -42,7 +42,7 @@ interface TimeTableResponse {
 }
 
 export const ClassSchedule = () => {
-    const { classId } = useParams<{ classId: string }>();
+    const {classId} = useParams<{ classId: string }>();
     const [schedule, setSchedule] = useState<TeachingTimeslotResponse[]>([]);
     const [teachings, setTeachings] = useState<TeachingResponse[]>([]);
     const [timetables, setTimetables] = useState<TimeTableResponse[]>([]);
@@ -92,14 +92,13 @@ export const ClassSchedule = () => {
     const handleCloseModal = () => setModalOpen(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
-    const handleSelectChange = (e: SelectChangeEvent<string>) => {
-        console.log(`Field: ${e.target.name}, Value: ${e.target.value}` , formData.timetableId); // Debug
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleSelectChange = (e: SelectChangeEvent) => {
+        console.log(`Field: ${e.target.name}, Value: ${e.target.value}`, formData.timetableId); // Debug
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
-
 
 
     const handleSubmit = async () => {
@@ -132,17 +131,15 @@ export const ClassSchedule = () => {
     };
 
 
-
-
-    if (loading) return <CircularProgress />;
+    if (loading) return <CircularProgress/>;
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <Box sx={{ padding: "16px" }}>
+        <Box sx={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
                 Class Schedule
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{mb: 2}}>
                 Add Timeslot
             </Button>
             <Modal open={modalOpen} onClose={handleCloseModal}>
@@ -215,7 +212,7 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{ min: 1, max: 7 }}
+                        inputProps={{min: 1, max: 7}}
                     />
                     <TextField
                         fullWidth
@@ -225,10 +222,10 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{ min: 1, max: 6 }}
+                        inputProps={{min: 1, max: 6}}
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
+                        <Button onClick={handleCloseModal} sx={{mr: 2}}>
                             Cancel
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>

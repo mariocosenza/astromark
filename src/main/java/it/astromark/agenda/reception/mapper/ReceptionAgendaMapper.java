@@ -30,7 +30,6 @@ public interface ReceptionAgendaMapper {
     List<ReceptionBookingResponse> toReceptionBookingResponseList(List<ReceptionBooking> receptionBookings, @Context AuthenticationService authenticationService);
 
 
-
     default String getMappedName(ReceptionBooking receptionBooking, AuthenticationService authenticationService) {
         if (authenticationService.isParent()) {
             return receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getName();

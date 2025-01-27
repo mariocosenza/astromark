@@ -14,7 +14,7 @@ import {RatingsResponse} from "../../entities/RatingsResponse.ts";
 import {RatingComponent} from "../../components/RatingComponent.tsx";
 import {useNavigate} from "react-router";
 
-export const formatMark = (num: number) :string => {
+export const formatMark = (num: number): string => {
     let int = Math.floor(num)
     let fract = num - int;
     let sign = (fract === 0.25) ? '+' : (fract === 0.75) ? '-' : (fract === 0.50) ? '.5' : ''
@@ -58,9 +58,9 @@ export const Ratings: React.FC = () => {
 
     const fetchData = async (selectedDate: string) => {
         try {
-            let rowResponse : RatingsRow[] = [];
+            let rowResponse: RatingsRow[] = [];
             const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/ratings/${SelectedTeaching.teaching}/date/${selectedDate}`);
-            if (response.data.length){
+            if (response.data.length) {
                 rowResponse = response.data.map((mark: RatingsResponse) => ({
                     id: mark.id,
                     student: mark.studentId,
@@ -79,7 +79,7 @@ export const Ratings: React.FC = () => {
         }
     }
 
-    const handleMark = (row: RatingsRow)=> {
+    const handleMark = (row: RatingsRow) => {
         setSelected(row)
         setChangeView(true)
     }
@@ -100,7 +100,10 @@ export const Ratings: React.FC = () => {
 
             {changeView ? (
                 <RatingComponent row={selected || rows[0]} date={date}
-                                 returnBack={() => {setChangeView(false); fetchData(date.format("YYYY-MM-DD"))}}/>
+                                 returnBack={() => {
+                                     setChangeView(false);
+                                     fetchData(date.format("YYYY-MM-DD"))
+                                 }}/>
             ) : (
                 <div>
                     <Grid container spacing={8} alignItems={'center'} justifyContent={'center'} margin={'1rem'}>
@@ -122,7 +125,8 @@ export const Ratings: React.FC = () => {
                             </Stack>
                         </Grid>
                         <Grid justifyContent={'center'}>
-                            <Button variant="contained" size={'large'} onClick={() => navigate('/teacher/valutazioni/tutte')}
+                            <Button variant="contained" size={'large'}
+                                    onClick={() => navigate('/teacher/valutazioni/tutte')}
                                     sx={{borderRadius: 4, backgroundColor: 'var(--md-sys-color-primary)'}}>
                                 Visualizza tutte le Valutazioni
                             </Button>
@@ -145,10 +149,14 @@ export const Ratings: React.FC = () => {
                                     <CustomTableRow key={row.student}>
 
                                         <CustomTableCell>{row.name}</CustomTableCell>
-                                        <CustomTableCell sx={{ color: row.mark ? 'white' : 'black',
-                                            backgroundColor: (!row.mark ? '' : row.mark < 6 ? 'var(--md-sys-color-error)' : 'green')}}>
+                                        <CustomTableCell sx={{
+                                            color: row.mark ? 'white' : 'black',
+                                            backgroundColor: (!row.mark ? '' : row.mark < 6 ? 'var(--md-sys-color-error)' : 'green')
+                                        }}>
                                             <Stack>
-                                                <IconButton color={'inherit'} sx={{borderRadius: 0}} onClick={() => {handleMark(row)}}>
+                                                <IconButton color={'inherit'} sx={{borderRadius: 0}} onClick={() => {
+                                                    handleMark(row)
+                                                }}>
                                                     <Stack>
                                                         <Typography fontSize={'xx-large'} fontWeight={'bold'}>
                                                             {row.mark ? formatMark(row.mark) : '+'}

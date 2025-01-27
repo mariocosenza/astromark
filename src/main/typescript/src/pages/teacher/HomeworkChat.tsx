@@ -43,14 +43,14 @@ export const HomeworkChat: React.FC = () => {
         }
     }
 
-    const handleToggle = (row: SchoolClassStudentResponse)=> {
+    const handleToggle = (row: SchoolClassStudentResponse) => {
         setSelected(selected ? null : row)
     }
 
     return (
         <div>
-            <Typography variant="h4" className="title" fontWeight="bold" marginTop={'revert'}>
-                Valutazioni
+            <Typography variant="h3" className="title" fontWeight="bold" marginTop={'revert'}>
+                Chat
             </Typography>
             <Typography variant="h6" className="title" fontWeight="bold">
                 {SelectedSchoolClass.title + ' - ' + SelectedSchoolClass.desc}
@@ -67,7 +67,7 @@ export const HomeworkChat: React.FC = () => {
                 </CardContent>
             </Card>
 
-            <Stack direction={'row'} justifyContent={'space-between'} sx={{padding: '2rem'}}>
+            <Stack direction={'row'} justifyContent={'space-evenly'} sx={{padding: '2rem'}}>
                 <TableContainer sx={{width: (selected ? '40' : '60') + '%'}}>
                     <Table>
                         <TableHead>
@@ -102,7 +102,7 @@ export const HomeworkChat: React.FC = () => {
                     </Table>
                 </TableContainer>
 
-                { !loading && selected && homeworkId && (
+                {!loading && selected && homeworkId && (
                     <ChatHomeworkComponent homeworkId={homeworkId} studentId={selected.id}/>
                 )}
 

@@ -1,5 +1,6 @@
 package it.astromark.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.JWTService;
 import it.astromark.chat.dto.HomeworkChatResponse;
@@ -7,7 +8,6 @@ import it.astromark.chat.service.HomeworkChatService;
 import it.astromark.chat.service.MessageService;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.teacher.entity.Teacher;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

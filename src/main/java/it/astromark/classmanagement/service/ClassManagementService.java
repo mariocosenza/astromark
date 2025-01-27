@@ -1,9 +1,7 @@
 package it.astromark.classmanagement.service;
 
-import it.astromark.classmanagement.dto.SchoolClassResponse;
-import it.astromark.classmanagement.dto.SchoolClassStudentResponse;
-import it.astromark.classmanagement.dto.TeachingResponse;
 import it.astromark.classmanagement.dto.*;
+
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
@@ -65,9 +63,9 @@ public interface ClassManagementService {
      * Adds a new teaching activity for a specific teacher.
      *
      * @param teacheruuid the UUID of the teacher
-     * @param teaching the `TeachingRequest` containing details of the teaching activity
-     * Pre-condition: The `teacheruuid` and `teaching` must not be null. The teacher associated with the UUID must exist.
-     * Post-condition: A new teaching activity is added for the specified teacher.
+     * @param teaching    the `TeachingRequest` containing details of the teaching activity
+     *                    Pre-condition: The `teacheruuid` and `teaching` must not be null. The teacher associated with the UUID must exist.
+     *                    Post-condition: A new teaching activity is added for the specified teacher.
      */
     void addTeaching(UUID teacheruuid, TeachingRequest teaching);
 
@@ -93,20 +91,20 @@ public interface ClassManagementService {
     /**
      * Adds a teacher to a specific class.
      *
-     * @param uuid the UUID of the teacher
+     * @param uuid              the UUID of the teacher
      * @param addToClassRequest the `AddToClassRequest` containing details of the class and the teacher's role
-     * Pre-condition: The `uuid` and `addToClassRequest` must not be null. The teacher and class must exist.
-     * Post-condition: The teacher is added to the specified class with the specified role.
+     *                          Pre-condition: The `uuid` and `addToClassRequest` must not be null. The teacher and class must exist.
+     *                          Post-condition: The teacher is added to the specified class with the specified role.
      */
     void addTeacherToClass(UUID uuid, AddToClassRequest addToClassRequest);
 
     /**
      * Removes a class associated with a specific teacher.
      *
-     * @param teacheruuid the UUID of the teacher whose class is to be removed
+     * @param teacheruuid   the UUID of the teacher whose class is to be removed
      * @param schoolClassId the ID of the class to be removed
-     * Pre-condition: The `teacheruuid` and `schoolClassId` must not be null. The teacher and class must exist.
-     * Post-condition: The specified class is removed from the teacher's assignments.
+     *                      Pre-condition: The `teacheruuid` and `schoolClassId` must not be null. The teacher and class must exist.
+     *                      Post-condition: The specified class is removed from the teacher's assignments.
      */
     void removeClass(String teacheruuid, Integer schoolClassId);
 

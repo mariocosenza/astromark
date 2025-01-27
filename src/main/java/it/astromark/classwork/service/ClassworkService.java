@@ -33,11 +33,11 @@ public interface ClassworkService {
     /**
      * Retrieves the ID of the homework associated with a specific signed hour for a class.
      *
-     * @param classId the ID of the class
+     * @param classId      the ID of the class
      * @param signedHourId the ID of the signed hour
      * @return the ID of the homework associated with the signed hour, or null if no homework is found
      * Pre-condition: The `classId` and `signedHourId` must not be null and must refer to existing entities.
-     *                The signed hour must belong to the authenticated teacher.
+     * The signed hour must belong to the authenticated teacher.
      * Post-condition: Returns the ID of the homework associated with the specified signed hour, or null if no homework exists.
      */
     Integer getSignedHourHomeworkId(Integer classId, Integer signedHourId);

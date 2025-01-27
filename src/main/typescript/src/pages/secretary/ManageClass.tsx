@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
-import {
-    Card,
-    CardContent,
-    Typography,
-    Box,
-    CircularProgress,
-    Alert
-} from "@mui/material";
-import { useNavigate } from "react-router";
+import {useEffect, useState} from "react";
+import {Alert, Box, Card, CardContent, CircularProgress, Typography} from "@mui/material";
+import {useNavigate} from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env.ts";
+import {Env} from "../../Env.ts";
 
 interface SchoolClassResponse {
     id: number;
@@ -44,15 +37,11 @@ export const ManageClass = () => {
     };
 
 
-
-
-
-
-    if (loading) return <CircularProgress />;
+    if (loading) return <CircularProgress/>;
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <div style={{ padding: "16px" }}>
+        <div style={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
                 School Classes
             </Typography>
@@ -60,9 +49,9 @@ export const ManageClass = () => {
                 {schoolClasses.map((schoolClass) => (
                     <Box
                         key={schoolClass.id}
-                        flexBasis={{ xs: "100%", sm: "calc(50% - 24px)", md: "calc(33.33% - 24px)" }}
+                        flexBasis={{xs: "100%", sm: "calc(50% - 24px)", md: "calc(33.33% - 24px)"}}
                         onClick={() => handleCardClick(schoolClass.id)}
-                        style={{ cursor: "pointer" }}
+                        style={{cursor: "pointer"}}
                     >
                         <Card>
                             <CardContent>

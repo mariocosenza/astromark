@@ -154,9 +154,5 @@ class SchoolUserServiceIntegrationTest {
         assertThrows(IllegalArgumentException.class, () -> schoolUserService.updatePreferences(new SchoolUserUpdate("Pluto1234"))); // Verify password update
     }
 
-    @Test
-    void tc3_05() {
-        //This test is not applicable for the backend
-    }
 
 }

@@ -7,6 +7,7 @@ import it.astromark.classwork.dto.HomeworkResponse;
 import it.astromark.classwork.mapper.ClassworkMapper;
 import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import java.util.List;
 @Service
 public class ClassworkServiceImpl implements ClassworkService {
 
+    private static final String SCHOOL_CLASS_AUTHORIZATION_DENIED = "You are not allowed to access this class";
     private final ClassActivityRepository classActivityRepository;
     private final AuthenticationService authenticationService;
     private final SchoolUserService schoolUserService;
@@ -55,10 +57,10 @@ public class ClassworkServiceImpl implements ClassworkService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<ClassworkResponse> getClassActivities(Integer classId) {
         if (!schoolUserService.isLoggedParentStudentClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this class");
+            throw new AccessDeniedException(SCHOOL_CLASS_AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent()) {
             if (studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
-                throw new AccessDeniedException("You are not allowed to access this class");
+                throw new AccessDeniedException(SCHOOL_CLASS_AUTHORIZATION_DENIED);
             }
         }
 
@@ -70,10 +72,10 @@ public class ClassworkServiceImpl implements ClassworkService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<HomeworkResponse> getHomework(Integer classId) {
         if (!schoolUserService.isLoggedParentStudentClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this class");
+            throw new AccessDeniedException(SCHOOL_CLASS_AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent()) {
             if (studentRepository.findById(authenticationService.getStudent().orElseThrow().getId()).orElseThrow().getSchoolClasses().stream().noneMatch(schoolClass -> schoolClass.getId().equals(classId))) {
-                throw new AccessDeniedException("You are not allowed to access this class");
+                throw new AccessDeniedException(SCHOOL_CLASS_AUTHORIZATION_DENIED);
             }
         }
 
@@ -85,12 +87,12 @@ public class ClassworkServiceImpl implements ClassworkService {
     @PreAuthorize("hasRole('TEACHER')")
     public Integer getSignedHourHomeworkId(Integer classId, Integer signedHourId) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var signedHour = signedHourRepository.findById(signedHourId).orElseThrow();
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var homework = homeworkRepository.findBySignedHour(signedHour);

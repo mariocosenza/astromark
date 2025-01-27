@@ -1,5 +1,6 @@
 package it.astromark.agenda.schoolclass.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.agenda.schoolclass.dto.*;
 import it.astromark.agenda.schoolclass.service.ClassAgendaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("api/classes")

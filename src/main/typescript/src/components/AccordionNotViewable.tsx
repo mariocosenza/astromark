@@ -16,13 +16,14 @@ export const AccordionNotViewable: React.FC<AccordionNotViewableProps> = (props:
     return (
         <Accordion className={'accordion'}>
             <AccordionSummary
-                style={{ minWidth: isMobile ? '20vw' : '90vw' }}
-                expandIcon={<ArrowDropDownIcon />}
+                style={{minWidth: isMobile ? '20vw' : '90vw'}}
+                expandIcon={<ArrowDropDownIcon/>}
                 aria-controls="panel2-content"
                 id="panel2-header"
             >
-                <Avatar sx={{ bgcolor: '#df3466' }}>{props.avatar}</Avatar>
-                <Typography variant={'h6'} sx={{ ml: '1vw', whiteSpace: 'pre-wrap' }} component={isMobile?'h6':"span"}>
+                <Avatar sx={{bgcolor: '#df3466'}}>{props.avatar}</Avatar>
+                <Typography variant={'h6'} sx={{ml: '1vw', whiteSpace: 'pre-wrap'}}
+                            component={isMobile ? 'h6' : "span"}>
                     {props.title} del {props.date.toString()}
                 </Typography>
             </AccordionSummary>

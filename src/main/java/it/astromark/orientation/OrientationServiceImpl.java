@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -55,8 +54,7 @@ public class OrientationServiceImpl implements OrientationService {
 
             return Optional.ofNullable(result.getBody())
                     .orElseThrow(() -> new ServiceException("Empty response from AI orientation service"));
-        } catch (RestClientException e) {
-            log.error("Error calling AI orientation service", e);
+        } catch (Exception e) {
             throw new ServiceException("Failed to retrieve student attitude", e);
         }
     }

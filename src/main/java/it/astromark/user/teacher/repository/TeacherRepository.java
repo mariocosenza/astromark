@@ -1,6 +1,5 @@
 package it.astromark.user.teacher.repository;
 
-import it.astromark.classmanagement.entity.TeacherClass;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -8,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository

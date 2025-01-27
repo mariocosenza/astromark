@@ -1,8 +1,8 @@
 package it.astromark.agenda.schoolclass.dto;
 
-import java.util.Date;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.Date;
 
 @Schema(description = "Request object for signing a teaching hour")
 public record SignHourRequest(

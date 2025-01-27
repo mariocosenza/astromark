@@ -1,12 +1,5 @@
 import {NavLink} from "react-router";
-import {
-    Box, Divider, Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-} from "@mui/material";
+import {Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText,} from "@mui/material";
 import {getRole} from "../services/AuthService.ts";
 import {createGlobalState} from "react-use";
 import ExploreIcon from "@mui/icons-material/ExploreOutlined";

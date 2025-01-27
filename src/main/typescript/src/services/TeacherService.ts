@@ -29,7 +29,7 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassId', value.toString());
     }
 
-    private static _title: string | null = localStorage.getItem("schoolClassTitle")  ? localStorage.getItem("schoolClassTitle") as string : null;
+    private static _title: string | null = localStorage.getItem("schoolClassTitle") ? localStorage.getItem("schoolClassTitle") as string : null;
 
     static get title(): string | null {
         return this._title;
@@ -40,7 +40,7 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassTitle', value.toString());
     }
 
-    private static _desc: string | null = localStorage.getItem("schoolClassDesc")  ? localStorage.getItem("schoolClassDesc") as string : null;
+    private static _desc: string | null = localStorage.getItem("schoolClassDesc") ? localStorage.getItem("schoolClassDesc") as string : null;
 
     static get desc(): string | null {
         return this._desc;
@@ -57,17 +57,6 @@ export const isSelectedClass = () => {
 };
 
 export class SelectedTeachingTimeslot {
-
-    static setSlot(slot: ClassAgendaRow) {
-        this._id = slot.id
-        this._hour = slot.hour
-        this._activityTitle = slot.activityTitle;
-        this._activityDesc = slot.activityDesc;
-        this._homeworkTitle = slot.homeworkTitle;
-        this._homeworkDesc = slot.homeworkDesc;
-        this._homeworkDate = slot.homeworkDate;
-        this._homeworkNeedChat = slot.homeworkNeedChat
-    }
 
     private static _id: number | null = null;
 
@@ -125,5 +114,16 @@ export class SelectedTeachingTimeslot {
 
     static set date(value: DateObject | null) {
         this._date = value;
+    }
+
+    static setSlot(slot: ClassAgendaRow) {
+        this._id = slot.id
+        this._hour = slot.hour
+        this._activityTitle = slot.activityTitle;
+        this._activityDesc = slot.activityDesc;
+        this._homeworkTitle = slot.homeworkTitle;
+        this._homeworkDesc = slot.homeworkDesc;
+        this._homeworkDate = slot.homeworkDate;
+        this._homeworkNeedChat = slot.homeworkNeedChat
     }
 }

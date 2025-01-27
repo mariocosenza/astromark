@@ -1,8 +1,8 @@
 package it.astromark.agenda.schoolclass.dto;
 
-import java.time.LocalDate;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.LocalDate;
 
 @Schema(description = "Response containing details of a class timetable")
 public record TimeTableResponse(

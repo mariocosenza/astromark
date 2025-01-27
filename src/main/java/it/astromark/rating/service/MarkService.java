@@ -19,7 +19,7 @@ public interface MarkService {
      * Retrieves a list of marks for a specific student in a given year.
      *
      * @param studentId the UUID of the student
-     * @param year the year to filter marks
+     * @param year      the year to filter marks
      * @return a list of `MarkResponse` objects representing the marks of the student for the specified year
      * Pre-condition: The `studentId` and `year` must not be null. The student associated with the `studentId` must exist.
      * Post-condition: Returns a list of marks for the specified student and year.
@@ -30,7 +30,7 @@ public interface MarkService {
      * Calculates the average mark for a specific student in a given year.
      *
      * @param studentId the UUID of the student
-     * @param year the year to filter marks
+     * @param year      the year to filter marks
      * @return a double representing the average mark of the student for the specified year
      * Pre-condition: The `studentId` and `year` must not be null. The student must have at least one mark in the specified year.
      * Post-condition: Returns the average mark for the specified student and year.
@@ -41,8 +41,8 @@ public interface MarkService {
      * Retrieves a semester report for a specific student and year.
      *
      * @param studentId the UUID of the student
-     * @param year the year of the report, must be positive or zero
-     * @param semester the semester of the report (true for first semester, false for second semester)
+     * @param year      the year of the report, must be positive or zero
+     * @param semester  the semester of the report (true for first semester, false for second semester)
      * @return a `SemesterReportResponse` object representing the semester report
      * Pre-condition: The `studentId` and `year` must not be null. The `year` must be positive or zero. The student must exist.
      * Post-condition: Returns the semester report for the specified student, year, and semester.
@@ -64,7 +64,7 @@ public interface MarkService {
      *
      * @param classId the ID of the class
      * @param subject the subject of the ratings
-     * @param date the date to filter ratings
+     * @param date    the date to filter ratings
      * @return a list of `RatingsResponse` objects representing the ratings
      * Pre-condition: The `classId`, `subject`, and `date` must not be null. The class must exist.
      * Post-condition: Returns a list of ratings for the specified class, subject, and date.
@@ -95,7 +95,7 @@ public interface MarkService {
     /**
      * Updates an existing mark for a specific student.
      *
-     * @param mark the `MarkUpdateRequest` containing the updated details of the mark
+     * @param mark      the `MarkUpdateRequest` containing the updated details of the mark
      * @param studentId the UUID of the student whose mark is being updated
      * @return a `MarkResponse` object representing the updated mark
      * Pre-condition: The `mark` and `studentId` must not be null. The student and mark must exist.

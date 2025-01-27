@@ -1,9 +1,9 @@
 package it.astromark.behavior.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.behavior.dto.NoteRequest;
 import it.astromark.behavior.dto.NoteResponse;
 import it.astromark.behavior.service.NoteService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
