@@ -68,6 +68,7 @@ public class StudentController {
     )
     @GetMapping("/{studentId}/attitude")
     public String attitude(@PathVariable UUID studentId) {
-        return HtmlUtils.htmlEscape(studentService.attitude(studentId));
+        var attitude = studentService.attitude(studentId);
+        return HtmlUtils.htmlEscape(attitude == null ? "" : attitude);
     }
 }

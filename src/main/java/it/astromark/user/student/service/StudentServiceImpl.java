@@ -141,7 +141,7 @@ public class StudentServiceImpl implements StudentService {
             student.setAttitude(attitude);
             studentRepository.save(student);
         } catch (Exception e) {
-            log.error("Error while calculating attitude for student with ID: {}", studentId);
+            log.info("Error while calculating attitude for student with ID: {}", studentId);
         }
 
         return student.getAttitude();
