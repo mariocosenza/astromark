@@ -55,9 +55,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageResponse create(String message, UUID chatId, boolean isHomework) {
         if (isHomework) {
+            var homeworkChat = homeworkChatRepository.findById(chatId).orElseThrow();
+            if (homeworkChat.getCompleted()) {
+                throw new IllegalArgumentException("Chat is completed");
+            }
             var save = Message.builder()
                     .text(message)
-                    .homeworkChat(homeworkChatRepository.findById(chatId).orElseThrow())
+                    .homeworkChat(homeworkChat)
                     .student(authenticationService.getStudent().orElse(null))
                     .parent(authenticationService.getParent().orElse(null))
                     .teacher(authenticationService.getTeacher().orElse(null))
@@ -66,9 +70,13 @@ public class MessageServiceImpl implements MessageService {
                     .build();
             return chatMapper.toMessageResponse(messageRepository.save(save), this);
         } else {
+            var ticket = ticketRepository.findById(chatId).orElseThrow();
+            if(ticket.getClosed()) {
+                throw new IllegalArgumentException("Ticket is closed");
+            }
             var save = Message.builder()
                     .text(message)
-                    .ticket(ticketRepository.findById(chatId).orElseThrow())
+                    .ticket(ticket)
                     .student(authenticationService.getStudent().orElse(null))
                     .parent(authenticationService.getParent().orElse(null))
                     .teacher(authenticationService.getTeacher().orElse(null))

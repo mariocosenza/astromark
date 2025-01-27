@@ -52,11 +52,15 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         HomeworkChat chat = homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
 
+        if(chat.getCompleted()) {
+            throw new IllegalArgumentException("Chat is completed");
+        }
+
         return new HomeworkChatResponse(
                 chat.getId(),
                 chat.getTitle(),
                 chat.getStudent().getId(),
-                chat.getCompleted(),
+                false,
                 chatMapper.toMessageResponseList(chat.getMessages().stream().toList().stream().sorted(Comparator.comparing(Message::getDateTime)).toList(), messageService)
         );
     }
