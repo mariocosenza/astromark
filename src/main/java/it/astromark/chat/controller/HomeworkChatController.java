@@ -63,4 +63,22 @@ public class HomeworkChatController {
         return homeworkChatService.getStudentHomeworkChatId(homeworkId, studentId);
     }
 
+    @Operation(
+            summary = "Check if the homework chat is completed",
+            description = "Checks if the specific homework chat, identified by its ID, has been marked as completed."
+    )
+    @GetMapping("/{chatId}/isCompleted")
+    public boolean isCompleted(@PathVariable UUID chatId) {
+        return homeworkChatService.isCompleted(chatId);
+    }
+
+    @Operation(
+            summary = "Mark a homework chat as completed",
+            description = "Marks a specific homework chat as completed by its ID. Only the assigned teacher can perform this action."
+    )
+    @PostMapping("/complete")
+    public boolean complete(@RequestBody UUID chatId) {
+        return homeworkChatService.complete(chatId);
+    }
+
 }
