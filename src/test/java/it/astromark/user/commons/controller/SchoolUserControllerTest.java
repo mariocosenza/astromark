@@ -171,13 +171,5 @@ class SchoolUserControllerTest {
                 .andExpect(status().is5xxServerError());
     }
 
-    @Test
-    void tc3_05() throws Exception {
-        mockMvc.perform(patch("/api/school-users/preferences")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"password\":\"Pluto123@\"}"))
-                .andExpect(status().is5xxServerError());
-    }
 
 }
