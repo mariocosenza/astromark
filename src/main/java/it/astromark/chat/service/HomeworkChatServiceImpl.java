@@ -156,4 +156,33 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
         return homework.getHomeworkChats().stream().filter(c -> c.getStudent().getId().equals(studentId)).findFirst().orElseThrow().getId();
     }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public boolean isCompleted(UUID chatId) {
+        var chat = homeworkChatRepository.findById(chatId).orElseThrow();
+        if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
+                .equals(authenticationService.getTeacher().orElseThrow())) {
+            throw new AccessDeniedException("You are not allowed to access this chat");
+        }
+
+        return chat.getCompleted();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public boolean complete(UUID chatId) {
+        var chat = homeworkChatRepository.findById(chatId).orElseThrow();
+        if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
+                .equals(authenticationService.getTeacher().orElseThrow())) {
+            throw new AccessDeniedException("You are not allowed to access this chat");
+        }
+
+        chat.setCompleted(true);
+        homeworkChatRepository.save(chat);
+
+        return true;
+    }
 }

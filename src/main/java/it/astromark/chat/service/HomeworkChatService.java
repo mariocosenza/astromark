@@ -82,4 +82,24 @@ public interface HomeworkChatService {
      * Post-condition: Returns the UUID of the homework chat associated with the specified student and homework, or throws an exception if not found.
      */
     UUID getStudentHomeworkChatId(Integer homeworkId, UUID studentId);
+
+    /**
+     * Checks if the specific homework chat has been marked as completed.
+     *
+     * @param chatId the UUID of the chat
+     * @return `true` if the chat is completed, `false` otherwise
+     * Pre-condition: The `chatId` must not be null. The chat associated with the `chatId` must exist.
+     * Post-condition: Returns the completion status of the chat.
+     */
+    boolean isCompleted(UUID chatId);
+
+    /**
+     * Marks a specific homework chat as completed.
+     *
+     * @param chatId the UUID of the chat
+     * @return `true` if the chat was successfully marked as completed, `false` otherwise
+     * Pre-condition: The `chatId` must not be null. The chat associated with the `chatId` must exist.
+     * Post-condition: Marks the chat as completed and saves the update.
+     */
+    boolean complete(UUID chatId);
 }
