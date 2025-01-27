@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Typography,
     CircularProgress,
@@ -95,7 +95,7 @@ export const ClassSchedule = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    const handleSelectChange = (e: SelectChangeEvent) => {
         console.log(`Field: ${e.target.name}, Value: ${e.target.value}` , formData.timetableId); // Debug
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };

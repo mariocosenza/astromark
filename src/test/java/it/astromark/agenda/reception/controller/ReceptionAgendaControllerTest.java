@@ -57,9 +57,7 @@ class ReceptionAgendaControllerTest {
     private static int count;
     @Autowired
     private ReceptionTimeslotRepository receptionTimeslotRepository;
-    private Parent parent;
     private School sc;
-    private Teacher teacher;
     private ReceptionTimetable table;
     @Autowired
     private SchoolRepository schoolRepository;
@@ -114,7 +112,7 @@ class ReceptionAgendaControllerTest {
                 .school(school).build();
         schoolClass.setStudents(Collections.singleton(student));
         studentRepository.save(student);
-        parent = Parent.builder()
+        Parent parent = Parent.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .pendingState(PendingState.NORMAL)
@@ -129,7 +127,7 @@ class ReceptionAgendaControllerTest {
                 .student(student)
                 .build();
         parentRepository.save(parent);
-        teacher = Teacher.builder()
+        Teacher teacher = Teacher.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .taxId("ABCDEF12G34H567" + ++count)

@@ -94,7 +94,7 @@ export const TeacherReception: React.FC = () => {
                 },
             });
 
-            fetchData()
+            await fetchData()
         } catch (error) {
             console.log(error);
         }

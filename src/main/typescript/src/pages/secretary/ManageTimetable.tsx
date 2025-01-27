@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     CardContent,
@@ -70,7 +70,7 @@ export const ManageTimetable = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleClassChange = (e: SelectChangeEvent<string>) => {
+    const handleClassChange = (e: SelectChangeEvent) => {
         setFormData({ ...formData, schoolClassId: e.target.value });
     };
 

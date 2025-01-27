@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Box,
     Typography,
@@ -154,7 +154,7 @@ export const TeacherDetails = () => {
     };
 
 
-    const handleClassChange = (event: SelectChangeEvent<string>) => {
+    const handleClassChange = (event: SelectChangeEvent) => {
         setSelectedClassId(event.target.value);
     };
 
@@ -164,7 +164,7 @@ export const TeacherDetails = () => {
     };
 
 
-    const handleSubjectChange = (event: SelectChangeEvent<string>) => {
+    const handleSubjectChange = (event: SelectChangeEvent) => {
         setTeachingFormData((prev) => ({
             ...prev,
             subjectTitle: event.target.value,

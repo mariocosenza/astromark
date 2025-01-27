@@ -18,7 +18,7 @@ import { HomeworkList } from "../../components/HomeworkList.tsx";
 import { useMedia } from 'react-use';
 
 export const Dashboard: React.FC = () => {
-    // This hook checks if the screen size is below 768px (mobile view)
+    // This hook checks if the screen size is below 768 px (mobile view)
     const isMobile = useMedia('(max-width: 768px)');
 
     const [allerts, setAllerts] = useState<Communication[]>([]);

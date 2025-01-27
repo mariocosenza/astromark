@@ -46,13 +46,11 @@ class SchoolUserServiceTest {
     @InjectMocks
     private SchoolUserServiceImpl schoolUserService;
 
-    private School school;
-
     private Student student;
 
     @BeforeEach
     public void setUpUser() {
-        school = School.builder()
+        School school = School.builder()
                 .code("SS23456")
                 .name("Liceo Severi")
                 .phoneNumber(432435L)

@@ -57,7 +57,6 @@ class ReceptionAgendaServiceTest {
     private ReceptionAgendaServiceImpl receptionAgendaService;
     private Parent parent;
     private School sc;
-    private Teacher teacher;
     private ReceptionTimetable table;
 
     @BeforeEach
@@ -103,7 +102,7 @@ class ReceptionAgendaServiceTest {
                 .residentialAddress(faker.address().fullAddress())
                 .student(student)
                 .build();
-        teacher = Teacher.builder()
+        Teacher teacher = Teacher.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .pendingState(PendingState.NORMAL)

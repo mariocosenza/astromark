@@ -14,7 +14,7 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class SendGridMailService {
-    SendGrid sendGrid;
+    private final SendGrid sendGrid;
 
     public SendGridMailService(SendGrid sendGrid) {
         this.sendGrid = sendGrid;
