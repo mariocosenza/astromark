@@ -57,7 +57,7 @@ class SchoolUserControllerTest {
                 .email("naps110002@istruzione.it").build();
         school = schoolRepository.save(school);
         var faker = new Faker();
-        String password = faker.internet().password(8, 16, true, true);
+        var password = "Pluto123!";
         var name = "mario";
         var surname = "rossi";
         var stu = Student.builder()
