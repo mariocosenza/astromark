@@ -16,6 +16,7 @@ import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -71,13 +72,39 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
     public boolean confirm(ReceptionBookingId receptionTimeslotID) {
-        return false;
+        var receptionBooking = receptionBookingRepository.findById(receptionTimeslotID).orElseThrow();
+
+        if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
+                .equals(authenticationService.getTeacher().orElseThrow().getId())){
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        receptionBooking.setConfirmed(true);
+
+        receptionBookingRepository.save(receptionBooking);
+
+        return true;
     }
 
     @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
     public boolean refuse(ReceptionBookingId receptionTimeslotID) {
-        return false;
+        var receptionBooking = receptionBookingRepository.findById(receptionTimeslotID).orElseThrow();
+
+        if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
+                .equals(authenticationService.getTeacher().orElseThrow().getId())){
+            throw new AccessDeniedException("You are not allowed to access this resource");
+        }
+
+        receptionBooking.setRefused(true);
+
+        receptionBookingRepository.save(receptionBooking);
+
+        return true;
     }
 
     @Override
