@@ -33,7 +33,7 @@ export const HomeworkList: React.FC<HomeworkProp> = ({list, dashboard}) => {
                         <div style={{flexDirection: 'column', marginLeft: '1%'}}>
                             <Typography variant={'h6'}>
                                 {
-                                    item.title + ' per ' + item.date
+                                    item.title + ' per ' + new Date(item.date).toLocaleDateString()
                                 }
                             </Typography>
                             <Typography variant={'h6'}>

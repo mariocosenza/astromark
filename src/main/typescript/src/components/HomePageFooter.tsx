@@ -19,8 +19,8 @@ export const HomePageFooter: React.FC = () => {
                     <Typography variant={"h4"}>
                         Contatti
                         <Typography variant={"body1"}>
-                            Email: <a href={"mailto:supporto@astromark.com"}
-                                      className={'whiteLink'}>supporto@astromark.com</a> <br/>
+                            Email: <a href={"mailto:supporto@astromark.it"}
+                                      className={'whiteLink'}>supporto@astromark.it</a> <br/>
                             Numero di telefono: +39 123456789 <br/>
                             Orari di assistenza: <br/>
                             Lunedì a Venerdì: 09:00 - 18:00

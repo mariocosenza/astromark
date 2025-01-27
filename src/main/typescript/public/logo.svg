@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
 
-
     <!-- Main helmet shape -->
     <path d="M50 100 Q50 60 100 60 Q150 60 150 100 Q150 140 100 140 Q50 140 50 100"
           fill="none" stroke="white" stroke-width="8"/>
@@ -34,4 +33,17 @@
         <circle cx="50" cy="50" r="2"/>
         <circle cx="150" cy="50" r="2"/>
     </g>
+
+    <text
+            x="100"
+            y="180"
+            text-anchor="middle"
+            font-family="Cursive, 'Brush Script MT', sans-serif"
+            font-size="20"
+            fill="white"
+            stroke="black"
+            stroke-width="0.5"
+    >
+        AstroMark
+    </text>
 </svg>

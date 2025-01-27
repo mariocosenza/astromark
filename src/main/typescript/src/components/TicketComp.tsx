@@ -16,7 +16,7 @@ import {Role} from "./route/ProtectedRoute.tsx";
 export const TicketComp: React.FC = () => {
     const [ticketData, setTicketData] = useState<TicketCard[]>([]);
     const [messageData, setMessageData] = useState<MessageComponent[]>([]);
-    const [letterName, setLetterName] = useState<string>('')
+    const [_, setLetterName] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export const TicketComp: React.FC = () => {
             if (ticketResponse.data.length) {
                 fetchedTicket = ticketResponse.data.map((ticket: TicketResponse) => ({
                     avatar: 'T',
-                    title: "Ticket del " + ticket.datetime.toString().substring(0, 10),
+                    title: "Ticket del " + new Date(ticket.datetime).toLocaleDateString(),
                     description: ticket.title,
                     hexColor: lightBlue[500],
                     id: ticket.id,
@@ -79,7 +79,7 @@ export const TicketComp: React.FC = () => {
             });
 
             return {
-                avatar: letterName,
+                avatar: getRole().toUpperCase().substring(0, 1),
                 text: textMessage,
                 hexColor: isRole(Role.SECRETARY) ? orange[500] : blue[500],
             };
