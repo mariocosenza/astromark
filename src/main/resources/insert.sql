@@ -288,22 +288,22 @@ VALUES
 
 INSERT INTO reception_timeslot(reception_timetable_id, hour, date, capacity, booked, mode)
 VALUES
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli')), 3, '2025-01-17', 4, 1, 'In presenza'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli')), 4, '2025-01-18', 6, 1, 'Online'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui')), 1, '2025-01-20', 5, 2, 'Online'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli')), 3, '2025-02-17', 4, 1, 'In presenza'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli')), 4, '2025-02-18', 6, 0, 'Online'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui')), 1, '2025-01-20', 5, 1, 'Online'),
     ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui')), 2, '2025-01-21', 3, 1, 'In presenza'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui')), 3, '2025-01-22', 4, 3, 'In presenza'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui')), 4, '2025-01-23', 5, 2, 'Online'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elisa.gialli')), 1, '2025-01-24', 4, 2, 'Online'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elisa.gialli')), 2, '2025-01-25', 3, 1, 'In presenza'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui')), 1, '2025-01-26', 5, 3, 'In presenza'),
-    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui')), 2, '2025-01-27', 6, 2, 'Online');
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui')), 3, '2025-01-22', 4, 1, 'In presenza'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui')), 4, '2025-01-23', 5, 1, 'Online'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elisa.gialli')), 1, '2025-01-24', 4, 0, 'Online'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elisa.gialli')), 2, '2025-01-25', 3, 0, 'In presenza'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui')), 1, '2025-01-26', 5, 0, 'In presenza'),
+    ((SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'anna.blui')), 2, '2025-01-27', 6, 0, 'Online');
 
 INSERT INTO reception_booking(parent_id, reception_timeslot_id, booking_order, confirmed)
 VALUES
-    ((SELECT id FROM parent WHERE username = 'paolo.verdi'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli')) AND date = '2025-01-17' AND hour = 3), 1, false),
+    ((SELECT id FROM parent WHERE username = 'paolo.verdi'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'marco.gialli')) AND date = '2025-02-17' AND hour = 3), 1, false),
     ((SELECT id FROM parent WHERE username = 'paolo.verdi'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui')) AND date = '2025-01-20' AND hour = 1),1, true),
-    ((SELECT id FROM parent WHERE username = 'laura.bianchi'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui')) AND date = '2025-01-21' AND hour = 2), 2, false),
+    ((SELECT id FROM parent WHERE username = 'laura.bianchi'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'elena.blui')) AND date = '2025-01-21' AND hour = 2), 1, false),
     ((SELECT id FROM parent WHERE username = 'giulia.neri'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui')) AND date = '2025-01-22' AND hour = 3), 1, true),
     ((SELECT id FROM parent WHERE username = 'roberto.verdi'), (SELECT id FROM reception_timeslot WHERE reception_timetable_id = (SELECT id FROM reception_timetable WHERE teacher_id = (SELECT id FROM teacher WHERE username = 'riccardo.blui')) AND date = '2025-01-23' AND hour = 4), 1, false);
 
