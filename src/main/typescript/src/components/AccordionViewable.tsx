@@ -2,6 +2,8 @@ import {Accordion, AccordionDetails, AccordionSummary, Avatar, Stack, Typography
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import React, {useState} from "react";
+import {getRole} from "../services/AuthService.ts";
+import {Role} from "./route/ProtectedRoute.tsx";
 
 export type AccordionViewableProps = {
     avatar: string
@@ -35,7 +37,7 @@ export const AccordionViewable: React.FC<AccordionViewableProps> = (props: Accor
                             props.description
                         }
                     </Typography>
-                    {!viewed && <VisibilityOutlinedIcon color={'error'} onClick={(_) => {
+                    {!viewed && getRole().toUpperCase() == Role.PARENT &&  <VisibilityOutlinedIcon color={'error'} onClick={(_) => {
                         setViewed(true);
                         setViewedColor(true);
                         props.view();
