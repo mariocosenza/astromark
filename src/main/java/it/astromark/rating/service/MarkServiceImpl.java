@@ -69,10 +69,10 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public Double getAverage(UUID studentId, Year year) {
-        return getMarkByYear(studentId, year).stream()
+        return Math.round(getMarkByYear(studentId, year).stream()
                 .mapToDouble(MarkResponse::mark)
                 .average()
-                .orElse(0.0);
+                .orElse(0.0) * 100) / 100.0;
     }
 
     @Override
@@ -80,11 +80,12 @@ public class MarkServiceImpl implements MarkService {
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
     public SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, Boolean semester) {
         Supplier<AccessDeniedException> accessDeniedException = () -> new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw accessDeniedException.get();
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw accessDeniedException.get();
-        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
+        } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw accessDeniedException.get();
         }
 
@@ -101,6 +102,7 @@ public class MarkServiceImpl implements MarkService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasRole('PARENT')")
     public SemesterReportResponse viewReport(Integer reportId) {
         var report = semesterReportRepository.findById(reportId).orElseThrow();
