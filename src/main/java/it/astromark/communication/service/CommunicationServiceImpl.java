@@ -101,7 +101,8 @@ public class CommunicationServiceImpl implements CommunicationService {
 
         var communications = communicationRepository.findBySchoolClass_Id(schoolClassId)
                 .stream()
-                .sorted(Comparator.comparing(Communication::getDate))
+                .sorted(Comparator.comparing(Communication::getDate)
+                        .reversed())
                 .toList();
 
         return communicationMapper.toCommunicationResponseList(communications);

@@ -82,13 +82,15 @@ export const TeacherCommunication: React.FC = () => {
 
                                     <CustomTableCell>
                                         <Stack justifyContent={'center'} alignItems={'center'}>
-                                            <Typography fontWeight={'bold'} fontSize={'xx-large'}>
-                                                {'/'}
-                                            </Typography>
+                                            <Typography fontWeight={'bold'} fontSize={'xx-large'} color={'textDisabled'}>/</Typography>
                                         </Stack>
                                     </CustomTableCell>
 
-                                    <CustomTableCell></CustomTableCell>
+                                    <CustomTableCell>
+                                        <Typography variant={'h5'} color={'textDisabled'}>
+                                            Inserisci Nuova Comunicazione
+                                        </Typography>
+                                    </CustomTableCell>
 
                                     <CustomTableCell align={'center'}>
                                         <IconButton onClick={() => handleEdit(null)}>
@@ -109,7 +111,7 @@ export const TeacherCommunication: React.FC = () => {
                                         </CustomTableCell>
 
                                         <CustomTableCell>
-                                            <Typography fontWeight={'bold'} fontSize={'large'}>
+                                            <Typography variant={'h6'} fontWeight={'bold'}>
                                                 {row.title}
                                             </Typography>
                                             {row.description}
