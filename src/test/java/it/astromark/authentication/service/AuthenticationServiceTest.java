@@ -208,7 +208,7 @@ class AuthenticationServiceTest {
                 .name(name)
                 .pendingState(PendingState.NORMAL)
                 .surname(surname)
-                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString()) //unsafe
+                .password(Hashing.sha512().hashString(password, StandardCharsets.UTF_8).toString())
                 .residentialAddress(faker.address().fullAddress())
                 .male(true)
                 .birthDate(LocalDate.of(2003, 5, 22))
