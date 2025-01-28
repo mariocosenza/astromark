@@ -293,13 +293,48 @@ VALUES
     ('SS11223', 'simone.giordano', 'simone.giordano@gmail.com', encode(sha512('Giordano123*'::bytea), 'hex'), 'Simone', 'Giordano', 'GIRSMN07M19F123Y', '2007-09-19', 'Via Bergamo 18, Napoli', true, 'NORMAL'),
     ('SS11223', 'giuseppe.rossini', 'giuseppe.rossini@gmail.com', encode(sha512('Rossini123*'::bytea), 'hex'), 'Giuseppe', 'Rossini', 'RSSGPP09M14C789T', '2009-03-14', 'Via Napoli 19, Napoli', true, 'NORMAL');
 
-
 INSERT INTO delay (student_id, needs_justification, justified, justification_text, date_time)
 VALUES
     ((SELECT id FROM student WHERE username = 'luca.verdi'), true, false, null, '2025-01-16 08:10:00'),
     ((SELECT id FROM student WHERE username = 'marco.neri'), true, false, null, '2025-02-10 08:20:00'),
     ((SELECT id FROM student WHERE username = 'giulia.rossi'), false, true, 'Ritardo causato da traffico.', '2025-02-15 08:30:00'),
-    ((SELECT id FROM student WHERE username = 'elisa.verdi'), true, false, null, '2025-02-20 08:25:00');
+    ((SELECT id FROM student WHERE username = 'elisa.verdi'), true, false, null, '2025-02-20 08:25:00'),
+    ((SELECT id FROM student WHERE username = 'federico.chiesa'), true, false, null, '2025-01-18 08:40:00'),
+    ((SELECT id FROM student WHERE username = 'alessandro.bastoni'), false, true, 'Ritardo dovuto a problemi di trasporto.', '2025-01-19 08:35:00'),
+    ((SELECT id FROM student WHERE username = 'lorenzo.insigne'), true, false, null, '2025-02-05 08:50:00'),
+    ((SELECT id FROM student WHERE username = 'ciro.immobile'), false, true, 'Traffico intenso a causa di un incidente.', '2025-01-25 08:45:00'),
+    ((SELECT id FROM student WHERE username = 'marco.verratti'), true, false, null, '2025-01-26 08:55:00'),
+    ((SELECT id FROM student WHERE username = 'nicolo.barella'), false, true, 'Autobus in ritardo.', '2025-01-27 08:30:00'),
+    ((SELECT id FROM student WHERE username = 'sandrom.tonali'), true, false, null, '2025-02-01 08:20:00'),
+    ((SELECT id FROM student WHERE username = 'mattia.zaccagni'), false, true, 'Problemi tecnici sulla metro.', '2025-02-02 08:35:00'),
+    ((SELECT id FROM student WHERE username = 'giacomo.raspadori'), true, false, null, '2025-02-03 08:25:00'),
+    ((SELECT id FROM student WHERE username = 'andrea.belotti'), false, true, 'Problemi di traffico imprevisti.', '2025-02-04 08:45:00'),
+    ((SELECT id FROM student WHERE username = 'manuel.locatelli'), true, false, null, '2025-02-08 08:40:00'),
+    ((SELECT id FROM student WHERE username = 'matteo.pessina'), false, true, 'Ritardo a causa di un treno guasto.', '2025-02-12 08:50:00'),
+    ((SELECT id FROM student WHERE username = 'giovanni.di_lorenzo'), true, false, null, '2025-02-14 08:55:00'),
+    ((SELECT id FROM student WHERE username = 'davide.calabria'), false, true, 'Problemi di trasporto pubblico.', '2025-02-16 08:30:00'),
+    ((SELECT id FROM student WHERE username = 'nicolò.zaniolo'), true, false, null, '2025-02-18 08:20:00'),
+    ((SELECT id FROM student WHERE username = 'alessio.romagnoli'), false, true, 'Incidente stradale.', '2025-02-22 08:40:00'),
+    ((SELECT id FROM student WHERE username = 'pluto.pippo'), true, false, null, '2025-01-10 08:15:00'),
+    ((SELECT id FROM student WHERE username = 'pl.pi'), false, true, 'Ritardo per traffico intenso.', '2025-01-11 08:20:00'),
+    ((SELECT id FROM student WHERE username = 'pluton.paperino'), true, false, null, '2025-01-12 08:25:00'),
+    ((SELECT id FROM student WHERE username = 'marco.neri'), false, true, 'Mezzi pubblici in ritardo.', '2025-01-15 08:30:00'),
+    ((SELECT id FROM student WHERE username = 'luca.verdi'), true, false, null, '2025-01-16 08:40:00'),
+    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), false, true, 'Problemi familiari urgenti.', '2025-01-17 08:10:00'),
+    ((SELECT id FROM student WHERE username = 'giulia.rossi'), true, false, null, '2025-01-18 08:35:00'),
+    ((SELECT id FROM student WHERE username = 'elisa.verdi'), false, true, 'Sciopero dei mezzi pubblici.', '2025-01-19 08:50:00'),
+    ((SELECT id FROM student WHERE username = 'franco.blui'), true, false, null, '2025-01-22 08:05:00'),
+    ((SELECT id FROM student WHERE username = 'chiara.neri'), false, true, 'Problemi di salute.', '2025-01-25 08:45:00'),
+    ((SELECT id FROM student WHERE username = 'alessia.caputo'), true, false, null, '2025-01-27 08:30:00'),
+    ((SELECT id FROM student WHERE username = 'lorenzo.costa'), false, true, 'Problemi familiari urgenti.', '2025-01-28 08:40:00'),
+    ((SELECT id FROM student WHERE username = 'michele.pellegrini'), true, false, null, '2025-02-01 08:20:00'),
+    ((SELECT id FROM student WHERE username = 'giada.vitali'), false, true, 'Incidenti stradali lungo il percorso.', '2025-02-03 08:30:00'),
+    ((SELECT id FROM student WHERE username = 'matteo.romano'), true, false, null, '2025-02-05 08:50:00'),
+    ((SELECT id FROM student WHERE username = 'valentina.mancini'), false, true, 'Problemi di trasporto.', '2025-02-08 08:45:00'),
+    ((SELECT id FROM student WHERE username = 'matteo.fontana'), true, false, null, '2025-02-10 08:25:00'),
+    ((SELECT id FROM student WHERE username = 'sofia.russo'), false, true, 'Traffico anomalo in zona.', '2025-02-12 08:15:00'),
+    ((SELECT id FROM student WHERE username = 'elisa.gallo'), true, false, null, '2025-02-14 08:35:00'),
+    ((SELECT id FROM student WHERE username = 'davide.marino'), false, true, 'Problemi alla sveglia.', '2025-02-16 08:40:00');
 
 INSERT INTO absence (student_id, needs_justification, justified, justification_text, date)
 VALUES
