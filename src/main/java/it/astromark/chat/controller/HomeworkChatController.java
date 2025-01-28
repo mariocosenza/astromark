@@ -19,15 +19,6 @@ public class HomeworkChatController {
     }
 
     @Operation(
-            summary = "Create a new homework chat",
-            description = "Creates a new chat associated with a specific homework by its ID."
-    )
-    @PostMapping("{homeworkId}/chats")
-    public void createHomeworkChat(@PathVariable Integer homeworkId) {
-        homeworkChatService.addChat(homeworkId);
-    }
-
-    @Operation(
             summary = "Send a message to a chat",
             description = "Sends a message to a specific chat by its ID."
     )

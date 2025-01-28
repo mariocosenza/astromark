@@ -1,16 +1,5 @@
 import React, {useState} from "react";
-import {
-    Button,
-    Card,
-    CardContent,
-    Divider,
-    FormControlLabel,
-    Radio,
-    RadioGroup,
-    Stack,
-    TextField,
-    Typography,
-} from "@mui/material";
+import {Button, Card, CardContent, Divider, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography,} from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker";
 import {SelectedSchoolClass, SelectedTeaching, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useFormik} from "formik";
@@ -20,8 +9,6 @@ import YupPassword from "yup-password";
 import * as yup from "yup";
 import {useNavigate} from "react-router";
 import {ClassActivityRequest, HomeworkRequest, SignHourRequest} from "../../entities/SignHourRequest.ts";
-import {AxiosResponse} from "axios";
-import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 
 YupPassword(yup)
 
@@ -92,24 +79,11 @@ export const SignHour: React.FC = () => {
                 };
 
                 try {
-                    const response: AxiosResponse<TeachingTimeslotDetailedResponse> = await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signHour`, signHourRequest, {
+                    await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signHour`, signHourRequest, {
                         headers: {
                             'Content-Type': 'application/json',
                         },
                     });
-
-                    if (needChat && !SelectedTeachingTimeslot.homework?.hasChat && response.data) {
-                        const homeworkIdResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${SelectedSchoolClass.id}/homeworks/${response.data.id}`);
-
-                        if (homeworkIdResponse.data) {
-                            const homeworkId: number = homeworkIdResponse.data
-                            await axiosConfig.post(`${Env.API_BASE_URL}/homeworks/${homeworkId}/chats`, {
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                            });
-                        }
-                    }
 
                     navigate(`/teacher/agenda`);
                 } catch (error) {
