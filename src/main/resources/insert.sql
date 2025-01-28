@@ -76,9 +76,15 @@ VALUES
 
 INSERT INTO secretary (school_code, username, email, password, name, surname, tax_id, birth_date, residential_address, gender, pending_state)
 VALUES
+    ('SS12345', 'anna.rossi', 'anna.rossi@gmail.com', encode(sha512('Rossi123*'::bytea), 'hex'), 'Anna', 'Rossi', 'RSSNNA92F15G345T', '1992-05-15', 'Via Milano 12, Roma', false, 'NORMAL'),
     ('SS12345', 'giorgio.neri', 'giorgio.neri@gmail.com', encode(sha512('Neri123*'::bytea), 'hex'), 'Giorgio', 'Neri', 'NRIGRG90C03F205Z', '1990-03-03', 'Via Venezia 6, Roma', true, 'NORMAL'),
+    ('SS67890', 'giacomo.bianchi', 'giacomo.bianchi@gmail.com', encode(sha512('Bianchi123*'::bytea), 'hex'), 'Giacomo', 'Bianchi', 'BNCGCM85M10F678V', '1985-10-10', 'Via Napoli 45, Milano', true, 'NORMAL'),
     ('SS12345', 'laura.verdi', 'laura.verdi@gmail.com', encode(sha512('Verdi123*'::bytea), 'hex'), 'Laura', 'Verdi', 'VRDLRA85F03D890U', '1985-03-03', 'Via Trieste 7, Roma', false, 'NORMAL'),
-    ('SS67890', 'mario.neri', 'mario.neri@gmail.com', encode(sha512('Neri123*'::bytea), 'hex'), 'Mario', 'Neri', 'NRIMRA78F03D234X', '1978-03-03', 'Via Trieste 6, Roma', true, 'NORMAL');
+    ('SS67890', 'mario.neri', 'mario.neri@gmail.com', encode(sha512('Neri123*'::bytea), 'hex'), 'Mario', 'Neri', 'NRIMRA78F03D234X', '1978-03-03', 'Via Trieste 6, Roma', true, 'NORMAL'),
+    ('SS11223', 'carla.verdi', 'carla.verdi@gmail.com', encode(sha512('Verdi123*'::bytea), 'hex'), 'Carla', 'Verdi', 'VRDCRL88F20B789U', '1988-02-20', 'Via Torino 7, Napoli', false, 'NORMAL'),
+    ('SS11223', 'elena.neri', 'elena.neri@gmail.com', encode(sha512('Neri123*'::bytea), 'hex'), 'Elena', 'Neri', 'NRIELN89F03C567X', '1989-03-03', 'Via Roma 16, Napoli', false, 'NORMAL'),
+    ('SS11223', 'luigi.marchi', 'luigi.marchi@gmail.com', encode(sha512('Marchi123*'::bytea), 'hex'), 'Luigi', 'Marchi', 'MRCLGI91M05C890U', '1991-05-15', 'Via Duomo 15, Napoli', true, 'NORMAL'),
+    ('SS67890', 'giorgio.rossi', 'giorgio.rossi@gmail.com', encode(sha512('Rossi123*'::bytea), 'hex'), 'Giorgio', 'Rossi', 'RSSGRG78M12F567Y', '1978-12-12', 'Via Trieste 9, Milano', true, 'NORMAL');
 
 INSERT INTO teacher (school_code, username, email, password, name, surname, tax_id, birth_date, residential_address, gender, pending_state)
 VALUES
