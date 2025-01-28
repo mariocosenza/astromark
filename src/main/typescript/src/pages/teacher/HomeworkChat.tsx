@@ -29,12 +29,7 @@ export const HomeworkChat: React.FC = () => {
             const rowResponse: AxiosResponse<SchoolClassStudentResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/class-management/${SelectedSchoolClass.id}/students`);
             if (rowResponse.data.length) {
                 setRows(rowResponse.data)
-
-                const homeworkIdResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${SelectedSchoolClass.id}/homeworks/${SelectedTeachingTimeslot.id}`);
-
-                if (homeworkIdResponse.data) {
-                    setHomeworkId(homeworkIdResponse.data)
-                }
+                setHomeworkId(SelectedTeachingTimeslot.homework?.id)
             }
 
             setLoading(false)
@@ -58,11 +53,11 @@ export const HomeworkChat: React.FC = () => {
 
             <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 2}}>
                 <CardContent>
-                    <Stack direction="column" justifyContent={'space-between'} alignItems={'center'} margin={2}>
+                    <Stack direction="column" justifyContent={'space-between'} alignItems={'center'}>
                         <Typography variant="h5" fontWeight="bold">
-                            {SelectedTeachingTimeslot.homeworkTitle}
+                            {SelectedTeachingTimeslot.homework?.title}
                         </Typography>
-                        {SelectedTeachingTimeslot.homeworkDesc}
+                        {SelectedTeachingTimeslot.homework?.description}
                     </Stack>
                 </CardContent>
             </Card>

@@ -40,13 +40,4 @@ public class ClassworkController {
     public List<HomeworkResponse> getHomework(@PathVariable Integer classId) {
         return classworkService.getHomework(classId);
     }
-
-    @Operation(
-            summary = "Retrieve homework ID for a signed hour",
-            description = "Gets the ID of the homework associated with a specific signed hour for a class."
-    )
-    @GetMapping("/{classId}/homeworks/{signedHourId}")
-    public Integer getSignedHourHomeworkId(@PathVariable Integer classId, @PathVariable Integer signedHourId) {
-        return classworkService.getSignedHourHomeworkId(classId, signedHourId);
-    }
 }
