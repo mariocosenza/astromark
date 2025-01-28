@@ -67,31 +67,37 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
+        var dateStart = date.atStartOfDay().toInstant(ZoneOffset.UTC);
+        var dateEnd = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+
         for (AttendanceRequest attendance : attendanceRequests) {
             var student = studentRepository.findById(attendance.studentId()).orElseThrow();
             if (student.getSchoolClasses().stream().noneMatch(c -> c.getId().equals(classId))) {
                 throw new AccessDeniedException("This student it's not in this class");
             }
 
+            var delays = delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(dateStart, dateEnd, student.getId());
+            var delay = delays.isEmpty() ? null : delays.getFirst();
+
+            var absence = absenceRepository.findAbsenceByStudentAndDate(student, date);
+
             if (attendance.isAbsent()) {
-                var absence = absenceRepository.findAbsenceByStudentAndDate(student, date);
                 if (absence == null) {
-                    absence = new Absence();
-                    absence.setStudent(student);
-                    absence.setDate(date);
-                    absence.setJustified(false);
-                    absence.setNeedsJustification(true);
+                    absence = Absence.builder()
+                            .student(student)
+                            .date(date)
+                            .justified(false)
+                            .needsJustification(true)
+                            .build();
 
                     absenceRepository.save(absence);
                 }
+            } else if (absence != null) {
+                absenceRepository.delete(absence);
             }
 
-            if (attendance.isDelayed()) {
-                var dateStart = date.atStartOfDay().toInstant(ZoneOffset.UTC);
-                var dateEnd = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
-                var delays = delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(dateStart, dateEnd, student.getId());
-                var delay = delays.isEmpty() ? null : delays.getFirst();
 
+            if (attendance.isDelayed()) {
                 if (delay == null) {
                     delay = new Delay();
                     delay.setStudent(student);
@@ -105,6 +111,8 @@ public class AttendanceServiceImpl implements AttendanceService {
                         .toInstant(ZoneOffset.UTC));
 
                 delayRepository.save(delay);
+            } else if (delay != null) {
+                delayRepository.delete(delay);
             }
         }
     }

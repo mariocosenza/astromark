@@ -88,6 +88,8 @@ export const Attendance: React.FC = () => {
                 },
             });
 
+            setLoading(true)
+            fetchData(date.format("YYYY-MM-DD"));
         } catch (error) {
             console.log(error);
         }
