@@ -211,7 +211,32 @@ VALUES
     ('Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), 'Laboratorio'),
     ('Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), 'Lezione'),
     ('Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), 'Lezione'),
-    ('Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), 'Lezione');
+    ('Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), 'Lezione'),
+    ('Storia', (SELECT id FROM teacher WHERE username = 'matteo.gori'), 'Lezione'),
+    ('Matematica', (SELECT id FROM teacher WHERE username = 'luca.damiani'), 'Lezione'),
+    ('Geometria', (SELECT id FROM teacher WHERE username = 'luca.damiani'), 'Lezione'),
+    ('Fisica', (SELECT id FROM teacher WHERE username = 'andrea.rossi'), 'Lezione'),
+    ('Chimica', (SELECT id FROM teacher WHERE username = 'antonella.marini'), 'Laboratorio'),
+    ('Italiano', (SELECT id FROM teacher WHERE username = 'valerio.moretti'), 'Lezione'),
+    ('Inglese', (SELECT id FROM teacher WHERE username = 'andrea.fiorentino'), 'Lezione'),
+    ('Storia', (SELECT id FROM teacher WHERE username = 'francesco.fontana'), 'Lezione'),
+    ('Matematica', (SELECT id FROM teacher WHERE username = 'antonio.mancini'), 'Lezione'),
+    ('Italiano', (SELECT id FROM teacher WHERE username = 'marta.ferrari'), 'Lezione'),
+    ('Inglese', (SELECT id FROM teacher WHERE username = 'valentina.ruggeri'), 'Lezione'),
+    ('Matematica', (SELECT id FROM teacher WHERE username = 'mario.neri'), 'Lezione'),
+    ('Fisica', (SELECT id FROM teacher WHERE username = 'davide.lombardi'), 'Lezione'),
+    ('Italiano', (SELECT id FROM teacher WHERE username = 'chiara.barone'), 'Lezione'),
+    ('Inglese', (SELECT id FROM teacher WHERE username = 'sara.gallini'), 'Lezione'),
+    ('Storia', (SELECT id FROM teacher WHERE username = 'paolo.benedetti'), 'Lezione'),
+    ('Matematica', (SELECT id FROM teacher WHERE username = 'paola.rinaldi'), 'Lezione'),
+    ('Geometria', (SELECT id FROM teacher WHERE username = 'carlo.fabbri'), 'Lezione'),
+    ('Italiano', (SELECT id FROM teacher WHERE username = 'elisa.ruggeri'), 'Lezione'),
+    ('Inglese', (SELECT id FROM teacher WHERE username = 'giacomo.monti'), 'Lezione'),
+    ('Storia', (SELECT id FROM teacher WHERE username = 'giovanni.conti'), 'Lezione'),
+    ('Italiano', (SELECT id FROM teacher WHERE username = 'simona.mazzoni'), 'Lezione'),
+    ('Inglese', (SELECT id FROM teacher WHERE username = 'giulia.sala'), 'Lezione'),
+    ('Matematica', (SELECT id FROM teacher WHERE username = 'giorgio.verdi'), 'Lezione'),
+    ('Geometria', (SELECT id FROM teacher WHERE username = 'giorgio.verdi'), 'Lezione');
 
 INSERT INTO student (school_code, username, email, password, name, surname, tax_id, birth_date, residential_address, gender, pending_state)
 VALUES
