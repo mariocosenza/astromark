@@ -45,6 +45,12 @@ export const ChatComponent: React.FC<Props> = ({list, send}) => {
                     className={'textfield-item'} margin={'normal'} size={'small'} fullWidth
                     placeholder='Scrivi il tuo messaggio' value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSendMessage();
+                        }
+                    }}
                 />
 
                 <Button variant='contained' color='primary' sx={{marginLeft: '0.5rem', marginTop: '0.4rem'}}
