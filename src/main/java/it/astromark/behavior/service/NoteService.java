@@ -5,6 +5,7 @@ import it.astromark.behavior.dto.NoteRequest;
 import it.astromark.behavior.dto.NoteResponse;
 import it.astromark.behavior.entity.Note;
 import it.astromark.commons.service.CrudService;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public interface NoteService extends CrudService<Note, NoteRequest, NoteResponse
      * Pre-condition: The `studentId` and `classId` must not be null. The student and class associated with the provided IDs must exist.
      * Post-condition: Returns a list of notes associated with the specified student and class.
      */
-    List<NoteResponse> getNoteByStudentId(UUID studentId, Integer classId);
+    List<NoteResponse> getNoteByStudentId(@NotNull UUID studentId, @NotNull Integer classId);
 
     /**
      * Marks a specific note as viewed for a student.
@@ -33,6 +34,6 @@ public interface NoteService extends CrudService<Note, NoteRequest, NoteResponse
      *                  Pre-condition: The `studentId` and `noteId` must not be null. The note associated with the `noteId` must exist and belong to the specified student.
      *                  Post-condition: The note is marked as viewed for the specified student.
      */
-    void view(UUID studentId, UUID noteId);
+    void view(@NotNull UUID studentId, @NotNull UUID noteId);
 
 }

@@ -14,7 +14,9 @@ import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,7 @@ public class MarkServiceImpl implements MarkService {
 
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
-    public List<MarkResponse> getMarkByYear(UUID studentId, Year year) {
+    public List<MarkResponse> getMarkByYear(@NotNull UUID studentId, @PastOrPresent Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -68,7 +70,7 @@ public class MarkServiceImpl implements MarkService {
 
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
-    public Double getAverage(UUID studentId, Year year) {
+    public Double getAverage(@NotNull UUID studentId, @PastOrPresent Year year) {
         return Math.round(getMarkByYear(studentId, year).stream()
                 .mapToDouble(MarkResponse::mark)
                 .average()
@@ -78,7 +80,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
-    public SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, Boolean semester) {
+    public SemesterReportResponse getReport(@NotNull UUID studentId, @PositiveOrZero Short year, @NotNull Boolean semester) {
         Supplier<AccessDeniedException> accessDeniedException = () -> new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
 
         if (!schoolUserService.isLoggedUserParent(studentId)) {
@@ -104,7 +106,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('PARENT')")
-    public SemesterReportResponse viewReport(Integer reportId) {
+    public SemesterReportResponse viewReport(@NotNull Integer reportId) {
         var report = semesterReportRepository.findById(reportId).orElseThrow();
 
         if (!schoolUserService.isLoggedUserParent(report.getStudent().getId())) {
@@ -120,7 +122,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public List<RatingsResponse> getRatings(Integer classId, String teaching, LocalDate date) {
+    public List<RatingsResponse> getRatings(@NotNull Integer classId, @NotEmpty String teaching, @NotNull LocalDate date) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -139,7 +141,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public List<RatingsResponse> getEveryRatings(Integer classId, String teaching) {
+    public List<RatingsResponse> getEveryRatings(@NotNull Integer classId, @NotEmpty String teaching) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -165,7 +167,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public MarkResponse create(MarkRequest mark) {
+    public MarkResponse create(@NotNull MarkRequest mark) {
         if (!mark.date().isBefore(LocalDate.now().plusDays(1))) {
             throw new IllegalArgumentException("Date must be in the past");
         }
@@ -194,7 +196,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public MarkResponse update(MarkUpdateRequest mark, UUID studentId) {
+    public MarkResponse update(@NotNull MarkUpdateRequest mark,@NotNull  UUID studentId) {
         if (mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }
@@ -217,7 +219,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public boolean delete(Integer id) {
+    public boolean delete(@NotNull Integer id) {
         var mark = markRepository.findById(id).orElseThrow();
         var teacher = authenticationService.getTeacher().orElseThrow();
         if (!mark.getTeaching().getTeacher().equals(teacher)) {

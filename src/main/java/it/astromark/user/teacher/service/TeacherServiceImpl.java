@@ -21,6 +21,7 @@ import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -124,7 +125,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional
-    public TeacherDetailsResponse getTeacherTeaching(String teacheruuid) {
+    public TeacherDetailsResponse getTeacherTeaching(@NotEmpty String teacheruuid) {
         var teacher = teacherRepository.findById(UUID.fromString(teacheruuid))
                 .orElseThrow(() -> new EntityNotFoundException("Teacher not found for UUID: " + teacheruuid));
 

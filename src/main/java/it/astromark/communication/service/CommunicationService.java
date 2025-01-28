@@ -4,6 +4,7 @@ import it.astromark.commons.service.CrudService;
 import it.astromark.communication.dto.CommunicationRequest;
 import it.astromark.communication.dto.CommunicationResponse;
 import it.astromark.communication.entity.Communication;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -20,6 +21,6 @@ public interface CommunicationService extends CrudService<Communication, Communi
      * Pre-condition: The `schoolClassId` must not be null and must refer to an existing school class.
      * Post-condition: Returns a list of communications associated with the specified school class.
      */
-    List<CommunicationResponse> getCommunicationBySchoolClassId(Integer schoolClassId);
+    List<CommunicationResponse> getCommunicationBySchoolClassId(@NotNull Integer schoolClassId);
 
 }

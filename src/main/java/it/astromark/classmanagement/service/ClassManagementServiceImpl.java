@@ -19,6 +19,7 @@ import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.parent.repository.ParentRepository;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('SECRETARY') || hasRole('TEACHER')")
-    public List<SchoolClassStudentResponse> getStudents(Integer classId) {
+    public List<SchoolClassStudentResponse> getStudents(@NotNull Integer classId) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -139,7 +140,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @Transactional
-    public List<SchoolClassResponse> getTeacherClasses(UUID teacherId) {
+    public List<SchoolClassResponse> getTeacherClasses(@NotNull UUID teacherId) {
 
         var teacher = teacherRepository.findById(teacherId).orElseThrow();
         var classes = teacherClassRepository.findByTeacher(teacher).stream().map(TeacherClass::getSchoolClass).toList();
@@ -158,7 +159,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @Transactional
-    public void addTeacherToClass(UUID uuid, AddToClassRequest addToClassRequest) {
+    public void addTeacherToClass(@NotNull UUID uuid,@NotNull  AddToClassRequest addToClassRequest) {
         var teacher = teacherRepository.findById(uuid).orElseThrow();
         var teacherClass = schoolClassRepository.findById(addToClassRequest.classId()).orElseThrow();
         var teacherClassId = new TeacherClassId(teacher.getId(), teacherClass.getId());
@@ -173,9 +174,9 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
-    public void removeClass(String teacheruuid, Integer schoolClassId) {
+    public void removeClass(@NotNull UUID teacheruuid, @NotNull Integer schoolClassId) {
         teacherClassRepository.deleteById(new TeacherClassId(
-                UUID.fromString(teacheruuid),
+                teacheruuid,
                 schoolClassId
         ));
 
@@ -183,7 +184,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @Transactional
-    public List<TeachingResponse> getClassTeachings(Integer classId) {
+    public List<TeachingResponse> getClassTeachings(@NotNull Integer classId) {
         var teacherList = teacherClassRepository.findAll().stream()
                 .filter(t -> t.getSchoolClass().getId().equals(classId))
                 .map(TeacherClass::getTeacher)
@@ -201,7 +202,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     }
 
     @Override
-    public List<SchoolClassParentResponse> getParents(Integer classId) {
+    public List<SchoolClassParentResponse> getParents(@NotNull Integer classId) {
 
         return parentRepository.findAll().stream()
                 .filter(parent -> parent.getStudents().stream()
@@ -222,7 +223,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
-    public SchoolClassResponse schoolClassResponse(SchoolClassRequest request) {
+    public SchoolClassResponse schoolClassResponse(@NotNull SchoolClassRequest request) {
         return classManagementMapper.toSchoolClassResponse(schoolClassRepository.save(SchoolClass.builder()
                 .school(authenticationService.getSecretary().orElseThrow().getSchool())
                 .number(request.number())

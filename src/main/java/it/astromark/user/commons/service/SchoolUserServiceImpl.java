@@ -50,28 +50,28 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    public boolean isStudentParent(Parent parent, UUID studentId) {
+    public boolean isStudentParent(@NotNull Parent parent,@NotNull  UUID studentId) {
         return parent.getStudents().stream().anyMatch(s -> s.getId().equals(studentId));
     }
 
     @Override
-    public boolean isLoggedUserParent(UUID studentId) {
+    public boolean isLoggedUserParent(@NotNull UUID studentId) {
         return !authenticationService.isParent() || isStudentParent(authenticationService.getParent().orElseThrow(() -> new RuntimeException("test")), studentId);
     }
 
     @Override
-    public boolean isTeacherClass(Teacher teacher, Integer classId) {
+    public boolean isTeacherClass(@NotNull Teacher teacher, @NotNull Integer classId) {
         return teacherClassRepository.findByTeacher(teacher).stream().anyMatch(c -> Objects.equals(c.getSchoolClass().getId(), classId));
     }
 
     @Override
-    public boolean isLoggedTeacherClass(Integer classId) {
+    public boolean isLoggedTeacherClass(@NotNull Integer classId) {
         return !authenticationService.isTeacher() || isTeacherClass(authenticationService.getTeacher().orElseThrow(), classId);
     }
 
     @Override
     @Transactional
-    public boolean isLoggedParentStudentClass(Integer classId) {
+    public boolean isLoggedParentStudentClass(@NotNull Integer classId) {
         if (authenticationService.isParent()) {
             return authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
         } else {
@@ -81,7 +81,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
 
     @Override
     @Transactional
-    public boolean isLoggedTeacherStudent(UUID studentId) {
+    public boolean isLoggedTeacherStudent(@NotNull UUID studentId) {
         if (!authenticationService.isTeacher()) {
             return false;
         }

@@ -3,6 +3,8 @@ package it.astromark.chat.service;
 import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.entity.Message;
 import it.astromark.user.commons.model.SchoolUser;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,7 +24,7 @@ public interface MessageService {
      * Pre-condition: The `message` must not be null and must have a valid sender associated with it.
      * Post-condition: Returns the `SchoolUser` who sent the specified message.
      */
-    SchoolUser getSender(Message message);
+    SchoolUser getSender(@NotNull Message message);
 
     /**
      * Adds an attachment to a specified entity.
@@ -34,7 +36,7 @@ public interface MessageService {
      *                     Pre-condition: The `uuid` and `multipartFile` must not be null. The `multipartFile` must be a valid, non-empty file.
      *                     Post-condition: The file is uploaded and associated with the specified entity. Returns the file path or identifier.
      */
-    String addAttachment(UUID uuid, MultipartFile multipartFile) throws IOException;
+    String addAttachment(@NotNull UUID uuid,@NotNull  MultipartFile multipartFile) throws IOException;
 
     /**
      * Creates a new message in a specific chat.
@@ -46,6 +48,6 @@ public interface MessageService {
      * Pre-condition: The `message` must not be null or empty. The `chatId` must not be null and must refer to an existing chat.
      * Post-condition: A new message is created and added to the specified chat. Returns a response object with the message details.
      */
-    MessageResponse create(String message, UUID chatId, boolean isHomework);
+    MessageResponse create(@NotEmpty String message, @NotNull UUID chatId, boolean isHomework);
 
 }

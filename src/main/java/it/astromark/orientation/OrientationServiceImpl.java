@@ -5,6 +5,7 @@ import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.*;
@@ -28,7 +29,7 @@ public class OrientationServiceImpl implements OrientationService {
 
     @Override
     @Transactional
-    public String attitude(Student student) {
+    public String attitude(@NotNull Student student) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String uri = "http://127.0.0.1:5000/ai/orientation";

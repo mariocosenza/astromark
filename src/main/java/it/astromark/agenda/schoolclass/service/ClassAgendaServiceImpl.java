@@ -212,6 +212,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         var schoolClass = schoolClassRepository.findById(schoolClassId).orElseThrow(
                 () -> new IllegalArgumentException("SchoolClass not found for ID: " + schoolClassId));
 
+        if(request.endDate() != null && request.startDate().compareTo(request.endDate()) > 0) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+
 
         var classTimetable = ClassTimetable.builder()
                 .schoolClass(schoolClass)
