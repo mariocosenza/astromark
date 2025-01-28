@@ -1,7 +1,7 @@
 package it.astromark.classwork.service;
 
-import it.astromark.classwork.dto.ClassworkResponse;
-import it.astromark.classwork.dto.HomeworkResponse;
+import it.astromark.agenda.schoolclass.entity.SignedHour;
+import it.astromark.classwork.dto.*;
 
 import java.util.List;
 
@@ -41,5 +41,33 @@ public interface ClassworkService {
      * Post-condition: Returns the ID of the homework associated with the specified signed hour, or null if no homework exists.
      */
     Integer getSignedHourHomeworkId(Integer classId, Integer signedHourId);
+
+    /**
+     * Creates or updates a class activity based on the provided request and signed hour.
+     *
+     * @param request the `ClassActivityRequest` object containing the details of the class activity
+     * @param signedHour the `SignedHour` object associated with the class activity
+     * @return a `ClassActivityResponse` object representing the created or updated class activity
+     * Pre-condition:
+     * - The `request` and `signedHour` parameters must not be null.
+     * - The `request.title()` must not be empty.
+     * Post-condition: The created or updated class activity is saved in the repository.
+     */
+    ClassActivityResponse setActivity(ClassActivityRequest request, SignedHour signedHour);
+
+    /**
+     * Creates or updates a homework assignment based on the provided request and signed hour.
+     *
+     * @param request the `HomeworkRequest` object containing the details of the homework assignment
+     * @param signedHour the `SignedHour` object associated with the homework assignment
+     * @return a `HomeworkResponse` object representing the created or updated homework assignment
+     * Pre-condition:
+     * - The `request` and `signedHour` parameters must not be null.
+     * - The `request.title()` must not be empty and `request.dueDate()` must be a future date.
+     * Post-condition:
+     * - The created or updated homework assignment is saved in the repository.
+     * - If `request.hasChat()` is true, homework chats are created.
+     */
+    HomeworkResponse setHomework(HomeworkRequest request, SignedHour signedHour);
 
 }

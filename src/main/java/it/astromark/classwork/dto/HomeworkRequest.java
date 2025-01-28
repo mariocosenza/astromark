@@ -2,7 +2,7 @@ package it.astromark.classwork.dto;
 
 import java.time.LocalDate;
 
-public record HomeworkBriefResponse(
+public record HomeworkRequest(
         Integer id,
         String title,
         String description,

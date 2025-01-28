@@ -1,12 +1,22 @@
-import {DateObject} from "react-multi-date-picker";
-
 export type SignHourRequest = {
-    slotId: number | null;
+    id: number | null;
     hour: number | null;
-    date: DateObject | null;
-    activityTitle: string;
-    activityDescription: string;
-    homeworkTitle: string;
-    homeworkDescription: string;
-    homeworkDueDate: DateObject;
+    subject: string | null;
+    date: Date;
+    activity: ClassActivityRequest | null;
+    homework: HomeworkRequest | null;
+}
+
+export type ClassActivityRequest = {
+    id: number | null;
+    title: string;
+    description: string;
+}
+
+export type HomeworkRequest = {
+    id: number | null;
+    title: string;
+    description: string;
+    dueDate: Date;
+    hasChat: boolean;
 }

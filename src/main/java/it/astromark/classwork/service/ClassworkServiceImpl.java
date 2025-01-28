@@ -1,9 +1,12 @@
 package it.astromark.classwork.service;
 
+import it.astromark.agenda.schoolclass.entity.SignedHour;
 import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.classwork.dto.ClassworkResponse;
-import it.astromark.classwork.dto.HomeworkResponse;
+import it.astromark.chat.service.HomeworkChatService;
+import it.astromark.classwork.dto.*;
+import it.astromark.classwork.entity.ClassActivity;
+import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.mapper.ClassworkMapper;
 import it.astromark.classwork.repository.ClassActivityRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
@@ -31,10 +34,10 @@ public class ClassworkServiceImpl implements ClassworkService {
     private final ClassworkMapper classworkMapper;
     private final HomeworkRepository homeworkRepository;
     private final SignedHourRepository signedHourRepository;
-
+    private final HomeworkChatService homeworkChatService;
 
     @Autowired
-    public ClassworkServiceImpl(ClassActivityRepository classActivityRepository, AuthenticationService authenticationService, SchoolUserService schoolUserService, StudentRepository studentRepository, ClassworkMapper classworkMapper, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository) {
+    public ClassworkServiceImpl(ClassActivityRepository classActivityRepository, AuthenticationService authenticationService, SchoolUserService schoolUserService, StudentRepository studentRepository, ClassworkMapper classworkMapper, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, HomeworkChatService homeworkChatService) {
         this.classActivityRepository = classActivityRepository;
         this.authenticationService = authenticationService;
         this.schoolUserService = schoolUserService;
@@ -42,6 +45,7 @@ public class ClassworkServiceImpl implements ClassworkService {
         this.classworkMapper = classworkMapper;
         this.homeworkRepository = homeworkRepository;
         this.signedHourRepository = signedHourRepository;
+        this.homeworkChatService = homeworkChatService;
     }
 
     public void updateDescription(Integer id, String description) {
@@ -99,5 +103,64 @@ public class ClassworkServiceImpl implements ClassworkService {
         if (homework == null)
             return null;
         return homework.getId();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public ClassActivityResponse setActivity(ClassActivityRequest request, SignedHour signedHour) {
+        if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
+                || (request.title().isEmpty())) {
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+        }
+
+        ClassActivity activity;
+        if (request.id() == null) {
+            activity = ClassActivity.builder()
+                    .signedHour(signedHour)
+                    .title(request.title())
+                    .description(request.description())
+                    .build();
+        } else {
+            activity = classActivityRepository.findById(request.id()).orElseThrow();
+            activity.setTitle(request.title());
+            activity.setDescription(request.description());
+        }
+
+        classActivityRepository.save(activity);
+
+        return classworkMapper.toClassActivityResponse(activity);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public HomeworkResponse setHomework(HomeworkRequest request, SignedHour signedHour) {
+        if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
+                || (request.title().isEmpty()) || request.dueDate().isBefore(LocalDate.now())) {
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+        }
+
+        Homework homework;
+        if (request.id() == null) {
+            homework = Homework.builder()
+                    .signedHour(signedHour)
+                    .title(request.title())
+                    .description(request.description())
+                    .dueDate(request.dueDate())
+                    .build();
+        } else {
+            homework = homeworkRepository.findById(request.id()).orElseThrow();
+            homework.setTitle(request.title());
+            homework.setDescription(request.description());
+            homework.setDueDate(request.dueDate());
+        }
+
+        homeworkRepository.save(homework);
+
+        if (request.hasChat())
+            homeworkChatService.addChat(homework.getId());
+
+        return classworkMapper.toHomeworkResponse(homework);
     }
 }

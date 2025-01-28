@@ -12,14 +12,14 @@ import {
     Typography,
 } from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker";
-import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
+import {SelectedSchoolClass, SelectedTeaching, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useFormik} from "formik";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import YupPassword from "yup-password";
 import * as yup from "yup";
 import {useNavigate} from "react-router";
-import {SignHourRequest} from "../../entities/SignHourRequest.ts";
+import {ClassActivityRequest, HomeworkRequest, SignHourRequest} from "../../entities/SignHourRequest.ts";
 import {AxiosResponse} from "axios";
 import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 
@@ -60,16 +60,35 @@ export const SignHour: React.FC = () => {
         initialValues,
         validationSchema,
         onSubmit: async (values) => {
-            if (!dateError) {
+            if (!dateError && SelectedTeachingTimeslot.date) {
+
+                let activity: ClassActivityRequest | null = null
+                if (values.activityTitle) {
+                    activity = {
+                        id: SelectedTeachingTimeslot.activity?.id || null,
+                        title: values.activityTitle,
+                        description: values.activityDesc,
+                    }
+                }
+
+                let homework: HomeworkRequest | null = null
+                if (values.homeworkTitle) {
+                    homework = {
+                        id: SelectedTeachingTimeslot.homework?.id || null,
+                        title: values.homeworkTitle,
+                        description: values.homeworkDesc,
+                        dueDate: dueDate.toDate(),
+                        hasChat: needChat,
+                    }
+                }
+
                 const signHourRequest: SignHourRequest = {
-                    slotId: SelectedTeachingTimeslot.id,
+                    id: SelectedTeachingTimeslot.id,
                     hour: SelectedTeachingTimeslot.hour,
-                    date: SelectedTeachingTimeslot.date,
-                    activityTitle: values.activityTitle,
-                    activityDescription: values.activityDesc,
-                    homeworkTitle: values.homeworkTitle,
-                    homeworkDescription: values.homeworkDesc,
-                    homeworkDueDate: dueDate,
+                    subject: SelectedTeaching.teaching,
+                    date: SelectedTeachingTimeslot.date.toDate(),
+                    activity: activity,
+                    homework: homework,
                 };
 
                 try {
