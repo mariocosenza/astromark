@@ -1,6 +1,7 @@
 package it.astromark.classmanagement.service;
 
 import it.astromark.classmanagement.dto.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Year;
 import java.util.List;
@@ -67,7 +68,7 @@ public interface ClassManagementService {
      *                    Pre-condition: The `teacheruuid` and `teaching` must not be null. The teacher associated with the UUID must exist.
      *                    Post-condition: A new teaching activity is added for the specified teacher.
      */
-    void addTeaching(UUID teacheruuid, TeachingRequest teaching);
+    void addTeaching(@NotNull UUID teacheruuid,@NotNull  TeachingRequest teaching);
 
     /**
      * Retrieves a list of all subjects.
@@ -86,7 +87,7 @@ public interface ClassManagementService {
      * Pre-condition: The `teacheruuid` must not be null. The teacher associated with the UUID must exist.
      * Post-condition: Returns a list of classes assigned to the specified teacher.
      */
-    List<SchoolClassResponse> getTeacherClasses(UUID teacheruuid);
+    List<SchoolClassResponse> getTeacherClasses(@NotNull UUID teacheruuid);
 
     /**
      * Adds a teacher to a specific class.
@@ -96,7 +97,7 @@ public interface ClassManagementService {
      *                          Pre-condition: The `uuid` and `addToClassRequest` must not be null. The teacher and class must exist.
      *                          Post-condition: The teacher is added to the specified class with the specified role.
      */
-    void addTeacherToClass(UUID uuid, AddToClassRequest addToClassRequest);
+    void addTeacherToClass(@NotNull UUID uuid, @NotNull AddToClassRequest addToClassRequest);
 
     /**
      * Removes a class associated with a specific teacher.
@@ -106,7 +107,7 @@ public interface ClassManagementService {
      *                      Pre-condition: The `teacheruuid` and `schoolClassId` must not be null. The teacher and class must exist.
      *                      Post-condition: The specified class is removed from the teacher's assignments.
      */
-    void removeClass(String teacheruuid, Integer schoolClassId);
+    void removeClass(UUID uuuid, Integer schoolClassId);
 
     /**
      * Retrieves the list of teachings associated with a specific class.
@@ -117,6 +118,7 @@ public interface ClassManagementService {
      *
      * @return a list of `TeachingResponse` objects representing the teachings of the class
      */
-    List<TeachingResponse> getClassTeachings(Integer classId);
+    List<TeachingResponse> getClassTeachings(@NotNull Integer classId);
 
+    List<SchoolClassParentResponse> getParents(@NotNull Integer classId);
 }

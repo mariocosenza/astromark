@@ -11,6 +11,7 @@ import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -42,7 +43,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public NoteResponse create(NoteRequest noteRequest) {
+    public NoteResponse create(@NotNull NoteRequest noteRequest) {
         if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -77,7 +78,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
-    public List<NoteResponse> getNoteByStudentId(UUID studentId, Integer classId) {
+    public List<NoteResponse> getNoteByStudentId(@NotNull UUID studentId, @NotNull Integer classId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
@@ -93,7 +94,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
-    public void view(UUID studentId, UUID noteId) {
+    public void view(@NotNull UUID studentId, @NotNull UUID noteId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {

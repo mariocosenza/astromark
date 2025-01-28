@@ -11,6 +11,7 @@ import it.astromark.communication.repository.CommunicationRepository;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,7 +44,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public CommunicationResponse create(CommunicationRequest communicationRequest) {
+    public CommunicationResponse create(@NotNull CommunicationRequest communicationRequest) {
         if (!schoolUserService.isLoggedTeacherClass(communicationRequest.classId())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -63,7 +64,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public CommunicationResponse update(Integer integer, CommunicationRequest communicationRequest) {
+    public CommunicationResponse update(@NotNull Integer integer,@NotNull  CommunicationRequest communicationRequest) {
         if (!schoolUserService.isLoggedTeacherClass(communicationRequest.classId())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
@@ -90,7 +91,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT') || hasRole('TEACHER')")
-    public List<CommunicationResponse> getCommunicationBySchoolClassId(Integer schoolClassId) {
+    public List<CommunicationResponse> getCommunicationBySchoolClassId(@NotNull Integer schoolClassId) {
         if (!schoolUserService.isLoggedTeacherClass(schoolClassId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedParentStudentClass(schoolClassId)) {

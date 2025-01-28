@@ -109,7 +109,7 @@ export const TeacherDetails = () => {
 
                 setLoading(false);
             } catch (err) {
-                setError("Failed to fetch data.");
+                setError("Impossibile recuperare i dati.");
                 setLoading(false);
             }
         };
@@ -199,7 +199,7 @@ export const TeacherDetails = () => {
             );
             alert("Professore aggiunto alla classe correttamente");
             handleCloseClassModal();
-            // (se vuoi, richiama fetchData o aggiorna manualmente 'classes')
+
         } catch (err) {
             alert("Errore nell'aggiunta.");
         }

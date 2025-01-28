@@ -48,7 +48,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         this.schoolClassRepository = schoolClassRepository;
     }
 
-    public HomeworkChatResponse getChatWithMessagesSocket(UUID chatId) {
+    public HomeworkChatResponse getChatWithMessagesSocket(@NotNull UUID chatId) {
         HomeworkChat chat = homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
 
@@ -68,7 +68,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
-    public UUID sendMessage(UUID chatId, @NotEmpty String text) {
+    public UUID sendMessage(@NotNull UUID chatId, @NotEmpty String text) {
         var homeworkChat = homeworkChatRepository.findById(chatId).orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         if (homeworkChat.getCompleted()) {
             throw new IllegalArgumentException("Chat is completed");
@@ -85,7 +85,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
     @Override
     @Transactional
-    public Teacher findTeacher(UUID chatId) {
+    public Teacher findTeacher(@NotNull UUID chatId) {
         HomeworkChat chat = homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         var teacher = chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher();
@@ -122,7 +122,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
-    public List<MessageResponse> getMessageList(UUID chatId) {
+    public List<MessageResponse> getMessageList(@NotNull UUID chatId) {
         if (authenticationService.isStudent() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getStudent().equals(authenticationService.getStudent().orElseThrow())) {
             throw new AccessDeniedException(CHAT_ACCESS_DENIED);
@@ -165,7 +165,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('STUDENT')")
-    public boolean isCompleted(UUID chatId) {
+    public boolean isCompleted(@NotNull UUID chatId) {
         var chat = homeworkChatRepository.findById(chatId).orElseThrow();
         if (authenticationService.isTeacher() && !chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
                 .getId().equals(authenticationService.getTeacher().orElseThrow().getId())
@@ -180,7 +180,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public boolean complete(UUID chatId) {
+    public boolean complete(@NotNull UUID chatId) {
         var chat = homeworkChatRepository.findById(chatId).orElseThrow();
         if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
                 .equals(authenticationService.getTeacher().orElseThrow())) {

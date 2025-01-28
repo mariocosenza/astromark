@@ -7,10 +7,12 @@ import it.astromark.user.parent.dto.ParentDetailedResponse;
 import it.astromark.user.parent.dto.ParentRequest;
 import it.astromark.user.parent.service.ParentService;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("api/parents")
 public class ParentController {
@@ -25,10 +27,12 @@ public class ParentController {
             summary = "Create a parent",
             description = "Creates a new parent account with the provided details."
     )
-    @PostMapping
+    @PostMapping("/create-parent")
     public ParentDetailedResponse create(@RequestBody @NotNull ParentRequest parentRequest) {
+        log.info("Create parent: {}", parentRequest);
         return parentService.create(parentRequest);
     }
+
 
     @Operation(
             summary = "Retrieve associated students",
@@ -47,4 +51,6 @@ public class ParentController {
     public List<SchoolUserResponse> getTeachers() {
         return parentService.getTeachers();
     }
+
 }
+

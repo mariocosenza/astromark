@@ -1,7 +1,9 @@
 package it.astromark.rating.service;
 
 import it.astromark.rating.dto.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
@@ -24,7 +26,7 @@ public interface MarkService {
      * Pre-condition: The `studentId` and `year` must not be null. The student associated with the `studentId` must exist.
      * Post-condition: Returns a list of marks for the specified student and year.
      */
-    List<MarkResponse> getMarkByYear(UUID studentId, Year year);
+    List<MarkResponse> getMarkByYear(@NotNull UUID studentId, @PastOrPresent Year year);
 
     /**
      * Calculates the average mark for a specific student in a given year.
@@ -35,7 +37,7 @@ public interface MarkService {
      * Pre-condition: The `studentId` and `year` must not be null. The student must have at least one mark in the specified year.
      * Post-condition: Returns the average mark for the specified student and year.
      */
-    Double getAverage(UUID studentId, Year year);
+    Double getAverage(@NotNull UUID studentId, @PastOrPresent Year year);
 
     /**
      * Retrieves a semester report for a specific student and year.
@@ -57,7 +59,7 @@ public interface MarkService {
      * Pre-condition: The `reportId` must not be null and must correspond to an existing report.
      * Post-condition: Returns the details of the specified report.
      */
-    SemesterReportResponse viewReport(Integer reportId);
+    SemesterReportResponse viewReport(@NotNull Integer reportId);
 
     /**
      * Retrieves ratings for a specific class, subject, and date.
@@ -69,7 +71,7 @@ public interface MarkService {
      * Pre-condition: The `classId`, `subject`, and `date` must not be null. The class must exist.
      * Post-condition: Returns a list of ratings for the specified class, subject, and date.
      */
-    List<RatingsResponse> getRatings(Integer classId, String subject, LocalDate date);
+    List<RatingsResponse> getRatings(@NotNull Integer classId, @NotEmpty String subject, @NotNull LocalDate date);
 
     /**
      * Retrieves all ratings for a specific class and subject.
@@ -80,7 +82,7 @@ public interface MarkService {
      * Pre-condition: The `classId` and `subject` must not be null. The class must exist.
      * Post-condition: Returns a list of all ratings for the specified class and subject.
      */
-    List<RatingsResponse> getEveryRatings(Integer classId, String subject);
+    List<RatingsResponse> getEveryRatings(@NotNull Integer classId, @NotEmpty String subject);
 
     /**
      * Creates a new mark entry.
@@ -90,7 +92,7 @@ public interface MarkService {
      * Pre-condition: The `mark` must not be null and must contain valid details.
      * Post-condition: A new mark entry is created and returned.
      */
-    MarkResponse create(MarkRequest mark);
+    MarkResponse create(@NotNull MarkRequest mark);
 
     /**
      * Updates an existing mark for a specific student.
@@ -101,7 +103,7 @@ public interface MarkService {
      * Pre-condition: The `mark` and `studentId` must not be null. The student and mark must exist.
      * Post-condition: The specified mark is updated and returned.
      */
-    MarkResponse update(MarkUpdateRequest mark, UUID studentId);
+    MarkResponse update(@NotNull MarkUpdateRequest mark,@NotNull  UUID studentId);
 
     /**
      * Deletes a mark by its ID.
@@ -111,5 +113,5 @@ public interface MarkService {
      * Pre-condition: The `id` must not be null. The mark must exist.
      * Post-condition: The specified mark is deleted if it exists.
      */
-    boolean delete(Integer id);
+    boolean delete(@NotNull Integer id);
 }

@@ -55,7 +55,7 @@ public class AuthController {
             return switch (schoolUser.getPendingState()) {
                 case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
                 case NORMAL, REMOVE ->
-                        new ResponseEntity<>(authenticationService.verify(user.username(), user.password(), user.schoolCode(), user.role()), HttpStatus.OK);
+                        new ResponseEntity<>(authenticationService.verify(user.username(), user.newPassword(), user.schoolCode(), user.role()), HttpStatus.OK);
             };
         }
 

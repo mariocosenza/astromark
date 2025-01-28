@@ -13,6 +13,7 @@ import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,7 +57,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
-    public List<ClassworkResponse> getClassActivities(Integer classId) {
+    public List<ClassworkResponse> getClassActivities(@NotNull Integer classId) {
         if (!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException(SCHOOL_CLASS_AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent()) {
@@ -71,7 +72,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
-    public List<HomeworkResponse> getHomework(Integer classId) {
+    public List<HomeworkResponse> getHomework(@NotNull Integer classId) {
         if (!schoolUserService.isLoggedParentStudentClass(classId)) {
             throw new AccessDeniedException(SCHOOL_CLASS_AUTHORIZATION_DENIED);
         } else if (authenticationService.isStudent()) {
@@ -86,7 +87,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public ClassActivityResponse setActivity(ClassActivityRequest request, SignedHour signedHour) {
+    public ClassActivityResponse setActivity(@NotNull ClassActivityRequest request,@NotNull  SignedHour signedHour) {
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
                 || (request.title().isEmpty())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
@@ -113,7 +114,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public HomeworkResponse setHomework(HomeworkRequest request, SignedHour signedHour) {
+    public HomeworkResponse setHomework(@NotNull HomeworkRequest request,@NotNull  SignedHour signedHour) {
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
                 || (request.title().isEmpty()) || request.dueDate().isBefore(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
