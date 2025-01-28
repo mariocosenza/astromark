@@ -66,6 +66,11 @@ public class ClassManagementController {
         return classManagementService.getStudents(classId);
     }
 
+    @GetMapping("/{classId}/parents")
+    public List<SchoolClassParentResponse> getParents(@PathVariable Integer classId) {
+        return classManagementService.getParents(classId);
+    }
+
 
     @Operation(
             summary = "Retrieve all teachings",

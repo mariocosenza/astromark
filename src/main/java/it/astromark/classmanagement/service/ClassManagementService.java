@@ -119,4 +119,5 @@ public interface ClassManagementService {
      */
     List<TeachingResponse> getClassTeachings(Integer classId);
 
+    List<SchoolClassParentResponse> getParents(Integer classId);
 }

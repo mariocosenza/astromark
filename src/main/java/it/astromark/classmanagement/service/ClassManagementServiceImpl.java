@@ -16,6 +16,7 @@ import it.astromark.classmanagement.repository.TeacherClassRepository;
 import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
+import it.astromark.user.parent.repository.ParentRepository;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class ClassManagementServiceImpl implements ClassManagementService {
 
     private final TeacherClassRepository teacherClassRepository;
+    private final ParentRepository parentRepository;
     private final SubjectRepository subjectRepository;
     private final TeacherRepository teacherRepository;
     private final AuthenticationService authenticationService;
@@ -40,8 +42,9 @@ public class ClassManagementServiceImpl implements ClassManagementService {
     private final SchoolUserService schoolUserService;
     private final TeachingRepository teachingRepository;
 
-    public ClassManagementServiceImpl(TeacherClassRepository teacherClassRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository, AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository) {
+    public ClassManagementServiceImpl(TeacherClassRepository teacherClassRepository, ParentRepository parentRepository, SubjectRepository subjectRepository, TeacherRepository teacherRepository, AuthenticationService authenticationService, ClassManagementMapper classManagementMapper, SchoolClassRepository schoolClassRepository, SchoolUserService schoolUserService, TeachingRepository teachingRepository) {
         this.teacherClassRepository = teacherClassRepository;
+        this.parentRepository = parentRepository;
         this.subjectRepository = subjectRepository;
         this.teacherRepository = teacherRepository;
         this.authenticationService = authenticationService;
@@ -193,6 +196,25 @@ public class ClassManagementServiceImpl implements ClassManagementService {
                         .toList()
                         .toString()
         )).toList();
+
+
+    }
+
+    @Override
+    public List<SchoolClassParentResponse> getParents(Integer classId) {
+
+        return parentRepository.findAll().stream()
+                .filter(parent -> parent.getStudents().stream()
+                        .anyMatch(student -> student.getSchoolClasses().stream()
+                                .anyMatch(schoolClass -> schoolClass.getId().equals(classId))
+                        )
+                )
+                .map(parent -> new SchoolClassParentResponse(
+                        parent.getId(),
+                        parent.getName(),
+                        parent.getSurname()
+                ))
+                .toList();
 
 
     }
