@@ -116,7 +116,7 @@ export const DetailsSchoolClass = () => {
                 setTeachings(teachingsResponse.data);
 
             } catch (err: any) {
-                setError(err.response?.data?.message || "Failed to fetch class details");
+                setError(err.response?.data?.message || "Impossibile recuperare i dettagli della classe");
             } finally {
                 setLoading(false);
             }
@@ -164,7 +164,7 @@ export const DetailsSchoolClass = () => {
             !newStudent.residentialAddress ||
             !newStudent.classId
         ) {
-            setFormError("Please fill in all required fields.");
+            setFormError("Si prega di compilare tutti i campi obbligatori.");
             return;
         }
 
@@ -178,7 +178,7 @@ export const DetailsSchoolClass = () => {
             const response = await axiosConfig.get<SchoolClassStudentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/students`);
             setStudents(response.data);
         } catch (err: any) {
-            setFormError(err.response?.data?.message || "Failed to add student.");
+            setFormError(err.response?.data?.message || "Impossibile aggiungere lo studente.");
         } finally {
             setSubmitting(false);
         }
@@ -233,7 +233,7 @@ export const DetailsSchoolClass = () => {
             !newParent.residentialAddress ||
             !newParent.studentId
         ) {
-            setFormError("Please fill in all required fields.");
+            setFormError("Si prega di compilare tutti i campi obbligatori.");
             return;
         }
 
@@ -247,7 +247,7 @@ export const DetailsSchoolClass = () => {
             const response = await axiosConfig.get<SchoolClassParentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/parents`);
             setStudents(response.data);
         } catch (err: any) {
-            setFormError(err.response?.data?.message || "Failed to add Parent.");
+            setFormError(err.response?.data?.message || "Impossibile aggiungere il genitore.");
         } finally {
             setSubmitting(false);
         }
@@ -583,13 +583,17 @@ export const DetailsSchoolClass = () => {
 
 
 const formatUsername = (username: string): string => {
-    const parts = username.split(".");
+
+    const cleanedUsername = username.replace(/\d+/g, "");
+    const parts = cleanedUsername.split(".");
+
     if (parts.length === 2) {
-        const [prefix, name] = parts;
-        return `${capitalize(prefix)} ${name.toUpperCase()}`;
+        const [firstName, lastName] = parts;
+        return `${capitalize(firstName)} ${capitalize(lastName)}`;
     }
-    return capitalize(username);
+    return capitalize(cleanedUsername);
 };
+
 
 
 const formatSubjects = (subjects: string): string => {
