@@ -59,6 +59,9 @@ export const TeacherDashboardNavbar: React.FC = () => {
                                 localStorage.removeItem("schoolClassId")
                                 localStorage.removeItem("schoolClassTitle")
                                 localStorage.removeItem("schoolClassDesc")
+                                localStorage.removeItem("homeworkId")
+                                localStorage.removeItem("homeworkTitle")
+                                localStorage.removeItem("homeworkDesc")
                                 asyncLogout(localStorage.getItem("user")).then(_ => navigator('/logout'))
                             }
                             }

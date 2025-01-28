@@ -12,7 +12,7 @@ import {AxiosResponse} from "axios";
 import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
+import {SelectedHomework, SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useNavigate} from "react-router";
 import {getId} from "../../services/AuthService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
@@ -73,8 +73,10 @@ export const ClassAgenda: React.FC = () => {
     };
 
     const choseHomeworkChat = (slot: TeachingTimeslotDetailedResponse) => {
-        if (slot.id) {
-            SelectedTeachingTimeslot.setSlot(slot);
+        if (slot.homework && slot.homework.hasChat) {
+            SelectedHomework.id = slot.homework.id;
+            SelectedHomework.title = slot.homework.title;
+            SelectedHomework.desc = slot.homework.description;
             navigate(`/teacher/agenda/chat`);
         }
     };

@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid2";
 import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
+import {SelectedHomework, SelectedSchoolClass} from "../../services/TeacherService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
 import {SchoolClassStudentResponse} from "../../entities/SchoolClassStudentResponse.ts";
 import SmsIcon from '@mui/icons-material/Sms';
@@ -16,7 +16,6 @@ import {ChatHomeworkComponent} from "../../components/ChatHomework.tsx";
 
 export const HomeworkChat: React.FC = () => {
     const [rows, setRows] = useState<SchoolClassStudentResponse[]>([]);
-    const [homeworkId, setHomeworkId] = useState<number>()
     const [loading, setLoading] = useState<boolean>(true);
     const [selected, setSelected] = useState<SchoolClassStudentResponse | null>(null)
 
@@ -29,7 +28,6 @@ export const HomeworkChat: React.FC = () => {
             const rowResponse: AxiosResponse<SchoolClassStudentResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/class-management/${SelectedSchoolClass.id}/students`);
             if (rowResponse.data.length) {
                 setRows(rowResponse.data)
-                setHomeworkId(SelectedTeachingTimeslot.homework?.id)
             }
 
             setLoading(false)
@@ -55,9 +53,9 @@ export const HomeworkChat: React.FC = () => {
                 <CardContent>
                     <Stack direction="column" justifyContent={'space-between'} alignItems={'center'}>
                         <Typography variant="h5" fontWeight="bold">
-                            {SelectedTeachingTimeslot.homework?.title}
+                            {SelectedHomework.title}
                         </Typography>
-                        {SelectedTeachingTimeslot.homework?.description}
+                        {SelectedHomework.desc}
                     </Stack>
                 </CardContent>
             </Card>
@@ -97,8 +95,8 @@ export const HomeworkChat: React.FC = () => {
                     </Table>
                 </TableContainer>
 
-                {!loading && selected && homeworkId && (
-                    <ChatHomeworkComponent homeworkId={homeworkId} studentId={selected.id}/>
+                {!loading && selected && SelectedHomework.id && (
+                    <ChatHomeworkComponent homeworkId={SelectedHomework.id} studentId={selected.id}/>
                 )}
 
             </Stack>

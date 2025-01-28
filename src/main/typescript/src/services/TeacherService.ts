@@ -98,5 +98,39 @@ export class SelectedTeachingTimeslot {
         this._activity = slot.activity
         this._homework = slot.homework
     }
+}
 
+export class SelectedHomework {
+    private static _id: number | null = localStorage.getItem("homeworkId") ? parseInt(localStorage.getItem("homeworkId") as string) : null;
+
+    static get id(): number | null {
+        return this._id;
+    }
+
+    static set id(value: number) {
+        this._id = value;
+        localStorage.setItem('homeworkId', value.toString());
+    }
+
+    private static _title: string = localStorage.getItem("homeworkTitle") ? localStorage.getItem("homeworkTitle") as string : '';
+
+    static get title(): string {
+        return this._title;
+    }
+
+    static set title(value: string) {
+        this._title = value;
+        localStorage.setItem('homeworkTitle', value.toString());
+    }
+
+    private static _desc: string = localStorage.getItem("homeworkDesc") ? localStorage.getItem("homeworkDesc") as string : '';
+
+    static get desc(): string {
+        return this._desc;
+    }
+
+    static set desc(value: string) {
+        this._desc = value;
+        localStorage.setItem('homeworkDesc', value.toString());
+    }
 }
