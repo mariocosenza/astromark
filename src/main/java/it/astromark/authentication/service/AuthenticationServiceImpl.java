@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(schoolUser.getPendingState() == PendingState.REMOVE) {
             log.info("User is pending removal");
             return null;
-        } else if (schoolUser.getPendingState() == PendingState.NORMAL || !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
+        } else if (schoolUser.getPendingState() == PendingState.NORMAL && !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
             throw new IllegalArgumentException("Invalid input");
         }
 
