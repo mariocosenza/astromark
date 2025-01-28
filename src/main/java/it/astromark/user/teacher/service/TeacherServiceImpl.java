@@ -59,7 +59,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(TeacherRequest teacherRequest) {
-        var username = teacherRequest.name() + "." + teacherRequest.surname() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
+        var username = teacherRequest.name().toLowerCase() + "." + teacherRequest.surname().toLowerCase() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
         var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var password = new Faker().internet().password(8, 64, true, false, true);
         var user = schoolUserMapper.toSchoolUserDetailed(teacherRepository.save(Teacher.builder()

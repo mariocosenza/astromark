@@ -38,7 +38,7 @@ public class SecretaryServiceImpl implements SecretaryService {
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(SecretaryRequest secretaryRequest) {
-        var username = secretaryRequest.name() + "." + secretaryRequest.surname() + secretaryRepository.countByNameAndSurname(secretaryRequest.name(), secretaryRequest.surname());
+        var username = secretaryRequest.name().toLowerCase() + "." + secretaryRequest.surname().toLowerCase() + secretaryRepository.countByNameAndSurname(secretaryRequest.name(), secretaryRequest.surname());
         var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var password = new Faker().internet().password(8, 64, true, false, true);
         var user = schoolUserMapper.toSchoolUserDetailed(secretaryRepository.save(Secretary.builder().school(school)
