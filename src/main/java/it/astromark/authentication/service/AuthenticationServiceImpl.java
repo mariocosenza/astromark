@@ -48,17 +48,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SchoolUser login(UserLoginRequest user) {
+        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+        if (schoolUser == null) {
+            return null;
+        }
+
         if (user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
-                !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") ||
                 !user.schoolCode().matches("^SS\\d{5}$") ||
                 user.role().isBlank()) {
             throw new IllegalArgumentException("Invalid input");
         }
 
-        // Cerca l'utente nei vari repository
-        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
-        if (schoolUser == null) {
+        if(schoolUser.getPendingState() == PendingState.REMOVE) {
+            log.info("User is pending removal");
             return null;
+        } else if (schoolUser.getPendingState() == PendingState.NORMAL || !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
+            throw new IllegalArgumentException("Invalid input");
         }
 
         var hashedPassword = PasswordUtils.hashPassword(user.password());
@@ -66,7 +71,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return schoolUser;
 
         log.info("User not found in any repository");
-        // Se nessun utente trovato o password non valida
         return null;
     }
 
