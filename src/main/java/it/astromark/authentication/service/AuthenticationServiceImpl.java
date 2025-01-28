@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser firstLogin(UserFirstLoginRequest user) {
         var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
-        if(!user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
+        if(!user.newPassword().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
             throw new IllegalArgumentException("Invalid input");
         }
 
