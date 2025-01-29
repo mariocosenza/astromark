@@ -41,6 +41,7 @@ const Absence: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const response: AxiosResponse<JustificationResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/year/${SelectedYear.year}/justifiable/absences`);
             setData(response.data);
             setLoading(false);
@@ -69,6 +70,7 @@ const Delay: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const response: AxiosResponse<JustificationResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/year/${SelectedYear.year}/justifiable/delays`);
             setData(response.data);
             setLoading(false);
@@ -91,6 +93,7 @@ export const AbsenceDelays: React.FC = () => {
     const [totAbsences, setTotAbsences] = useState<number>(0);
     const [totDelays, setTotDelays] = useState<number>(0);
     const [toggle, _] = changeStudentOrYear();
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         fetchData();
@@ -98,10 +101,12 @@ export const AbsenceDelays: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const responseAbsences: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/year/${SelectedYear.year}/justifiable/absences/total`);
             const responseDelays: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/year/${SelectedYear.year}/justifiable/delays/total`);
             setTotAbsences(responseAbsences.data);
             setTotDelays(responseDelays.data);
+            setLoading(false);
         } catch (error) {
             console.error(error);
         }
@@ -142,7 +147,9 @@ export const AbsenceDelays: React.FC = () => {
                         marginRight: '5%',
                         boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
                     }}>
-                        <h1>Totale assenze e ritardi: {totAbsences + totDelays}</h1>
+                        {
+                           !loading && <h1>Totale assenze e ritardi: {totAbsences + totDelays}</h1>
+                        }
                     </Box>
                     <Box bgcolor={'#46483b'} height={'20%'} style={{
                         color: 'white',
@@ -153,7 +160,9 @@ export const AbsenceDelays: React.FC = () => {
                         marginRight: '5%',
                         boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
                     }}>
-                        <h1>Totale assenze: {totAbsences}</h1>
+                        {
+                            !loading && <h1>Totale assenze: {totAbsences}</h1>
+                        }
                     </Box>
                     <Box bgcolor={'#004e5b'} height={'20%'} style={{
                         color: 'white',
@@ -164,7 +173,10 @@ export const AbsenceDelays: React.FC = () => {
                         marginRight: '5%',
                         boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
                     }}>
-                        <h1>Totale ritardi: {totDelays}</h1>
+                        {
+                            !loading && <h1>Totale ritardi: {totDelays}</h1>
+                        }
+
                     </Box>
                 </Stack>
             </Stack>

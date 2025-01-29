@@ -30,6 +30,7 @@ export const Dashboard: React.FC = () => {
     const [activity, setActivity] = useState<HomeworkResponse>();
     const [, setOpen] = openChat();
     const [toggle, _] = changeStudentOrYear();
+    const [firstFetch, setFirstFetch] = useState<boolean>(true);
 
     useEffect(() => {
         fetchData();
@@ -41,13 +42,17 @@ export const Dashboard: React.FC = () => {
             if (!isRole(Role.STUDENT)) {
                 await axiosConfig.get<SchoolUserDetail[]>(Env.API_BASE_URL + '/parents/students')
                     .then((response) => {
-                        SelectedStudent.id = response.data[0].id;
+                        if(firstFetch)
+                        {
+                            SelectedStudent.id = response.data[0].id;
+                        }
                         getStudentYears().then((response) => {
                             if (response !== null) {
                                 SelectedYear.year = response[0];
                             }
                         });
                     });
+                setFirstFetch(false);
                 setOpen(false);
             }
         } catch (error) {

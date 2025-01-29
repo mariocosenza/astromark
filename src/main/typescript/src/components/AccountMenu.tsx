@@ -59,8 +59,8 @@ export const AccountMenu: React.FC<SchoolUserDetailProp> = ({data}) => {
                 {
                     data.map((student: SchoolUserDetail) => <MenuItem key={student.id} onClick={() => {
                         SelectedStudent.id = student.id
-                        setToggle(!toggle)
                         handleClose()
+                        setToggle(!toggle)
                     }}>{student.name + ' ' + student.surname}</MenuItem>)
                 }
             </Menu>
