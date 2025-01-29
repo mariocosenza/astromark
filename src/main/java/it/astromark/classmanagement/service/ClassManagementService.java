@@ -102,7 +102,7 @@ public interface ClassManagementService {
     /**
      * Removes a class associated with a specific teacher.
      *
-     * @param teacheruuid   the UUID of the teacher whose class is to be removed
+     * @param uuuid   the UUID of the teacher whose class is to be removed
      * @param schoolClassId the ID of the class to be removed
      *                      Pre-condition: The `teacheruuid` and `schoolClassId` must not be null. The teacher and class must exist.
      *                      Post-condition: The specified class is removed from the teacher's assignments.
