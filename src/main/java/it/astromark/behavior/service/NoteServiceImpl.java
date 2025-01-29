@@ -1,7 +1,6 @@
 package it.astromark.behavior.service;
 
 
-import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.behavior.dto.NoteRequest;
 import it.astromark.behavior.dto.NoteResponse;
 import it.astromark.behavior.entity.Note;
@@ -18,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,22 +29,20 @@ public class NoteServiceImpl implements NoteService {
     private final NoteMapper noteMapper;
     private final SchoolUserService schoolUserService;
     private final StudentRepository studentRepository;
-    private final AuthenticationService authenticationService;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper, SchoolUserService schoolUserService, StudentRepository studentRepository, AuthenticationService authenticationService) {
+    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper, SchoolUserService schoolUserService, StudentRepository studentRepository) {
         this.noteRepository = noteRepository;
         this.noteMapper = noteMapper;
         this.schoolUserService = schoolUserService;
         this.studentRepository = studentRepository;
-        this.authenticationService = authenticationService;
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public NoteResponse create(@NotNull NoteRequest noteRequest) {
-        if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId())) {
+        if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId()) && noteRequest.date().isBefore(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
@@ -81,9 +79,9 @@ public class NoteServiceImpl implements NoteService {
     public List<NoteResponse> getNoteByStudentId(@NotNull UUID studentId, @NotNull Integer classId) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
-        } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
-        } else if (authenticationService.isStudent() && !schoolUserService.isLoggedStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return studentRepository.findById(studentId).orElseThrow().getNotes().stream()

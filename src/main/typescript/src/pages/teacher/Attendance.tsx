@@ -145,14 +145,14 @@ export const Attendance: React.FC = () => {
                         <Grid>
                             <Stack direction={'column'} justifyContent={'center'}>
                                 <Typography variant="caption" color={'textSecondary'}>
-                                    Consegna
+                                    Data
                                 </Typography>
                                 <DatePicker
                                     value={date}
                                     onChange={handleDateChange}/>
                                 {dateError && (
                                     <Typography variant="caption" color={'error'}>
-                                        È possibile visionare solo date successive ad oggi.
+                                        È possibile selezionare solo date successive ad oggi.
                                     </Typography>
                                 )}
                             </Stack>

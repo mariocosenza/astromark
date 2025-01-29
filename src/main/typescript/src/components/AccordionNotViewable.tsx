@@ -24,7 +24,7 @@ export const AccordionNotViewable: React.FC<AccordionNotViewableProps> = (props:
                 <Avatar sx={{bgcolor: '#df3466'}}>{props.avatar}</Avatar>
                 <Typography variant={'h6'} sx={{ml: '1vw', whiteSpace: 'pre-wrap'}}
                             component={isMobile ? 'h6' : "span"}>
-                    {props.title} del {new Date(props.date).toLocaleDateString()}
+                    {props.title} - {new Date(props.date).toLocaleDateString()}
                 </Typography>
             </AccordionSummary>
             <AccordionDetails>

@@ -122,14 +122,14 @@ export const Ratings: React.FC = () => {
                         <Grid justifyContent={'center'}>
                             <Stack direction={'column'} justifyContent={'center'}>
                                 <Typography variant="caption" color={'textSecondary'}>
-                                    Consegna
+                                    Data
                                 </Typography>
                                 <DatePicker
                                     value={date}
                                     onChange={handleDateChange}/>
                                 {dateError && (
                                     <Typography variant="caption" color={'error'}>
-                                        È possibile visionare solo date successive ad oggi.
+                                        È possibile selezionare solo date successive ad oggi.
                                     </Typography>
                                 )}
                             </Stack>
