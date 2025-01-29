@@ -450,20 +450,33 @@ VALUES
 
 INSERT INTO mark (student_id, teaching_subject_title, teaching_teacher_id, date, type, mark, description)
 VALUES
-    ((SELECT id FROM student WHERE username = 'luca.verdi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-22', 'ORAL', 5.75, 'Interrogazione su funzioni.'),
-    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-22', 'ORAL', 4.50, 'Interrogazione su funzioni incompleta.'),
-    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-25', 'WRITTEN', 6.25, 'Test sulle equazioni.'),
-    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-24', 'ORAL', 5.0, 'Interrogazione sul Rinascimento.'),
-    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2025-01-23', 'WRITTEN', 8.0, 'Compito sui sistemi lineari.'),
-    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-20', 'ORAL', 6.75, 'Analisi di un testo poetico.'),
-    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-19', 'WRITTEN', 4.75, 'Tema: il Romanticismo.'),
-    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-18', 'ORAL', 7.25, 'Dialogo su un testo letterario.'),
-    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-15', 'WRITTEN', 5.50, 'Traduzione di un brano.'),
-    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-16', 'WRITTEN', 7.75, 'Progetto: sviluppo di un algoritmo.'),
-    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Informatica', (SELECT id FROM teacher WHERE username = 'elena.blui'), '2025-01-17', 'WRITTEN', 3.25, 'Compito sulla programmazione.'),
-    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Inglese', (SELECT id FROM teacher WHERE username = 'anna.blui'), '2025-01-14', 'ORAL', 6.0, 'Esposizione di un argomento a scelta.'),
-    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.gialli'), '2025-01-13', 'WRITTEN', 5.0, 'Analisi di un testo narrativo.'),
-    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Storia', (SELECT id FROM teacher WHERE username = 'riccardo.blui'), '2025-01-12', 'ORAL', 6.50, 'Interrogazione sulla Rivoluzione Francese.');
+    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2024-12-11', 'LABORATORY', 7.0, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'marco.neri'), 'Geometria', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2024-11-20', 'WRITTEN', 7.75, 'Valutazione su geometria.'),
+    ((SELECT id FROM student WHERE username = 'luca.verdi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2024-12-17', 'LABORATORY', 4.25, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'luca.verdi'), 'Geometria', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2024-11-26', 'ORAL', 4.5, 'Valutazione su geometria.'),
+    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Matematica', (SELECT id FROM teacher WHERE username = 'giorgio.verdi'), '2024-11-28', 'WRITTEN', 7.75, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'sofia.bianchi'), 'Geometria', (SELECT id FROM teacher WHERE username = 'giorgio.verdi'), '2024-11-29', 'WRITTEN', 6.5, 'Valutazione su geometria.'),
+    ((SELECT id FROM student WHERE username = 'giulia.rossi'), 'Fisica', (SELECT id FROM teacher WHERE username = 'davide.lombardi'), '2025-01-17', 'ORAL', 4.5, 'Valutazione su fisica.'),
+    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Storia', (SELECT id FROM teacher WHERE username = 'paolo.benedetti'), '2025-01-23', 'WRITTEN', 9.5, 'Valutazione su storia.'),
+    ((SELECT id FROM student WHERE username = 'elisa.verdi'), 'Chimica', (SELECT id FROM teacher WHERE username = 'antonella.marini'), '2024-11-29', 'LABORATORY', 8.0, 'Valutazione su chimica.'),
+    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Storia', (SELECT id FROM teacher WHERE username = 'paolo.benedetti'), '2025-01-07', 'WRITTEN', 7.5, 'Valutazione su storia.'),
+    ((SELECT id FROM student WHERE username = 'franco.blui'), 'Chimica', (SELECT id FROM teacher WHERE username = 'antonella.marini'), '2025-01-03', 'LABORATORY', 8.25, 'Valutazione su chimica.'),
+    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Matematica', (SELECT id FROM teacher WHERE username = 'antonio.mancini'), '2024-11-07', 'WRITTEN', 8.75, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'chiara.neri'), 'Inglese', (SELECT id FROM teacher WHERE username = 'valentina.ruggeri'), '2024-12-20', 'ORAL', 6.5, 'Valutazione su inglese.'),
+    ((SELECT id FROM student WHERE username = 'michele.pellegrini'), 'Matematica', (SELECT id FROM teacher WHERE username = 'mario.neri'), '2024-12-26', 'LABORATORY', 7.25, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'michele.pellegrini'), 'Inglese', (SELECT id FROM teacher WHERE username = 'giulia.sala'), '2024-12-31', 'ORAL', 4.5, 'Valutazione su inglese.'),
+    ((SELECT id FROM student WHERE username = 'michele.pellegrini'), 'Italiano', (SELECT id FROM teacher WHERE username = 'simona.mazzoni'), '2024-12-09', 'LABORATORY', 5.5, 'Valutazione su italiano.'),
+    ((SELECT id FROM student WHERE username = 'matteo.fontana'), 'Matematica', (SELECT id FROM teacher WHERE username = 'antonio.mancini'), '2024-12-03', 'ORAL', 6.75, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'matteo.fontana'), 'Inglese', (SELECT id FROM teacher WHERE username = 'valentina.ruggeri'), '2024-11-07', 'LABORATORY', 9.5, 'Valutazione su inglese.'),
+    ((SELECT id FROM student WHERE username = 'matteo.romano'), 'Matematica', (SELECT id FROM teacher WHERE username = 'mario.neri'), '2025-01-27', 'WRITTEN', 9.0, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'matteo.romano'), 'Inglese', (SELECT id FROM teacher WHERE username = 'giulia.sala'), '2024-12-02', 'LABORATORY', 4.5, 'Valutazione su inglese.'),
+    ((SELECT id FROM student WHERE username = 'matteo.romano'), 'Italiano', (SELECT id FROM teacher WHERE username = 'simona.mazzoni'), '2024-11-11', 'WRITTEN', 7.75, 'Valutazione su italiano.'),
+    ((SELECT id FROM student WHERE username = 'giovanni.ferrari'), 'Matematica', (SELECT id FROM teacher WHERE username = 'paola.rinaldi'), '2024-11-18', 'ORAL', 6.25, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'giovanni.ferrari'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.ruggeri'), '2024-11-01', 'LABORATORY', 5.5, 'Valutazione su italiano.'),
+    ((SELECT id FROM student WHERE username = 'gianluigi.donnarumma'), 'Matematica', (SELECT id FROM teacher WHERE username = 'paola.rinaldi'), '2024-11-28', 'LABORATORY', 4.5, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'gianluigi.donnarumma'), 'Italiano', (SELECT id FROM teacher WHERE username = 'elisa.ruggeri'), '2024-12-05', 'WRITTEN', 4.75, 'Valutazione su italiano.'),
+    ((SELECT id FROM student WHERE username = 'alessandro.bastoni'), 'Matematica', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2024-12-19', 'ORAL', 4.75, 'Valutazione su matematica.'),
+    ((SELECT id FROM student WHERE username = 'alessandro.bastoni'), 'Geometria', (SELECT id FROM teacher WHERE username = 'marco.gialli'), '2024-11-04', 'LABORATORY', 7.0, 'Valutazione su geometria.');
 
 INSERT INTO semester_report (first_semester, public, passed, year, student_id)
 VALUES
