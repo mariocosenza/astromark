@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class NoteServiceImpl implements NoteService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public NoteResponse create(@NotNull NoteRequest noteRequest) {
-        if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId())) {
+        if (!schoolUserService.isLoggedTeacherStudent(noteRequest.studentId()) && noteRequest.date().isBefore(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 

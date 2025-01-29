@@ -20,6 +20,7 @@ export const TeacherNote: React.FC = () => {
     const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
     const [note, setNote] = useState<string>("");
     const [date, setDate] = useState<DateObject>(new DateObject())
+    const [dateError, setDateError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
@@ -47,7 +48,7 @@ export const TeacherNote: React.FC = () => {
     }
 
     const handleSave = async () => {
-        if (selectedStudent && date) {
+        if (selectedStudent && date && !dateError) {
             const noteRequest: NoteRequest = {
                 studentId: selectedStudent.id,
                 description: note,
@@ -71,6 +72,7 @@ export const TeacherNote: React.FC = () => {
     const handleDateChange = (newDate: DateObject | null) => {
         if (newDate) {
             setDate(newDate);
+            setDateError(newDate > new DateObject())
         }
     };
 
@@ -89,13 +91,19 @@ export const TeacherNote: React.FC = () => {
                 </Grid>
                 <Grid>
                     <Stack direction={'column'} justifyContent={'center'}>
-                        <Typography variant="caption" color={'textSecondary'}>
-                            Data
-                        </Typography>
-                        <DatePicker
-                            value={date}
-                            onChange={handleDateChange}
-                        />
+                        <Stack direction={'column'} justifyContent={'center'}>
+                            <Typography variant="caption" color={'textSecondary'}>
+                                Data
+                            </Typography>
+                            <DatePicker
+                                value={date}
+                                onChange={handleDateChange}/>
+                            {dateError && (
+                                <Typography variant="caption" color={'error'}>
+                                    È possibile selezionare solo date successive ad oggi.
+                                </Typography>
+                            )}
+                        </Stack>
                     </Stack>
                 </Grid>
             </Grid>
