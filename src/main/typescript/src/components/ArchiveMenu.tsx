@@ -47,7 +47,7 @@ export const ArchiveMenu: React.FC<Year> = ({data}) => {
                 }}
             >
                 {
-                    data.map((year: number) => <MenuItem key={year} onClick={() => {
+                    data.map((year: number) => <MenuItem selected={SelectedYear.year === year} key={year} onClick={() => {
                         SelectedYear.year = year
                         setToggle(!toggle)
                         handleClose()

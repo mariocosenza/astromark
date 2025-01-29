@@ -20,7 +20,7 @@ export function validateAddress(address: string): boolean {
 function sendAddress(address: string) {
     if (validateAddress(address)) {
         axiosConfig
-            .patch(`${Env.API_BASE_URL}/school-users/address`, {address})
+            .patch(`${Env.API_BASE_URL}/school-users/address`, address, {headers: {'Content-Type': 'text/plain'}})
             .then(() => {
                 // eventuale logica di successo
             })

@@ -9,6 +9,7 @@ import {useNavigate} from "react-router";
 import {SchoolUserDetail} from "./AccountMenu.tsx";
 import axiosConfig from "../services/AxiosConfig.ts";
 import {Env} from "../Env.ts";
+import {changeStudentOrYear} from "../services/StateService.ts";
 
 interface DashboardProps {
     isTeacher: boolean;
@@ -19,10 +20,11 @@ export const Dashboard: React.FC<DashboardProps> = ({isTeacher}) => {
     const [loading, setLoading] = React.useState<boolean>(true);
     const [schoolUser, setSchoolUser] = React.useState<SchoolUserDetail>();
     const navigate = useNavigate();
+    const [toggle, _] = changeStudentOrYear();
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [toggle]);
 
     const fetchData = async () => {
         try {

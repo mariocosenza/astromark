@@ -68,6 +68,7 @@ export const Homework: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
             const response: AxiosResponse<HomeworkResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/homeworks/all`);
             setActivity(response.data);
@@ -176,6 +177,7 @@ const Activity: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
             const response: AxiosResponse<ClassActivityResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/activities/all`);
             setActivity(response.data);
