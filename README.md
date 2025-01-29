@@ -1,8 +1,20 @@
-# AstroMark
+# AstroMark 
+[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://mariocosenza.github.io/astromark/javadoc/)
+[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+![GitHub Release](https://img.shields.io/github/v/release/mariocosenza/astromark)
 
 <div align="center">
   <img src="src/main/typescript/public/logo.svg" alt="AstroMark Logo" width="200" height="200">
 </div>
+
+
+
+## Documentation
+AstroMark provides comprehensive documentation to help developers understand and work with the codebase:
+
+- [JavaDoc Documentation](https://mariocosenza.github.io/astromark/javadoc/): Detailed documentation of the Java codebase, including class structures, methods, and their usage. This documentation is automatically generated from code comments and provides a complete reference for the backend implementation.
+
+- [Swagger API Documentation](https://astromark.it/swagger-ui/index.html): Interactive API documentation that allows you to explore and test the REST endpoints directly through your browser. The Swagger UI provides detailed information about request/response formats, authentication requirements, and available API operations.
 
 ## Project Origin
 

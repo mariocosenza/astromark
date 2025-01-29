@@ -64,7 +64,7 @@ const BookedSlots: React.FC = () => {
 
     return (
         <div style={{display: "flex", justifyContent: "center", marginTop: "1rem"}}>
-            {loading ? <div>Loading...</div> : <ListBooked list={booking}/>}
+            {loading ? <div>Caricamento in corso...</div> : <ListBooked list={booking}/>}
         </div>
     );
 };

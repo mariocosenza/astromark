@@ -133,7 +133,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .map(teaching -> teaching.getSubjectTitle().getTitle() + " - " + teaching.getTypeOfActivity())
                 .toList();
 
-        return new TeacherDetailsResponse(teacher.getUsername(), teachings);
+        return new TeacherDetailsResponse(teacher.getName() + ' ' + teacher.getSurname(), teachings);
     }
 
 

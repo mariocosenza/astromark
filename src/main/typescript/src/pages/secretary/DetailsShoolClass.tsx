@@ -178,7 +178,7 @@ export const DetailsSchoolClass = () => {
             const response = await axiosConfig.get<SchoolClassStudentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/students`);
             setStudents(response.data);
         } catch (err: any) {
-            setFormError(err.response?.data?.message || "Impossibile aggiungere lo studente.");
+            setFormError("Impossibile aggiungere lo studente.");
         } finally {
             setSubmitting(false);
         }
@@ -247,7 +247,7 @@ export const DetailsSchoolClass = () => {
             const response = await axiosConfig.get<SchoolClassParentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/parents`);
             setStudents(response.data);
         } catch (err: any) {
-            setFormError(err.response?.data?.message || "Impossibile aggiungere il genitore.");
+            setFormError("Impossibile aggiungere il genitore.");
         } finally {
             setSubmitting(false);
         }
@@ -353,7 +353,7 @@ export const DetailsSchoolClass = () => {
                             </List>
                         ) : (
                             <Typography variant="body2" color="textSecondary">
-                                Non ci sono professori assegnati a questa classe
+                                Non ci sono genitori assegnati a questa classe
                             </Typography>
                         )}
                     </Paper>

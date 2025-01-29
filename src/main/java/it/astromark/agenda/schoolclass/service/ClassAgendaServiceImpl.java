@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 
 @Slf4j
@@ -218,7 +219,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
             throw new IllegalArgumentException("Start date must be before end date");
         }
 
-        assert request.endDate() != null;
+        Objects.requireNonNull(request.endDate());
         var endDate = request.endDate().isBefore(request.startDate())
                 ? request.startDate().plusDays(1)
                 : request.endDate();
