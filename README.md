@@ -1,5 +1,5 @@
 # AstroMark 
-[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://mariocosenza.github.io/astromark/javadoc/)
+[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://mariocosenza.github.io/astromark/)
 [![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 ![GitHub Release](https://img.shields.io/github/v/release/mariocosenza/astromark)
 
