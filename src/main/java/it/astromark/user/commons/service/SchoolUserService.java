@@ -36,16 +36,6 @@ public interface SchoolUserService {
     boolean isLoggedUserParent(@NotNull UUID studentId);
 
     /**
-     * Checks if the logged-in teacher is responsible for a specific class.
-     *
-     * @param classId the ID of the class
-     * @return true if the logged-in teacher is responsible for the class, false otherwise
-     * Pre-condition: The `classId` must not be null. The class must exist.
-     * Post-condition: Returns true if the logged-in teacher is associated with the class.
-     */
-    boolean isLoggedTeacherClass(@NotNull Integer classId);
-
-    /**
      * Checks if a specific teacher is responsible for a specific class.
      *
      * @param teacher the `Teacher` object
@@ -57,6 +47,16 @@ public interface SchoolUserService {
     boolean isTeacherClass(@NotNull Teacher teacher, @NotNull Integer classId);
 
     /**
+     * Checks if the logged-in teacher is responsible for a specific class.
+     *
+     * @param classId the ID of the class
+     * @return true if the logged-in teacher is responsible for the class, false otherwise
+     * Pre-condition: The `classId` must not be null. The class must exist.
+     * Post-condition: Returns true if the logged-in teacher is associated with the class.
+     */
+    boolean isLoggedTeacherClass(@NotNull Integer classId);
+
+    /**
      * Checks if the logged-in parent has a child in a specific class.
      *
      * @param classId the ID of the class
@@ -65,26 +65,6 @@ public interface SchoolUserService {
      * Post-condition: Returns true if the logged-in parent is associated with the class.
      */
     boolean isLoggedParentStudentClass(@NotNull Integer classId);
-
-    /**
-     * Updates the preferences for the logged-in user.
-     *
-     * @param schoolUserUpdate the object containing the updated preferences
-     * @return a `SchoolUserResponse` object representing the updated user details
-     * Pre-condition: The `schoolUserUpdate` must not be null and must contain valid preference data.
-     * Post-condition: The user's preferences are updated, and a response object is returned.
-     */
-    SchoolUserResponse updatePreferences(@NotNull SchoolUserUpdate schoolUserUpdate);
-
-    /**
-     * Updates the address for the logged-in user.
-     *
-     * @param address the new address
-     * @return a `SchoolUserResponse` object representing the updated user details
-     * Pre-condition: The `address` must not be null or empty.
-     * Post-condition: The user's address is updated, and a response object is returned.
-     */
-    SchoolUserResponse updateAddress(String address);
 
     /**
      * Checks if the logged-in teacher is responsible for a specific student.
@@ -105,6 +85,26 @@ public interface SchoolUserService {
      * Post-condition: Returns true if the logged-in student matches the specified ID.
      */
     boolean isLoggedStudent(@NotNull UUID studentId);
+
+    /**
+     * Updates the preferences for the logged-in user.
+     *
+     * @param schoolUserUpdate the object containing the updated preferences
+     * @return a `SchoolUserResponse` object representing the updated user details
+     * Pre-condition: The `schoolUserUpdate` must not be null and must contain valid preference data.
+     * Post-condition: The user's preferences are updated, and a response object is returned.
+     */
+    SchoolUserResponse updatePreferences(@NotNull SchoolUserUpdate schoolUserUpdate);
+
+    /**
+     * Updates the address for the logged-in user.
+     *
+     * @param address the new address
+     * @return a `SchoolUserResponse` object representing the updated user details
+     * Pre-condition: The `address` must not be null or empty.
+     * Post-condition: The user's address is updated, and a response object is returned.
+     */
+    SchoolUserResponse updateAddress(String address);
 
     /**
      * Retrieves detailed information about the logged-in user.

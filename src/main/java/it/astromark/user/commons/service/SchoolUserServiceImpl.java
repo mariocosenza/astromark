@@ -72,24 +72,18 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @Override
     @Transactional
     public boolean isLoggedParentStudentClass(@NotNull Integer classId) {
-        if (authenticationService.isParent()) {
-            return authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
-        } else {
-            return true;
-        }
+        return !authenticationService.isParent() ||authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
     }
 
     @Override
     @Transactional
     public boolean isLoggedTeacherStudent(@NotNull UUID studentId) {
-        if (!authenticationService.isTeacher()) {
-            return false;
-        }
+        return !authenticationService.isTeacher() || teacherClassRepository.findByTeacher(authenticationService.getTeacher().orElseThrow()).stream().anyMatch(c -> c.getSchoolClass().getStudents().stream().anyMatch(s -> s.getId().equals(studentId)));
+    }
 
-        var teacher = authenticationService.getTeacher().orElseThrow();
-        return teacherClassRepository.findByTeacher(teacher).stream()
-                .anyMatch(c -> c.getSchoolClass().getStudents().stream()
-                        .anyMatch(s -> s.getId().equals(studentId)));
+    @Override
+    public boolean isLoggedStudent(@NotNull UUID studentId) {
+        return !authenticationService.isStudent() || authenticationService.getStudent().orElseThrow().getId().equals(studentId);
     }
 
     @Override
@@ -150,11 +144,6 @@ public class SchoolUserServiceImpl implements SchoolUserService {
         }
 
         return schoolUserMapper.toSchoolUserResponse(user);
-    }
-
-    @Override
-    public boolean isLoggedStudent(@NotNull UUID studentId) {
-        return !authenticationService.isStudent() || authenticationService.getStudent().orElseThrow().getId().equals(studentId);
     }
 
     @Override
