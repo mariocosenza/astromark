@@ -9,4 +9,14 @@ export class SelectedTicket {
         this._ticketId = value;
     }
 
+
+    private static _closed: boolean = true;
+
+    static get closed(): boolean {
+        return this._closed;
+    }
+
+    static set closed(value: boolean) {
+        this._closed = value;
+    }
 }

@@ -91,6 +91,7 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
     };
 
     const updateTicketStatus = (ticketId: string, solved: boolean) => {
+        SelectedTicket.closed = true;
         setList(currentList =>
             currentList.map(item =>
                 item.id === ticketId
@@ -154,8 +155,9 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
         return list.filter(item => item.ticket.category === selectedCategory);
     }, [list, selectedCategory]);
 
-    const handleTicketClick = (id: string) => {
+    const handleTicketClick = (id: string, closed: boolean) => {
         SelectedTicket.ticketId = id;
+        SelectedTicket.closed = closed;
         onTicketClick();
     };
 
@@ -203,7 +205,7 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
                     margin={'0.5rem 0'}
                     padding={'1rem'}
                     key={item.id}
-                    onClick={() => handleTicketClick(item.id)}
+                    onClick={() => handleTicketClick(item.id, item.ticket.closed)}
                     sx={{
                         borderRadius: '8px',
                         cursor: 'pointer',
