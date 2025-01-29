@@ -218,12 +218,17 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
             throw new IllegalArgumentException("Start date must be before end date");
         }
 
+        assert request.endDate() != null;
+        var endDate = request.endDate().isBefore(request.startDate())
+                ? request.startDate().plusDays(1)
+                : request.endDate();
+
 
         var classTimetable = ClassTimetable.builder()
                 .schoolClass(schoolClass)
                 .startValidity(request.startDate())
-                .endValidity(request.endDate())
-                .expectedHours(request.expectedHours() != null ? request.expectedHours() : 27) // Valore predefinito
+                .endValidity(endDate)
+                .expectedHours(request.expectedHours() != null ? request.expectedHours() : 27)
                 .build();
 
         classTimetableRepository.save(classTimetable);
