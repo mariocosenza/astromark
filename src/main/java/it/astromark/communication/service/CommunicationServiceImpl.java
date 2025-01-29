@@ -45,7 +45,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public CommunicationResponse create(@NotNull CommunicationRequest communicationRequest) {
-        if (!schoolUserService.isLoggedTeacherClass(communicationRequest.classId())) {
+        if ((!schoolUserService.isLoggedTeacherClass(communicationRequest.classId()) && communicationRequest.title().isEmpty())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 

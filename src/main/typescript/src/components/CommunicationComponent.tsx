@@ -12,7 +12,7 @@ export const CommunicationComponent: React.FC<{ row: Communication, returnBack: 
     const [error, setError] = useState<boolean>(false)
 
     const handleSave = async () => {
-        if (!error) {
+        if (title.trim().length > 0) {
             const communication: CommunicationRequest = {
                 classId: SelectedSchoolClass.id,
                 title: title,
