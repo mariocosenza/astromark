@@ -77,6 +77,11 @@ export const ManageTimetable = () => {
     };
 
     const handleSubmit = async () => {
+
+        if(new Date(formData.endDate).getTime() < new Date(formData.startDate).getTime()) {
+            setSubmitError("Inserisci data validata");
+            return
+        }
         try {
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/createTimeTable`, formData);
             setSuccessMessage("Orario delle lezioni creato con successo!");
