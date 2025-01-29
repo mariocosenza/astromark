@@ -36,20 +36,18 @@ public interface ClassworkService {
      *
      * @param request the `ClassActivityRequest` object containing the details of the class activity
      * @param signedHour the `SignedHour` object associated with the class activity
-     * @return a `ClassActivityResponse` object representing the created or updated class activity
      * Pre-condition:
      * - The `request` and `signedHour` parameters must not be null.
      * - The `request.title()` must not be empty.
      * Post-condition: The created or updated class activity is saved in the repository.
      */
-    ClassActivityResponse setActivity(@NotNull ClassActivityRequest request, @NotNull SignedHour signedHour);
+    void createActivity(@NotNull ClassActivityRequest request, @NotNull SignedHour signedHour);
 
     /**
      * Creates or updates a homework assignment based on the provided request and signed hour.
      *
      * @param request the `HomeworkRequest` object containing the details of the homework assignment
      * @param signedHour the `SignedHour` object associated with the homework assignment
-     * @return a `HomeworkResponse` object representing the created or updated homework assignment
      * Pre-condition:
      * - The `request` and `signedHour` parameters must not be null.
      * - The `request.title()` must not be empty and `request.dueDate()` must be a future date.
@@ -57,6 +55,6 @@ public interface ClassworkService {
      * - The created or updated homework assignment is saved in the repository.
      * - If `request.hasChat()` is true, homework chats are created.
      */
-    HomeworkResponse setHomework(@NotNull HomeworkRequest request, @NotNull SignedHour signedHour);
+    void createHomework(@NotNull HomeworkRequest request, @NotNull SignedHour signedHour);
 
 }

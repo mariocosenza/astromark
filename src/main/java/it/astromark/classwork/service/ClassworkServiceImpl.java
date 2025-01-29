@@ -87,7 +87,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public ClassActivityResponse setActivity(@NotNull ClassActivityRequest request,@NotNull  SignedHour signedHour) {
+    public void createActivity(@NotNull ClassActivityRequest request, @NotNull  SignedHour signedHour) {
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
                 || (request.title().isEmpty())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
@@ -107,14 +107,12 @@ public class ClassworkServiceImpl implements ClassworkService {
         }
 
         classActivityRepository.save(activity);
-
-        return classworkMapper.toClassActivityResponse(activity);
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public HomeworkResponse setHomework(@NotNull HomeworkRequest request,@NotNull  SignedHour signedHour) {
+    public void createHomework(@NotNull HomeworkRequest request,@NotNull  SignedHour signedHour) {
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
                 || (request.title().isEmpty()) || request.dueDate().isBefore(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
@@ -137,9 +135,8 @@ public class ClassworkServiceImpl implements ClassworkService {
 
         homeworkRepository.save(homework);
 
-        if (request.hasChat())
+        if (request.hasChat()) {
             homeworkChatService.addChat(homework.getId());
-
-        return classworkMapper.toHomeworkResponse(homework);
+        }
     }
 }
