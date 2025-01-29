@@ -16,11 +16,16 @@ import { useNavigate } from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
 import { Env } from "../../Env";
 
+// Interface for Teacher response
 interface TeacherResponse {
     name: string;
     surname: string;
     uuid: string;
 }
+
+// Regular Expressions for validation
+const NAME_SURNAME_REGEX = /^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$/;
+const ADDRESS_REGEX = /^[a-zA-Z0-9\s.,]+$/;
 
 export const ManageTeacher = () => {
     const [teachers, setTeachers] = useState<TeacherResponse[]>([]);
@@ -39,7 +44,15 @@ export const ManageTeacher = () => {
         residentialAddress: "",
     });
 
-    const navigate = useNavigate(); // Hook per navigare tra le pagine
+    const [fieldErrors, setFieldErrors] = useState<{
+        email?: string;
+        name?: string;
+        surname?: string;
+        residentialAddress?: string;
+        birthDate?: string;
+    }>({});
+
+    const navigate = useNavigate(); // Hook for navigation
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -72,6 +85,7 @@ export const ManageTeacher = () => {
         });
         setErrorMessage(null);
         setSuccessMessage(null);
+        setFieldErrors({});
         setModalOpen(true);
     };
     const handleCloseModal = () => setModalOpen(false);
@@ -79,6 +93,9 @@ export const ManageTeacher = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+
+        // Reset field error on change
+        setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,16 +103,48 @@ export const ManageTeacher = () => {
     };
 
     const handleSubmit = async () => {
-        // Validazione dei campi obbligatori
-        if (
-            !formData.email ||
-            !formData.name ||
-            !formData.surname ||
-            !formData.birthDate ||
-            !formData.residentialAddress
-        ) {
-            setErrorMessage("Si prega di compilare tutti i campi obbligatori.");
-            setSuccessMessage(null);
+        // Reset previous errors
+        setFieldErrors({});
+        setErrorMessage(null);
+        setSuccessMessage(null);
+
+        let hasError = false;
+        const errors: typeof fieldErrors = {};
+
+        // Validate required fields
+        if (!formData.email) {
+            errors.email = "Email necessaria.";
+            hasError = true;
+        }
+        if (!formData.name) {
+            errors.name = "Nome richiesto.";
+            hasError = true;
+        } else if (!NAME_SURNAME_REGEX.test(formData.name.trim())) {
+            errors.name = "Nome non valido.";
+            hasError = true;
+        }
+        if (!formData.surname) {
+            errors.surname = "Cognome richiesto.";
+            hasError = true;
+        } else if (!NAME_SURNAME_REGEX.test(formData.surname.trim())) {
+            errors.surname = "Cognome non valida.";
+            hasError = true;
+        }
+        if (!formData.birthDate) {
+            errors.birthDate = "Data necessaria.";
+            hasError = true;
+        }
+        if (!formData.residentialAddress) {
+            errors.residentialAddress = "Indirizzo richiesto.";
+            hasError = true;
+        } else if (!ADDRESS_REGEX.test(formData.residentialAddress.trim())) {
+            errors.residentialAddress = "Formato indirizzo non valido.";
+            hasError = true;
+        }
+
+        if (hasError) {
+            setFieldErrors(errors);
+            setErrorMessage("Correggi gli errori.");
             return;
         }
 
@@ -141,7 +190,7 @@ export const ManageTeacher = () => {
                 Professori
             </Typography>
 
-            {/* Alert di Successo Globale */}
+            {/* Global Success Alert */}
             {successMessage && (
                 <Alert
                     severity="success"
@@ -152,7 +201,7 @@ export const ManageTeacher = () => {
                 </Alert>
             )}
 
-            {/* Alert di Errore Globale */}
+            {/* Global Error Alert */}
             {errorMessage && (
                 <Alert
                     severity="error"
@@ -167,7 +216,7 @@ export const ManageTeacher = () => {
                 Aggiungi professore
             </Button>
 
-            {/* Modale per Aggiungere Insegnante */}
+            {/* Modal to Add Teacher */}
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
@@ -195,6 +244,8 @@ export const ManageTeacher = () => {
                             margin="normal"
                             required
                             type="email"
+                            error={Boolean(fieldErrors.email)}
+                            helperText={fieldErrors.email}
                         />
                         <TextField
                             fullWidth
@@ -204,6 +255,8 @@ export const ManageTeacher = () => {
                             onChange={handleInputChange}
                             margin="normal"
                             required
+                            error={Boolean(fieldErrors.name)}
+                            helperText={fieldErrors.name}
                         />
                         <TextField
                             fullWidth
@@ -213,6 +266,8 @@ export const ManageTeacher = () => {
                             onChange={handleInputChange}
                             margin="normal"
                             required
+                            error={Boolean(fieldErrors.surname)}
+                            helperText={fieldErrors.surname}
                         />
                         <TextField
                             fullWidth
@@ -232,6 +287,8 @@ export const ManageTeacher = () => {
                             margin="normal"
                             InputLabelProps={{ shrink: true }}
                             required
+                            error={Boolean(fieldErrors.birthDate)}
+                            helperText={fieldErrors.birthDate}
                         />
                         <FormControlLabel
                             control={
@@ -251,10 +308,12 @@ export const ManageTeacher = () => {
                             onChange={handleInputChange}
                             margin="normal"
                             required
+                            error={Boolean(fieldErrors.residentialAddress)}
+                            helperText={fieldErrors.residentialAddress}
                         />
                     </Box>
 
-                    {/* Alert di Errore nel Modale */}
+                    {/* Modal Error Alert */}
                     {errorMessage && (
                         <Alert
                             severity="error"
@@ -265,7 +324,7 @@ export const ManageTeacher = () => {
                         </Alert>
                     )}
 
-                    {/* Alert di Successo nel Modale */}
+                    {/* Modal Success Alert */}
                     {successMessage && (
                         <Alert
                             severity="success"
@@ -314,6 +373,6 @@ export const ManageTeacher = () => {
                     </Card>
                 ))}
             </Box>
-        </Box>
-    );
+        </Box>)
 };
+
