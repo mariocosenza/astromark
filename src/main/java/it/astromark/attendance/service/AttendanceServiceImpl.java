@@ -59,6 +59,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .getStudents().stream()
                 .sorted(Comparator.comparing(SchoolUser::getSurname))
                 .toList();
+
         return attendanceMapper.toAttendanceResponseList(students, date, absenceRepository, delayRepository, justifiableService);
     }
 
@@ -75,26 +76,23 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         for (AttendanceRequest attendance : attendanceRequests) {
             var student = studentRepository.findById(attendance.studentId()).orElseThrow();
+
             if (student.getSchoolClasses().stream().noneMatch(c -> c.getId().equals(classId))) {
                 throw new AccessDeniedException("This student it's not in this class");
             }
 
             var delays = delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(dateStart, dateEnd, student.getId());
-            var delay = delays.isEmpty() ? null : delays.getFirst();
-
             var absence = absenceRepository.findAbsenceByStudentAndDate(student, date);
+            var delay = delays.stream().findFirst().orElse(null);
 
-            if (attendance.isAbsent()) {
-                if (absence == null) {
+            if (attendance.isAbsent() && absence == null) {
                     absence = Absence.builder()
                             .student(student)
                             .date(date)
                             .justified(false)
                             .needsJustification(true)
                             .build();
-
                     absenceRepository.save(absence);
-                }
             } else if (absence != null) {
                 absenceRepository.delete(absence);
             }
@@ -112,7 +110,6 @@ public class AttendanceServiceImpl implements AttendanceService {
                         .withHour(attendance.delayTimeHour())
                         .withMinute(attendance.delayTimeMinute())
                         .toInstant(ZoneOffset.UTC));
-
                 delayRepository.save(delay);
             } else if (delay != null) {
                 delayRepository.delete(delay);

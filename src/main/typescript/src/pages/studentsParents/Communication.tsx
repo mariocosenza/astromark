@@ -45,7 +45,7 @@ export const Allert: React.FC = () => {
         <div>
             <div className={'alert'}>
                 {
-                    loading ? <div>Loading...</div> : allerts.map((allert: Communication, index: number) => {
+                    loading ? <div>Caricamento in corso</div> : allerts.map((allert: Communication, index: number) => {
                         return <AccordionNotViewable key={index} date={allert.date} id={allert.id} title={allert.title}
                                                      description={allert.description} avatar={'A'}/>
                     })

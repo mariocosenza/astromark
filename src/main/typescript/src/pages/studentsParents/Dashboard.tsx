@@ -141,7 +141,7 @@ export const Dashboard: React.FC = () => {
                         }}
                     >
                         <Typography variant="h3" textAlign="center" color="white">
-                            {user?.name + " " + user?.surname}
+                            {(user?.name === undefined? "" : user.name) + " " + (user?.surname === undefined? "" : user.surname)}
                         </Typography>
                     </Paper>
                     <Paper
@@ -299,7 +299,7 @@ export const Dashboard: React.FC = () => {
                             Media
                         </Typography>
                         <CircularProgress variant="determinate" value={average * 10} size={50}/>
-                        <Typography variant="h5" mt="1rem">{average}</Typography>
+                        <Typography variant="h5" fontStyle={'italic'} mt="1rem">{average}</Typography>
                     </Paper>
 
                     <Paper

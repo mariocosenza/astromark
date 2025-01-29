@@ -21,6 +21,8 @@ import {MarkResponse} from "../../entities/MarkResponse.ts";
 import {AxiosResponse} from "axios";
 import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
 import {formatMark} from "../teacher/Ratings.tsx";
+import {gregorian_it} from "../../services/CalendarService.ts";
+
 
 
 const compareDate = (date: Date, dateObject: DateObject) => {
@@ -70,6 +72,7 @@ export const Mark: React.FC = () => {
         setSubject(event.target.value as string);
     };
 
+
     return (
         <div>
             <Stack spacing={2}
@@ -99,9 +102,12 @@ export const Mark: React.FC = () => {
                         </Select>
                     </FormControl>
                     <DatePicker
+                        style={{height: '2.5rem'}}
                         value={values}
                         onChange={setValues}
                         range
+                        locale={gregorian_it}
+                        format="DD/MM/YYYY"
                     />
                 </Box>
                 <Box className={'centerBox secondary-container'} style={{flexDirection: 'column'}} height={'24vh'}
@@ -110,7 +116,7 @@ export const Mark: React.FC = () => {
                         Media voti annuale
                     </Typography>
                     <CircularProgress variant="determinate" value={average * 10}/>
-                    <Typography variant={'h6'} mt="0.5rem">
+                    <Typography variant={'h6'} fontStyle={'italic'} mt="0.5rem">
                         {average}
                     </Typography>
                 </Box>
