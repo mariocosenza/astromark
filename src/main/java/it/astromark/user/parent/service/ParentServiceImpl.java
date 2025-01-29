@@ -47,7 +47,7 @@ public class ParentServiceImpl implements ParentService {
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
     public ParentDetailedResponse create(ParentRequest parentRequest) {
-        var username = parentRequest.name() + "." + parentRequest.surname() + parentRepository.countByNameAndSurname(parentRequest.name(), parentRequest.surname());
+        var username = parentRequest.name().toLowerCase() + "." + parentRequest.surname().toLowerCase() + parentRepository.countByNameAndSurname(parentRequest.name(), parentRequest.surname());
         var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var student = studentRepository.findById(parentRequest.studentId()).orElseThrow();
         var password = new Faker().internet().password(8, 64, true, false, true);

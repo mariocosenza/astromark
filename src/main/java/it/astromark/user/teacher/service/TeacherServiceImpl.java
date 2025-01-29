@@ -21,6 +21,7 @@ import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
 import it.astromark.user.teacher.repository.TeacherRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,7 +60,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
     public SchoolUserDetailed create(TeacherRequest teacherRequest) {
-        var username = teacherRequest.name() + "." + teacherRequest.surname() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
+        var username = teacherRequest.name().toLowerCase() + "." + teacherRequest.surname().toLowerCase() + teacherRepository.countByNameAndSurname(teacherRequest.name(), teacherRequest.surname());
         var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var password = new Faker().internet().password(8, 64, true, false, true);
         var user = schoolUserMapper.toSchoolUserDetailed(teacherRepository.save(Teacher.builder()
@@ -124,7 +125,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional
-    public TeacherDetailsResponse getTeacherTeaching(String teacheruuid) {
+    public TeacherDetailsResponse getTeacherTeaching(@NotEmpty String teacheruuid) {
         var teacher = teacherRepository.findById(UUID.fromString(teacheruuid))
                 .orElseThrow(() -> new EntityNotFoundException("Teacher not found for UUID: " + teacheruuid));
 

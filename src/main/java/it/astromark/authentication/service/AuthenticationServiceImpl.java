@@ -48,15 +48,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SchoolUser login(UserLoginRequest user) {
-        if (user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
+        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+
+
+        if(user.username().isBlank() || user.username().length() < 5 || user.username().length() > 256 ||
                 !user.password().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$") ||
                 !user.schoolCode().matches("^SS\\d{5}$") ||
                 user.role().isBlank()) {
+            if(schoolUser != null && schoolUser.getPendingState() == PendingState.FIRST_LOGIN) {
+                return schoolUser;
+            }
             throw new IllegalArgumentException("Invalid input");
         }
 
-        // Cerca l'utente nei vari repository
-        var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
         if (schoolUser == null) {
             return null;
         }
@@ -73,6 +77,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public SchoolUser firstLogin(UserFirstLoginRequest user) {
         var schoolUser = findUserInRepositories(user.username(), user.schoolCode(), user.role());
+        if(!user.newPassword().matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$")) {
+            throw new IllegalArgumentException("Invalid input");
+        }
 
         var hashedPassword = PasswordUtils.hashPassword(user.password());
         if (schoolUser != null && hashedPassword.equals(schoolUser.getPassword())) {

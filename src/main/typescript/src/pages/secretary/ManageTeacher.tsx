@@ -47,7 +47,7 @@ export const ManageTeacher = () => {
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch teachers:", err);
-                setError("Failed to fetch teachers.");
+                setError("Impossibile trovare gli insegnanti.");
                 setLoading(false);
             }
         };
@@ -71,13 +71,13 @@ export const ManageTeacher = () => {
         try {
             await axiosConfig.post(`${Env.API_BASE_URL}/teachers/create`, formData);
             handleCloseModal();
-            alert("Teacher created successfully!");
+            alert("Insegnante creato con successo!");
             // Refresh teacher list
             const response = await axiosConfig.get<TeacherResponse[]>(`${Env.API_BASE_URL}/teachers/all`);
             setTeachers(response.data);
         } catch (err) {
             console.error("Failed to create teacher:", err);
-            alert("Failed to create teacher.");
+            alert("Impossibile creare l'insegnante.");
         }
     };
 
@@ -194,7 +194,7 @@ export const ManageTeacher = () => {
                             boxShadow: 2,
                             borderRadius: "12px",
                         }}
-                        onClick={() => handleCardClick(teacher.uuid)} // Gestisce il click sulla card
+                        onClick={() => handleCardClick(teacher.uuid)}
                         style={{cursor: "pointer"}}
                     >
                         <CardContent>

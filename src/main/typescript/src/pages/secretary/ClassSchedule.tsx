@@ -74,7 +74,7 @@ export const ClassSchedule = () => {
 
             } catch (err) {
                 console.error("Failed to fetch data:", err);
-                setError("Failed to fetch class schedule or related data.");
+                setError("Impossibile recuperare l'orario delle lezioni o i dati correlati.");
                 setLoading(false);
             }
         };
@@ -105,7 +105,7 @@ export const ClassSchedule = () => {
         console.log("Form Data:", formData); // Debug: controlla i valori
 
         if (!formData.teacherUsername || !formData.timetableId || !formData.dayWeek || !formData.hour) {
-            alert("Please fill in all required fields.");
+            alert("Si prega di compilare tutti i campi obbligatori.");
             return;
         }
 
@@ -113,20 +113,20 @@ export const ClassSchedule = () => {
             const requestData = {
                 dayWeek: parseInt(formData.dayWeek, 10),
                 hour: parseInt(formData.hour, 10),
-                username: formData.teacherUsername.split("-")[0], // Controlla se `teacherUsername` contiene il valore corretto
-                subject: formData.teacherUsername.split("-")[1],  // Verifica il formato di `teacherUsername`
-                timetableId: parseInt(formData.timetableId, 10),  // Assicurati che `timetableId` sia valorizzato
+                username: formData.teacherUsername.split("-")[0],
+                subject: formData.teacherUsername.split("-")[1],
+                timetableId: parseInt(formData.timetableId, 10),
             };
 
             console.log("Request Data:", requestData); // Debug: controlla i dati inviati al backend
 
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${classId}/createTimeSlot`, requestData);
             handleCloseModal();
-            alert("Timeslot added successfully!");
+            alert("La fascia oraria è stata aggiunta correttamente!");
 
         } catch (err) {
             console.error("Failed to add timeslot:", err);
-            alert("Failed to add timeslot.");
+            alert("Impossibile aggiungere la fascia oraria.");
         }
     };
 
@@ -137,10 +137,10 @@ export const ClassSchedule = () => {
     return (
         <Box sx={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
-                Class Schedule
+                Orario della classe
             </Typography>
             <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{mb: 2}}>
-                Add Timeslot
+                Aggiungi ora
             </Button>
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
@@ -157,10 +157,10 @@ export const ClassSchedule = () => {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Add Teaching Timeslot
+                        Aggiungi insegnamento
                     </Typography>
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="teaching-select-label">Teaching</InputLabel>
+                        <InputLabel id="teaching-select-label">Insegnamento</InputLabel>
                         <Select
                             labelId="teaching-select-label"
                             name="teacherUsername"
@@ -187,7 +187,7 @@ export const ClassSchedule = () => {
 
 
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="timetable-select-label">Timetable</InputLabel>
+                        <InputLabel id="timetable-select-label">Orario della classe</InputLabel>
                         <Select
                             labelId="timetable-select-label"
                             name="timetableId"
@@ -206,7 +206,7 @@ export const ClassSchedule = () => {
 
                     <TextField
                         fullWidth
-                        label="Day of Week (1-7)"
+                        label="Giorno della settimana (1-6)"
                         name="dayWeek"
                         value={formData.dayWeek}
                         onChange={handleInputChange}
@@ -216,7 +216,7 @@ export const ClassSchedule = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Hour (1-6)"
+                        label="Ora (1-6)"
                         name="hour"
                         value={formData.hour}
                         onChange={handleInputChange}
@@ -226,10 +226,10 @@ export const ClassSchedule = () => {
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button onClick={handleCloseModal} sx={{mr: 2}}>
-                            Cancel
+                            Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit
+                            Inserisci
                         </Button>
                     </Box>
                 </Box>

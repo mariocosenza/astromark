@@ -66,6 +66,11 @@ public class ClassManagementController {
         return classManagementService.getStudents(classId);
     }
 
+    @GetMapping("/{classId}/parents")
+    public List<SchoolClassParentResponse> getParents(@PathVariable Integer classId) {
+        return classManagementService.getParents(classId);
+    }
+
 
     @Operation(
             summary = "Retrieve all teachings",
@@ -115,7 +120,7 @@ public class ClassManagementController {
             description = "Removes a class associated with a specific teacher using the teacher UUID and class ID."
     )
     @DeleteMapping("/{teacheruuid}/{schoolClassId}/delete-from-class")
-    public void deleteFromClass(@PathVariable String teacheruuid, @PathVariable Integer schoolClassId) {
+    public void deleteFromClass(@PathVariable UUID teacheruuid, @PathVariable Integer schoolClassId) {
         classManagementService.removeClass(teacheruuid, schoolClassId);
     }
 

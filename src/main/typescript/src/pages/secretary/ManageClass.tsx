@@ -24,7 +24,7 @@ export const ManageClass = () => {
                 setSchoolClasses(response.data);
                 setLoading(false);
             } catch (err) {
-                setError("Failed to fetch school classes.");
+                setError("Problema nel recuperare le lezioni scolastiche.");
                 setLoading(false);
             }
         };
@@ -43,7 +43,7 @@ export const ManageClass = () => {
     return (
         <div style={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
-                School Classes
+                Classi
             </Typography>
             <Box display="flex" flexWrap="wrap" gap={3}>
                 {schoolClasses.map((schoolClass) => (
@@ -58,7 +58,7 @@ export const ManageClass = () => {
                                 <Typography variant="h6">
                                     {schoolClass.number} {schoolClass.letter}
                                 </Typography>
-                                <Typography>Year: {schoolClass.year}</Typography>
+                                <Typography>Anno: {schoolClass.year}</Typography>
                             </CardContent>
                         </Card>
                     </Box>

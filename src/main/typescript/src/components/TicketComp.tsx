@@ -39,6 +39,7 @@ export const TicketComp: React.FC = () => {
 
                 if (SelectedTicket.ticketId === null) {
                     SelectedTicket.ticketId = ticketResponse.data[ticketResponse.data.length - 1].id
+                    SelectedTicket.closed = ticketResponse.data[ticketResponse.data.length - 1].closed
                 }
 
                 await fetchMessages()
@@ -71,21 +72,23 @@ export const TicketComp: React.FC = () => {
     }
 
     const sendMessage = async (textMessage: string) => {
-        try {
-            await axiosConfig.post(`${Env.API_BASE_URL}/tickets/${SelectedTicket.ticketId}/addMessage`, textMessage, {
-                headers: {
-                    'Content-Type': 'text/plain'
-                }
-            });
+        if (!SelectedTicket.closed) {
+            try {
+                await axiosConfig.post(`${Env.API_BASE_URL}/tickets/${SelectedTicket.ticketId}/addMessage`, textMessage, {
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    }
+                });
 
-            return {
-                avatar: getRole().toUpperCase().substring(0, 1),
-                text: textMessage,
-                hexColor: isRole(Role.SECRETARY) ? orange[500] : blue[500],
-            };
+                return {
+                    avatar: getRole().toUpperCase().substring(0, 1),
+                    text: textMessage,
+                    hexColor: isRole(Role.SECRETARY) ? orange[500] : blue[500],
+                };
 
-        } catch (error) {
-            console.log(error);
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 

@@ -34,5 +34,6 @@ public interface ParentService extends CrudService<Parent, ParentRequest, Parent
      * Post-condition: Returns a list of information about all teachers.
      */
     List<SchoolUserResponse> getTeachers();
+
 }
 

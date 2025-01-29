@@ -10,6 +10,8 @@ import it.astromark.chat.repository.MessageRepository;
 import it.astromark.chat.repository.TicketRepository;
 import it.astromark.school.repository.SchoolRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -64,7 +66,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
-    public List<MessageResponse> getMessages(Ticket ticket) {
+    public List<MessageResponse> getMessages(@NotNull Ticket ticket) {
 
         var messages = messageRepository.findByTicket(ticket);
         if (!messages.isEmpty())
@@ -76,7 +78,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
-    public UUID sendMessage(UUID ticketId, String text) {
+    public UUID sendMessage(@NotNull UUID ticketId, @NotEmpty String text) {
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
         if (ticket.getClosed() || ticket.getSolved()) {
             throw new IllegalArgumentException("Ticket is closed or solved");
@@ -102,7 +104,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT')")
-    public void createTicket(String title) {
+    public void createTicket(@NotEmpty String title) {
 
         var ticket = new Ticket();
         ticket.setDatetime(new Date().toInstant());
@@ -121,7 +123,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
-    public boolean closeUnsolved(UUID ticketId) {
+    public boolean closeUnsolved(@NotNull UUID ticketId) {
         var secretary = authenticationService.getSecretary().orElseThrow();
         var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
@@ -133,7 +135,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @PreAuthorize("hasRole('SECRETARY')")
-    public boolean closeAndSolve(UUID ticketId) {
+    public boolean closeAndSolve(@NotNull UUID ticketId) {
         var secretary = authenticationService.getSecretary().orElseThrow();
         var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
         var ticket = ticketRepository.findById(ticketId).orElseThrow();

@@ -46,7 +46,7 @@ export const ManageTimetable = () => {
                 setSchoolClasses(response.data);
                 setLoading(false);
             } catch (err) {
-                setError("Failed to fetch school classes.");
+                setError("Impossibile recuperare le lezioni scolastiche.");
                 setLoading(false);
             }
         };
@@ -78,10 +78,10 @@ export const ManageTimetable = () => {
         try {
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/createTimeTable`, formData);
             handleCloseModal();
-            alert("Class timetable created successfully!");
+            alert("Orario delle lezioni creato con successo!");
         } catch (err) {
             console.error("Failed to create class timetable:", err);
-            alert("Failed to create class timetable.");
+            alert("Impossibile creare l'orario delle lezioni.");
         }
     };
 
@@ -91,10 +91,10 @@ export const ManageTimetable = () => {
     return (
         <div style={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
-                School Classes
+                Classi
             </Typography>
             <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginBottom: "16px"}}>
-                Create Timetable
+                Crea orario
             </Button>
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
@@ -111,7 +111,7 @@ export const ManageTimetable = () => {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Create Class Timetable
+                        Crea orario della classe
                     </Typography>
                     <FormControl fullWidth margin="normal">
                         <InputLabel id="school-class-select-label">School Class</InputLabel>
@@ -130,7 +130,7 @@ export const ManageTimetable = () => {
                     <TextField
                         fullWidth
                         type="date"
-                        label="Start Date"
+                        label="Inizio validità"
                         name="startDate"
                         value={formData.startDate}
                         onChange={handleInputChange}
@@ -140,7 +140,7 @@ export const ManageTimetable = () => {
                     <TextField
                         fullWidth
                         type="date"
-                        label="End Date"
+                        label="Fine Validità"
                         name="endDate"
                         value={formData.endDate}
                         onChange={handleInputChange}
@@ -150,7 +150,7 @@ export const ManageTimetable = () => {
                     <TextField
                         fullWidth
                         type="number"
-                        label="Expected Hours"
+                        label="Ore settimanali"
                         name="expectedHours"
                         value={formData.expectedHours}
                         onChange={handleInputChange}
@@ -180,7 +180,7 @@ export const ManageTimetable = () => {
                                 <Typography variant="h6">
                                     {schoolClass.number} {schoolClass.letter}
                                 </Typography>
-                                <Typography>Year: {schoolClass.year}</Typography>
+                                <Typography>Anno: {schoolClass.year}</Typography>
                             </CardContent>
                         </Card>
                     </Box>

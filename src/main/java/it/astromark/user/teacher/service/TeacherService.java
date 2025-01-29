@@ -7,6 +7,7 @@ import it.astromark.user.teacher.dto.TeacherDetailsResponse;
 import it.astromark.user.teacher.dto.TeacherRequest;
 import it.astromark.user.teacher.dto.TeacherResponse;
 import it.astromark.user.teacher.entity.Teacher;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 import java.util.UUID;
@@ -52,5 +53,5 @@ public interface TeacherService extends CrudService<Teacher, TeacherRequest, Sch
      * Pre-condition: The `teacheruuid` must not be null and must correspond to an existing teacher.
      * Post-condition: Returns detailed teaching information for the specified teacher.
      */
-    TeacherDetailsResponse getTeacherTeaching(String teacheruuid);
+    TeacherDetailsResponse getTeacherTeaching(@NotEmpty String teacheruuid);
 }

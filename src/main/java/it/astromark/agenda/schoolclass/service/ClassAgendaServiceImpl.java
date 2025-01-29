@@ -160,10 +160,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         }
 
         if (request.activity() != null)
-            classworkService.setActivity(request.activity(), signedHour);
+            classworkService.createActivity(request.activity(), signedHour);
 
         if (request.homework() != null)
-            classworkService.setHomework(request.homework(), signedHour);
+            classworkService.createHomework(request.homework(), signedHour);
 
         return classAgendaMapper.toTeachingTimeslotDetailedResponse(slot, classAgendaHelperMapper);
     }
@@ -211,6 +211,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
         var schoolClass = schoolClassRepository.findById(schoolClassId).orElseThrow(
                 () -> new IllegalArgumentException("SchoolClass not found for ID: " + schoolClassId));
+
+        if(request.endDate() != null && request.startDate().isAfter(request.endDate())) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
 
 
         var classTimetable = ClassTimetable.builder()

@@ -1,6 +1,7 @@
 import {Avatar, Box, Button, TextField, Typography} from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import React, {useState} from "react";
+import {SelectedTicket} from "../services/TicketService.ts";
 
 export type MessageComponent = {
     avatar: string;
@@ -44,6 +45,7 @@ export const ChatComponent: React.FC<Props> = ({list, send}) => {
                 <TextField
                     className={'textfield-item'} margin={'normal'} size={'small'} fullWidth
                     placeholder='Scrivi il tuo messaggio' value={newMessage}
+                    disabled={SelectedTicket.closed}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -54,6 +56,7 @@ export const ChatComponent: React.FC<Props> = ({list, send}) => {
                 />
 
                 <Button variant='contained' color='primary' sx={{marginLeft: '0.5rem', marginTop: '0.4rem'}}
+                        disabled={SelectedTicket.closed}
                         onClick={handleSendMessage}>
                     <SendIcon/>
                 </Button>

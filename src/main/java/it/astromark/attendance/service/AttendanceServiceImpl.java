@@ -12,6 +12,7 @@ import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,23 +33,25 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final DelayRepository delayRepository;
     private final AttendanceMapper attendanceMapper;
     private final StudentRepository studentRepository;
+    private final JustifiableService justifiableService;
 
     @Autowired
-    public AttendanceServiceImpl(SchoolUserService schoolUserService, SchoolClassRepository schoolClassRepository, AbsenceRepository absenceRepository, DelayRepository delayRepository, AttendanceMapper attendanceMapper, StudentRepository studentRepository) {
+    public AttendanceServiceImpl(SchoolUserService schoolUserService, SchoolClassRepository schoolClassRepository, AbsenceRepository absenceRepository, DelayRepository delayRepository, AttendanceMapper attendanceMapper, StudentRepository studentRepository, JustifiableService justifiableService) {
         this.schoolUserService = schoolUserService;
         this.schoolClassRepository = schoolClassRepository;
         this.absenceRepository = absenceRepository;
         this.delayRepository = delayRepository;
         this.attendanceMapper = attendanceMapper;
         this.studentRepository = studentRepository;
+        this.justifiableService = justifiableService;
     }
 
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public List<AttendanceResponse> getAttendance(Integer classId, LocalDate date) {
-        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+    public List<AttendanceResponse> getAttendance(@NotNull Integer classId, @NotNull LocalDate date) {
+        if (!schoolUserService.isLoggedTeacherClass(classId) || date.isAfter(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
@@ -56,14 +59,14 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .getStudents().stream()
                 .sorted(Comparator.comparing(SchoolUser::getSurname))
                 .toList();
-        return attendanceMapper.toAttendanceResponseList(students, date, absenceRepository, delayRepository);
+        return attendanceMapper.toAttendanceResponseList(students, date, absenceRepository, delayRepository, justifiableService);
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public void saveAttendance(Integer classId, LocalDate date, List<AttendanceRequest> attendanceRequests) {
-        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+    public void saveAttendance(@NotNull Integer classId, @NotNull LocalDate date, @NotNull List<AttendanceRequest> attendanceRequests) {
+        if (!schoolUserService.isLoggedTeacherClass(classId) || date.isAfter(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 

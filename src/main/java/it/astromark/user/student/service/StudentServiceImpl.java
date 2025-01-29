@@ -60,7 +60,7 @@ public class StudentServiceImpl implements StudentService {
     @PreAuthorize("hasRole('SECRETARY')")
     @Transactional
     public SchoolUserDetailed create(@NotNull StudentRequest studentRequest) {
-        var username = studentRequest.name() + "." + studentRequest.surname() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
+        var username = studentRequest.name().toLowerCase() + "." + studentRequest.surname().toLowerCase() + studentRepository.countByNameAndSurname(studentRequest.name(), studentRequest.surname());
         var school = schoolRepository.findBySecretariesContains(Set.of(authenticationService.getSecretary().orElseThrow()));
         var schoolClass = school.getSchoolClasses().stream().filter(c -> c.getId().equals(studentRequest.classId())).findFirst().orElseThrow();
         var password = new Faker().internet().password(8, 64, true, false, true);
