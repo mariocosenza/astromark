@@ -48,6 +48,7 @@ export const Ratings: React.FC = () => {
     const [rows, setRows] = useState<RatingsRow[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject())
+    const [dateError, setDateError] = useState<boolean>(false)
     const [changeView, setChangeView] = useState<boolean>(false)
     const [selected, setSelected] = useState<RatingsRow>()
     const navigate = useNavigate();
@@ -59,17 +60,22 @@ export const Ratings: React.FC = () => {
     const fetchData = async (selectedDate: string) => {
         try {
             let rowResponse: RatingsRow[] = [];
-            const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/ratings/${SelectedTeaching.teaching}/date/${selectedDate}`);
-            if (response.data.length) {
-                rowResponse = response.data.map((mark: RatingsResponse) => ({
-                    id: mark.id,
-                    student: mark.studentId,
-                    name: mark.name + ' ' + mark.surname,
-                    mark: mark.mark,
-                    type: mark.type,
-                    desc: mark.description,
-                    date: mark.date,
-                }));
+            if (new DateObject(selectedDate) <= new DateObject()) {
+                const response: AxiosResponse<RatingsResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/classes/${SelectedSchoolClass.id}/ratings/${SelectedTeaching.teaching}/date/${selectedDate}`);
+                if (response.data.length) {
+                    rowResponse = response.data.map((mark: RatingsResponse) => ({
+                        id: mark.id,
+                        student: mark.studentId,
+                        name: mark.name + ' ' + mark.surname,
+                        mark: mark.mark,
+                        type: mark.type,
+                        desc: mark.description,
+                        date: mark.date,
+                    }));
+                }
+                setDateError(false)
+            } else {
+                setDateError(true)
             }
 
             setLoading(false)
@@ -116,12 +122,16 @@ export const Ratings: React.FC = () => {
                         <Grid justifyContent={'center'}>
                             <Stack direction={'column'} justifyContent={'center'}>
                                 <Typography variant="caption" color={'textSecondary'}>
-                                    Data
+                                    Consegna
                                 </Typography>
                                 <DatePicker
                                     value={date}
-                                    onChange={handleDateChange}
-                                />
+                                    onChange={handleDateChange}/>
+                                {dateError && (
+                                    <Typography variant="caption" color={'error'}>
+                                        È possibile visionare solo date successive ad oggi.
+                                    </Typography>
+                                )}
                             </Stack>
                         </Grid>
                         <Grid justifyContent={'center'}>

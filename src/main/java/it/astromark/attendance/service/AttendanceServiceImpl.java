@@ -51,7 +51,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<AttendanceResponse> getAttendance(@NotNull Integer classId, @NotNull LocalDate date) {
-        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+        if (!schoolUserService.isLoggedTeacherClass(classId) || date.isAfter(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
