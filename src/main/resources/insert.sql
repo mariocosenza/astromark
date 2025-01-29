@@ -662,10 +662,24 @@ VALUES
 INSERT INTO ticket (parent_id, teacher_id, title, category, datetime, closed, solved)
 VALUES
     (null, (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Problema con la piattaforma', 'Piattaforma', '2025-01-15 10:00:00', false, false),
-    (null, (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Chiarimento sulle lezioni', 'Didattica', '2025-03-20 14:00:00', false, false),
+    (null, (SELECT id FROM teacher WHERE username = 'marco.gialli'), 'Chiarimento sulle lezioni', 'Didattica', '2025-01-20 14:00:00', false, false),
     ((SELECT id FROM parent WHERE username = 'paolo.verdi'), null, 'Richiesta informazioni sulla gita', 'Gite scolastiche', '2025-01-17 10:32:46', false, false),
-    ((SELECT id FROM parent WHERE username = 'giulia.neri'), null, 'Problema iscrizione', 'Iscrizione', '2025-02-01 10:00:00', false, false),
-    ((SELECT id FROM parent WHERE username = 'roberto.verdi'), null, 'Richiesta documenti', 'Documenti', '2025-02-02 11:30:00', false, false);
+    ((SELECT id FROM parent WHERE username = 'giulia.neri'), null, 'Problema iscrizione', 'Iscrizione', '2025-01-22 10:00:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'roberto.verdi'), null, 'Richiesta documenti', 'Documenti', '2025-01-25 11:30:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'laura.bianchi'), null, 'Problemi con il registro elettronico', 'Piattaforma', '2024-12-10 09:45:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'paolo.rossi'), null, 'Richiesta di incontro con il docente di matematica', 'Didattica', '2024-11-25 15:00:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'luigi.donnarumma'), null, 'Informazioni su recupero lezioni', 'Didattica', '2024-12-15 11:10:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'giovanna.bastoni'), null, 'Problema con la pagella elettronica', 'Piattaforma', '2025-01-05 08:30:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'maria.insigne'), null, 'Domanda su esami finali', 'Esami', '2025-01-12 12:40:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'carla.verratti'), null, 'Richiesta di attestato di frequenza', 'Documenti', '2024-12-20 14:20:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'andrea.chiesa'), null, 'Segnalazione errore su orario scolastico', 'Organizzazione', '2024-12-05 10:15:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'giulia.tonali'), null, 'Chiarimenti su gita scolastica', 'Gite scolastiche', '2025-01-18 13:00:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'marco.zaccagni'), null, 'Richiesta di agevolazioni per acquisto libri', 'Economico', '2024-12-28 09:00:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'giovanni.belotti'), null, 'Informazioni su orientamento scolastico', 'Orientamento', '2025-01-08 16:30:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'lorenzo.locatelli'), null, 'Problema con il sito della scuola', 'Piattaforma', '2025-01-06 08:00:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'silvia.pessina'), null, 'Richiesta supporto per didattica a distanza', 'Didattica', '2024-12-18 11:20:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'alessandro.di_lorenzo'), null, 'Domanda sui corsi pomeridiani', 'Didattica', '2025-01-10 17:00:00', false, false),
+    ((SELECT id FROM parent WHERE username = 'giulia.calabria'), null, 'Richiesta informazioni su laboratori', 'Laboratori', '2024-12-23 09:40:00', false, false);
 
 INSERT INTO message (ticket_id, homework_chat_id, parent_id, secretary_id, student_id, teacher_id, date_time, text)
 VALUES
