@@ -379,15 +379,19 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
             </Box>
 
             <Box display={"flex"} alignItems={"center"} style={{marginTop: "1rem"}}>
-                {isRole(Role.TEACHER) &&
+                {isRole(Role.TEACHER) && !isCompleted &&
                     <IconButton
                         onClick={() => handleCompleted()}
                         disabled={isCompleted}
                         sx={{marginRight: "0.5rem"}}
                         title="Complete chat"
                     >
-                        <AddTaskIcon color={isCompleted ? 'success' : 'disabled'}/>
+                        <AddTaskIcon fontSize={'large'} color={isCompleted ? 'success' : 'disabled'}/>
                     </IconButton>
+                }
+
+                {isCompleted &&
+                    <AddTaskIcon sx={{marginRight: "0.5rem"}} fontSize={'large'} color={'success'}/>
                 }
 
                 <TextField
@@ -395,7 +399,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                     margin={"normal"}
                     size={"small"}
                     fullWidth
-                    placeholder="Scrivi il tuo messaggio"
+                    placeholder={isCompleted ? "La chat è stata completata" : "Scrivi il tuo messaggio"}
                     value={newMessage}
                     disabled={isCompleted}
                     onChange={(e) => setNewMessage(e.target.value)}
@@ -409,6 +413,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
 
                 {/* Attachment button (to the right, before the send button) */}
                 <IconButton
+                    disabled={isCompleted}
                     onClick={handleAttachmentClick}
                     sx={{marginLeft: "0.5rem"}}
                     // If a file is selected, change color (e.g., "secondary")
@@ -422,6 +427,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                     variant="contained"
                     color="primary"
                     sx={{marginLeft: "0.5rem", marginTop: "0.4rem"}}
+                    disabled={isCompleted}
                     onClick={() => sendMessage(newMessage)}
                 >
                     <SendIcon/>
