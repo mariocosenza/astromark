@@ -17,5 +17,5 @@ public interface ClassTimetableRepository extends JpaRepository<ClassTimetable, 
 
     Optional<ClassTimetable> getClassTimetableBySchoolClass_IdAndEndValidityAfter(Integer classId, LocalDate now);
 
-    Optional<ClassTimetable> getClassTimetableBySchoolClass_IdAndEndValidityIsNull(Integer schoolClass_id);
+    Optional<ClassTimetable> getClassTimetableBySchoolClass_IdAndEndValidityIsNull(Integer schoolClassId);
 }
