@@ -57,7 +57,7 @@ export const AccountMenu: React.FC<SchoolUserDetailProp> = ({data}) => {
                 }}
             >
                 {
-                    data.map((student: SchoolUserDetail) => <MenuItem key={student.id} onClick={() => {
+                    data.map((student: SchoolUserDetail) => <MenuItem selected={SelectedStudent.id === student.id} key={student.id} onClick={() => {
                         SelectedStudent.id = student.id
                         handleClose()
                         setToggle(!toggle)
