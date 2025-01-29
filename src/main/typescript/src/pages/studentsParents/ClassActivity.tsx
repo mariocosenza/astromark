@@ -87,7 +87,7 @@ export const Homework: React.FC = () => {
             }}>
                 {
                     loading ? (
-                        <div>Loading...</div>
+                        <div>Caricamento in corso...</div>
                     ) : !checked ? (
                         <HomeworkList
                             list={activity
@@ -190,7 +190,7 @@ const Activity: React.FC = () => {
         <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}>
             {
                 loading ? (
-                    <div>Loading...</div>
+                    <div>Caricamento in corso...</div>
                 ) : !checked ? (
                     <ListGeneric
                         list={activity

@@ -52,7 +52,7 @@ const Absence: React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', marginTop: '1rem'}}>
             {
-                loading ? <div>loading...</div> : <JustifiableList {...toJustificationListProp(data, true)}/>
+                loading ? <div>Caricamento in corso...</div> : <JustifiableList {...toJustificationListProp(data, true)}/>
             }
         </div>
     )
@@ -80,7 +80,7 @@ const Delay: React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', marginTop: '1rem'}}>
             {
-                loading ? <div>loading...</div> : <JustifiableList {...toJustificationListProp(data, false)}/>
+                loading ? <div>Caricamento in corso...</div> : <JustifiableList {...toJustificationListProp(data, false)}/>
             }
         </div>
     )

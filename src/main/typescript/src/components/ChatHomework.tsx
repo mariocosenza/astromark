@@ -242,11 +242,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
      */
     const handleCompleted = async () => {
         try {
-            await axiosConfig.post(`${Env.API_BASE_URL}/homeworks/complete`, chatId, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            await axiosConfig.post(`${Env.API_BASE_URL}/homeworks/complete`, chatId);
 
             setCompleted(true)
         } catch (e) {
@@ -332,7 +328,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                 ) : (
                     <>
                         {messages && messages.length === 0 ? (
-                            <Typography variant="body2">No messages yet</Typography>
+                            <Typography variant="body2">Non ci sono ancora messaggi</Typography>
                         ) : (
                             <Box>
                                 {messages.map((msg, index) => (
@@ -365,7 +361,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                                             <IconButton
                                                 color="primary"
                                                 onClick={() => handleDownload('https://api.astromark.it/' + msg.attachment!)}
-                                                title="Download attachment"
+                                                title="Scarica allegato"
                                             >
                                                 <DownloadIcon/>
                                             </IconButton>
@@ -399,7 +395,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                     margin={"normal"}
                     size={"small"}
                     fullWidth
-                    placeholder={isCompleted ? "La chat è stata completata" : "Scrivi il tuo messaggio"}
+                    placeholder={isCompleted ? "Questo compito è stato marcato come completato" : "Scrivi il tuo messaggio"}
                     value={newMessage}
                     disabled={isCompleted}
                     onChange={(e) => setNewMessage(e.target.value)}
@@ -418,7 +414,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, 
                     sx={{marginLeft: "0.5rem"}}
                     // If a file is selected, change color (e.g., "secondary")
                     color={selectedFile ? "secondary" : "primary"}
-                    title="Add attachment"
+                    title="Aggiungi allegato"
                 >
                     <AttachFileIcon/>
                 </IconButton>

@@ -181,7 +181,7 @@ export const Timetable: React.FC = () => {
                                 );
                             })
                         ) : (
-                            <div>Loading...</div>
+                            <div>Caricamento in corso...</div>
                         )}
                     </Stack>
                 ))}
