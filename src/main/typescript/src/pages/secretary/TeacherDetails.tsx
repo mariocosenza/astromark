@@ -570,5 +570,3 @@ export const TeacherDetails = () => {
         </Box>
     );
 };
-
-export default TeacherDetails;

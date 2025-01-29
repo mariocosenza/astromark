@@ -317,5 +317,3 @@ export const ManageTeacher = () => {
         </Box>
     );
 };
-
-export default ManageTeacher;
