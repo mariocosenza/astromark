@@ -8,19 +8,22 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, FormControl,
+    DialogTitle,
+    FormControl,
     FormControlLabel,
-    Grid, InputLabel,
+    Grid,
+    InputLabel,
     List,
     ListItem,
-    Paper, Select, SelectChangeEvent,
+    MenuItem,
+    Paper,
+    Select,
+    SelectChangeEvent,
     TextField,
     Typography
 } from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig";
 import {Env} from "../../Env.ts";
-import MenuItem from "@mui/material/MenuItem";
-
 
 interface SchoolClassStudentResponse {
     id: string;
@@ -50,7 +53,6 @@ interface StudentRequest {
     classId: number;
 }
 
-
 interface ParentRequest {
     email: string;
     name: string;
@@ -60,21 +62,29 @@ interface ParentRequest {
     male: boolean;
     residentialAddress: string;
     legalGuardian: boolean;
-    studentId: string
+    studentId: string;
 }
 
+// REGEX for name/surname
+const NAME_SURNAME_REGEX = /^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$/;
 
+// REGEX for residential address
+const ADDRESS_REGEX = /^[a-zA-Z0-9\s.,]+$/;
 
 export const DetailsSchoolClass = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const {classId} = useParams<{ classId: string }>();
     const [students, setStudents] = useState<SchoolClassStudentResponse[]>([]);
     const [parents, setParents] = useState<SchoolClassParentResponse[]>([]);
     const [teachings, setTeachings] = useState<TeachingResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Modali per Studente e Genitore
     const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
     const [isParentModalOpen, setIsParentModalOpen] = useState(false);
+
+    // Stato per nuovo Studente
     const [newStudent, setNewStudent] = useState<StudentRequest>({
         email: "",
         name: "",
@@ -86,6 +96,7 @@ export const DetailsSchoolClass = () => {
         classId: parseInt(classId || "0", 10),
     });
 
+    // Stato per nuovo Genitore
     const [newParent, setNewParent] = useState<ParentRequest>({
         email: "",
         name: "",
@@ -98,23 +109,27 @@ export const DetailsSchoolClass = () => {
         studentId: "",
     });
 
-
+    // Messaggio di errore e flag di submit
     const [formError, setFormError] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState<boolean>(false);
 
-
+    // Al caricamento recupera i dettagli di Studenti, Genitori, Insegnamenti
     useEffect(() => {
         const fetchDetails = async () => {
             try {
+                if (!classId) {
+                    throw new Error("ID Classe mancante");
+                }
+
                 const [studentsResponse, parentResponse, teachingsResponse] = await Promise.all([
                     axiosConfig.get<SchoolClassStudentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/students`),
                     axiosConfig.get<SchoolClassParentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/parents`),
                     axiosConfig.get<TeachingResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/teaching`),
                 ]);
+
                 setParents(parentResponse.data);
                 setStudents(studentsResponse.data);
                 setTeachings(teachingsResponse.data);
-
             } catch (err: any) {
                 setError(err.response?.data?.message || "Impossibile recuperare i dettagli della classe");
             } finally {
@@ -122,12 +137,11 @@ export const DetailsSchoolClass = () => {
             }
         };
 
-        if (classId) {
-            fetchDetails();
-        }
+        fetchDetails();
     }, [classId]);
 
     const handleStudentOpen = () => {
+        // Reset dei campi
         setNewStudent({
             email: "",
             name: "",
@@ -155,16 +169,37 @@ export const DetailsSchoolClass = () => {
     };
 
     const handleStudentSubmit = async () => {
-
+        // Validazione campi obbligatori
         if (
             !newStudent.email ||
             !newStudent.name ||
             !newStudent.surname ||
             !newStudent.birthDate ||
             !newStudent.residentialAddress ||
+            !newStudent.taxId ||
             !newStudent.classId
         ) {
             setFormError("Si prega di compilare tutti i campi obbligatori.");
+            return;
+        }
+
+        // Validazione Nome e Cognome
+        if (!NAME_SURNAME_REGEX.test(newStudent.name.trim())) {
+            setFormError("Il nome inserito non è valido.");
+            return;
+        }
+        if (!NAME_SURNAME_REGEX.test(newStudent.surname.trim())) {
+            setFormError("Il cognome inserito non è valido.");
+            return;
+        }
+
+        if (newStudent.taxId.length < 16) {
+            setFormError("CF errato")
+            return
+        }
+        // Validazione Indirizzo
+        if (!ADDRESS_REGEX.test(newStudent.residentialAddress.trim())) {
+            setFormError("L'indirizzo di residenza non è valido.");
             return;
         }
 
@@ -175,6 +210,7 @@ export const DetailsSchoolClass = () => {
             await axiosConfig.post(`${Env.API_BASE_URL}/students/create-student`, newStudent);
             setIsStudentModalOpen(false);
 
+            // Aggiorna lista studenti
             const response = await axiosConfig.get<SchoolClassStudentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/students`);
             setStudents(response.data);
         } catch (err: any) {
@@ -183,8 +219,8 @@ export const DetailsSchoolClass = () => {
             setSubmitting(false);
         }
     };
-
     const handleParentOpen = () => {
+        // Reset dei campi
         setNewParent({
             email: "",
             name: "",
@@ -194,7 +230,7 @@ export const DetailsSchoolClass = () => {
             male: false,
             residentialAddress: "",
             legalGuardian: false,
-            studentId:""
+            studentId: "",
         });
         setFormError(null);
         setIsParentModalOpen(true);
@@ -204,11 +240,10 @@ export const DetailsSchoolClass = () => {
         setIsParentModalOpen(false);
     };
 
-
     const handleParentChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
     ) => {
-        const { name, value, type, checked } = e.target as HTMLInputElement;
+        const {name, value, type, checked} = e.target as HTMLInputElement;
 
         if (!name) return;
 
@@ -218,13 +253,8 @@ export const DetailsSchoolClass = () => {
         }));
     };
 
-
-
-
-
     const handleParentSubmit = async () => {
-
-        console.log(newParent)
+        // Validazione campi obbligatori
         if (
             !newParent.email ||
             !newParent.name ||
@@ -237,6 +267,22 @@ export const DetailsSchoolClass = () => {
             return;
         }
 
+        // Validazione Nome e Cognome
+        if (!NAME_SURNAME_REGEX.test(newParent.name.trim())) {
+            setFormError("Il nome inserito non è valido.");
+            return;
+        }
+        if (!NAME_SURNAME_REGEX.test(newParent.surname.trim())) {
+            setFormError("Il cognome inserito non è valido.");
+            return;
+        }
+
+        // Validazione Indirizzo
+        if (!ADDRESS_REGEX.test(newParent.residentialAddress.trim())) {
+            setFormError("L'indirizzo di residenza non è valido.");
+            return;
+        }
+
         setSubmitting(true);
         setFormError(null);
 
@@ -244,8 +290,9 @@ export const DetailsSchoolClass = () => {
             await axiosConfig.post(`${Env.API_BASE_URL}/parents/create-parent`, newParent);
             setIsParentModalOpen(false);
 
+            // Aggiorna lista genitori
             const response = await axiosConfig.get<SchoolClassParentResponse[]>(`${Env.API_BASE_URL}/class-management/${classId}/parents`);
-            setStudents(response.data);
+            setParents(response.data);
         } catch (err: any) {
             setFormError("Impossibile aggiungere il genitore.");
         } finally {
@@ -277,12 +324,11 @@ export const DetailsSchoolClass = () => {
                 Dettagli classe
             </Typography>
             <Grid container spacing={4}>
+                {/* Sezione Studenti */}
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{padding: 2}}>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                            <Typography variant="h5">
-                                Studenti
-                            </Typography>
+                            <Typography variant="h5">Studenti</Typography>
                             <Button variant="contained" color="primary" onClick={handleStudentOpen}>
                                 Aggiungi Studente
                             </Button>
@@ -304,12 +350,12 @@ export const DetailsSchoolClass = () => {
                         )}
                     </Paper>
                 </Grid>
+
+                {/* Sezione Professori */}
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{padding: 2}}>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                            <Typography variant="h5">
-                                Professori
-                            </Typography>
+                            <Typography variant="h5">Professori</Typography>
                             <Button variant="contained" color="primary" onClick={() => navigate("/secretary/teacher")}>
                                 Sezione professori per aggiungerli alla classe
                             </Button>
@@ -331,22 +377,22 @@ export const DetailsSchoolClass = () => {
                         )}
                     </Paper>
                 </Grid>
+
+                {/* Sezione Genitori */}
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{padding: 2}}>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                            <Typography variant="h5">
-                                Genitori
-                            </Typography>
+                            <Typography variant="h5">Genitori</Typography>
                             <Button variant="contained" color="primary" onClick={handleParentOpen}>
                                 Aggiungi genitori
                             </Button>
                         </Box>
                         {parents.length > 0 ? (
                             <List>
-                                {parents.map((parents, index) => (
+                                {parents.map((parent, index) => (
                                     <ListItem key={index}>
                                         <Typography variant="body1">
-                                            {parents.name} {parents.surname}
+                                            {parent.name} {parent.surname}
                                         </Typography>
                                     </ListItem>
                                 ))}
@@ -359,6 +405,8 @@ export const DetailsSchoolClass = () => {
                     </Paper>
                 </Grid>
             </Grid>
+
+            {/* Dialog Studente */}
             <Dialog open={isStudentModalOpen} onClose={handleStudentClose} fullWidth maxWidth="sm">
                 <DialogTitle>Aggiungi studente</DialogTitle>
                 <DialogContent>
@@ -456,6 +504,8 @@ export const DetailsSchoolClass = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Dialog Genitore */}
             <Dialog open={isParentModalOpen} onClose={handleParentClose} fullWidth maxWidth="sm">
                 <DialogTitle>Aggiungi Genitore</DialogTitle>
                 <DialogContent>
@@ -522,6 +572,7 @@ export const DetailsSchoolClass = () => {
                             value={newParent.residentialAddress}
                             onChange={handleParentChange}
                         />
+
                         <FormControl margin="dense" fullWidth required>
                             <InputLabel id="student-select-label">Studente</InputLabel>
                             <Select
@@ -578,12 +629,10 @@ export const DetailsSchoolClass = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>)
+        </Box>
+    );
 };
-
-
 const formatUsername = (username: string): string => {
-
     const cleanedUsername = username.replace(/\d+/g, "");
     const parts = cleanedUsername.split(".");
 
@@ -594,12 +643,12 @@ const formatUsername = (username: string): string => {
     return capitalize(cleanedUsername);
 };
 
-
-
 const formatSubjects = (subjects: string): string => {
-    return subjects.split(",").map(subject => subject.trim()).join(", ");
+    return subjects
+        .split(",")
+        .map((subject) => subject.trim())
+        .join(", ");
 };
-
 
 const capitalize = (text: string): string => {
     if (text.length === 0) return text;
