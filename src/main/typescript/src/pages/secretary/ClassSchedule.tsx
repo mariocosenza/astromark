@@ -56,10 +56,17 @@ export const ClassSchedule = () => {
         hour: "",
     });
 
-    // Nuovi stati per i messaggi
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [validationError, setValidationError] = useState<string | null>(null);
+
+    // Stato per gestire i messaggi di validazione per ogni campo
+    const [fieldErrors, setFieldErrors] = useState<{
+        teacherUsername?: string;
+        timetableId?: string;
+        dayWeek?: string;
+        hour?: string;
+    }>({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,9 +74,15 @@ export const ClassSchedule = () => {
                 if (!classId) throw new Error("Class ID is missing.");
 
                 const [scheduleRes, teachingsRes, timetablesRes] = await Promise.all([
-                    axiosConfig.get<TeachingTimeslotResponse[]>(`${Env.API_BASE_URL}/classes/${classId}/class-schedule`),
-                    axiosConfig.get<TeachingResponse[]>(`${Env.API_BASE_URL}/class-management/teaching`),
-                    axiosConfig.get<TimeTableResponse[]>(`${Env.API_BASE_URL}/classes/${classId}/timetable`),
+                    axiosConfig.get<TeachingTimeslotResponse[]>(
+                        `${Env.API_BASE_URL}/classes/${classId}/class-schedule`
+                    ),
+                    axiosConfig.get<TeachingResponse[]>(
+                        `${Env.API_BASE_URL}/class-management/teaching`
+                    ),
+                    axiosConfig.get<TimeTableResponse[]>(
+                        `${Env.API_BASE_URL}/classes/${classId}/timetable`
+                    ),
                 ]);
 
                 setSchedule(scheduleRes.data);
@@ -93,55 +106,118 @@ export const ClassSchedule = () => {
     }, {});
 
     const handleOpenModal = () => setModalOpen(true);
-    const handleCloseModal = () => setModalOpen(false);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleCloseModal = () => {
+        setFormData({
+            teacherUsername: "",
+            timetableId: "",
+            dayWeek: "",
+            hour: "",
+        });
+        setModalOpen(false);
+        setValidationError(null);
+        setSubmitError(null);
+        setSuccessMessage(null);
+        setFieldErrors({});
     };
 
-    const handleSelectChange = (e: SelectChangeEvent) => {
-        console.log(`Field: ${e.target.name}, Value: ${e.target.value}`, formData.timetableId); // Debug
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Reset field error on change
+        setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    };
+
+    const handleSelectChange = (e: SelectChangeEvent<string>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Reset field error on change
+        setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
     };
 
     const handleSubmit = async () => {
-        console.log("Form Data:", formData); // Debug: controlla i valori
+        // Reset previous messages
+        setValidationError(null);
+        setSubmitError(null);
+        setSuccessMessage(null);
+        setFieldErrors({});
 
-        if (!formData.teacherUsername || !formData.timetableId || !formData.dayWeek || !formData.hour) {
-            setValidationError("Si prega di compilare tutti i campi obbligatori.");
-            setSubmitError(null);
-            setSuccessMessage(null);
+        let hasError = false;
+        const errors: typeof fieldErrors = {};
+
+        // Validazione dei campi obbligatori
+        if (!formData.teacherUsername) {
+            errors.teacherUsername = "Seleziona un insegnante.";
+            hasError = true;
+        }
+        if (!formData.timetableId) {
+            errors.timetableId = "Seleziona un orario della classe.";
+            hasError = true;
+        }
+        if (!formData.dayWeek) {
+            errors.dayWeek = "Inserisci il giorno della settimana.";
+            hasError = true;
+        } else if (parseInt(formData.dayWeek, 10) < 1 || parseInt(formData.dayWeek, 10) > 6) {
+            errors.dayWeek = "Il giorno della settimana deve essere compreso tra 1 e 6.";
+            hasError = true;
+        }
+        if (!formData.hour) {
+            errors.hour = "Inserisci l'ora.";
+            hasError = true;
+        } else if (parseInt(formData.hour, 10) < 1 || parseInt(formData.hour, 10) > 6) {
+            errors.hour = "L'ora deve essere compresa tra 1 e 6.";
+            hasError = true;
+        }
+
+        if (hasError) {
+            setFieldErrors(errors);
+            setValidationError("Si prega di correggere gli errori nel modulo.");
             return;
-        } else {
-            setValidationError(null);
         }
 
         try {
+            const [username, subject] = formData.teacherUsername.split("-");
+
             const requestData = {
                 dayWeek: parseInt(formData.dayWeek, 10),
                 hour: parseInt(formData.hour, 10),
-                username: formData.teacherUsername.split("-")[0],
-                subject: formData.teacherUsername.split("-")[1],
+                username: username.trim(),
+                subject: subject.trim(),
                 timetableId: parseInt(formData.timetableId, 10),
             };
 
-            console.log("Request Data:", requestData); // Debug: controlla i dati inviati al backend
-
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${classId}/createTimeSlot`, requestData);
             setSuccessMessage("La fascia oraria è stata aggiunta correttamente!");
-            setSubmitError(null);
             handleCloseModal();
 
-            window.location.reload();
-        } catch (err) {
+            // Refresh schedule
+            const [scheduleRes] = await Promise.all([
+                axiosConfig.get<TeachingTimeslotResponse[]>(
+                    `${Env.API_BASE_URL}/classes/${classId}/class-schedule`
+                ),
+            ]);
+            setSchedule(scheduleRes.data);
+        } catch (err: any) {
             console.error("Failed to add timeslot:", err);
-            setSubmitError("Impossibile aggiungere la fascia oraria.");
-            setSuccessMessage(null);
+            setSubmitError(err.response?.data?.message || "Impossibile aggiungere la fascia oraria.");
         }
     };
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
-    if (loading) return <CircularProgress />;
-    if (error) return <Alert severity="error">{error}</Alert>;
+    if (error) {
+        return (
+            <Box textAlign="center" marginTop={4}>
+                <Alert severity="error">{error}</Alert>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ padding: "16px" }}>
@@ -149,7 +225,7 @@ export const ClassSchedule = () => {
                 Orario della classe
             </Typography>
 
-            {/* Alert di Successo */}
+            {/* Alert Globale di Successo */}
             {successMessage && (
                 <Alert
                     severity="success"
@@ -160,7 +236,7 @@ export const ClassSchedule = () => {
                 </Alert>
             )}
 
-            {/* Alert di Errore durante la Submit */}
+            {/* Alert Globale di Errore */}
             {submitError && (
                 <Alert
                     severity="error"
@@ -171,7 +247,7 @@ export const ClassSchedule = () => {
                 </Alert>
             )}
 
-            {/* Alert di Errore di Validazione */}
+            {/* Alert di Validazione */}
             {validationError && (
                 <Alert
                     severity="warning"
@@ -186,6 +262,7 @@ export const ClassSchedule = () => {
                 Aggiungi ora
             </Button>
 
+            {/* Modale per Aggiungere Insegnamento */}
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
@@ -210,6 +287,8 @@ export const ClassSchedule = () => {
                             name="teacherUsername"
                             value={formData.teacherUsername}
                             onChange={handleSelectChange}
+                            label="Insegnamento"
+                            error={Boolean(fieldErrors.teacherUsername)}
                         >
                             {teachings.map((teaching) => {
                                 const formattedName = teaching.username
@@ -227,6 +306,11 @@ export const ClassSchedule = () => {
                                 );
                             })}
                         </Select>
+                        {fieldErrors.teacherUsername && (
+                            <Typography variant="caption" color="error">
+                                {fieldErrors.teacherUsername}
+                            </Typography>
+                        )}
                     </FormControl>
 
                     <FormControl fullWidth margin="normal">
@@ -236,13 +320,20 @@ export const ClassSchedule = () => {
                             name="timetableId"
                             value={formData.timetableId}
                             onChange={handleSelectChange}
+                            label="Orario della classe"
+                            error={Boolean(fieldErrors.timetableId)}
                         >
                             {timetables.map((timetable) => (
                                 <MenuItem key={timetable.timeTableId} value={timetable.timeTableId.toString()}>
-                                    {timetable.number}{timetable.letter} [{timetable.startDate} - {timetable.endDate || "N/A"}]
+                                    {`${timetable.number}${timetable.letter} - ${timetable.startDate} to ${timetable.endDate || "N/A"}`}
                                 </MenuItem>
                             ))}
                         </Select>
+                        {fieldErrors.timetableId && (
+                            <Typography variant="caption" color="error">
+                                {fieldErrors.timetableId}
+                            </Typography>
+                        )}
                     </FormControl>
 
                     <TextField
@@ -253,7 +344,10 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{ min: 1, max: 7 }}
+                        inputProps={{ min: 1, max: 6 }}
+                        error={Boolean(fieldErrors.dayWeek)}
+                        helperText={fieldErrors.dayWeek}
+                        required
                     />
                     <TextField
                         fullWidth
@@ -264,6 +358,9 @@ export const ClassSchedule = () => {
                         margin="normal"
                         type="number"
                         inputProps={{ min: 1, max: 6 }}
+                        error={Boolean(fieldErrors.hour)}
+                        helperText={fieldErrors.hour}
+                        required
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
@@ -275,6 +372,7 @@ export const ClassSchedule = () => {
                     </Box>
                 </Box>
             </Modal>
+
             <Box display="flex" flexWrap="wrap" gap={3}>
                 {Object.keys(groupedSchedule).map((date) => (
                     <Card
@@ -302,6 +400,7 @@ export const ClassSchedule = () => {
                     </Card>
                 ))}
             </Box>
-        </Box>
-    );
+        </Box>)
 };
+
+export default ClassSchedule;
