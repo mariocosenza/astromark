@@ -73,7 +73,7 @@ export const ClassAgenda: React.FC = () => {
     };
 
     const choseHomeworkChat = (slot: TeachingTimeslotDetailedResponse) => {
-        if (slot.homework && slot.homework.hasChat) {
+        if (slot.homework?.hasChat) {
             SelectedHomework.id = slot.homework.id;
             SelectedHomework.title = slot.homework.title;
             SelectedHomework.desc = slot.homework.description;
