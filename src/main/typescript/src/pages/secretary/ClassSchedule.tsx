@@ -131,6 +131,8 @@ export const ClassSchedule = () => {
             setSuccessMessage("La fascia oraria è stata aggiunta correttamente!");
             setSubmitError(null);
             handleCloseModal();
+
+            window.location.reload();
         } catch (err) {
             console.error("Failed to add timeslot:", err);
             setSubmitError("Impossibile aggiungere la fascia oraria.");
