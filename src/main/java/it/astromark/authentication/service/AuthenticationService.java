@@ -114,7 +114,7 @@ public interface AuthenticationService {
     /**
      * Retrieves the parent details if the user is a parent.
      *
-     * @return an `Optional<Parent>` containing the parent details if available
+     * @return an `Optional Parent containing the parent details if available
      * Pre-condition: The user must be logged in and identified as a parent.
      * Post-condition: Returns an optional containing the parent details or empty if not applicable.
      */
@@ -123,7 +123,7 @@ public interface AuthenticationService {
     /**
      * Retrieves the student details if the user is a student.
      *
-     * @return an `Optional<Student>` containing the student details if available
+     * @return an `Optional Student` containing the student details if available
      * Pre-condition: The user must be logged in and identified as a student.
      * Post-condition: Returns an optional containing the student details or empty if not applicable.
      */
@@ -132,7 +132,7 @@ public interface AuthenticationService {
     /**
      * Retrieves the teacher details if the user is a teacher.
      *
-     * @return an `Optional<Teacher>` containing the teacher details if available
+     * @return an `Optional Teacher` containing the teacher details if available
      * Pre-condition: The user must be logged in and identified as a teacher.
      * Post-condition: Returns an optional containing the teacher details or empty if not applicable.
      */
@@ -141,7 +141,7 @@ public interface AuthenticationService {
     /**
      * Retrieves the secretary details if the user is a secretary.
      *
-     * @return an `Optional<Secretary>` containing the secretary details if available
+     * @return an `Optional Secretary` containing the secretary details if available
      * Pre-condition: The user must be logged in and identified as a secretary.
      * Post-condition: Returns an optional containing the secretary details or empty if not applicable.
      */
