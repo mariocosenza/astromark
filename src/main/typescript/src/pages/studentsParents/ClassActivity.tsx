@@ -101,7 +101,7 @@ export const Homework: React.FC = () => {
                                     title: activity.signedHour.title,
                                     description: activity.title + ': ' + activity.description,
                                     hexColor: 'dodgerblue',
-                                    date: activity.signedHour.date,
+                                    date: activity.dueDate,
                                 }))} dashboard={false}/>
                     ) : (
                         <HomeworkList
@@ -116,7 +116,7 @@ export const Homework: React.FC = () => {
                                     title: activity.signedHour.title,
                                     description: activity.title + ': ' + activity.description,
                                     hexColor: 'dodgerblue',
-                                    date: activity.signedHour.date,
+                                    date: activity.dueDate,
                                 }))
                                 .reverse()} dashboard={false}/>
                     )
@@ -200,9 +200,9 @@ const Activity: React.FC = () => {
                             )
                             .map((activity: ClassActivityResponse) => ({
                                 avatar: 'C',
-                                title: `${activity.signedHour.date} ${activity.signedHour.title}`,
+                                title: `${activity.signedHour.title} del ${new Date(activity.signedHour.date).toLocaleDateString()} `,
                                 description: activity.description,
-                                hexColor: 'dodgerblue',
+                                hexColor: '#006059',
                                 date: activity.signedHour.date,
                             }))}
                     />
@@ -215,9 +215,9 @@ const Activity: React.FC = () => {
                             )
                             .map((activity: ClassActivityResponse) => ({
                                 avatar: 'C',
-                                title: `${activity.signedHour.date} ${activity.signedHour.title}`,
+                                title: `${activity.signedHour.title} del ${new Date(activity.signedHour.date).toLocaleDateString()} `,
                                 description: activity.description,
-                                hexColor: 'dodgerblue',
+                                hexColor: '#006059',
                                 date: activity.signedHour.date,
                             }))
                             .reverse()}

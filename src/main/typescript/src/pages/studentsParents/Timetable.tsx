@@ -111,7 +111,7 @@ export const Timetable: React.FC = () => {
                     Seleziona settimana
                 </InputLabel>
                 <DatePicker
-                    style={{marginTop: '1rem', marginLeft: '1rem', marginBottom: '1rem'}}
+                    style={{marginTop: '1rem', marginLeft: '1rem', marginBottom: '1rem', height: '2.5rem'}}
                     range
                     weekPicker
                     value={values}
