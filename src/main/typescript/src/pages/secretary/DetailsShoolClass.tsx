@@ -492,7 +492,7 @@ export const DetailsSchoolClass = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleStudentClose} disabled={submitting}>
-                        Cancel
+                        Esci
                     </Button>
                     <Button
                         onClick={handleStudentSubmit}
@@ -500,7 +500,7 @@ export const DetailsSchoolClass = () => {
                         variant="contained"
                         disabled={submitting}
                     >
-                        {submitting ? "Adding..." : "Add Student"}
+                        {submitting ? "Adding..." : "Aggiungi studente"}
                     </Button>
                 </DialogActions>
             </Dialog>
