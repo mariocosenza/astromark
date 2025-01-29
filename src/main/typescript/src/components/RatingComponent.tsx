@@ -21,11 +21,7 @@ import {MarkRequest} from "../entities/MarkRequest.ts";
 import {MarkUpdateRequest} from "../entities/MarkUpdateRequest.ts";
 import {SelectedTeaching} from "../services/TeacherService.ts";
 
-export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void, date: DateObject }> = ({
-                                                                                                             row,
-                                                                                                             returnBack,
-                                                                                                             date
-                                                                                                         }) => {
+export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void, date: DateObject }> = ({row, returnBack, date}) => {
     const [mark, setMark] = useState<number | null>(row.mark);
     const [type, setType] = useState<string>(row.type);
     const [note, setNote] = useState<string>(row.desc);
@@ -33,36 +29,40 @@ export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void
     const marksList = Array.from({length: 41}, (_, i) => ((i) / 4));
 
     const handleSave = async () => {
-        if (row.id === null) {
-            await CreateMark();
-        } else {
-            await UpdateMark();
+        if (mark && type.length > 0) {
+            if (row.id === null) {
+                await CreateMark();
+            } else {
+                await UpdateMark();
+            }
         }
         returnBack();
     }
 
     const CreateMark = async () => {
-        const markRequest: MarkRequest = {
-            studentId: row.student,
-            teachingId: {
-                teacherId: getId(),
-                subjectTitle: SelectedTeaching.teaching == null ? '' : SelectedTeaching.teaching,
-            },
-            date: date.toDate(),
-            description: note,
-            mark: Number(mark),
-            type: type
-        }
-
-        try {
-            await axiosConfig.post(`${Env.API_BASE_URL}/students/marks`, markRequest, {
-                headers: {
-                    'Content-Type': 'application/json',
+        if (SelectedTeaching.teaching) {
+            const markRequest: MarkRequest = {
+                studentId: row.student,
+                teachingId: {
+                    teacherId: getId(),
+                    subjectTitle: SelectedTeaching.teaching,
                 },
-            });
+                date: date.toDate(),
+                description: note,
+                mark: Number(mark),
+                type: type
+            }
 
-        } catch (error) {
-            console.log(error);
+            try {
+                await axiosConfig.post(`${Env.API_BASE_URL}/students/marks`, markRequest, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -103,8 +103,8 @@ export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void
             <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 2}}>
                 <CardContent>
                     <Stack spacing={3}>
-                        <Stack direction="row" justifyContent={'center'} alignItems={'center'} margin={2} spacing={10}>
-                            <Box>
+                        <Stack direction="row" justifyContent={'space-around'} alignItems={'center'} margin={2} spacing={10}>
+                            <Box sx={{width:'30%'}}>
                                 <Typography variant="subtitle1">Voto:</Typography>
                                 <Autocomplete
                                     options={marksList}
@@ -142,7 +142,7 @@ export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void
                             </Box>
                         </Stack>
 
-                        <Stack direction="row" justifyContent={'space-around'} alignItems={'center'} spacing={2}>
+                        <Stack direction="column" justifyContent={'space-around'} alignItems={'center'} spacing={2}>
                             <Box width={'100%'}>
                                 <Typography variant="subtitle1">Nota:</Typography>
                                 <TextField fullWidth multiline minRows={3} value={note}

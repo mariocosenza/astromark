@@ -17,7 +17,7 @@ import {useNavigate} from "react-router";
 export const formatMark = (num: number): string => {
     let int = Math.floor(num)
     let fract = num - int;
-    let sign = (fract === 0.25) ? '+' : (fract === 0.75) ? '-' : (fract === 0.50) ? '.5' : ''
+    let sign = (fract === 0.25) ? '+' : (fract === 0.75) ? '-' : (fract === 0.50) ? '.50' : (fract === 0) ? '' : fract.toString();
     return (sign === '-' ? int + 1 : int).toString() + sign
 }
 

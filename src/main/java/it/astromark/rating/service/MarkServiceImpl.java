@@ -185,6 +185,9 @@ public class MarkServiceImpl implements MarkService {
         if (mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }
+        if (mark.type() == null) {
+            throw new IllegalArgumentException("Mark type must be specified");
+        }
         var teacher = authenticationService.getTeacher().orElseThrow();
         var teaching = teachingRepository.findById(mark.teachingId()).orElseThrow();
         if (!teaching.getTeacher().equals(teacher)) {
