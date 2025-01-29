@@ -61,7 +61,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
     public List<MarkResponse> getMarkByYear(@NotNull UUID studentId, @PastOrPresent Year year) {
-        if (!schoolUserService.isLoggedUserParent(studentId)) {
+        if (!schoolUserService.isLoggedUserParent(studentId) || !schoolUserService.isLoggedStudent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return markMapper.toMarkResponseList(markRepository.findMarkByStudentIdAndDateBetween(studentId, LocalDate.of(year.getValue(), Month.SEPTEMBER, 1),
@@ -123,7 +123,13 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<RatingsResponse> getRatings(@NotNull Integer classId, @NotEmpty String teaching, @NotNull LocalDate date) {
-        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+        if (!schoolUserService.isLoggedTeacherClass(classId) ||
+                teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow())
+                        .stream()
+                        .noneMatch(t -> t.getSubjectTitle()
+                                .getTitle()
+                                .equals(teaching))
+                || date.isAfter(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
@@ -142,7 +148,12 @@ public class MarkServiceImpl implements MarkService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public List<RatingsResponse> getEveryRatings(@NotNull Integer classId, @NotEmpty String teaching) {
-        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+        if (!schoolUserService.isLoggedTeacherClass(classId) ||
+                teachingRepository.findByTeacher(authenticationService.getTeacher().orElseThrow())
+                        .stream()
+                        .noneMatch(t -> t.getSubjectTitle()
+                                .getTitle()
+                                .equals(teaching))) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 

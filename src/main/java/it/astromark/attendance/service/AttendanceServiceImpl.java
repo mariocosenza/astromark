@@ -12,6 +12,7 @@ import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.model.SchoolUser;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,8 +48,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public List<AttendanceResponse> getAttendance(Integer classId, LocalDate date) {
-        if (!schoolUserService.isLoggedTeacherClass(classId)) {
+    public List<AttendanceResponse> getAttendance(@NotNull Integer classId, @NotNull LocalDate date) {
+        if (!schoolUserService.isLoggedTeacherClass(classId) || date.isAfter(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
@@ -62,7 +63,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public void saveAttendance(Integer classId, LocalDate date, List<AttendanceRequest> attendanceRequests) {
+    public void saveAttendance(@NotNull Integer classId, @NotNull LocalDate date, @NotNull List<AttendanceRequest> attendanceRequests) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
