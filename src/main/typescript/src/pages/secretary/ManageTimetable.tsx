@@ -114,7 +114,7 @@ export const ManageTimetable = () => {
                         Crea orario della classe
                     </Typography>
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="school-class-select-label">School Class</InputLabel>
+                        <InputLabel id="school-class-select-label">Seleziona classe</InputLabel>
                         <Select
                             labelId="school-class-select-label"
                             value={formData.schoolClassId}
@@ -159,10 +159,10 @@ export const ManageTimetable = () => {
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button onClick={handleCloseModal} style={{marginRight: "8px"}}>
-                            Cancel
+                            Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit
+                            Invia
                         </Button>
                     </Box>
                 </Box>

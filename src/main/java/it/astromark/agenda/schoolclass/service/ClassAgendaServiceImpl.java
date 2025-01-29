@@ -19,6 +19,7 @@ import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
+@Slf4j
 @Service
 public class ClassAgendaServiceImpl implements ClassAgendaService {
 
@@ -90,16 +92,16 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         while (startDate.isBefore(endDate) || startDate.isEqual(endDate)) {
             var finalStartDate = startDate;
             if (redDates.stream().noneMatch(r -> r.getId().getDate().isEqual(finalStartDate))) {
-                // Cerca se il timeslot esiste già
+
                 var existingTimeslot = teachingTimeslotRepository.findByClassTimetableAndDateAndHour(timeTable, finalStartDate, hour);
 
                 if (existingTimeslot.isPresent()) {
-                    // Aggiorna il timeslot esistente
+
                     var timeslotToUpdate = existingTimeslot.get();
                     timeslotToUpdate.setTeaching(teaching);
                     teachingTimeslotRepository.save(timeslotToUpdate);
                 } else {
-                    // Crea un nuovo timeslot
+
                     var teachingTimeslot = TeachingTimeslot.builder()
                             .classTimetable(timeTable)
                             .hour(hour)
@@ -212,7 +214,7 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         var schoolClass = schoolClassRepository.findById(schoolClassId).orElseThrow(
                 () -> new IllegalArgumentException("SchoolClass not found for ID: " + schoolClassId));
 
-        if(request.endDate() != null && request.startDate().isAfter(request.endDate())) {
+        if (request.endDate() != null && request.startDate().isAfter(request.endDate())) {
             throw new IllegalArgumentException("Start date must be before end date");
         }
 
@@ -230,7 +232,14 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Override
     public List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now) {
 
-        var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
+        var classTimeTable = classTimetableRepository
+                .getClassTimetableBySchoolClass_IdAndEndValidityAfter(classId, now)
+                .orElseGet(() -> classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidityIsNull(classId)
+                        .orElse(null));
+
+        if (classTimeTable == null) {
+            return List.of();
+        }
 
         var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())
                 .stream()

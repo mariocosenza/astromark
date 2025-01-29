@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClassTimetableRepository extends JpaRepository<ClassTimetable, Integer> {
@@ -13,4 +14,8 @@ public interface ClassTimetableRepository extends JpaRepository<ClassTimetable, 
     ClassTimetable getClassTimetableBySchoolClass_IdAndEndValidity(Integer schoolClass_id, LocalDate endValidity);
 
     List<ClassTimetable> getClassTimetableBySchoolClass_Id(Integer schoolClass_id);
+
+    Optional<ClassTimetable> getClassTimetableBySchoolClass_IdAndEndValidityAfter(Integer classId, LocalDate now);
+
+    Optional<ClassTimetable> getClassTimetableBySchoolClass_IdAndEndValidityIsNull(Integer schoolClass_id);
 }
