@@ -4,10 +4,8 @@ import it.astromark.agenda.reception.dto.ReceptionBookingResponse;
 import it.astromark.agenda.reception.dto.ReceptionTimeslotResponse;
 import it.astromark.agenda.reception.entity.ReceptionBooking;
 import it.astromark.agenda.reception.entity.ReceptionTimeslot;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
+import it.astromark.authentication.service.AuthenticationService;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -24,11 +22,29 @@ public interface ReceptionAgendaMapper {
             @Mapping(target = "date", source = "receptionBooking.receptionTimeslot.date"),
             @Mapping(target = "mode", source = "receptionBooking.receptionTimeslot.mode"),
             @Mapping(target = "hour", source = "receptionBooking.receptionTimeslot.hour"),
-            @Mapping(target = "name", source = "receptionBooking.receptionTimeslot.receptionTimetable.teacher.name"),
-            @Mapping(target = "surname", source = "receptionBooking.receptionTimeslot.receptionTimetable.teacher.surname")
+            @Mapping(target = "name", expression = "java(getMappedName(receptionBooking, authenticationService))"),
+            @Mapping(target = "surname", expression = "java(getMappedSurname(receptionBooking, authenticationService))")
     })
-    ReceptionBookingResponse toReceptionBookingResponse(ReceptionBooking receptionBooking);
+    ReceptionBookingResponse toReceptionBookingResponse(ReceptionBooking receptionBooking, @Context AuthenticationService authenticationService);
 
-    List<ReceptionBookingResponse> toReceptionBookingResponseList(List<ReceptionBooking> receptionBookings);
+    List<ReceptionBookingResponse> toReceptionBookingResponseList(List<ReceptionBooking> receptionBookings, @Context AuthenticationService authenticationService);
 
+
+    default String getMappedName(ReceptionBooking receptionBooking, AuthenticationService authenticationService) {
+        if (authenticationService.isParent()) {
+            return receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getName();
+        } else if (authenticationService.isTeacher()) {
+            return receptionBooking.getParent().getName();
+        }
+        return null;
+    }
+
+    default String getMappedSurname(ReceptionBooking receptionBooking, AuthenticationService authenticationService) {
+        if (authenticationService.isParent()) {
+            return receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getSurname();
+        } else if (authenticationService.isTeacher()) {
+            return receptionBooking.getParent().getSurname();
+        }
+        return null;
+    }
 }

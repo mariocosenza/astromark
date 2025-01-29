@@ -20,6 +20,9 @@ import {Env} from "../../Env.ts";
 import {MarkResponse} from "../../entities/MarkResponse.ts";
 import {AxiosResponse} from "axios";
 import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {formatMark} from "../teacher/Ratings.tsx";
+import {gregorian_it} from "../../services/CalendarService.ts";
+
 
 
 const compareDate = (date: Date, dateObject: DateObject) => {
@@ -50,7 +53,7 @@ export const Mark: React.FC = () => {
             const averageResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
             const re = response.data;
             const correctedData: ListItemProp[] = re.map((mark: MarkResponse) => ({
-                avatar: mark.mark.toPrecision(2),
+                avatar: formatMark(mark.mark),
                 title: mark.title,
                 description: mark.description,
                 hexColor: mark.mark >= 6 ? green[500] : deepOrange[500],
@@ -68,6 +71,7 @@ export const Mark: React.FC = () => {
     const handleChange = (event: SelectChangeEvent) => {
         setSubject(event.target.value as string);
     };
+
 
     return (
         <div>
@@ -98,9 +102,12 @@ export const Mark: React.FC = () => {
                         </Select>
                     </FormControl>
                     <DatePicker
+                        style={{height: '2.5rem'}}
                         value={values}
                         onChange={setValues}
                         range
+                        locale={gregorian_it}
+                        format="DD/MM/YYYY"
                     />
                 </Box>
                 <Box className={'centerBox secondary-container'} style={{flexDirection: 'column'}} height={'24vh'}
@@ -109,7 +116,7 @@ export const Mark: React.FC = () => {
                         Media voti annuale
                     </Typography>
                     <CircularProgress variant="determinate" value={average * 10}/>
-                    <Typography variant={'h6'}>
+                    <Typography variant={'h6'} fontStyle={'italic'} mt="0.5rem">
                         {average}
                     </Typography>
                 </Box>

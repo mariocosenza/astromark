@@ -4,6 +4,7 @@ import it.astromark.attendance.dto.JustifiableResponse;
 import it.astromark.attendance.mapper.JustifiableMapper;
 import it.astromark.attendance.repository.AbsenceRepository;
 import it.astromark.attendance.repository.DelayRepository;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public class JustifiableServiceImpl implements JustifiableService {
     @PreAuthorize("hasRole('PARENT')")
     public JustifiableResponse justify(@NotNull UUID studentId, @NotNull UUID justificationId, @NotEmpty @Size(max = 512) String justificationText, @NotNull Boolean absence) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         if (absence) {
@@ -74,9 +75,9 @@ public class JustifiableServiceImpl implements JustifiableService {
     @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
     public List<JustifiableResponse> getAbsencesByYear(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return justifiableMapper.absenceToJustifiableResponseList(absenceRepository.findAbsenceOByDateBetweenAndStudent_IdOrderByDateDesc(LocalDate.of(year.getValue(), Month.SEPTEMBER, 1),
                 LocalDate.of(year.getValue() + 1, Month.AUGUST, 31), studentId));
@@ -86,32 +87,36 @@ public class JustifiableServiceImpl implements JustifiableService {
     @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
     public List<JustifiableResponse> getDelayByYear(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return justifiableMapper.delayToJustifiableResponseList(delayRepository.findDelayByDateBetweenAndStudent_IdOrderByDateDesc(LocalDate.of(year.getValue(), Month.SEPTEMBER, 1).atStartOfDay().toInstant(ZoneOffset.UTC),
                 LocalDate.of(year.getValue() + 1, Month.AUGUST, 31).atStartOfDay().toInstant(ZoneOffset.UTC), studentId));
     }
 
     @Override
-    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT') || hasRole('TEACHER')")
     public Integer getTotalAbsences(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return absenceRepository.countAbsenceByDateBetweenAndStudent_Id(LocalDate.of(year.getValue(), Month.SEPTEMBER, 1), LocalDate.of(year.getValue() + 1, Month.AUGUST, 31), studentId);
     }
 
     @Override
-    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT') || hasRole('TEACHER')")
     public Integer getTotalDelays(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return delayRepository.countDelayByDateBetweenAndStudent_Id(LocalDate.of(year.getValue(), Month.SEPTEMBER, 1).atStartOfDay().toInstant(ZoneOffset.UTC), LocalDate.of(year.getValue() + 1, Month.AUGUST, 31).atStartOfDay().toInstant(ZoneOffset.UTC), studentId);
     }

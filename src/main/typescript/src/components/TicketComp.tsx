@@ -10,13 +10,13 @@ import {Env} from "../Env.ts";
 import {SelectedTicket} from "../services/TicketService.ts";
 import {MessageResponse} from "../entities/MessageResponse.ts";
 import {TicketResponse} from "../entities/TicketResponse.ts";
-import {isRole} from "../services/AuthService.ts";
+import {getRole, isRole} from "../services/AuthService.ts";
 import {Role} from "./route/ProtectedRoute.tsx";
 
 export const TicketComp: React.FC = () => {
     const [ticketData, setTicketData] = useState<TicketCard[]>([]);
     const [messageData, setMessageData] = useState<MessageComponent[]>([]);
-    const [letterName, setLetterName] = useState<string>('')
+    const [_, setLetterName] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -30,14 +30,16 @@ export const TicketComp: React.FC = () => {
             if (ticketResponse.data.length) {
                 fetchedTicket = ticketResponse.data.map((ticket: TicketResponse) => ({
                     avatar: 'T',
-                    title: "Ticket del " + ticket.datetime.toString().substring(0, 10),
+                    title: "Ticket del " + new Date(ticket.datetime).toLocaleDateString(),
                     description: ticket.title,
                     hexColor: lightBlue[500],
-                    id: ticket.id
+                    id: ticket.id,
+                    ticket: ticket
                 }));
 
                 if (SelectedTicket.ticketId === null) {
                     SelectedTicket.ticketId = ticketResponse.data[ticketResponse.data.length - 1].id
+                    SelectedTicket.closed = ticketResponse.data[ticketResponse.data.length - 1].closed
                 }
 
                 await fetchMessages()
@@ -70,21 +72,23 @@ export const TicketComp: React.FC = () => {
     }
 
     const sendMessage = async (textMessage: string) => {
-        try {
-            await axiosConfig.post(`${Env.API_BASE_URL}/tickets/${SelectedTicket.ticketId}/addMessage`, textMessage, {
-                headers: {
-                    'Content-Type': 'text/plain'
-                }
-            });
+        if (!SelectedTicket.closed) {
+            try {
+                await axiosConfig.post(`${Env.API_BASE_URL}/tickets/${SelectedTicket.ticketId}/addMessage`, textMessage, {
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    }
+                });
 
-            return {
-                avatar: letterName,
-                text: textMessage,
-                hexColor: isRole(Role.SECRETARY) ? orange[500] : blue[500],
-            };
+                return {
+                    avatar: getRole().toUpperCase().substring(0, 1),
+                    text: textMessage,
+                    hexColor: isRole(Role.SECRETARY) ? orange[500] : blue[500],
+                };
 
-        } catch (error) {
-            console.log(error);
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
@@ -95,9 +99,11 @@ export const TicketComp: React.FC = () => {
                 <Box padding={'1rem'}>
                     {loading ? <CircularProgress/> : <TicketList list={ticketData} onTicketClick={fetchMessages}/>}
                 </Box>
+                { getRole().toUpperCase() !== Role.SECRETARY &&
                 <Box padding={'1rem'}>
                     <TicketCreation/>
                 </Box>
+                }
             </Box>
 
             <Box width={{xs: '100%', md: '45%'}}>

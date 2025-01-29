@@ -1,6 +1,7 @@
 package it.astromark.chat.repository;
 
 import it.astromark.chat.entity.Ticket;
+import it.astromark.school.entity.School;
 import it.astromark.user.parent.entity.Parent;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.validation.constraints.NotNull;
@@ -16,4 +17,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     List<Ticket> findByTeacherAndClosedAndSolved(Teacher teacher, @NotNull Boolean closed, @NotNull Boolean solved);
 
     List<Ticket> findByParentAndClosedAndSolved(Parent parent, @NotNull Boolean closed, @NotNull Boolean solved);
+
+    List<Ticket> findByTeacher_SchoolOrParent_School(@NotNull School teacherSchool, @NotNull School parentSchool);
+
+    boolean existsByIdAndTeacher_SchoolOrParent_School(UUID id, @NotNull School teacherSchool, @NotNull School parentSchool);
 }

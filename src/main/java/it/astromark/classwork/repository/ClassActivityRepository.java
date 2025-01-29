@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ClassActivityRepository extends JpaRepository<ClassActivity, Integer> {
-    List<ClassActivity> findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(Integer attr0);
+    List<ClassActivity> findAllBySignedHour_TeachingTimeslot_ClassTimetable_SchoolClass_Id(Integer signedHour_teachingTimeslot_classTimetable_schoolClass_id);
 
     ClassActivity findBySignedHour(SignedHour signedHour);
 }

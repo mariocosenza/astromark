@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, CardContent, Typography, Stack, Button, Box, TextField, Autocomplete} from '@mui/material';
+import {Autocomplete, Box, Button, Card, CardContent, Stack, TextField, Typography} from '@mui/material';
 import DatePicker, {DateObject} from "react-multi-date-picker";
 import Grid from "@mui/material/Grid2";
 import {SelectedSchoolClass} from "../../services/TeacherService.ts";
@@ -20,6 +20,7 @@ export const TeacherNote: React.FC = () => {
     const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
     const [note, setNote] = useState<string>("");
     const [date, setDate] = useState<DateObject>(new DateObject())
+    const [dateError, setDateError] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
@@ -47,7 +48,7 @@ export const TeacherNote: React.FC = () => {
     }
 
     const handleSave = async () => {
-        if (selectedStudent && date){
+        if (selectedStudent && date && !dateError) {
             const noteRequest: NoteRequest = {
                 studentId: selectedStudent.id,
                 description: note,
@@ -71,9 +72,9 @@ export const TeacherNote: React.FC = () => {
     const handleDateChange = (newDate: DateObject | null) => {
         if (newDate) {
             setDate(newDate);
+            setDateError(newDate > new DateObject())
         }
     };
-
 
 
     return (
@@ -90,18 +91,24 @@ export const TeacherNote: React.FC = () => {
                 </Grid>
                 <Grid>
                     <Stack direction={'column'} justifyContent={'center'}>
-                        <Typography variant="caption" color={'textSecondary'}>
-                            Data
-                        </Typography>
-                        <DatePicker
-                            value={date}
-                            onChange={handleDateChange}
-                        />
+                        <Stack direction={'column'} justifyContent={'center'}>
+                            <Typography variant="caption" color={'textSecondary'}>
+                                Data
+                            </Typography>
+                            <DatePicker
+                                value={date}
+                                onChange={handleDateChange}/>
+                            {dateError && (
+                                <Typography variant="caption" color={'error'}>
+                                    È possibile selezionare solo date successive ad oggi.
+                                </Typography>
+                            )}
+                        </Stack>
                     </Stack>
                 </Grid>
             </Grid>
 
-            <Card elevation={10} sx={{ margin: '2rem 20%', borderRadius: 6 }}>
+            <Card elevation={10} sx={{margin: '2rem 20%', borderRadius: 6}}>
                 <CardContent>
                     <Stack direction={'row'} justifyContent={'space-around'} alignItems={'center'}>
                         <Stack margin={2} spacing={1} sx={{width: '30%'}}>
@@ -115,13 +122,14 @@ export const TeacherNote: React.FC = () => {
                                 value={selectedStudent}
                                 onChange={(_event, newValue) => setSelectedStudent(newValue)}
                                 renderInput={(params) => (
-                                    <TextField {...params} placeholder="Inserisci Nome" variant="outlined" />
+                                    <TextField {...params} placeholder="Inserisci Nome" variant="outlined"/>
                                 )}
                                 fullWidth
                             />
                         </Stack>
 
-                        <Stack direction="column" justifyContent={'space-around'} alignItems={'center'} spacing={2} sx={{width: '40%'}}>
+                        <Stack direction="column" justifyContent={'space-around'} alignItems={'center'} spacing={2}
+                               sx={{width: '40%'}}>
                             <Box width={'100%'}>
                                 <Typography variant="subtitle1">Nota:</Typography>
                                 <TextField
@@ -136,9 +144,9 @@ export const TeacherNote: React.FC = () => {
                         </Stack>
                     </Stack>
                     {!loading && (
-                        <Stack justifyContent={'flex-end'} margin={2} paddingRight={'5rem'} >
+                        <Stack justifyContent={'flex-end'} margin={2} paddingRight={'5rem'}>
                             <Button variant="contained" color="primary"
-                                    sx={{ alignSelf: 'flex-end', borderRadius: 5, justifySelf: '' }} onClick={handleSave} >
+                                    sx={{alignSelf: 'flex-end', borderRadius: 5, justifySelf: ''}} onClick={handleSave}>
                                 Salva
                             </Button>
                         </Stack>

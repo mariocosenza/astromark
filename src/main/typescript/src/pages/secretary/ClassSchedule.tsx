@@ -1,20 +1,20 @@
 import { useParams } from "react-router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    Typography,
-    CircularProgress,
     Alert,
     Box,
+    Button,
     Card,
     CardContent,
-    Stack,
-    Button,
-    Modal,
-    Select,
-    MenuItem,
+    CircularProgress,
     FormControl,
     InputLabel,
+    MenuItem,
+    Modal,
+    Select,
+    Stack,
     TextField,
+    Typography,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import axiosConfig from "../../services/AxiosConfig";
@@ -56,6 +56,11 @@ export const ClassSchedule = () => {
         hour: "",
     });
 
+    // Nuovi stati per i messaggi
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [validationError, setValidationError] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -71,10 +76,9 @@ export const ClassSchedule = () => {
                 setTeachings(teachingsRes.data);
                 setTimetables(timetablesRes.data);
                 setLoading(false);
-
             } catch (err) {
                 console.error("Failed to fetch data:", err);
-                setError("Failed to fetch class schedule or related data.");
+                setError("Impossibile recuperare l'orario delle lezioni o i dati correlati.");
                 setLoading(false);
             }
         };
@@ -95,44 +99,46 @@ export const ClassSchedule = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSelectChange = (e: SelectChangeEvent<string>) => {
-        console.log(`Field: ${e.target.name}, Value: ${e.target.value}` , formData.timetableId); // Debug
+    const handleSelectChange = (e: SelectChangeEvent) => {
+        console.log(`Field: ${e.target.name}, Value: ${e.target.value}`, formData.timetableId); // Debug
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
-
 
     const handleSubmit = async () => {
         console.log("Form Data:", formData); // Debug: controlla i valori
 
         if (!formData.teacherUsername || !formData.timetableId || !formData.dayWeek || !formData.hour) {
-            alert("Please fill in all required fields.");
+            setValidationError("Si prega di compilare tutti i campi obbligatori.");
+            setSubmitError(null);
+            setSuccessMessage(null);
             return;
+        } else {
+            setValidationError(null);
         }
 
         try {
             const requestData = {
                 dayWeek: parseInt(formData.dayWeek, 10),
                 hour: parseInt(formData.hour, 10),
-                username: formData.teacherUsername.split("-")[0], // Controlla se `teacherUsername` contiene il valore corretto
-                subject: formData.teacherUsername.split("-")[1],  // Verifica il formato di `teacherUsername`
-                timetableId: parseInt(formData.timetableId, 10),  // Assicurati che `timetableId` sia valorizzato
+                username: formData.teacherUsername.split("-")[0],
+                subject: formData.teacherUsername.split("-")[1],
+                timetableId: parseInt(formData.timetableId, 10),
             };
 
             console.log("Request Data:", requestData); // Debug: controlla i dati inviati al backend
 
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${classId}/createTimeSlot`, requestData);
+            setSuccessMessage("La fascia oraria è stata aggiunta correttamente!");
+            setSubmitError(null);
             handleCloseModal();
-            alert("Timeslot added successfully!");
 
+            window.location.reload();
         } catch (err) {
             console.error("Failed to add timeslot:", err);
-            alert("Failed to add timeslot.");
+            setSubmitError("Impossibile aggiungere la fascia oraria.");
+            setSuccessMessage(null);
         }
     };
-
-
-
 
     if (loading) return <CircularProgress />;
     if (error) return <Alert severity="error">{error}</Alert>;
@@ -140,11 +146,46 @@ export const ClassSchedule = () => {
     return (
         <Box sx={{ padding: "16px" }}>
             <Typography variant="h4" gutterBottom>
-                Class Schedule
+                Orario della classe
             </Typography>
+
+            {/* Alert di Successo */}
+            {successMessage && (
+                <Alert
+                    severity="success"
+                    onClose={() => setSuccessMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {successMessage}
+                </Alert>
+            )}
+
+            {/* Alert di Errore durante la Submit */}
+            {submitError && (
+                <Alert
+                    severity="error"
+                    onClose={() => setSubmitError(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {submitError}
+                </Alert>
+            )}
+
+            {/* Alert di Errore di Validazione */}
+            {validationError && (
+                <Alert
+                    severity="warning"
+                    onClose={() => setValidationError(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {validationError}
+                </Alert>
+            )}
+
             <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
-                Add Timeslot
+                Aggiungi ora
             </Button>
+
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
@@ -160,10 +201,10 @@ export const ClassSchedule = () => {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Add Teaching Timeslot
+                        Aggiungi insegnamento
                     </Typography>
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="teaching-select-label">Teaching</InputLabel>
+                        <InputLabel id="teaching-select-label">Insegnamento</InputLabel>
                         <Select
                             labelId="teaching-select-label"
                             name="teacherUsername"
@@ -188,9 +229,8 @@ export const ClassSchedule = () => {
                         </Select>
                     </FormControl>
 
-
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="timetable-select-label">Timetable</InputLabel>
+                        <InputLabel id="timetable-select-label">Orario della classe</InputLabel>
                         <Select
                             labelId="timetable-select-label"
                             name="timetableId"
@@ -201,15 +241,13 @@ export const ClassSchedule = () => {
                                 <MenuItem key={timetable.timeTableId} value={timetable.timeTableId.toString()}>
                                     {timetable.number}{timetable.letter} [{timetable.startDate} - {timetable.endDate || "N/A"}]
                                 </MenuItem>
-
                             ))}
                         </Select>
                     </FormControl>
 
-
                     <TextField
                         fullWidth
-                        label="Day of Week (1-7)"
+                        label="Giorno della settimana (1-6)"
                         name="dayWeek"
                         value={formData.dayWeek}
                         onChange={handleInputChange}
@@ -219,7 +257,7 @@ export const ClassSchedule = () => {
                     />
                     <TextField
                         fullWidth
-                        label="Hour (1-6)"
+                        label="Ora (1-6)"
                         name="hour"
                         value={formData.hour}
                         onChange={handleInputChange}
@@ -229,10 +267,10 @@ export const ClassSchedule = () => {
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
-                            Cancel
+                            Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit
+                            Inserisci
                         </Button>
                     </Box>
                 </Box>

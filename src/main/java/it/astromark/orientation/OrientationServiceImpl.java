@@ -5,11 +5,11 @@ import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.user.student.entity.Student;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class OrientationServiceImpl implements OrientationService {
 
     @Override
     @Transactional
-    public String attitude(Student student) {
+    public String attitude(@NotNull Student student) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String uri = "http://127.0.0.1:5000/ai/orientation";
@@ -55,8 +55,7 @@ public class OrientationServiceImpl implements OrientationService {
 
             return Optional.ofNullable(result.getBody())
                     .orElseThrow(() -> new ServiceException("Empty response from AI orientation service"));
-        } catch (RestClientException e) {
-            log.error("Error calling AI orientation service", e);
+        } catch (Exception e) {
             throw new ServiceException("Failed to retrieve student attitude", e);
         }
     }

@@ -13,10 +13,12 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
+
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+
 @AllArgsConstructor
 @Table(name = "teacher_class", schema = "astromark")
 public class TeacherClass {
@@ -35,6 +37,7 @@ public class TeacherClass {
     @ColumnDefault("nextval('astromark.teacher_class_school_class_id_seq')")
     @JoinColumn(name = "school_class_id", nullable = false)
     private SchoolClass schoolClass;
+
 
     @NotNull
     @ColumnDefault("false")

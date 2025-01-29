@@ -4,6 +4,8 @@ import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.dto.TicketResponse;
 import it.astromark.chat.entity.Ticket;
 import it.astromark.commons.service.CrudService;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,20 +38,23 @@ public interface TicketService extends CrudService<Ticket, Ticket, TicketRespons
      * Sends a message related to a specific ticket.
      *
      * @param ticketId the UUID of the ticket
-     * @param text the text of the message to be sent
+     * @param text     the text of the message to be sent
      * @return the UUID of the sent message
      * Pre-condition: The `ticketId` must not be null and must refer to an existing ticket. The `text` must not be null or empty.
      * Post-condition: A new message is sent and associated with the specified ticket. Returns the UUID of the sent message.
      */
-    UUID sendMessage(UUID ticketId, String text);
+    UUID sendMessage(@NotNull UUID ticketId, @NotEmpty String text);
 
     /**
      * Creates a new ticket with the specified title.
      *
      * @param title the title of the ticket
-     * Pre-condition: The `title` must not be null or empty.
-     * Post-condition: A new ticket is created with the given title.
+     *              Pre-condition: The `title` must not be null or empty.
+     *              Post-condition: A new ticket is created with the given title.
      */
-    void createTicket(String title);
+    void createTicket(@NotEmpty String title);
+
+    boolean closeUnsolved(@NotNull UUID ticketId);
+    boolean closeAndSolve(@NotNull UUID ticketId);
 
 }

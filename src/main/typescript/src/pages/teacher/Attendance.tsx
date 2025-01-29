@@ -33,6 +33,7 @@ export const Attendance: React.FC = () => {
     const [rows, setRows] = useState<AttendanceRow[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject())
+    const [dateError, setDateError] = useState<boolean>(false)
     const [changeView, setChangeView] = useState<boolean>(false)
     const [selected, setSelected] = useState<AttendanceRow>()
 
@@ -42,25 +43,30 @@ export const Attendance: React.FC = () => {
 
     const fetchData = async (selectedDate: string) => {
         try {
-            let rowResponse : AttendanceRow[] = [];
-            const response: AxiosResponse<AttendanceResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/attendance/${selectedDate}`);
-            if (response.data.length){
-                rowResponse = response.data.map((attendance: AttendanceResponse) => ({
-                    id: attendance.id,
-                    name: attendance.name + ' ' + attendance.surname,
-                    isAbsent: attendance.isAbsent,
-                    isDelayed: attendance.isDelayed,
-                    buttonRowValue: attendance.isAbsent ? 'absent' : (attendance.isDelayed ? 'delayed' : ''),
-                    delayTimeHour: attendance.delayTime ? new Date((attendance.delayTime).toString()).getHours() : 1,
-                    delayTimeMinute: attendance.delayTime ? new Date(attendance.delayTime.toString()).getMinutes() : 0,
-                    delayNeedJustification: attendance.delayNeedJustification,
-                    totalAbsence: attendance.totalAbsence,
-                    totalDelay: attendance.totalDelay,
-                }));
+            let rowResponse: AttendanceRow[] = [];
+            if (new DateObject(selectedDate) <= new DateObject()) {
+                const response: AxiosResponse<AttendanceResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/attendance/${selectedDate}`);
+                if (response.data.length) {
+                    rowResponse = response.data.map((attendance: AttendanceResponse) => ({
+                        id: attendance.id,
+                        name: attendance.name + ' ' + attendance.surname,
+                        isAbsent: attendance.isAbsent,
+                        isDelayed: attendance.isDelayed,
+                        buttonRowValue: attendance.isAbsent ? 'absent' : (attendance.isDelayed ? 'delayed' : ''),
+                        delayTimeHour: attendance.delayTime ? new Date((attendance.delayTime).toString()).getHours() : 1,
+                        delayTimeMinute: attendance.delayTime ? new Date(attendance.delayTime.toString()).getMinutes() : 0,
+                        delayNeedJustification: attendance.delayNeedJustification,
+                        totalAbsence: attendance.totalAbsence,
+                        totalDelay: attendance.totalDelay,
+                    }));
 
-                rowResponse.forEach((attendance) => {
-                    attendance.delayTimeHour = attendance.delayTimeHour - 1;
-                });
+                    rowResponse.forEach((attendance) => {
+                        attendance.delayTimeHour = attendance.delayTimeHour - 1;
+                    });
+                }
+                setDateError(false);
+            } else {
+                setDateError(true);
             }
 
             setLoading(false)
@@ -81,13 +87,15 @@ export const Attendance: React.FC = () => {
             delayNeedJustification: attendance.delayNeedJustification,
         }));
 
-        try{
+        try {
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/attendance/${date.format("YYYY-MM-DD")}`, attendanceRequest, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
 
+            setLoading(true)
+            fetchData(date.format("YYYY-MM-DD"));
         } catch (error) {
             console.log(error);
         }
@@ -122,7 +130,9 @@ export const Attendance: React.FC = () => {
 
             {changeView ? (
                 <div>
-                    <DelayComponent row={selected || rows[0]} returnBack={() => {setChangeView(false)}}/>
+                    <DelayComponent row={selected || rows[0]} returnBack={() => {
+                        setChangeView(false)
+                    }}/>
                 </div>
             ) : (
                 <div>
@@ -139,8 +149,12 @@ export const Attendance: React.FC = () => {
                                 </Typography>
                                 <DatePicker
                                     value={date}
-                                    onChange={handleDateChange}
-                                />
+                                    onChange={handleDateChange}/>
+                                {dateError && (
+                                    <Typography variant="caption" color={'error'}>
+                                        È possibile selezionare solo date successive ad oggi.
+                                    </Typography>
+                                )}
                             </Stack>
                         </Grid>
                     </Grid>
@@ -197,7 +211,8 @@ export const Attendance: React.FC = () => {
                                                     {row.totalAbsence}
                                                 </Stack>
                                                 <Stack alignItems="center">
-                                                    <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}} fontSize={'large'}/>
+                                                    <MeetingRoomOutlinedIcon sx={{color: '#EDC001'}}
+                                                                             fontSize={'large'}/>
                                                     {row.totalDelay}
                                                 </Stack>
                                             </Stack>
@@ -209,7 +224,8 @@ export const Attendance: React.FC = () => {
                     </TableContainer>
 
                     <Stack direction="row" justifyContent="flex-end" margin={'2rem 10%'}>
-                        <Button variant="contained" color="primary" sx={{borderRadius: 5, width: '10%'}} onClick={handleSave}>
+                        <Button variant="contained" color="primary" sx={{borderRadius: 5, width: '10%'}}
+                                onClick={handleSave}>
                             Salva
                         </Button>
                     </Stack>

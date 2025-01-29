@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    Box,
-    Typography,
-    CircularProgress,
     Alert,
+    Box,
+    Button,
     Card,
     CardContent,
-    Button,
+    Checkbox,
+    CircularProgress,
+    FormControlLabel,
     Modal,
     TextField,
-    FormControlLabel,
-    Checkbox,
+    Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
@@ -25,7 +25,9 @@ interface TeacherResponse {
 export const ManageTeacher = () => {
     const [teachers, setTeachers] = useState<TeacherResponse[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [error] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
@@ -44,10 +46,13 @@ export const ManageTeacher = () => {
             try {
                 const response = await axiosConfig.get<TeacherResponse[]>(`${Env.API_BASE_URL}/teachers/all`);
                 setTeachers(response.data);
+                setSuccessMessage("Professori recuperati con successo!");
+                setErrorMessage(null);
                 setLoading(false);
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Failed to fetch teachers:", err);
-                setError("Failed to fetch teachers.");
+                setErrorMessage("Impossibile trovare gli insegnanti.");
+                setSuccessMessage(null);
                 setLoading(false);
             }
         };
@@ -55,7 +60,20 @@ export const ManageTeacher = () => {
         fetchTeachers();
     }, []);
 
-    const handleOpenModal = () => setModalOpen(true);
+    const handleOpenModal = () => {
+        setFormData({
+            email: "",
+            name: "",
+            surname: "",
+            taxId: "",
+            birthDate: "",
+            male: true,
+            residentialAddress: "",
+        });
+        setErrorMessage(null);
+        setSuccessMessage(null);
+        setModalOpen(true);
+    };
     const handleCloseModal = () => setModalOpen(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,16 +86,32 @@ export const ManageTeacher = () => {
     };
 
     const handleSubmit = async () => {
+        // Validazione dei campi obbligatori
+        if (
+            !formData.email ||
+            !formData.name ||
+            !formData.surname ||
+            !formData.birthDate ||
+            !formData.residentialAddress
+        ) {
+            setErrorMessage("Si prega di compilare tutti i campi obbligatori.");
+            setSuccessMessage(null);
+            return;
+        }
+
         try {
             await axiosConfig.post(`${Env.API_BASE_URL}/teachers/create`, formData);
+            setSuccessMessage("Insegnante creato con successo!");
+            setErrorMessage(null);
             handleCloseModal();
-            alert("Teacher created successfully!");
+
             // Refresh teacher list
             const response = await axiosConfig.get<TeacherResponse[]>(`${Env.API_BASE_URL}/teachers/all`);
             setTeachers(response.data);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to create teacher:", err);
-            alert("Failed to create teacher.");
+            setErrorMessage("Impossibile creare l'insegnante.");
+            setSuccessMessage(null);
         }
     };
 
@@ -85,17 +119,55 @@ export const ManageTeacher = () => {
         navigate(`/secretary/teachers/${uuid}`);
     };
 
-    if (loading) return <CircularProgress />;
-    if (error) return <Alert severity="error">{error}</Alert>;
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box textAlign="center" marginTop={4}>
+                <Alert severity="error">{error}</Alert>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ padding: "16px" }}>
             <Typography variant="h4" gutterBottom>
-                Teacher List
+                Professori
             </Typography>
+
+            {/* Alert di Successo Globale */}
+            {successMessage && (
+                <Alert
+                    severity="success"
+                    onClose={() => setSuccessMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {successMessage}
+                </Alert>
+            )}
+
+            {/* Alert di Errore Globale */}
+            {errorMessage && (
+                <Alert
+                    severity="error"
+                    onClose={() => setErrorMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {errorMessage}
+                </Alert>
+            )}
+
             <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
-                Add Teacher
+                Aggiungi professore
             </Button>
+
+            {/* Modale per Aggiungere Insegnante */}
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
@@ -111,78 +183,115 @@ export const ManageTeacher = () => {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Create Teacher
+                        Crea professore
                     </Typography>
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Surname"
-                        name="surname"
-                        value={formData.surname}
-                        onChange={handleInputChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Tax ID"
-                        name="taxId"
-                        value={formData.taxId}
-                        onChange={handleInputChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        type="date"
-                        label="Birth Date"
-                        name="birthDate"
-                        value={formData.birthDate}
-                        onChange={handleInputChange}
-                        margin="normal"
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={formData.male}
-                                onChange={handleCheckboxChange}
-                                name="male"
-                            />
-                        }
-                        label="Male"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Residential Address"
-                        name="residentialAddress"
-                        value={formData.residentialAddress}
-                        onChange={handleInputChange}
-                        margin="normal"
-                    />
+                    <Box component="form" noValidate>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            margin="normal"
+                            required
+                            type="email"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Nome"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            fullWidth
+                            label="Cognome"
+                            name="surname"
+                            value={formData.surname}
+                            onChange={handleInputChange}
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            fullWidth
+                            label="CF"
+                            name="taxId"
+                            value={formData.taxId}
+                            onChange={handleInputChange}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            type="date"
+                            label="Data di nascita"
+                            name="birthDate"
+                            value={formData.birthDate}
+                            onChange={handleInputChange}
+                            margin="normal"
+                            InputLabelProps={{ shrink: true }}
+                            required
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={formData.male}
+                                    onChange={handleCheckboxChange}
+                                    name="male"
+                                />
+                            }
+                            label="Uomo"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Indirizzo"
+                            name="residentialAddress"
+                            value={formData.residentialAddress}
+                            onChange={handleInputChange}
+                            margin="normal"
+                            required
+                        />
+                    </Box>
+
+                    {/* Alert di Errore nel Modale */}
+                    {errorMessage && (
+                        <Alert
+                            severity="error"
+                            onClose={() => setErrorMessage(null)}
+                            sx={{ mt: 2 }}
+                        >
+                            {errorMessage}
+                        </Alert>
+                    )}
+
+                    {/* Alert di Successo nel Modale */}
+                    {successMessage && (
+                        <Alert
+                            severity="success"
+                            onClose={() => setSuccessMessage(null)}
+                            sx={{ mt: 2 }}
+                        >
+                            {successMessage}
+                        </Alert>
+                    )}
+
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
-                            Cancel
+                        <Button onClick={handleCloseModal} sx={{ mr: 2 }} disabled={loading}>
+                            Chiudi
                         </Button>
-                        <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+                            disabled={loading}
+                        >
+                            Invia
                         </Button>
                     </Box>
                 </Box>
             </Modal>
+
             <Box display="flex" flexWrap="wrap" gap={3}>
                 {teachers.map((teacher) => (
                     <Card
@@ -194,15 +303,12 @@ export const ManageTeacher = () => {
                             boxShadow: 2,
                             borderRadius: "12px",
                         }}
-                        onClick={() => handleCardClick(teacher.uuid)} // Gestisce il click sulla card
+                        onClick={() => handleCardClick(teacher.uuid)}
                         style={{ cursor: "pointer" }}
                     >
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 {teacher.name} {teacher.surname}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                UUID: {teacher.uuid}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -211,5 +317,3 @@ export const ManageTeacher = () => {
         </Box>
     );
 };
-
-export default ManageTeacher;

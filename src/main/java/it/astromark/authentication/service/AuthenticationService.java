@@ -34,7 +34,7 @@ public interface AuthenticationService {
     /**
      * Retrieves user details based on their ID and role.
      *
-     * @param id the UUID of the user
+     * @param id   the UUID of the user
      * @param role the role of the user (e.g., student, teacher, parent, etc.)
      * @return a `SchoolUser` object representing the user
      * Pre-condition: The `id` must not be null. The `role` must not be null or empty.
@@ -45,10 +45,10 @@ public interface AuthenticationService {
     /**
      * Verifies user credentials and returns a verification status.
      *
-     * @param username the username of the user
-     * @param password the password of the user
+     * @param username   the username of the user
+     * @param password   the password of the user
      * @param schoolCode the school code associated with the user
-     * @param role the role of the user
+     * @param role       the role of the user
      * @return a verification string indicating the result
      * Pre-condition: The `username`, `password`, `schoolCode`, and `role` must not be null or empty.
      * Post-condition: Returns a verification result indicating whether the credentials are valid.

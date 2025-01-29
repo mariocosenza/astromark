@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+    Alert,
+    Box,
+    Button,
     Card,
     CardContent,
-    Typography,
-    Box,
     CircularProgress,
-    Alert,
-    Button,
-    Modal,
-    TextField,
-    MenuItem,
-    Select,
     FormControl,
     InputLabel,
-    SelectChangeEvent
+    MenuItem,
+    Modal,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Typography
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
@@ -35,8 +35,10 @@ export const ManageTimetable = () => {
         schoolClassId: "",
         startDate: "",
         endDate: "",
-        expectedHours: "27" // Default value
+        expectedHours: "27" // Valore predefinito
     });
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [submitError, setSubmitError] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -46,7 +48,7 @@ export const ManageTimetable = () => {
                 setSchoolClasses(response.data);
                 setLoading(false);
             } catch (err) {
-                setError("Failed to fetch school classes.");
+                setError("Impossibile recuperare le lezioni scolastiche.");
                 setLoading(false);
             }
         };
@@ -70,18 +72,20 @@ export const ManageTimetable = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleClassChange = (e: SelectChangeEvent<string>) => {
+    const handleClassChange = (e: SelectChangeEvent) => {
         setFormData({ ...formData, schoolClassId: e.target.value });
     };
 
     const handleSubmit = async () => {
         try {
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/createTimeTable`, formData);
+            setSuccessMessage("Orario delle lezioni creato con successo!");
+            setSubmitError(null);
             handleCloseModal();
-            alert("Class timetable created successfully!");
         } catch (err) {
             console.error("Failed to create class timetable:", err);
-            alert("Failed to create class timetable.");
+            setSubmitError("Impossibile creare l'orario delle lezioni.");
+            setSuccessMessage(null);
         }
     };
 
@@ -91,11 +95,40 @@ export const ManageTimetable = () => {
     return (
         <div style={{ padding: "16px" }}>
             <Typography variant="h4" gutterBottom>
-                School Classes
+                Classi
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleOpenModal} style={{ marginBottom: "16px" }}>
-                Create Timetable
+
+            {/* Alert di Successo */}
+            {successMessage && (
+                <Alert
+                    severity="success"
+                    onClose={() => setSuccessMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {successMessage}
+                </Alert>
+            )}
+
+            {/* Alert di Errore durante la Submit */}
+            {submitError && (
+                <Alert
+                    severity="error"
+                    onClose={() => setSubmitError(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {submitError}
+                </Alert>
+            )}
+
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpenModal}
+                style={{ marginBottom: "16px" }}
+            >
+                Crea orario
             </Button>
+
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
@@ -111,10 +144,10 @@ export const ManageTimetable = () => {
                     }}
                 >
                     <Typography variant="h6" gutterBottom>
-                        Create Class Timetable
+                        Crea orario della classe
                     </Typography>
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="school-class-select-label">School Class</InputLabel>
+                        <InputLabel id="school-class-select-label">Seleziona classe</InputLabel>
                         <Select
                             labelId="school-class-select-label"
                             value={formData.schoolClassId}
@@ -122,7 +155,7 @@ export const ManageTimetable = () => {
                         >
                             {schoolClasses.map((schoolClass) => (
                                 <MenuItem key={schoolClass.id} value={schoolClass.id.toString()}>
-                                    {schoolClass.number} {schoolClass.letter} - Year {schoolClass.year}
+                                    {schoolClass.number} {schoolClass.letter} - Anno {schoolClass.year}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -130,7 +163,7 @@ export const ManageTimetable = () => {
                     <TextField
                         fullWidth
                         type="date"
-                        label="Start Date"
+                        label="Inizio validità"
                         name="startDate"
                         value={formData.startDate}
                         onChange={handleInputChange}
@@ -140,7 +173,7 @@ export const ManageTimetable = () => {
                     <TextField
                         fullWidth
                         type="date"
-                        label="End Date"
+                        label="Fine Validità"
                         name="endDate"
                         value={formData.endDate}
                         onChange={handleInputChange}
@@ -150,7 +183,7 @@ export const ManageTimetable = () => {
                     <TextField
                         fullWidth
                         type="number"
-                        label="Expected Hours"
+                        label="Ore settimanali"
                         name="expectedHours"
                         value={formData.expectedHours}
                         onChange={handleInputChange}
@@ -159,14 +192,15 @@ export const ManageTimetable = () => {
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
                         <Button onClick={handleCloseModal} style={{ marginRight: "8px" }}>
-                            Cancel
+                            Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit
+                            Invia
                         </Button>
                     </Box>
                 </Box>
             </Modal>
+
             <Box display="flex" flexWrap="wrap" gap={3}>
                 {schoolClasses.map((schoolClass) => (
                     <Box
@@ -180,7 +214,7 @@ export const ManageTimetable = () => {
                                 <Typography variant="h6">
                                     {schoolClass.number} {schoolClass.letter}
                                 </Typography>
-                                <Typography>Year: {schoolClass.year}</Typography>
+                                <Typography>Anno: {schoolClass.year}</Typography>
                             </CardContent>
                         </Card>
                     </Box>
@@ -189,4 +223,3 @@ export const ManageTimetable = () => {
         </div>
     );
 };
-

@@ -3,11 +3,12 @@ import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {AxiosResponse} from "axios";
 import {Env} from "../Env";
-import {getRole, getToken} from "../services/AuthService";
+import {getRole, getToken, isRole} from "../services/AuthService";
 import {Alert, Avatar, Box, Button, IconButton, Snackbar, TextField, Typography} from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile"; // Attachment icon
 import DownloadIcon from "@mui/icons-material/Download"; // Download icon
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import {Role} from "./route/ProtectedRoute.tsx";
 import axiosConfig from "../services/AxiosConfig.ts";
 
@@ -35,6 +36,7 @@ interface HomeworkChatResponse {
 
 interface ChatHomeworkProps {
     homeworkId: number;
+    studentId: string | null;
 }
 
 /**
@@ -60,11 +62,13 @@ const getAvatarColor = (name: string): string => {
  * and scrolls the message box to the bottom when new messages arrive.
  *
  * @param homeworkId - The id of the homework.
+ * @param studentId - The id of the student.
  * @returns The ChatHomeworkComponent.
  */
-export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId}) => {
+export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId, studentId}) => {
     const [messages, setMessages] = useState<MessageResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isCompleted, setCompleted] = useState<boolean>(false);
     const [newMessage, setNewMessage] = useState<string>("");
     const [chatId, setChatId] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -81,12 +85,19 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
      */
     const fetchMessages = async () => {
         try {
-            // If student and chatId is not set, get the chatId.
+            // If student or teacher, and chatId is not set, get the chatId.
             if (getRole().toUpperCase() === Role.STUDENT && !chatId) {
                 const response: AxiosResponse<string> = await axiosConfig.get<string>(
                     `${API_BASE_URL}/homeworks/${homeworkId}/has-uncompleted-chat`
                 );
                 setChatId(response.data);
+            } else if (getRole().toUpperCase() === Role.TEACHER && !chatId) {
+                if (studentId) {
+                    const response: AxiosResponse<string> = await axiosConfig.get<string>(
+                        `${API_BASE_URL}/homeworks/${homeworkId}/student/${studentId}`
+                    );
+                    setChatId(response.data);
+                }
             }
 
             // Proceed with the call only if chatId is set.
@@ -102,6 +113,11 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
                 } else {
                     console.error("The response does not contain an array of messages", response.data);
                 }
+
+                // call to check if it's completed
+                const completedResponse = await axiosConfig.get<boolean>(`${API_BASE_URL}/homeworks/${chatId}/isCompleted`);
+                setCompleted(completedResponse.data)
+
                 setMessages(messagesArray);
             }
         } catch (error) {
@@ -152,7 +168,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
      */
     const sendMessage = async (text: string) => {
         // Check that the message is not empty
-        if (!text.trim()) {
+        if (!text.trim() || isCompleted) {
             console.warn("The message is empty. No request sent.");
             return;
         }
@@ -220,6 +236,19 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
             fileInputRef.current.value = "";
         }
     };
+
+    /**
+     * Marks the chat as completed.
+     */
+    const handleCompleted = async () => {
+        try {
+            await axiosConfig.post(`${Env.API_BASE_URL}/homeworks/complete`, chatId);
+
+            setCompleted(true)
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     /**
      * Handles changes on the file input.
@@ -299,7 +328,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
                 ) : (
                     <>
                         {messages && messages.length === 0 ? (
-                            <Typography variant="body2">No messages yet</Typography>
+                            <Typography variant="body2">Non ci sono ancora messaggi</Typography>
                         ) : (
                             <Box>
                                 {messages.map((msg, index) => (
@@ -332,7 +361,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
                                             <IconButton
                                                 color="primary"
                                                 onClick={() => handleDownload('https://api.astromark.it/' + msg.attachment!)}
-                                                title="Download attachment"
+                                                title="Scarica allegato"
                                             >
                                                 <DownloadIcon/>
                                             </IconButton>
@@ -346,13 +375,29 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
             </Box>
 
             <Box display={"flex"} alignItems={"center"} style={{marginTop: "1rem"}}>
+                {isRole(Role.TEACHER) && !isCompleted &&
+                    <IconButton
+                        onClick={() => handleCompleted()}
+                        disabled={isCompleted}
+                        sx={{marginRight: "0.5rem"}}
+                        title="Complete chat"
+                    >
+                        <AddTaskIcon fontSize={'large'} color={isCompleted ? 'success' : 'disabled'}/>
+                    </IconButton>
+                }
+
+                {isCompleted &&
+                    <AddTaskIcon sx={{marginRight: "0.5rem"}} fontSize={'large'} color={'success'}/>
+                }
+
                 <TextField
                     className={"textfield-item"}
                     margin={"normal"}
                     size={"small"}
                     fullWidth
-                    placeholder="Scrivi il tuo messaggio"
+                    placeholder={isCompleted ? "Questo compito è stato marcato come completato" : "Scrivi il tuo messaggio"}
                     value={newMessage}
+                    disabled={isCompleted}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -364,11 +409,12 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
 
                 {/* Attachment button (to the right, before the send button) */}
                 <IconButton
+                    disabled={isCompleted}
                     onClick={handleAttachmentClick}
                     sx={{marginLeft: "0.5rem"}}
                     // If a file is selected, change color (e.g., "secondary")
                     color={selectedFile ? "secondary" : "primary"}
-                    title="Add attachment"
+                    title="Aggiungi allegato"
                 >
                     <AttachFileIcon/>
                 </IconButton>
@@ -377,6 +423,7 @@ export const ChatHomeworkComponent: React.FC<ChatHomeworkProps> = ({homeworkId})
                     variant="contained"
                     color="primary"
                     sx={{marginLeft: "0.5rem", marginTop: "0.4rem"}}
+                    disabled={isCompleted}
                     onClick={() => sendMessage(newMessage)}
                 >
                     <SendIcon/>

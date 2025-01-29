@@ -11,11 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SchoolServiceImpl implements SchoolService {
 
-    private final SchoolRepository schoolRepository;
-
     @Autowired
     public SchoolServiceImpl(SchoolRepository schoolRepository) {
-        this.schoolRepository = schoolRepository;
     }
 
 
@@ -39,4 +36,6 @@ public class SchoolServiceImpl implements SchoolService {
     public School getById(String s) {
         return null;
     }
+
+
 }

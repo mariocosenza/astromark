@@ -8,7 +8,9 @@ import it.astromark.chat.entity.Message;
 import it.astromark.chat.mapper.ChatMapper;
 import it.astromark.chat.repository.HomeworkChatRepository;
 import it.astromark.chat.repository.MessageRepository;
+import it.astromark.classmanagement.repository.SchoolClassRepository;
 import it.astromark.classwork.repository.HomeworkRepository;
+import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.teacher.entity.Teacher;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,31 +27,40 @@ import java.util.UUID;
 @Service
 public class HomeworkChatServiceImpl implements HomeworkChatService {
 
+    private static final String CHAT_ACCESS_DENIED = "You are not allowed to access this chat";
     private final HomeworkChatRepository homeworkChatRepository;
     private final ChatMapper chatMapper;
     private final MessageService messageService;
     private final HomeworkRepository homeworkRepository;
     private final AuthenticationService authenticationService;
     private final MessageRepository messageRepository;
+    private final SchoolUserService schoolUserService;
+    private final SchoolClassRepository schoolClassRepository;
 
-    public HomeworkChatServiceImpl(HomeworkChatRepository homeworkChatRepository, ChatMapper chatMapper, MessageService messageService, HomeworkRepository homeworkRepository, AuthenticationService authenticationService, MessageRepository messageRepository) {
+    public HomeworkChatServiceImpl(HomeworkChatRepository homeworkChatRepository, ChatMapper chatMapper, MessageService messageService, HomeworkRepository homeworkRepository, AuthenticationService authenticationService, MessageRepository messageRepository, SchoolUserService schoolUserService, SchoolClassRepository schoolClassRepository) {
         this.homeworkChatRepository = homeworkChatRepository;
         this.chatMapper = chatMapper;
         this.messageService = messageService;
         this.homeworkRepository = homeworkRepository;
         this.authenticationService = authenticationService;
         this.messageRepository = messageRepository;
+        this.schoolUserService = schoolUserService;
+        this.schoolClassRepository = schoolClassRepository;
     }
 
-    public HomeworkChatResponse getChatWithMessagesSocket(UUID chatId) {
+    public HomeworkChatResponse getChatWithMessagesSocket(@NotNull UUID chatId) {
         HomeworkChat chat = homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
+
+        if(chat.getCompleted()) {
+            throw new IllegalArgumentException("Chat is completed");
+        }
 
         return new HomeworkChatResponse(
                 chat.getId(),
                 chat.getTitle(),
                 chat.getStudent().getId(),
-                chat.getCompleted(),
+                false,
                 chatMapper.toMessageResponseList(chat.getMessages().stream().toList().stream().sorted(Comparator.comparing(Message::getDateTime)).toList(), messageService)
         );
     }
@@ -57,15 +68,15 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
-    public UUID sendMessage(UUID chatId, @NotEmpty String text) {
+    public UUID sendMessage(@NotNull UUID chatId, @NotEmpty String text) {
         var homeworkChat = homeworkChatRepository.findById(chatId).orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         if (homeworkChat.getCompleted()) {
             throw new IllegalArgumentException("Chat is completed");
         }
         if (authenticationService.isStudent() && !homeworkChat.getStudent().equals(authenticationService.getStudent().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         } else if (authenticationService.isTeacher() && !homeworkChat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
         var message = messageRepository.findById(messageService.create(text, chatId, true).id())
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));
@@ -74,7 +85,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
 
     @Override
     @Transactional
-    public Teacher findTeacher(UUID chatId) {
+    public Teacher findTeacher(@NotNull UUID chatId) {
         HomeworkChat chat = homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         var teacher = chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher();
@@ -86,18 +97,24 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public void addChat(@NotNull Integer homeworkId) {
         var homework = homeworkRepository.findById(homeworkId).orElseThrow();
-        if (!homework.getSignedHour().getTeachingTimeslot().getTeaching().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
+        var classId = homework.getSignedHour().getTeachingTimeslot().getClassTimetable().getSchoolClass().getId();
+
+        if (!schoolUserService.isLoggedTeacherClass(classId)) {
             throw new AccessDeniedException("You are not allowed to access this homework");
         }
-        for (var student : homework.getSignedHour().getTeachingTimeslot().getClassTimetable().getSchoolClass().getStudents()) {
-            var chat = HomeworkChat.builder()
-                    .homeworkSignedHourTeachingTimeslot(homework)
-                    .completed(false)
-                    .student(student)
-                    .build();
+
+        for (var student : schoolClassRepository.findById(classId).orElseThrow().getStudents()) {
+
+            var chat = new HomeworkChat();
+            chat.setHomeworkSignedHourTeachingTimeslot(homework);
+            chat.setCompleted(false);
+            chat.setStudent(student);
+            chat.setTitle(homework.getTitle());
+
             homeworkChatRepository.save(chat);
         }
     }
@@ -105,13 +122,13 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
-    public List<MessageResponse> getMessageList(UUID chatId) {
+    public List<MessageResponse> getMessageList(@NotNull UUID chatId) {
         if (authenticationService.isStudent() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getStudent().equals(authenticationService.getStudent().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         } else if (authenticationService.isTeacher() && !homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found")).getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher().equals(authenticationService.getTeacher().orElseThrow())) {
-            throw new AccessDeniedException("You are not allowed to access this chat");
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }
         return chatMapper.toMessageResponseList(messageRepository.findByHomeworkChat_IdOrderByDateTimeAsc(chatId), messageService);
     }
@@ -128,5 +145,51 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         }
 
         return homeworkChatRepository.findByHomeworkSignedHourTeachingTimeslot_IdAndStudent(homeworkId, authenticationService.getStudent().orElseThrow()).getId();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public UUID getStudentHomeworkChatId(@NotNull Integer homeworkId, @NotNull UUID studentId) {
+        if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
+        }
+
+        var homework = homeworkRepository.findById(homeworkId).orElse(null);
+        if (homework == null)
+            return null;
+
+        return homework.getHomeworkChats().stream().filter(c -> c.getStudent().getId().equals(studentId)).findFirst().orElseThrow().getId();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER') || hasRole('STUDENT')")
+    public boolean isCompleted(@NotNull UUID chatId) {
+        var chat = homeworkChatRepository.findById(chatId).orElseThrow();
+        if (authenticationService.isTeacher() && !chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
+                .getId().equals(authenticationService.getTeacher().orElseThrow().getId())
+        || authenticationService.isStudent() && !chat.getStudent().getId()
+                .equals(authenticationService.getStudent().orElseThrow().getId())) {
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
+        }
+
+        return chat.getCompleted();
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public boolean complete(@NotNull UUID chatId) {
+        var chat = homeworkChatRepository.findById(chatId).orElseThrow();
+        if (!chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
+                .equals(authenticationService.getTeacher().orElseThrow())) {
+            throw new AccessDeniedException(CHAT_ACCESS_DENIED);
+        }
+
+        chat.setCompleted(true);
+        homeworkChatRepository.save(chat);
+
+        return true;
     }
 }

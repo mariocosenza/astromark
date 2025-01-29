@@ -16,5 +16,4 @@ public interface SecretaryRepository extends JpaRepository<Secretary, UUID> {
 
     Integer countByNameAndSurname(@Size(max = 64) @NotNull @Pattern(regexp = "^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$", message = "Invalid name format") String name, @Size(max = 64) @NotNull @Pattern(regexp = "^[a-zA-Z]([a-zA-Z]*)(?: [a-zA-Z]([a-zA-Z]*)){0,3}$", message = "Invalid surname format") String surname);
 
-
 }

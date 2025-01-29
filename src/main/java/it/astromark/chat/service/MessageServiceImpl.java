@@ -10,13 +10,17 @@ import it.astromark.chat.repository.TicketRepository;
 import it.astromark.commons.service.FileService;
 import it.astromark.user.commons.model.SchoolUser;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -38,7 +42,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public SchoolUser getSender(Message message) {
+    public SchoolUser getSender(@NotNull Message message) {
         if (message.getStudent() != null) {
             return message.getStudent();
         } else if (message.getParent() != null) {
@@ -52,11 +56,15 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageResponse create(String message, UUID chatId, boolean isHomework) {
+    public MessageResponse create(@NotEmpty String message, @NotNull  UUID chatId, boolean isHomework) {
         if (isHomework) {
+            var homeworkChat = homeworkChatRepository.findById(chatId).orElseThrow();
+            if (homeworkChat.getCompleted()) {
+                throw new IllegalArgumentException("Chat is completed");
+            }
             var save = Message.builder()
                     .text(message)
-                    .homeworkChat(homeworkChatRepository.findById(chatId).orElseThrow())
+                    .homeworkChat(homeworkChat)
                     .student(authenticationService.getStudent().orElse(null))
                     .parent(authenticationService.getParent().orElse(null))
                     .teacher(authenticationService.getTeacher().orElse(null))
@@ -65,9 +73,13 @@ public class MessageServiceImpl implements MessageService {
                     .build();
             return chatMapper.toMessageResponse(messageRepository.save(save), this);
         } else {
+            var ticket = ticketRepository.findById(chatId).orElseThrow();
+            if(ticket.getClosed()) {
+                throw new IllegalArgumentException("Ticket is closed");
+            }
             var save = Message.builder()
                     .text(message)
-                    .ticket(ticketRepository.findById(chatId).orElseThrow())
+                    .ticket(ticket)
                     .student(authenticationService.getStudent().orElse(null))
                     .parent(authenticationService.getParent().orElse(null))
                     .teacher(authenticationService.getTeacher().orElse(null))
@@ -80,16 +92,14 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public String addAttachment(UUID uuid, MultipartFile multipartFile) throws IOException {
+    @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
+    public String addAttachment(@NotNull UUID uuid,@NotNull  MultipartFile multipartFile) throws IOException {
         var message = messageRepository.findById(uuid).orElseThrow();
-        if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().equals(message.getStudent())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        } else if (authenticationService.isParent() && !authenticationService.getParent().orElseThrow().equals(message.getParent())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().equals(message.getTeacher())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
-        } else if (authenticationService.isSecretary() && !authenticationService.getSecretary().orElseThrow().equals(message.getSecretary())) {
-            throw new IllegalArgumentException("You can't add an attachment to a message that is not yours");
+        Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException("You can't add an attachment to a message that is not yours");
+        if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().getId().equals(message.getStudent().getId())) {
+            throw exceptionSupplier.get();
+        } else if (authenticationService.isTeacher() && !authenticationService.getTeacher().orElseThrow().getId().equals(message.getTeacher().getId())) {
+            throw exceptionSupplier.get();
         }
         message.setAttachment(fileService.uploadFile(multipartFile));
         messageRepository.save(message);

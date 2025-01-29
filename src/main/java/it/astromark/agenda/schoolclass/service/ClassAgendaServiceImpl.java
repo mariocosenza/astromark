@@ -5,21 +5,21 @@ import it.astromark.agenda.schoolclass.dto.*;
 import it.astromark.agenda.schoolclass.entity.ClassTimetable;
 import it.astromark.agenda.schoolclass.entity.SignedHour;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
+import it.astromark.agenda.schoolclass.mapper.ClassAgendaHelperMapper;
 import it.astromark.agenda.schoolclass.mapper.ClassAgendaMapper;
 import it.astromark.agenda.schoolclass.repository.ClassTimetableRepository;
 import it.astromark.agenda.schoolclass.repository.SignedHourRepository;
 import it.astromark.agenda.schoolclass.repository.TeachingTimeslotRepository;
 import it.astromark.authentication.service.AuthenticationService;
-import it.astromark.classmanagement.didactic.repository.StudyPlanRepository;
+import it.astromark.classmanagement.didactic.entity.TeachingId;
 import it.astromark.classmanagement.didactic.repository.TeachingRepository;
 import it.astromark.classmanagement.repository.SchoolClassRepository;
-import it.astromark.classwork.entity.ClassActivity;
-import it.astromark.classwork.entity.Homework;
-import it.astromark.classwork.repository.ClassActivityRepository;
-import it.astromark.classwork.repository.HomeworkRepository;
+import it.astromark.classwork.service.ClassworkService;
+import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,12 +28,13 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 
+@Slf4j
 @Service
 public class ClassAgendaServiceImpl implements ClassAgendaService {
 
@@ -43,29 +44,27 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     private final AuthenticationService authenticationService;
     private final StudentRepository studentRepository;
     private final ClassAgendaMapper classAgendaMapper;
-    private final ClassActivityRepository classActivityRepository;
-    private final HomeworkRepository homeworkRepository;
+    private final ClassAgendaHelperMapper classAgendaHelperMapper;
     private final SignedHourRepository signedHourRepository;
     private final ClassTimetableRepository classTimetableRepository;
-    private final StudyPlanRepository studyPlanRepository;
     private final TeachingRepository teachingRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final ClassworkService classworkService;
 
     @Autowired
-    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassActivityRepository classActivityRepository, HomeworkRepository homeworkRepository, SignedHourRepository signedHourRepository, ClassTimetableRepository classTimetableRepository, StudyPlanRepository studyPlanRepository, TeachingRepository teachingRepository, SchoolClassRepository schoolClassRepository) {
+    public ClassAgendaServiceImpl(TeachingTimeslotRepository teachingTimeslotRepository, TimeslotMapper timeslotMapper, SchoolUserService schoolUserService, AuthenticationService authenticationService, StudentRepository studentRepository, ClassAgendaMapper classAgendaMapper, ClassAgendaHelperMapper classAgendaHelperMapper, SignedHourRepository signedHourRepository, ClassTimetableRepository classTimetableRepository, TeachingRepository teachingRepository, SchoolClassRepository schoolClassRepository, ClassworkService classworkService) {
         this.teachingTimeslotRepository = teachingTimeslotRepository;
         this.timeslotMapper = timeslotMapper;
         this.schoolUserService = schoolUserService;
         this.authenticationService = authenticationService;
         this.studentRepository = studentRepository;
         this.classAgendaMapper = classAgendaMapper;
-        this.classActivityRepository = classActivityRepository;
-        this.homeworkRepository = homeworkRepository;
+        this.classAgendaHelperMapper = classAgendaHelperMapper;
         this.signedHourRepository = signedHourRepository;
         this.classTimetableRepository = classTimetableRepository;
-        this.studyPlanRepository = studyPlanRepository;
         this.teachingRepository = teachingRepository;
         this.schoolClassRepository = schoolClassRepository;
+        this.classworkService = classworkService;
     }
 
 
@@ -94,16 +93,16 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         while (startDate.isBefore(endDate) || startDate.isEqual(endDate)) {
             var finalStartDate = startDate;
             if (redDates.stream().noneMatch(r -> r.getId().getDate().isEqual(finalStartDate))) {
-                // Cerca se il timeslot esiste già
+
                 var existingTimeslot = teachingTimeslotRepository.findByClassTimetableAndDateAndHour(timeTable, finalStartDate, hour);
 
                 if (existingTimeslot.isPresent()) {
-                    // Aggiorna il timeslot esistente
+
                     var timeslotToUpdate = existingTimeslot.get();
                     timeslotToUpdate.setTeaching(teaching);
                     teachingTimeslotRepository.save(timeslotToUpdate);
                 } else {
-                    // Crea un nuovo timeslot
+
                     var teachingTimeslot = TeachingTimeslot.builder()
                             .classTimetable(timeTable)
                             .hour(hour)
@@ -119,88 +118,60 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     }
 
 
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public void sign(Integer classId, SignHourRequest request) {
+    public TeachingTimeslotDetailedResponse sign(Integer classId, SignHourRequest request) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
         var teacher = authenticationService.getTeacher().orElseThrow();
-
         SignedHour signedHour = null;
-        ClassActivity activity = null;
-        Homework homework = null;
-        TeachingTimeslot slot = null;
+        TeachingTimeslot slot;
 
-        if (request.slotId() == null) {
-            slot = new TeachingTimeslot();
-            slot.setClassTimetable(classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null));
-            slot.setHour(request.hour().shortValue());
-            slot.setDate(LocalDate.ofInstant(request.date().toInstant(), ZoneId.systemDefault()));
-
-            var subjects = studyPlanRepository.findBySchoolClass_Id(classId).stream()
-                    .flatMap(sp -> sp.getSubjects().stream()).toList();
-
-            slot.setTeaching(teachingRepository.findByTeacher(teacher).stream()
-                    .filter(c -> subjects.contains(c.getSubjectTitle()))
-                    .findFirst().orElseThrow());
+        if (request.id() == null) {
+            slot = TeachingTimeslot.builder()
+                    .classTimetable(classTimetableRepository.getClassTimetableBySchoolClass_Id(classId).stream()
+                            .filter(t -> (t.getEndValidity() == null || t.getEndValidity().isAfter(LocalDate.now())))
+                            .filter(t -> t.getStartValidity().isBefore(LocalDate.now()))
+                            .findFirst().orElse(null))
+                    .hour(request.hour().shortValue())
+                    .date(request.date())
+                    .teaching(teachingRepository.getReferenceById(
+                            TeachingId.builder()
+                                    .teacherId(teacher.getId())
+                                    .subjectTitle(request.subject())
+                                    .build()))
+                    .build();
 
             teachingTimeslotRepository.save(slot);
-
         } else {
-            signedHour = signedHourRepository.findById(request.slotId()).orElse(null);
+            slot = teachingTimeslotRepository.findById(request.id()).orElseThrow();
+            if (!slot.getTeaching().getTeacher().getId().equals(teacher.getId())) {
+                throw new AccessDeniedException("You are not allowed to sign this hour");
+            }
+
+            signedHour = signedHourRepository.findById(request.id()).orElse(null);
         }
 
-        if (signedHour != null) {
-            if (!signedHour.getTeacher().getId().equals(teacher.getId())) {
-                throw new AccessDeniedException("You are not allowed to edit this hour");
-            }
-
-            activity = classActivityRepository.findBySignedHour(signedHour);
-            homework = homeworkRepository.findBySignedHour(signedHour);
-        } else {
-            if (request.slotId() != null) {
-                slot = teachingTimeslotRepository.findById(request.slotId()).orElseThrow();
-                if (!slot.getTeaching().getTeacher().getId().equals(teacher.getId())) {
-                    throw new AccessDeniedException("You are not allowed to sign this hour");
-                }
-            }
-
-            signedHour = new SignedHour();
-            signedHour.setTeachingTimeslot(slot);
-            signedHour.setTeacher(teacher);
-            signedHour.setTimeSign(Instant.now());
+        if (signedHour == null) {
+            signedHour = SignedHour.builder()
+                    .teachingTimeslot(slot)
+                    .teacher(teacher)
+                    .timeSign(Instant.now())
+                    .build();
 
             signedHourRepository.save(signedHour);
         }
 
-        if (!request.activityTitle().isEmpty()) {
-            if (activity == null) {
-                activity = new ClassActivity();
-                activity.setSignedHour(signedHour);
-            }
+        if (request.activity() != null)
+            classworkService.createActivity(request.activity(), signedHour);
 
-            activity.setTitle(request.activityTitle());
-            activity.setDescription(request.activityDescription());
+        if (request.homework() != null)
+            classworkService.createHomework(request.homework(), signedHour);
 
-            classActivityRepository.save(activity);
-        }
-
-        if (!request.homeworkTitle().isEmpty()) {
-            if (homework == null) {
-                homework = new Homework();
-                homework.setSignedHour(signedHour);
-            }
-
-            homework.setTitle(request.homeworkTitle());
-            homework.setDescription(request.homeworkDescription());
-            homework.setDueDate(LocalDate.ofInstant(request.homeworkDueDate().toInstant(), ZoneId.systemDefault()));
-
-            homeworkRepository.save(homework);
-        }
+        return classAgendaMapper.toTeachingTimeslotDetailedResponse(slot, classAgendaHelperMapper);
     }
 
     @Override
@@ -230,12 +201,16 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @PreAuthorize("hasRole('TEACHER')")
     public List<TeachingTimeslotDetailedResponse> getTeachingTimeslot(Integer classId, LocalDate localDate) {
         if (!schoolUserService.isLoggedTeacherClass(classId)) {
-            throw new AccessDeniedException("You are not allowed to access this resource");
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
-        var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
+        var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_Id(classId).stream()
+                .filter(t -> (t.getEndValidity() == null || t.getEndValidity().isAfter(LocalDate.now())))
+                .filter(t -> t.getStartValidity().isBefore(LocalDate.now()))
+                .findFirst().orElseThrow();
+
         var teachingTimeslotList = teachingTimeslotRepository.findTeachingTimeslotByClassTimetableAndDate(classTimetable, localDate);
-        return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList, classActivityRepository, homeworkRepository);
+        return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList, classAgendaHelperMapper);
     }
 
     @Override
@@ -247,12 +222,21 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
         var schoolClass = schoolClassRepository.findById(schoolClassId).orElseThrow(
                 () -> new IllegalArgumentException("SchoolClass not found for ID: " + schoolClassId));
 
+        if (request.endDate() != null && request.startDate().isAfter(request.endDate())) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+
+        Objects.requireNonNull(request.endDate());
+        var endDate = request.endDate().isBefore(request.startDate())
+                ? request.startDate().plusDays(1)
+                : request.endDate();
+
 
         var classTimetable = ClassTimetable.builder()
                 .schoolClass(schoolClass)
                 .startValidity(request.startDate())
-                .endValidity(request.endDate())
-                .expectedHours(request.expectedHours() != null ? request.expectedHours() : 27) // Valore predefinito
+                .endValidity(endDate)
+                .expectedHours(request.expectedHours() != null ? request.expectedHours() : 27)
                 .build();
 
         classTimetableRepository.save(classTimetable);
@@ -261,7 +245,14 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
     @Override
     public List<TeachingTimeslotResponse> getClassTimeslot(Integer classId, LocalDate now) {
 
-        var classTimeTable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
+        var classTimeTable = classTimetableRepository
+                .getClassTimetableBySchoolClass_IdAndEndValidityAfter(classId, now)
+                .orElseGet(() -> classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidityIsNull(classId)
+                        .orElse(null));
+
+        if (classTimeTable == null) {
+            return List.of();
+        }
 
         var list = teachingTimeslotRepository.findByClassTimetableId(classTimeTable.getId())
                 .stream()

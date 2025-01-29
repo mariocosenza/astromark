@@ -1,6 +1,6 @@
-import {ClassAgendaRow} from "../pages/teacher/ClassAgenda.tsx";
 import {DateObject} from "react-multi-date-picker";
 import {createGlobalState} from "react-use";
+import {ClassActivityResponse, HomeworkBriefResponse, TeachingTimeslotDetailedResponse} from "../entities/TeachingTimeslotDetailedResponse.ts";
 
 export class SelectedTeaching {
     private static _teaching: string | null = localStorage.getItem("teaching") ? localStorage.getItem("teaching") as string : null;
@@ -29,7 +29,7 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassId', value.toString());
     }
 
-    private static _title: string | null = localStorage.getItem("schoolClassTitle")  ? localStorage.getItem("schoolClassTitle") as string : null;
+    private static _title: string | null = localStorage.getItem("schoolClassTitle") ? localStorage.getItem("schoolClassTitle") as string : null;
 
     static get title(): string | null {
         return this._title;
@@ -40,7 +40,7 @@ export class SelectedSchoolClass {
         localStorage.setItem('schoolClassTitle', value.toString());
     }
 
-    private static _desc: string | null = localStorage.getItem("schoolClassDesc")  ? localStorage.getItem("schoolClassDesc") as string : null;
+    private static _desc: string | null = localStorage.getItem("schoolClassDesc") ? localStorage.getItem("schoolClassDesc") as string : null;
 
     static get desc(): string | null {
         return this._desc;
@@ -58,16 +58,6 @@ export const isSelectedClass = () => {
 
 export class SelectedTeachingTimeslot {
 
-    static setSlot(slot: ClassAgendaRow) {
-        this._id = slot.id
-        this._hour = slot.hour
-        this._activityTitle = slot.activityTitle;
-        this._activityDesc = slot.activityDesc;
-        this._homeworkTitle = slot.homeworkTitle;
-        this._homeworkDesc = slot.homeworkDesc;
-        this._homeworkDate = slot.homeworkDate;
-    }
-
     private static _id: number | null = null;
 
     static get id(): number | null {
@@ -80,34 +70,16 @@ export class SelectedTeachingTimeslot {
         return this._hour;
     }
 
-    private static _activityTitle: string = '';
+    private static _homework: HomeworkBriefResponse | null = null;
 
-    static get activityTitle(): string {
-        return this._activityTitle;
+    static get homework(): HomeworkBriefResponse | null {
+        return this._homework;
     }
 
-    private static _activityDesc: string = '';
+    private static _activity: ClassActivityResponse | null = null;
 
-    static get activityDesc(): string {
-        return this._activityDesc;
-    }
-
-    private static _homeworkTitle: string = '';
-
-    static get homeworkTitle(): string {
-        return this._homeworkTitle;
-    }
-
-    private static _homeworkDesc: string = '';
-
-    static get homeworkDesc(): string {
-        return this._homeworkDesc;
-    }
-
-    private static _homeworkDate: DateObject | null = null;
-
-    static get homeworkDate(): DateObject | null {
-        return this._homeworkDate;
+    static get activity(): ClassActivityResponse | null {
+        return this._activity;
     }
 
     private static _date: DateObject | null = null;
@@ -118,5 +90,47 @@ export class SelectedTeachingTimeslot {
 
     static set date(value: DateObject | null) {
         this._date = value;
+    }
+
+    static setSlot(slot: TeachingTimeslotDetailedResponse) {
+        this._id = slot.id
+        this._hour = slot.hour
+        this._activity = slot.activity
+        this._homework = slot.homework
+    }
+}
+
+export class SelectedHomework {
+    private static _id: number | null = localStorage.getItem("homeworkId") ? parseInt(localStorage.getItem("homeworkId") as string) : null;
+
+    static get id(): number | null {
+        return this._id;
+    }
+
+    static set id(value: number) {
+        this._id = value;
+        localStorage.setItem('homeworkId', value.toString());
+    }
+
+    private static _title: string = localStorage.getItem("homeworkTitle") ? localStorage.getItem("homeworkTitle") as string : '';
+
+    static get title(): string {
+        return this._title;
+    }
+
+    static set title(value: string) {
+        this._title = value;
+        localStorage.setItem('homeworkTitle', value.toString());
+    }
+
+    private static _desc: string = localStorage.getItem("homeworkDesc") ? localStorage.getItem("homeworkDesc") as string : '';
+
+    static get desc(): string {
+        return this._desc;
+    }
+
+    static set desc(value: string) {
+        this._desc = value;
+        localStorage.setItem('homeworkDesc', value.toString());
     }
 }

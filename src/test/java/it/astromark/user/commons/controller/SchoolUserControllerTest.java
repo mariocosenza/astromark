@@ -42,9 +42,6 @@ class SchoolUserControllerTest {
     private StudentRepository studentRepository;
     @Autowired
     private MockMvc mockMvc;
-    private Student student;
-    private String password;
-    private School school;
     private String token;
     @Autowired
     private SchoolRepository schoolRepository;
@@ -52,7 +49,7 @@ class SchoolUserControllerTest {
 
     @BeforeEach
     public void setUpUser() throws Exception {
-        school = School.builder()
+        School school = School.builder()
                 .code("SS23456")
                 .name("Liceo Severi")
                 .phoneNumber(432435L)
@@ -60,7 +57,7 @@ class SchoolUserControllerTest {
                 .email("naps110002@istruzione.it").build();
         school = schoolRepository.save(school);
         var faker = new Faker();
-        password = faker.internet().password(8, 16, true, true);
+        var password = "Pluto123!";
         var name = "mario";
         var surname = "rossi";
         var stu = Student.builder()
@@ -74,7 +71,7 @@ class SchoolUserControllerTest {
                 .birthDate(LocalDate.of(2003, 5, 22))
                 .username(name + "." + surname + count++)
                 .school(school).build();
-        student = studentRepository.save(stu);
+        Student student = studentRepository.save(stu);
         var result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + student.getUsername() + "\",\"password\":\"" + password + "\",\"schoolCode\":\"" + school.getCode() + "\",\"role\":\"STUDENT\"}"))
@@ -174,9 +171,5 @@ class SchoolUserControllerTest {
                 .andExpect(status().is5xxServerError());
     }
 
-    @Test
-    void tc3_05() throws Exception {
-        // Not applicable for the backend
-    }
 
 }

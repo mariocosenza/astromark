@@ -12,27 +12,15 @@ import {AxiosResponse} from "axios";
 import {TeachingTimeslotDetailedResponse} from "../../entities/TeachingTimeslotDetailedResponse.ts";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
-import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
+import {SelectedHomework, SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useNavigate} from "react-router";
 import {getId} from "../../services/AuthService.ts";
 import {CustomTableCell, CustomTableRow} from "../../components/CustomTableComponents.tsx";
+import ForumIcon from '@mui/icons-material/Forum';
 
-export interface ClassAgendaRow {
-    id: number | null;
-    signed: boolean;
-    hour: number;
-    isTeacherHour: boolean;
-    name: string;
-    subject: string;
-    activityTitle: string
-    activityDesc: string;
-    homeworkTitle: string;
-    homeworkDesc: string;
-    homeworkDate: DateObject | null;
-}
 
 export const ClassAgenda: React.FC = () => {
-    const [rows, setRows] = useState<ClassAgendaRow[]>([]);
+    const [rows, setRows] = useState<TeachingTimeslotDetailedResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [date, setDate] = useState<DateObject>(new DateObject())
     const navigate = useNavigate();
@@ -43,33 +31,16 @@ export const ClassAgenda: React.FC = () => {
 
     const fetchData = async (selectedDate: string) => {
         try {
-            let rowResponse : ClassAgendaRow[] = [];
             const response: AxiosResponse<TeachingTimeslotDetailedResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classes/${SelectedSchoolClass.id}/signedHours/${selectedDate}`);
-            if (response.data.length){
-                rowResponse = response.data.map((teachingSlot: TeachingTimeslotDetailedResponse) => ({
-                    id: teachingSlot.id,
-                    signed: teachingSlot.signed,
-                    hour: teachingSlot.hour,
-                    isTeacherHour: teachingSlot.teacherId === getId(),
-                    name: teachingSlot.name + ' ' + teachingSlot.surname,
-                    subject: teachingSlot.subject,
-                    activityTitle: teachingSlot.activityTitle,
-                    activityDesc: teachingSlot.activityDescription,
-                    homeworkTitle: teachingSlot.homeworkTitle,
-                    homeworkDesc: teachingSlot.homeworkDescription,
-                    homeworkDate: teachingSlot.homeworkDueDate,
-                }));
-            }
-
+            setRows(addEmptyHour(response.data))
             setLoading(false);
-            setRows(addEmptyHour(rowResponse))
         } catch (error) {
             console.error(error);
         }
     }
 
-    const addEmptyHour = (rows: ClassAgendaRow[]) => {
-        let newRows: ClassAgendaRow[] = [];
+    const addEmptyHour = (rows: TeachingTimeslotDetailedResponse[]) => {
+        let newRows: TeachingTimeslotDetailedResponse[] = [];
         let i = 0;
         for (let hour = 1; hour < 8; hour++) {
             if (i < rows.length && rows[i].hour == hour) {
@@ -78,16 +49,16 @@ export const ClassAgenda: React.FC = () => {
             } else {
                 newRows.push({
                     id: null,
-                    signed: false,
                     hour: hour,
-                    isTeacherHour: true,
-                    name: '',
                     subject: '',
-                    activityTitle: '',
-                    activityDesc: '',
-                    homeworkTitle: '',
-                    homeworkDesc: '',
-                    homeworkDate: null,
+                    signed: false,
+                    teacher: {
+                        id: '',
+                        name: '',
+                        surname: '',
+                    },
+                    activity: null,
+                    homework: null,
                 })
             }
         }
@@ -95,10 +66,19 @@ export const ClassAgenda: React.FC = () => {
         return newRows;
     }
 
-    const choseTeachingTimeslot = (slot: ClassAgendaRow) => {
+    const choseTeachingTimeslot = (slot: TeachingTimeslotDetailedResponse) => {
         SelectedTeachingTimeslot.setSlot(slot);
         SelectedTeachingTimeslot.date = date;
         navigate(`/teacher/ora`);
+    };
+
+    const choseHomeworkChat = (slot: TeachingTimeslotDetailedResponse) => {
+        if (slot.homework?.hasChat) {
+            SelectedHomework.id = slot.homework.id;
+            SelectedHomework.title = slot.homework.title;
+            SelectedHomework.desc = slot.homework.description;
+            navigate(`/teacher/agenda/chat`);
+        }
     };
 
     const handleDateChange = (newDate: DateObject | null) => {
@@ -134,15 +114,15 @@ export const ClassAgenda: React.FC = () => {
                 </Grid>
             </Grid>
 
-            <TableContainer sx={{ width: '90%', margin: '0 5%'}}>
+            <TableContainer sx={{width: '90%', margin: '0 5%'}}>
                 <Table>
                     <TableHead>
                         <CustomTableRow>
                             <CustomTableCell width={'8%'}>Firma</CustomTableCell>
                             <CustomTableCell width={'13%'}>Docente</CustomTableCell>
-                            <CustomTableCell width={'13%'}>Materia</CustomTableCell>
-                            <CustomTableCell width={'30%'}>Attività Svolta</CustomTableCell>
-                            <CustomTableCell width={'30%'}>Compiti Assegnati</CustomTableCell>
+                            <CustomTableCell width={'10%'}>Materia</CustomTableCell>
+                            <CustomTableCell width={'31%'}>Attività Svolta</CustomTableCell>
+                            <CustomTableCell width={'32%'}>Compiti Assegnati</CustomTableCell>
                             <CustomTableCell width={'6%'}></CustomTableCell>
                         </CustomTableRow>
                     </TableHead>
@@ -152,8 +132,10 @@ export const ClassAgenda: React.FC = () => {
                             <CustomTableRow key={row.hour}>
                                 <CustomTableCell padding={'none'}>
                                     <Stack direction={'column'} padding={'0.5rem 1rem'} alignItems={'center'}>
-                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'} sx={{padding: '8px'}}/> :
-                                            <IconButton disabled={!row.isTeacherHour} onClick={() => choseTeachingTimeslot(row)}>
+                                        {row.signed ? <CheckCircleOutlineIcon fontSize={'large'} color={'success'}
+                                                                              sx={{padding: '8px'}}/> :
+                                            <IconButton disabled={!(!row.teacher.id || getId() === row.teacher.id)}
+                                                        onClick={() => choseTeachingTimeslot(row)}>
                                                 <AddCircleOutlineIcon fontSize={'large'}/>
                                             </IconButton>
                                         }
@@ -164,28 +146,40 @@ export const ClassAgenda: React.FC = () => {
                                     </Stack>
                                 </CustomTableCell>
 
-                                <CustomTableCell>{row.name}</CustomTableCell>
+                                <CustomTableCell>{row.teacher.name + ' ' + row.teacher.surname}</CustomTableCell>
                                 <CustomTableCell>{row.subject}</CustomTableCell>
 
                                 <CustomTableCell>
                                     <Typography fontWeight={'bold'} fontSize={'large'}>
-                                        {row.activityTitle + (row.activityTitle === '' ? '' : ':')}
+                                        {row.activity ? row.activity.title + ':' : ''}
                                     </Typography>
-                                    {row.activityDesc}
+                                    {row.activity?.description}
                                 </CustomTableCell>
 
                                 <CustomTableCell>
-                                    <Typography fontWeight={'bold'} fontSize={'large'}>
-                                        {row.homeworkTitle + (row.homeworkTitle === '' ? '' : ':')}
-                                    </Typography>
-                                    {row.homeworkDesc}
-                                    <Typography fontSize={'small'} color={'textSecondary'}>
-                                        {row.homeworkDate ? 'Per il ' + row.homeworkDate.toString() : ''}
-                                    </Typography>
+
+                                    <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                                        <Grid>
+                                            <Typography fontWeight={'bold'} fontSize={'large'}>
+                                                {row.homework ? row.homework.title + ':' : ''}
+                                            </Typography>
+                                            {row.homework?.description}
+                                            <Typography fontSize={'small'} color={'textSecondary'}>
+                                                {row.homework ? 'Per il ' + row.homework.dueDate.toString() : ''}
+                                            </Typography>
+                                        </Grid>
+                                        {row.homework?.hasChat && (
+                                            <IconButton disabled={getId() !== row.teacher.id}
+                                                        onClick={() => choseHomeworkChat(row)}>
+                                                <ForumIcon/>
+                                            </IconButton>
+                                        )}
+                                    </Stack>
                                 </CustomTableCell>
 
                                 <CustomTableCell align={'center'}>
-                                    <IconButton disabled={!(row.signed && row.isTeacherHour)} onClick={() => choseTeachingTimeslot(row)}>
+                                    <IconButton disabled={!(row.signed && getId() === row.teacher.id)}
+                                                onClick={() => choseTeachingTimeslot(row)}>
                                         <EditOutlinedIcon fontSize={'large'}/>
                                     </IconButton>
                                 </CustomTableCell>

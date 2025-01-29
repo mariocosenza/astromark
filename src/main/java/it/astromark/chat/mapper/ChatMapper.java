@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ChatMapper {
 
+    @Mapping(target = "isTeacher", expression = "java(ticket.getTeacher() != null)")
     TicketResponse toTicketResponse(Ticket ticket);
 
     List<TicketResponse> toTicketResponseList(List<Ticket> tickets);

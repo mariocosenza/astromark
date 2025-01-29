@@ -1,10 +1,10 @@
 package it.astromark.authentication.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.authentication.dto.UserFirstLoginRequest;
 import it.astromark.authentication.dto.UserLoginRequest;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.authentication.service.JWTService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class AuthController {
             return switch (schoolUser.getPendingState()) {
                 case FIRST_LOGIN -> new ResponseEntity<>("Must change password", HttpStatus.NOT_ACCEPTABLE);
                 case NORMAL, REMOVE ->
-                        new ResponseEntity<>(authenticationService.verify(user.username(), user.password(), user.schoolCode(), user.role()), HttpStatus.OK);
+                        new ResponseEntity<>(authenticationService.verify(user.username(), user.newPassword(), user.schoolCode(), user.role()), HttpStatus.OK);
             };
         }
 

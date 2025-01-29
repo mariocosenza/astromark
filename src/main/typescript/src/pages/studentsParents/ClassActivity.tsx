@@ -68,6 +68,7 @@ export const Homework: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
             const response: AxiosResponse<HomeworkResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/homeworks/all`);
             setActivity(response.data);
@@ -80,16 +81,14 @@ export const Homework: React.FC = () => {
 
 
     return (
-        <Stack flex={'auto'} flexWrap={'wrap'} minWidth={'100%'} direction={'row'} spacing={'1'}>
+        <Stack flex={'auto'} flexWrap={'wrap'} justifyContent={'space-around'} minWidth={'100%'} direction={'row'} spacing={3}>
             <Box style={{
                 justifyContent: 'center',
                 marginTop: '1rem',
-                marginRight: '5vw',
-                marginLeft: open ? '2vw' : '5vw'
             }}>
                 {
                     loading ? (
-                        <div>Loading...</div>
+                        <div>Caricamento in corso...</div>
                     ) : !checked ? (
                         <HomeworkList
                             list={activity
@@ -103,8 +102,8 @@ export const Homework: React.FC = () => {
                                     title: activity.signedHour.title,
                                     description: activity.title + ': ' + activity.description,
                                     hexColor: 'dodgerblue',
-                                    date: activity.signedHour.date,
-                                }))} dashboard={false}                        />
+                                    date: activity.dueDate,
+                                }))} dashboard={false}/>
                     ) : (
                         <HomeworkList
                             list={activity
@@ -118,9 +117,9 @@ export const Homework: React.FC = () => {
                                     title: activity.signedHour.title,
                                     description: activity.title + ': ' + activity.description,
                                     hexColor: 'dodgerblue',
-                                    date: activity.signedHour.date,
+                                    date: activity.dueDate,
                                 }))
-                                .reverse()} dashboard={false}                        />
+                                .reverse()} dashboard={false}/>
                     )
                 }
 
@@ -153,8 +152,8 @@ export const Homework: React.FC = () => {
                 </Stack>
             </Box>
             {open &&
-                <div style={{minWidth: '40vw', marginTop: '1rem'}}>
-                    <ChatHomeworkComponent homeworkId={chatId}/>
+                <div style={{minWidth: '35vw', marginTop: '1rem', marginRight: '2rem'}}>
+                    <ChatHomeworkComponent homeworkId={chatId} studentId={null}/>
                 </div>
             }
         </Stack>
@@ -178,6 +177,7 @@ const Activity: React.FC = () => {
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const schoolClass: AxiosResponse<SchoolClass[]> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/classes/${SelectedYear.year}`);
             const response: AxiosResponse<ClassActivityResponse[]> = await axiosConfig.get(`${Env.API_BASE_URL}/classwork/${schoolClass.data[0].id}/activities/all`);
             setActivity(response.data);
@@ -192,7 +192,7 @@ const Activity: React.FC = () => {
         <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}>
             {
                 loading ? (
-                    <div>Loading...</div>
+                    <div>Caricamento in corso...</div>
                 ) : !checked ? (
                     <ListGeneric
                         list={activity
@@ -202,9 +202,9 @@ const Activity: React.FC = () => {
                             )
                             .map((activity: ClassActivityResponse) => ({
                                 avatar: 'C',
-                                title: `${activity.signedHour.date} ${activity.signedHour.title}`,
+                                title: `${activity.signedHour.title} del ${new Date(activity.signedHour.date).toLocaleDateString()} `,
                                 description: activity.description,
-                                hexColor: 'dodgerblue',
+                                hexColor: '#006059',
                                 date: activity.signedHour.date,
                             }))}
                     />
@@ -217,9 +217,9 @@ const Activity: React.FC = () => {
                             )
                             .map((activity: ClassActivityResponse) => ({
                                 avatar: 'C',
-                                title: `${activity.signedHour.date} ${activity.signedHour.title}`,
+                                title: `${activity.signedHour.title} del ${new Date(activity.signedHour.date).toLocaleDateString()} `,
                                 description: activity.description,
-                                hexColor: 'dodgerblue',
+                                hexColor: '#006059',
                                 date: activity.signedHour.date,
                             }))
                             .reverse()}

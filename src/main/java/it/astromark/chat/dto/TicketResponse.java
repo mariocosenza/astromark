@@ -1,6 +1,7 @@
 package it.astromark.chat.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -8,6 +9,10 @@ import java.util.UUID;
 public record TicketResponse(
         UUID id,
         String title,
-        Instant datetime
+        Instant datetime,
+        String category,
+        Boolean closed,
+        Boolean solved,
+        Boolean isTeacher
 ) {
 }

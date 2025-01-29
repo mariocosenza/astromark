@@ -15,6 +15,7 @@ import it.astromark.rating.mapper.MarkMapper;
 import it.astromark.rating.model.Mark;
 import it.astromark.rating.model.MarkType;
 import it.astromark.rating.repository.MarkRepository;
+import it.astromark.rating.service.MarkServiceImpl;
 import it.astromark.school.entity.School;
 import it.astromark.user.commons.model.PendingState;
 import it.astromark.user.commons.service.SchoolUserService;

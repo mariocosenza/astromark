@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Stack, Paper, Typography, Box, CircularProgress } from '@mui/material';
-import { blue, red } from '@mui/material/colors';
-import { changeStudentOrYear, SelectedStudent, SelectedYear } from "../../services/StateService.ts";
-import { AxiosResponse } from "axios";
+import React, {useEffect, useState} from 'react';
+import {Box, CircularProgress, Paper, Stack, Typography} from '@mui/material';
+import {blue, red} from '@mui/material/colors';
+import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {AxiosResponse} from "axios";
 import axiosConfig from "../../services/AxiosConfig.ts";
-import { Env } from "../../Env.ts";
-import { SchoolUserDetail } from "../../components/AccountMenu.tsx";
-import { Communication, SchoolClass } from "./Communication.tsx";
-import { AccordionNotViewable } from "../../components/AccordionNotViewable.tsx";
-import { isRole } from "../../services/AuthService.ts";
-import { Role } from "../../components/route/ProtectedRoute.tsx";
-import { getStudentYears } from "../../services/StudentService.ts";
-import { HomeworkResponse } from "./ClassActivity.tsx";
-import { HomeworkList } from "../../components/HomeworkList.tsx";
+import {Env} from "../../Env.ts";
+import {SchoolUserDetail} from "../../components/AccountMenu.tsx";
+import {Communication, SchoolClass} from "./Communication.tsx";
+import {AccordionNotViewable} from "../../components/AccordionNotViewable.tsx";
+import {isRole} from "../../services/AuthService.ts";
+import {Role} from "../../components/route/ProtectedRoute.tsx";
+import {getStudentYears} from "../../services/StudentService.ts";
+import {HomeworkResponse, openChat} from "./ClassActivity.tsx";
+import {HomeworkList} from "../../components/HomeworkList.tsx";
 
 // react-use hook for responsive behavior
-import { useMedia } from 'react-use';
+import {useMedia} from 'react-use';
 
 export const Dashboard: React.FC = () => {
-    // This hook checks if the screen size is below 768px (mobile view)
+    // This hook checks if the screen size is below 768 px (mobile view)
     const isMobile = useMedia('(max-width: 768px)');
 
     const [allerts, setAllerts] = useState<Communication[]>([]);
@@ -27,8 +27,10 @@ export const Dashboard: React.FC = () => {
     const [user, setUser] = useState<SchoolUserDetail>();
     const [totAbsences, setTotAbsences] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [activity, setActivity] = React.useState<HomeworkResponse>();
+    const [activity, setActivity] = useState<HomeworkResponse>();
+    const [, setOpen] = openChat();
     const [toggle, _] = changeStudentOrYear();
+    const [firstFetch, setFirstFetch] = useState<boolean>(true);
 
     useEffect(() => {
         fetchData();
@@ -40,13 +42,18 @@ export const Dashboard: React.FC = () => {
             if (!isRole(Role.STUDENT)) {
                 await axiosConfig.get<SchoolUserDetail[]>(Env.API_BASE_URL + '/parents/students')
                     .then((response) => {
-                        SelectedStudent.id = response.data[0].id;
+                        if(firstFetch)
+                        {
+                            SelectedStudent.id = response.data[0].id;
+                        }
                         getStudentYears().then((response) => {
                             if (response !== null) {
                                 SelectedYear.year = response[0];
                             }
                         });
                     });
+                setFirstFetch(false);
+                setOpen(false);
             }
         } catch (error) {
             console.error(error);
@@ -59,9 +66,7 @@ export const Dashboard: React.FC = () => {
             // Fetch user data
             const responseUser: AxiosResponse<SchoolUserDetail> =
                 await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}`);
-            // Fetch attitude
-            const responseAttitude: AxiosResponse<string> =
-                await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/attitude`);
+
             // Fetch average marks
             const averageResponse: AxiosResponse<number> =
                 await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
@@ -81,9 +86,12 @@ export const Dashboard: React.FC = () => {
             setAllerts(response.data);
             setAverage(averageResponse.data);
             setUser(responseUser.data);
-            setAttitude(responseAttitude.data);
             setTotAbsences(responseAbsences.data);
             setLoading(false);
+            // Fetch attitude
+            const responseAttitude: AxiosResponse<string> =
+                await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/attitude`);
+            setAttitude(responseAttitude.data);
         } catch (error) {
             console.error(error);
         }
@@ -138,7 +146,7 @@ export const Dashboard: React.FC = () => {
                         }}
                     >
                         <Typography variant="h3" textAlign="center" color="white">
-                            {user?.name + " " + user?.surname}
+                            {(user?.name === undefined? "" : user.name) + " " + (user?.surname === undefined? "" : user.surname)}
                         </Typography>
                     </Paper>
                     <Paper
@@ -209,16 +217,16 @@ export const Dashboard: React.FC = () => {
                                 filterUnits="userSpaceOnUse"
                                 colorInterpolationFilters="sRGB"
                             >
-                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                                <feFlood floodOpacity="0" result="BackgroundImageFix"/>
                                 <feColorMatrix
                                     in="SourceAlpha"
                                     type="matrix"
                                     values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                                     result="hardAlpha"
                                 />
-                                <feOffset dy="4" />
-                                <feGaussianBlur stdDeviation="2" />
-                                <feComposite in2="hardAlpha" operator="out" />
+                                <feOffset dy="4"/>
+                                <feGaussianBlur stdDeviation="2"/>
+                                <feComposite in2="hardAlpha" operator="out"/>
                                 <feColorMatrix
                                     type="matrix"
                                     values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
@@ -264,7 +272,7 @@ export const Dashboard: React.FC = () => {
                                         hexColor: 'dodgerblue',
                                         date: activity.signedHour.date,
                                     })
-                                )} dashboard={true}                            />
+                                )} dashboard={true}/>
                         </div>
                     </Box>
                 </Box>
@@ -287,7 +295,7 @@ export const Dashboard: React.FC = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            justifyContent: 'center',
+
                             marginBottom: isMobile ? '1rem' : 0, // spacing on mobile
                             padding: '1rem',
                         }}
@@ -295,8 +303,8 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={blue[800]}>
                             Media
                         </Typography>
-                        <CircularProgress variant="determinate" value={average * 10} size={50} />
-                        <Typography variant="h5">{average}</Typography>
+                        <CircularProgress variant="determinate" value={average * 10} size={50}/>
+                        <Typography variant="h5" fontStyle={'italic'} mt="1rem">{average}</Typography>
                     </Paper>
 
                     <Paper
@@ -318,7 +326,7 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={red[800]}>
                             Avvisi
                         </Typography>
-                        <div style={{ maxWidth: '80%', marginLeft: isMobile? '5%' : '10%' , marginRight: '10%' }}>
+                        <div style={{maxWidth: '80%', marginLeft: isMobile ? '5%' : '10%', marginRight: '10%'}}>
                             {!loading && allerts.length > 0 && (
                                 <AccordionNotViewable
                                     key={allerts[0].id}
@@ -349,7 +357,7 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={blue[800]}>
                             Orientamento
                         </Typography>
-                        <Typography variant="body1" sx={{ ml: '2%' }}>
+                        <Typography variant="body1" sx={{ml: '2%'}}>
                             {attitude}
                         </Typography>
                     </Paper>

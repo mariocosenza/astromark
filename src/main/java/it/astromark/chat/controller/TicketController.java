@@ -1,10 +1,10 @@
 package it.astromark.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.chat.dto.MessageResponse;
 import it.astromark.chat.dto.TicketResponse;
 import it.astromark.chat.repository.TicketRepository;
 import it.astromark.chat.service.TicketService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,5 +62,23 @@ public class TicketController {
     @PostMapping("/newTicket")
     public void createTicket(@RequestBody String title) {
         ticketService.createTicket(title);
+    }
+
+    @Operation(
+            summary = "Close an unsolved ticket",
+            description = "Closes an unsolved ticket by its ID."
+    )
+    @PatchMapping("/{ticketId}/closeUnsolved")
+    public boolean closeUnsolved(@PathVariable UUID ticketId) {
+        return ticketService.closeUnsolved(ticketId);
+    }
+
+    @Operation(
+            summary = "Close and solve a ticket",
+            description = "Closes and marks a ticket as solved by its ID."
+    )
+    @PatchMapping("/{ticketId}/closeAndSolve")
+    public boolean closeAndSolve(@PathVariable UUID ticketId) {
+        return ticketService.closeAndSolve(ticketId);
     }
 }

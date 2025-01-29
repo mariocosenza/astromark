@@ -22,11 +22,11 @@ export const TeacherDashboardNavbar: React.FC = () => {
 
     const fetchData = async () => {
         try {
-            if (isRole(Role.TEACHER)){
+            if (isRole(Role.TEACHER)) {
                 const response: AxiosResponse<string[]> = await axiosConfig.get(`${Env.API_BASE_URL}/teachers/teachings`);
                 if (response.data.length) {
                     setTeachings(response.data);
-                    if(localStorage.getItem("teaching") === null){
+                    if (localStorage.getItem("teaching") === null) {
                         SelectedTeaching.teaching = response.data[0]
                     }
                 }
@@ -59,6 +59,9 @@ export const TeacherDashboardNavbar: React.FC = () => {
                                 localStorage.removeItem("schoolClassId")
                                 localStorage.removeItem("schoolClassTitle")
                                 localStorage.removeItem("schoolClassDesc")
+                                localStorage.removeItem("homeworkId")
+                                localStorage.removeItem("homeworkTitle")
+                                localStorage.removeItem("homeworkDesc")
                                 asyncLogout(localStorage.getItem("user")).then(_ => navigator('/logout'))
                             }
                             }

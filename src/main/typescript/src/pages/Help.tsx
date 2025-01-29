@@ -1,15 +1,16 @@
 import {HomePageNavbar} from "../components/HomePageNavbar.tsx";
 import {
-    Container,
-    Typography,
     Accordion,
-    AccordionSummary,
     AccordionDetails,
+    AccordionSummary,
     Box,
-    useTheme,
+    Container,
     Link,
+    Typography,
+    useTheme,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import React from "react";
 
 type FAQ = {
     question: string;
@@ -160,14 +161,15 @@ const HelpPage: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
+        <Container maxWidth="md" sx={{py: 4}}>
             {/* Header */}
             <Box textAlign="center" mb={4}>
                 <Typography variant="h4" component="h1" gutterBottom color="primary">
                     Pagina di Aiuto
                 </Typography>
                 <Typography variant="body1" gutterBottom color="textSecondary">
-                    Benvenuto nella pagina di supporto di AstroMark. Qui troverai risposte alle domande più frequenti per aiutarti a utilizzare al meglio la piattaforma.
+                    Benvenuto nella pagina di supporto di AstroMark. Qui troverai risposte alle domande più frequenti
+                    per aiutarti a utilizzare al meglio la piattaforma.
                 </Typography>
             </Box>
 
@@ -188,9 +190,9 @@ const HelpPage: React.FC = () => {
                             {userType.title}
                         </Typography>
                         {userType.faqs.map((faq, idx) => (
-                            <Accordion key={idx} sx={{ mb: 2, border: `1px solid ${theme.palette.divider}` }}>
+                            <Accordion key={idx} sx={{mb: 2, border: `1px solid ${theme.palette.divider}`}}>
                                 <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon color="primary" />}
+                                    expandIcon={<ExpandMoreIcon color="primary"/>}
                                     aria-controls={`panel${index}-${idx}-content`}
                                     id={`panel${index}-${idx}-header`}
                                 >
@@ -210,7 +212,7 @@ const HelpPage: React.FC = () => {
             </Box>
 
             {/* Sezione Contatti */}
-            <Box mt={6} textAlign="center" p={3} sx={{ backgroundColor: theme.palette.grey[100], borderRadius: 2 }}>
+            <Box mt={6} textAlign="center" p={3} sx={{backgroundColor: theme.palette.grey[100], borderRadius: 2}}>
                 <Typography variant="h6" gutterBottom color="info.main">
                     Hai bisogno di ulteriore assistenza?
                 </Typography>
@@ -224,7 +226,6 @@ const HelpPage: React.FC = () => {
         </Container>
     );
 };
-
 
 
 export const Help = () => {

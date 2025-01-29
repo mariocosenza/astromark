@@ -1,14 +1,14 @@
 import React, {useState} from "react";
-import {Button, Card, CardContent, Divider, Stack, TextField, Typography,} from "@mui/material";
+import {Button, Card, CardContent, Divider, FormControlLabel, Radio, RadioGroup, Stack, TextField, Typography,} from "@mui/material";
 import DatePicker, {DateObject} from "react-multi-date-picker";
-import {SelectedSchoolClass, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
+import {SelectedSchoolClass, SelectedTeaching, SelectedTeachingTimeslot} from "../../services/TeacherService.ts";
 import {useFormik} from "formik";
 import axiosConfig from "../../services/AxiosConfig.ts";
 import {Env} from "../../Env.ts";
 import YupPassword from "yup-password";
 import * as yup from "yup";
 import {useNavigate} from "react-router";
-import {SignHourRequest} from "../../entities/SignHourRequest.ts";
+import {ClassActivityRequest, HomeworkRequest, SignHourRequest} from "../../entities/SignHourRequest.ts";
 
 YupPassword(yup)
 
@@ -31,31 +31,51 @@ const validationSchema = yup.object({
 });
 
 export const SignHour: React.FC = () => {
-    const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homeworkDate || new DateObject().add(1, 'days'))
+    const [dueDate, setDueDate] = useState<DateObject>(SelectedTeachingTimeslot.homework?.dueDate || new DateObject().add(1, 'days'))
+    const [needChat, setNeedChat] = useState<boolean>(!!SelectedTeachingTimeslot.homework?.hasChat)
     const [dateError, setDateError] = useState<boolean>(false)
     const navigate = useNavigate();
 
     const initialValues = {
-        activityTitle: SelectedTeachingTimeslot.activityTitle,
-        activityDesc: SelectedTeachingTimeslot.activityDesc,
-        homeworkTitle: SelectedTeachingTimeslot.homeworkTitle,
-        homeworkDesc: SelectedTeachingTimeslot.homeworkDesc,
+        activityTitle: SelectedTeachingTimeslot.activity?.title || '',
+        activityDesc: SelectedTeachingTimeslot.activity?.description || '',
+        homeworkTitle: SelectedTeachingTimeslot.homework?.title || '',
+        homeworkDesc: SelectedTeachingTimeslot.homework?.description || '',
     };
 
     const formik = useFormik({
         initialValues,
         validationSchema,
         onSubmit: async (values) => {
-            if (!dateError) {
+            if (!dateError && SelectedTeachingTimeslot.date) {
+
+                let activity: ClassActivityRequest | null = null
+                if (values.activityTitle) {
+                    activity = {
+                        id: SelectedTeachingTimeslot.activity?.id || null,
+                        title: values.activityTitle,
+                        description: values.activityDesc,
+                    }
+                }
+
+                let homework: HomeworkRequest | null = null
+                if (values.homeworkTitle) {
+                    homework = {
+                        id: SelectedTeachingTimeslot.homework?.id || null,
+                        title: values.homeworkTitle,
+                        description: values.homeworkDesc,
+                        dueDate: dueDate.toDate(),
+                        hasChat: needChat,
+                    }
+                }
+
                 const signHourRequest: SignHourRequest = {
-                    slotId: SelectedTeachingTimeslot.id,
+                    id: SelectedTeachingTimeslot.id,
                     hour: SelectedTeachingTimeslot.hour,
-                    date: SelectedTeachingTimeslot.date,
-                    activityTitle: values.activityTitle,
-                    activityDescription: values.activityDesc,
-                    homeworkTitle: values.homeworkTitle,
-                    homeworkDescription: values.homeworkDesc,
-                    homeworkDueDate: dueDate,
+                    subject: SelectedTeaching.teaching,
+                    date: SelectedTeachingTimeslot.date.toDate(),
+                    activity: activity,
+                    homework: homework,
                 };
 
                 try {
@@ -99,7 +119,8 @@ export const SignHour: React.FC = () => {
                                            error={!!formik.errors.activityTitle}
                                            helperText={formik.errors.activityTitle}/>
 
-                                <TextField fullWidth variant="outlined" multiline rows={4} label="Attività Svolta" name="activityDesc"
+                                <TextField fullWidth variant="outlined" multiline rows={4} label="Attività Svolta"
+                                           name="activityDesc"
                                            value={formik.values.activityDesc}
                                            onChange={formik.handleChange}/>
                             </Stack>
@@ -110,28 +131,45 @@ export const SignHour: React.FC = () => {
                                            error={!!formik.errors.homeworkTitle}
                                            helperText={formik.errors.homeworkTitle}/>
 
-                                <TextField fullWidth variant="outlined" multiline rows={4} label="Compiti Assegnati" name="homeworkDesc"
+                                <TextField fullWidth variant="outlined" multiline rows={4} label="Compiti Assegnati"
+                                           name="homeworkDesc"
                                            value={formik.values.homeworkDesc}
                                            onChange={formik.handleChange}/>
 
-                                <Stack direction={'column'} justifyContent={'center'}>
-                                    <Typography variant="caption" color={'textSecondary'}>
-                                        Consegna
-                                    </Typography>
-                                    <DatePicker
-                                        value={dueDate}
-                                        onChange={handleDateChange}/>
-                                    {dateError && (
-                                        <Typography variant="caption" color={'error'}>
-                                            È possibile salvare solo date successive ad oggi.
+                                <Stack direction={'row'} spacing={4}>
+                                    <Stack direction={'column'} justifyContent={'center'}>
+                                        <Typography variant="caption" color={'textSecondary'}>
+                                            Consegna
                                         </Typography>
-                                    )}
+                                        <DatePicker
+                                            value={dueDate}
+                                            onChange={handleDateChange}/>
+                                        {dateError && (
+                                            <Typography variant="caption" color={'error'}>
+                                                È possibile salvare solo date successive ad oggi.
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                    <Stack alignItems={'flex-start'}>
+                                        <Typography variant="caption" color={'textSecondary'}>
+                                            Abilita chat
+                                        </Typography>
+                                        <RadioGroup row value={needChat ? 'yes' : 'no'}
+                                                    onChange={(e) => setNeedChat(e.target.value === 'yes')}>
+                                            <FormControlLabel label='Sì' value='yes' control={<Radio/>}
+                                                              disabled={SelectedTeachingTimeslot.homework?.hasChat}/>
+                                            <FormControlLabel label='No' value='no' control={<Radio/>}
+                                                              disabled={SelectedTeachingTimeslot.homework?.hasChat}/>
+                                        </RadioGroup>
+                                    </Stack>
                                 </Stack>
                             </Stack>
                         </Stack>
 
                         <Stack direction="row" justifyContent="flex-end" spacing={2} mt={4}>
-                            <Button variant="contained" color="error" sx={{borderRadius: 5}} onClick={() => {navigate(`/teacher/agenda`)}}>
+                            <Button variant="contained" color="error" sx={{borderRadius: 5}} onClick={() => {
+                                navigate(`/teacher/agenda`)
+                            }}>
                                 Elimina
                             </Button>
                             <Button variant="contained" color="primary" sx={{borderRadius: 5}} type={'submit'}>

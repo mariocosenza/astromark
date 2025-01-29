@@ -1,5 +1,6 @@
 package it.astromark.user.secretary.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import it.astromark.user.commons.dto.SchoolUserDetailed;
 import it.astromark.user.secretary.dto.SecretaryRequest;
 import it.astromark.user.secretary.service.SecretaryService;
@@ -19,9 +20,12 @@ public class SecretaryController {
         this.secretaryService = secretaryService;
     }
 
+    @Operation(
+            summary = "Create a secretary account",
+            description = "Creates a new secretary account with the provided details."
+    )
     @PostMapping
     public SchoolUserDetailed create(@RequestBody @NotNull SecretaryRequest secretaryRequest) {
         return secretaryService.create(secretaryRequest);
     }
-
 }

@@ -75,7 +75,7 @@ public abstract class SchoolUser {
     @ColumnDefault("false")
     @NotNull
     @Column(name = "gender")
-    private Boolean male =false;
+    private Boolean male = false;
 
     @Size(max = 512)
     @NotBlank

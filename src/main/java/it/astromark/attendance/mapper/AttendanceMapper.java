@@ -4,6 +4,7 @@ import it.astromark.attendance.dto.AttendanceResponse;
 import it.astromark.attendance.entity.Delay;
 import it.astromark.attendance.repository.AbsenceRepository;
 import it.astromark.attendance.repository.DelayRepository;
+import it.astromark.attendance.service.JustifiableService;
 import it.astromark.user.student.entity.Student;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -12,6 +13,7 @@ import org.mapstruct.Named;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -22,11 +24,11 @@ public interface AttendanceMapper {
     @Mapping(target = "isDelayed", source = "student", qualifiedByName = "isDelayed")
     @Mapping(target = "delayTime", source = "student", qualifiedByName = "getDelayTime")
     @Mapping(target = "delayNeedJustification", source = "student", qualifiedByName = "getDelayNeedJustification")
-    @Mapping(target = "totalAbsence", expression = "java(student.getAbsences().size())")
-    @Mapping(target = "totalDelay", expression = "java(student.getDelays().size())")
-    AttendanceResponse toAttendanceResponse(Student student, @Context LocalDate date, @Context AbsenceRepository absenceRepository, @Context DelayRepository delayRepository);
+    @Mapping(target = "totalAbsence", source = "student", qualifiedByName = "getTotalAbsence")
+    @Mapping(target = "totalDelay", source = "student", qualifiedByName = "getTotalDelay")
+    AttendanceResponse toAttendanceResponse(Student student, @Context LocalDate date, @Context AbsenceRepository absenceRepository, @Context DelayRepository delayRepository, @Context JustifiableService justifiableService);
 
-    List<AttendanceResponse> toAttendanceResponseList(List<Student> students, @Context LocalDate date, @Context AbsenceRepository absenceRepository, @Context DelayRepository delayRepository);
+    List<AttendanceResponse> toAttendanceResponseList(List<Student> students, @Context LocalDate date, @Context AbsenceRepository absenceRepository, @Context DelayRepository delayRepository, @Context JustifiableService justifiableService);
 
     @Named("isAbsent")
     default Boolean isAbsent(Student student, @Context LocalDate date, @Context AbsenceRepository absenceRepository) {
@@ -48,6 +50,18 @@ public interface AttendanceMapper {
     default boolean getDelayNeedJustification(Student student, @Context LocalDate date, @Context DelayRepository delayRepository) {
         var delay = getDelay(student, date, delayRepository);
         return delay != null && delay.getNeedsJustification();
+    }
+
+    @Named("getTotalAbsence")
+    default int getTotalAbsence(Student student, @Context LocalDate date, @Context JustifiableService justifiableService) {
+        int year = date.getYear() + (date.getMonthValue() < 6 ? -1 : 0);
+        return justifiableService.getTotalAbsences(student.getId(), Year.of(year));
+    }
+
+    @Named("getTotalDelay")
+    default int getTotalDelay(Student student, @Context LocalDate date, @Context JustifiableService justifiableService) {
+        int year = date.getYear() + (date.getMonthValue() < 6 ? -1 : 0);
+        return justifiableService.getTotalDelays(student.getId(), Year.of(year));
     }
 
     default Delay getDelay(Student student, LocalDate date, DelayRepository delayRepository) {

@@ -19,7 +19,7 @@ CREATE TABLE school_class
     id          SERIAL,
     school_code VARCHAR(7) NOT NULL,
     number      SMALLINT   NOT NULL,
-    letter      VARCHAR(2) NOT NULL, -- allowed combination like 'BS'
+    letter      VARCHAR(2) NOT NULL, -- allowed combinations like 'BS'
     year        INT        NOT NULL,
 
     CONSTRAINT pk_school_class PRIMARY KEY (id),

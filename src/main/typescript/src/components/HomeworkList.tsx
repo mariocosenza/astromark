@@ -22,7 +22,7 @@ export type HomeworkProp = {
 export const HomeworkList: React.FC<HomeworkProp> = ({list, dashboard}) => {
     const [open, setOpen] = openChat()
     const [homewokId, setChatId] = homeworkChatId()
-console.log(list)
+    console.log(list)
     return (
         <div>
             {
@@ -33,7 +33,7 @@ console.log(list)
                         <div style={{flexDirection: 'column', marginLeft: '1%'}}>
                             <Typography variant={'h6'}>
                                 {
-                                    item.title + ' per ' + item.date
+                                    item.title + ' per ' + new Date(item.date).toLocaleDateString()
                                 }
                             </Typography>
                             <Typography variant={'h6'}>

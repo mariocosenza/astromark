@@ -66,7 +66,6 @@ class ReceptionAgendaServiceIntegrationTest {
     private ReceptionAgendaServiceImpl receptionAgendaService;
     private Parent parent;
     private School sc;
-    private Teacher teacher;
     private ReceptionTimetable table;
     @Autowired
     private SchoolRepository schoolRepository;
@@ -133,7 +132,7 @@ class ReceptionAgendaServiceIntegrationTest {
                 .student(student)
                 .build();
         parentRepository.save(parent);
-        teacher = Teacher.builder()
+        Teacher teacher = Teacher.builder()
                 .email(faker.internet().emailAddress())
                 .name(name)
                 .taxId("ABCDEF12G34H567" + ++count)

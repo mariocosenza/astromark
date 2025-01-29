@@ -43,7 +43,7 @@ export const Note: React.FC = () => {
         <div>
             <div className={'alert'}>
                 {
-                    loading ? <div>Loading...</div> : notes.map((noteDto: NoteDto, index: number) => {
+                    loading ? <div>Caricamento in corso...</div> : notes.map((noteDto: NoteDto, index: number) => {
                         return <AccordionViewable key={index} date={noteDto.date} id={noteDto.id} title={'Nota'}
                                                   description={noteDto.description} avatar={'N'} viewed={noteDto.viewed}
                                                   view={() => view(noteDto.id)}/>

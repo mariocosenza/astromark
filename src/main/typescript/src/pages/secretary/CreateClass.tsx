@@ -1,15 +1,6 @@
-import {
-    Box,
-    Button,
-    TextField,
-    Typography,
-    Container,
-    Paper,
-    Alert,
-    AlertTitle
-} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig.ts";
-import { Env } from "../../Env.ts";
+import {Env} from "../../Env.ts";
 import {useState} from "react";
 
 export type SchoolClassRequest = {
@@ -83,7 +74,7 @@ export const CreateClass = () => {
                     <Alert
                         severity={alert.type}
                         onClose={() => setAlert(null)}
-                        sx={{ width: '100%', marginBottom: 2 }}
+                        sx={{width: '100%', marginBottom: 2}}
                     >
                         <AlertTitle>{alert.type === 'success' ? 'Successo' : 'Errore'}</AlertTitle>
                         {alert.message}
@@ -122,7 +113,7 @@ export const CreateClass = () => {
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
                         error={!number && number !== ''}
-                        helperText={!number && number !== ''? "Il numero è obbligatorio" : ""}
+                        helperText={!number && number !== '' ? "Il numero è obbligatorio" : ""}
                     />
 
                     <Button
