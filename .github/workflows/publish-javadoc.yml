@@ -1,22 +1,25 @@
 name: Deploy Javadoc
-
 on:
   push:
     branches:
+      - feature/core
       - main
-
+concurrency:
+  group: pages
+  cancel-in-progress: false
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      permissions:
+        contents: read
+        pages: write
+        id-token: write
     steps:
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: javadoc
+          deploy-mode: artifact
           java-version: 21
-          target-folder: javadoc
-          javadoc-source-folder: target/report/apidocs
           project: maven
