@@ -87,7 +87,7 @@ public class MarkServiceImpl implements MarkService {
             throw accessDeniedException.get();
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
             throw accessDeniedException.get();
-        } else if (authenticationService.isTeacher() && !schoolUserService.isLoggedTeacherStudent(studentId)) {
+        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw accessDeniedException.get();
         }
 
