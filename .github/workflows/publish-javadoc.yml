@@ -2,7 +2,6 @@ name: Deploy Javadoc
 on:
   push:
     branches:
-      - feature/core
       - main
 concurrency:
   group: pages
