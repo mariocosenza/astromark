@@ -96,22 +96,26 @@ public class JustifiableServiceImpl implements JustifiableService {
     }
 
     @Override
-    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT') || hasRole('TEACHER')")
     public Integer getTotalAbsences(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return absenceRepository.countAbsenceByDateBetweenAndStudent_Id(LocalDate.of(year.getValue(), Month.SEPTEMBER, 1), LocalDate.of(year.getValue() + 1, Month.AUGUST, 31), studentId);
     }
 
     @Override
-    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT')")
+    @PreAuthorize("hasRole('PARENT') || hasRole('STUDENT') || hasRole('TEACHER')")
     public Integer getTotalDelays(UUID studentId, Year year) {
         if (!schoolUserService.isLoggedUserParent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         } else if (!schoolUserService.isLoggedStudent(studentId)) {
+            throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
+        } else if (!schoolUserService.isLoggedTeacherStudent(studentId)) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
         return delayRepository.countDelayByDateBetweenAndStudent_Id(LocalDate.of(year.getValue(), Month.SEPTEMBER, 1).atStartOfDay().toInstant(ZoneOffset.UTC), LocalDate.of(year.getValue() + 1, Month.AUGUST, 31).atStartOfDay().toInstant(ZoneOffset.UTC), studentId);
