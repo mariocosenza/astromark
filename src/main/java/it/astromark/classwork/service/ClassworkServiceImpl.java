@@ -66,7 +66,7 @@ public class ClassworkServiceImpl implements ClassworkService {
             }
         }
 
-        return classworkMapper.classActivityToClassworkResponseList(classActivityRepository.findBySignedHourTeachingTimeslotClassTimetableSchoolClass_Id(classId)).stream().sorted(Comparator.comparing(s -> s.signedHour().date())).toList();
+        return classworkMapper.classActivityToClassworkResponseList(classActivityRepository.findAllBySignedHour_TeachingTimeslot_ClassTimetable_SchoolClass_Id(classId)).stream().sorted(Comparator.comparing(s -> s.signedHour().date())).toList();
     }
 
     @Override
