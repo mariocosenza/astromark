@@ -36,7 +36,7 @@ public class SchoolUserController {
     )
     @PatchMapping("/address")
     public SchoolUserResponse updateAddress(
-            @RequestBody @Size(min = 5) @Pattern(regexp = "^[a-zA-Z0-9\\s.]+$", message = "Address must be at least 5 characters and can only contain letters, numbers, spaces, and periods.") String address) {
+            @RequestBody @Size(min = 5) @Pattern(regexp = "^[a-zA-Z0-9\\s,.'\\-/]{3,100}$", message = "Address must be at least 5 characters and can only contain letters, numbers, spaces, and periods.") String address) {
         return schoolUserService.updateAddress(address);
     }
 

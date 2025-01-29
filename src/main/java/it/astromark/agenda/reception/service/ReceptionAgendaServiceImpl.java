@@ -96,14 +96,19 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     @PreAuthorize("hasRole('TEACHER')")
     public boolean refuse(ReceptionBookingId receptionTimeslotID) {
         var receptionBooking = receptionBookingRepository.findById(receptionTimeslotID).orElseThrow();
+        var receptionTimeslot = receptionBooking.getReceptionTimeslot();
 
         if (!receptionBooking.getReceptionTimeslot().getReceptionTimetable().getTeacher().getId()
                 .equals(authenticationService.getTeacher().orElseThrow().getId())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
-        receptionBooking.setRefused(true);
+        if(!receptionBooking.getRefused() && receptionTimeslot.getBooked() > 0) {
+            receptionTimeslot.setBooked((short) (receptionTimeslot.getBooked() - 1));
+            receptionTimeslotRepository.save(receptionTimeslot);
+        }
 
+        receptionBooking.setRefused(true);
         receptionBookingRepository.save(receptionBooking);
 
         return true;
