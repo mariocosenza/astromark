@@ -41,7 +41,7 @@ export const TeacherDetails = () => {
     const { teacheruuid } = useParams<{ teacheruuid: string }>();
 
     const [classes, setClasses] = useState<SchoolClassResponse[]>([]);
-    const [teachings, setTeachings] = useState<TeachingResponse[]>([]);
+    const [teachings, setTeachings] = useState<TeachingResponse>();
     const [allClasses, setAllClasses] = useState<SchoolClassResponse[]>([]);
     const [allSubjects, setAllSubjects] = useState<string[]>([]);
 
@@ -78,7 +78,7 @@ export const TeacherDetails = () => {
                     axiosConfig.get<SchoolClassResponse[]>(
                         `${Env.API_BASE_URL}/class-management/all`
                     ),
-                    axiosConfig.get<TeachingResponse[]>(
+                    axiosConfig.get<TeachingResponse>(
                         `${Env.API_BASE_URL}/teachers/${teacheruuid}/teachings`
                     ),
                     axiosConfig.get<SubjectResponse[]>(
@@ -88,7 +88,7 @@ export const TeacherDetails = () => {
 
                 setClasses(classesResponse.data || []);
                 setAllClasses(allClassesResponse.data || []);
-                setTeachings(teachingResponse.data || []);
+                setTeachings(teachingResponse.data);
                 const onlySubjects = (subjectsResponse.data || []).map((item) => item.subject);
                 setAllSubjects(onlySubjects);
 
@@ -208,7 +208,7 @@ export const TeacherDetails = () => {
 
             // Refresh the teachings list
             const [teachingResponse] = await Promise.all([
-                axiosConfig.get<TeachingResponse[]>(
+                axiosConfig.get<TeachingResponse>(
                     `${Env.API_BASE_URL}/teachers/${teacheruuid}/teachings`
                 ),
             ]);
@@ -369,26 +369,23 @@ export const TeacherDetails = () => {
                 Insegnamenti
             </Typography>
             <Box>
-                {teachings.length > 0 ? (
-                    teachings.map((teaching, index) => (
-                        <Card
-                            key={index}
-                            sx={{
-                                backgroundColor: "#f9f9f9",
-                                padding: "16px",
-                                marginY: "8px",
-                                borderRadius: "12px",
-                                boxShadow: 2,
-                            }}
-                        >
-                            <Typography variant="h6" sx={{ color: "#374151", fontWeight: "bold" }}>
-                                {teaching.username}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: "#64748b", marginTop: "4px" }}>
-                                {teaching.teaching.join(", ")}
-                            </Typography>
-                        </Card>
-                    ))
+                {teachings ? (
+                    <Card
+                        sx={{
+                            backgroundColor: "#f9f9f9",
+                            padding: "16px",
+                            marginY: "8px",
+                            borderRadius: "12px",
+                            boxShadow: 2,
+                        }}
+                    >
+                        <Typography variant="h6" sx={{ color: "#374151", fontWeight: "bold" }}>
+                            {teachings.username}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#64748b", marginTop: "4px" }}>
+                            {teachings.teaching.join(", ")}
+                        </Typography>
+                    </Card>
                 ) : (
                     <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
                         Nessun insegnamento
