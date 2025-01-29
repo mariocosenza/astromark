@@ -46,14 +46,6 @@ public class ClassworkServiceImpl implements ClassworkService {
         this.homeworkChatService = homeworkChatService;
     }
 
-    public void updateDescription(Integer id, String description) {
-
-    }
-
-    public void updateDueDate(Integer id, LocalDate date) {
-
-    }
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('PARENT')")
