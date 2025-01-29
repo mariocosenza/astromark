@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface ReceptionTimetableRepository extends JpaRepository<ReceptionTimetable, Integer> {
-    ReceptionTimetable findByEndValidityAndTeacher(LocalDate endValidity, @NotNull Teacher teacher);
+    List<ReceptionTimetable> findByTeacher(@NotNull Teacher teacher);
 }

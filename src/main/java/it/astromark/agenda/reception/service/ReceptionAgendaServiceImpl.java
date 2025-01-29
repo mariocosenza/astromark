@@ -120,10 +120,14 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
     public ReceptionTimeslotResponse addTimeslot(ReceptionTimeslotRequest request) {
 
         var teacher = authenticationService.getTeacher().orElseThrow();
-        var timetable = receptionTimetableRepository.findByEndValidityAndTeacher(null, teacher);
+        var timetable = receptionTimetableRepository.findByTeacher(teacher).stream()
+                .filter(t -> (t.getEndValidity() == null || t.getEndValidity().isAfter(LocalDate.now())))
+                .filter(t -> t.getStartValidity().isBefore(LocalDate.now()))
+                .findFirst().orElse(null);
 
-        if (timetable == null)
+        if (timetable == null) {
             timetable = createReceptionTimetable(teacher.getId(), "Orario di Ricevimento di " + teacher.getName() + ' ' +teacher.getSurname());
+        }
 
         return receptionAgendaMapper.toReceptionTimeslotResponse(
                 receptionTimeslotRepository.save(ReceptionTimeslot.builder()

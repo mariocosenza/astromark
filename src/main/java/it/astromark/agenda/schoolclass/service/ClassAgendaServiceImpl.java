@@ -132,7 +132,10 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
 
         if (request.id() == null) {
             slot = TeachingTimeslot.builder()
-                    .classTimetable(classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null))
+                    .classTimetable(classTimetableRepository.getClassTimetableBySchoolClass_Id(classId).stream()
+                            .filter(t -> (t.getEndValidity() == null || t.getEndValidity().isAfter(LocalDate.now())))
+                            .filter(t -> t.getStartValidity().isBefore(LocalDate.now()))
+                            .findFirst().orElse(null))
                     .hour(request.hour().shortValue())
                     .date(request.date())
                     .teaching(teachingRepository.getReferenceById(
@@ -201,7 +204,11 @@ public class ClassAgendaServiceImpl implements ClassAgendaService {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
-        var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_IdAndEndValidity(classId, null);
+        var classTimetable = classTimetableRepository.getClassTimetableBySchoolClass_Id(classId).stream()
+                .filter(t -> (t.getEndValidity() == null || t.getEndValidity().isAfter(LocalDate.now())))
+                .filter(t -> t.getStartValidity().isBefore(LocalDate.now()))
+                .findFirst().orElseThrow();
+
         var teachingTimeslotList = teachingTimeslotRepository.findTeachingTimeslotByClassTimetableAndDate(classTimetable, localDate);
         return classAgendaMapper.toTeachingTimeslotDetailedResponseList(teachingTimeslotList, classAgendaHelperMapper);
     }
