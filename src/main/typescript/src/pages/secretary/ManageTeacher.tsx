@@ -51,7 +51,7 @@ export const ManageTeacher = () => {
                 setLoading(false);
             } catch (err: any) {
                 console.error("Failed to fetch teachers:", err);
-                setErrorMessage(err.response?.data?.message || "Impossibile trovare gli insegnanti.");
+                setErrorMessage("Impossibile trovare gli insegnanti.");
                 setSuccessMessage(null);
                 setLoading(false);
             }
@@ -110,7 +110,7 @@ export const ManageTeacher = () => {
             setTeachers(response.data);
         } catch (err: any) {
             console.error("Failed to create teacher:", err);
-            setErrorMessage(err.response?.data?.message || "Impossibile creare l'insegnante.");
+            setErrorMessage("Impossibile creare l'insegnante.");
             setSuccessMessage(null);
         }
     };
