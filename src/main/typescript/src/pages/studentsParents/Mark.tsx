@@ -20,6 +20,7 @@ import {Env} from "../../Env.ts";
 import {MarkResponse} from "../../entities/MarkResponse.ts";
 import {AxiosResponse} from "axios";
 import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
+import {formatMark} from "../teacher/Ratings.tsx";
 
 
 const compareDate = (date: Date, dateObject: DateObject) => {
@@ -50,7 +51,7 @@ export const Mark: React.FC = () => {
             const averageResponse: AxiosResponse<number> = await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/marks/${SelectedYear.year}/averages`);
             const re = response.data;
             const correctedData: ListItemProp[] = re.map((mark: MarkResponse) => ({
-                avatar: mark.mark.toPrecision(3),
+                avatar: formatMark(mark.mark),
                 title: mark.title,
                 description: mark.description,
                 hexColor: mark.mark >= 6 ? green[500] : deepOrange[500],
