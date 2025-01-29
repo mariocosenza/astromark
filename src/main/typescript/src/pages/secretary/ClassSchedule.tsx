@@ -1,5 +1,5 @@
-import {useParams} from "react-router";
-import React, {useEffect, useState} from "react";
+import { useParams } from "react-router";
+import React, { useEffect, useState } from "react";
 import {
     Alert,
     Box,
@@ -16,9 +16,9 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import {SelectChangeEvent} from "@mui/material/Select";
+import { SelectChangeEvent } from "@mui/material/Select";
 import axiosConfig from "../../services/AxiosConfig";
-import {Env} from "../../Env.ts";
+import { Env } from "../../Env.ts";
 
 interface TeachingTimeslotResponse {
     hour: number;
@@ -42,7 +42,7 @@ interface TimeTableResponse {
 }
 
 export const ClassSchedule = () => {
-    const {classId} = useParams<{ classId: string }>();
+    const { classId } = useParams<{ classId: string }>();
     const [schedule, setSchedule] = useState<TeachingTimeslotResponse[]>([]);
     const [teachings, setTeachings] = useState<TeachingResponse[]>([]);
     const [timetables, setTimetables] = useState<TimeTableResponse[]>([]);
@@ -55,6 +55,11 @@ export const ClassSchedule = () => {
         dayWeek: "",
         hour: "",
     });
+
+    // Nuovi stati per i messaggi
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -71,7 +76,6 @@ export const ClassSchedule = () => {
                 setTeachings(teachingsRes.data);
                 setTimetables(timetablesRes.data);
                 setLoading(false);
-
             } catch (err) {
                 console.error("Failed to fetch data:", err);
                 setError("Impossibile recuperare l'orario delle lezioni o i dati correlati.");
@@ -92,21 +96,24 @@ export const ClassSchedule = () => {
     const handleCloseModal = () => setModalOpen(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({...formData, [e.target.name]: e.target.value});
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSelectChange = (e: SelectChangeEvent) => {
         console.log(`Field: ${e.target.name}, Value: ${e.target.value}`, formData.timetableId); // Debug
-        setFormData({...formData, [e.target.name]: e.target.value});
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
 
     const handleSubmit = async () => {
         console.log("Form Data:", formData); // Debug: controlla i valori
 
         if (!formData.teacherUsername || !formData.timetableId || !formData.dayWeek || !formData.hour) {
-            alert("Si prega di compilare tutti i campi obbligatori.");
+            setValidationError("Si prega di compilare tutti i campi obbligatori.");
+            setSubmitError(null);
+            setSuccessMessage(null);
             return;
+        } else {
+            setValidationError(null);
         }
 
         try {
@@ -121,27 +128,62 @@ export const ClassSchedule = () => {
             console.log("Request Data:", requestData); // Debug: controlla i dati inviati al backend
 
             await axiosConfig.post(`${Env.API_BASE_URL}/classes/${classId}/createTimeSlot`, requestData);
+            setSuccessMessage("La fascia oraria è stata aggiunta correttamente!");
+            setSubmitError(null);
             handleCloseModal();
-            alert("La fascia oraria è stata aggiunta correttamente!");
-
         } catch (err) {
             console.error("Failed to add timeslot:", err);
-            alert("Impossibile aggiungere la fascia oraria.");
+            setSubmitError("Impossibile aggiungere la fascia oraria.");
+            setSuccessMessage(null);
         }
     };
 
-
-    if (loading) return <CircularProgress/>;
+    if (loading) return <CircularProgress />;
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <Box sx={{padding: "16px"}}>
+        <Box sx={{ padding: "16px" }}>
             <Typography variant="h4" gutterBottom>
                 Orario della classe
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{mb: 2}}>
+
+            {/* Alert di Successo */}
+            {successMessage && (
+                <Alert
+                    severity="success"
+                    onClose={() => setSuccessMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {successMessage}
+                </Alert>
+            )}
+
+            {/* Alert di Errore durante la Submit */}
+            {submitError && (
+                <Alert
+                    severity="error"
+                    onClose={() => setSubmitError(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {submitError}
+                </Alert>
+            )}
+
+            {/* Alert di Errore di Validazione */}
+            {validationError && (
+                <Alert
+                    severity="warning"
+                    onClose={() => setValidationError(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {validationError}
+                </Alert>
+            )}
+
+            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
                 Aggiungi ora
             </Button>
+
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Box
                     sx={{
@@ -185,7 +227,6 @@ export const ClassSchedule = () => {
                         </Select>
                     </FormControl>
 
-
                     <FormControl fullWidth margin="normal">
                         <InputLabel id="timetable-select-label">Orario della classe</InputLabel>
                         <Select
@@ -198,11 +239,9 @@ export const ClassSchedule = () => {
                                 <MenuItem key={timetable.timeTableId} value={timetable.timeTableId.toString()}>
                                     {timetable.number}{timetable.letter} [{timetable.startDate} - {timetable.endDate || "N/A"}]
                                 </MenuItem>
-
                             ))}
                         </Select>
                     </FormControl>
-
 
                     <TextField
                         fullWidth
@@ -212,7 +251,7 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{min: 1, max: 7}}
+                        inputProps={{ min: 1, max: 7 }}
                     />
                     <TextField
                         fullWidth
@@ -222,10 +261,10 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{min: 1, max: 6}}
+                        inputProps={{ min: 1, max: 6 }}
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} sx={{mr: 2}}>
+                        <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
                             Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>

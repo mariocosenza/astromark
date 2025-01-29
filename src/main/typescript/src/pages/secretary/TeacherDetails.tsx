@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Alert,
     Box,
@@ -17,8 +17,8 @@ import {
     Typography,
 } from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig";
-import {Env} from "../../Env";
-import {useParams} from "react-router";
+import { Env } from "../../Env";
+import { useParams } from "react-router";
 
 interface SchoolClassResponse {
     id: number;
@@ -28,51 +28,44 @@ interface SchoolClassResponse {
     description: string;
 }
 
-
 interface TeachingResponse {
     username: string;
     teaching: string[];
 }
-
 
 interface SubjectResponse {
     subject: string;
 }
 
 export const TeacherDetails = () => {
-    const {teacheruuid} = useParams<{ teacheruuid: string }>();
-
+    const { teacheruuid } = useParams<{ teacheruuid: string }>();
 
     const [classes, setClasses] = useState<SchoolClassResponse[]>([]);
-
     const [teachings, setTeachings] = useState<TeachingResponse[]>([]);
-
     const [allClasses, setAllClasses] = useState<SchoolClassResponse[]>([]);
-
     const [allSubjects, setAllSubjects] = useState<string[]>([]);
-
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-
     const [classModalOpen, setClassModalOpen] = useState(false);
     const [teachingModalOpen, setTeachingModalOpen] = useState(false);
 
-
     const [selectedClassId, setSelectedClassId] = useState<string>("");
     const [isCoordinator, setIsCoordinator] = useState<boolean>(false);
-
 
     const [teachingFormData, setTeachingFormData] = useState({
         subjectTitle: "",
         activityType: "",
     });
 
+    // Stati per i messaggi globali
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-
                 const [
                     classesResponse,
                     allClassesResponse,
@@ -85,8 +78,7 @@ export const TeacherDetails = () => {
                     axiosConfig.get<SchoolClassResponse[]>(
                         `${Env.API_BASE_URL}/class-management/all`
                     ),
-
-                    axiosConfig.get<TeachingResponse>(
+                    axiosConfig.get<TeachingResponse[]>(
                         `${Env.API_BASE_URL}/teachers/${teacheruuid}/teachings`
                     ),
                     axiosConfig.get<SubjectResponse[]>(
@@ -94,76 +86,56 @@ export const TeacherDetails = () => {
                     ),
                 ]);
 
-
                 setClasses(classesResponse.data || []);
-
                 setAllClasses(allClassesResponse.data || []);
-
-
-                const singleTeachingObj = teachingResponse.data;
-                setTeachings([singleTeachingObj]);
-
-
+                setTeachings(teachingResponse.data || []);
                 const onlySubjects = (subjectsResponse.data || []).map((item) => item.subject);
                 setAllSubjects(onlySubjects);
 
                 setLoading(false);
-            } catch (err) {
+            } catch (err: any) {
+                console.error("Errore nel recuperare i dati:", err);
                 setError("Impossibile recuperare i dati.");
                 setLoading(false);
             }
         };
 
-        fetchData();
+        if (teacheruuid) {
+            fetchData();
+        }
     }, [teacheruuid]);
 
-
-    const handleOpenClassModal = () => setClassModalOpen(true);
+    const handleOpenClassModal = () => {
+        setSelectedClassId("");
+        setIsCoordinator(false);
+        setErrorMessage(null);
+        setSuccessMessage(null);
+        setClassModalOpen(true);
+    };
     const handleCloseClassModal = () => {
         setSelectedClassId("");
         setIsCoordinator(false);
         setClassModalOpen(false);
     };
 
-    function handleDeleteFromClass(schoolClassId: number) {
-        console.log("School Class ID:", schoolClassId);
-        console.log("Teacher UUID:", teacheruuid);
-
-        axiosConfig
-            .delete(`${Env.API_BASE_URL}/class-management/${teacheruuid}/${schoolClassId}/delete-from-class`)
-            .then((response) => {
-                console.log("Class successfully removed:", response.data);
-            })
-            .catch((error) => {
-                if (error.response) {
-                    console.error(
-                        "Failed to remove class:",
-                        error.response.status,
-                        error.response.data
-                    );
-                } else {
-                    console.error("Error during delete request:", error.message);
-                }
-            });
-    }
-
-
-    const handleOpenTeachingModal = () => setTeachingModalOpen(true);
+    const handleOpenTeachingModal = () => {
+        setTeachingFormData({ subjectTitle: "", activityType: "" });
+        setErrorMessage(null);
+        setSuccessMessage(null);
+        setTeachingModalOpen(true);
+    };
     const handleCloseTeachingModal = () => {
-        setTeachingFormData({subjectTitle: "", activityType: ""});
+        setTeachingFormData({ subjectTitle: "", activityType: "" });
         setTeachingModalOpen(false);
     };
-
 
     const handleClassChange = (event: SelectChangeEvent) => {
         setSelectedClassId(event.target.value);
     };
 
-
     const handleCoordinatorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsCoordinator(event.target.checked);
     };
-
 
     const handleSubjectChange = (event: SelectChangeEvent) => {
         setTeachingFormData((prev) => ({
@@ -171,7 +143,6 @@ export const TeacherDetails = () => {
             subjectTitle: event.target.value,
         }));
     };
-
 
     const handleActivityTypeChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -182,10 +153,11 @@ export const TeacherDetails = () => {
         }));
     };
 
-
+    // Funzione per aggiungere una classe al professore
     const handleAddClass = async () => {
         if (!selectedClassId) {
-            alert("Seleziona una classe");
+            setErrorMessage("Seleziona una classe.");
+            setSuccessMessage(null);
             return;
         }
 
@@ -197,65 +169,122 @@ export const TeacherDetails = () => {
                     isCoordinator,
                 }
             );
-            alert("Professore aggiunto alla classe correttamente");
+            setSuccessMessage("Professore aggiunto alla classe correttamente.");
+            setErrorMessage(null);
             handleCloseClassModal();
 
-        } catch (err) {
-            alert("Errore nell'aggiunta.");
+            // Refresh the classes list
+            const response = await axiosConfig.get<SchoolClassResponse[]>(
+                `${Env.API_BASE_URL}/class-management/${teacheruuid}/class`
+            );
+            setClasses(response.data);
+        } catch (err: any) {
+            console.error("Errore nell'aggiungere il professore alla classe:", err);
+            setErrorMessage(err.response?.data?.message || "Errore nell'aggiunta del professore alla classe.");
+            setSuccessMessage(null);
         }
     };
 
-
+    // Funzione per aggiungere un insegnamento
     const handleAddTeaching = async () => {
-        const {subjectTitle, activityType} = teachingFormData;
+        const { subjectTitle, activityType } = teachingFormData;
         if (!subjectTitle || !activityType) {
-            alert("Riempi tutti i campi.");
+            setErrorMessage("Riempi tutti i campi.");
+            setSuccessMessage(null);
             return;
         }
 
         try {
             await axiosConfig.post(
                 `${Env.API_BASE_URL}/class-management/${teacheruuid}/add-teaching`,
-
                 {
                     subjectTitle,
                     activityType,
                 }
             );
-            alert("Insegnamento aggiunto con successo!");
+            setSuccessMessage("Insegnamento aggiunto con successo!");
+            setErrorMessage(null);
             handleCloseTeachingModal();
 
-        } catch (err) {
-            alert("Errore nell'aggiunta.");
+            // Refresh the teachings list
+            const [teachingResponse] = await Promise.all([
+                axiosConfig.get<TeachingResponse[]>(
+                    `${Env.API_BASE_URL}/teachers/${teacheruuid}/teachings`
+                ),
+            ]);
+            setTeachings(teachingResponse.data);
+        } catch (err: any) {
+            console.error("Errore nell'aggiungere l'insegnamento:", err);
+            setErrorMessage(err.response?.data?.message || "Errore nell'aggiunta dell'insegnamento.");
+            setSuccessMessage(null);
         }
     };
 
+    // Funzione per rimuovere una classe dal professore
+    const handleDeleteFromClass = async (schoolClassId: number) => {
+        try {
+            await axiosConfig.delete(`${Env.API_BASE_URL}/class-management/${teacheruuid}/${schoolClassId}/delete-from-class`);
+            setSuccessMessage("Classe rimossa con successo.");
+            setErrorMessage(null);
+
+            // Refresh the classes list
+            const response = await axiosConfig.get<SchoolClassResponse[]>(
+                `${Env.API_BASE_URL}/class-management/${teacheruuid}/class`
+            );
+            setClasses(response.data);
+        } catch (err: any) {
+            console.error("Errore nel rimuovere la classe:", err);
+            setErrorMessage(err.response?.data?.message || "Errore nel rimuovere la classe.");
+            setSuccessMessage(null);
+        }
+    };
 
     if (loading) {
         return (
-            <CircularProgress sx={{display: "block", margin: "auto", mt: 4}}/>
+            <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />
         );
     }
     if (error) {
         return (
-            <Alert severity="error" sx={{maxWidth: "600px", margin: "auto", mt: 4}}>
+            <Alert severity="error" sx={{ maxWidth: "600px", margin: "auto", mt: 4 }}>
                 {error}
             </Alert>
         );
     }
 
-
     return (
-        <Box sx={{padding: "16px"}}>
+        <Box sx={{ padding: "16px" }}>
             <Typography
                 variant="h4"
                 gutterBottom
-                sx={{textAlign: "center", fontWeight: "bold"}}
+                sx={{ textAlign: "center", fontWeight: "bold" }}
             >
                 Dettagli professore
             </Typography>
 
-            <Typography variant="h5" gutterBottom sx={{textAlign: "center", mt: 4}}>
+            {/* Alert Globale di Successo */}
+            {successMessage && (
+                <Alert
+                    severity="success"
+                    onClose={() => setSuccessMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {successMessage}
+                </Alert>
+            )}
+
+            {/* Alert Globale di Errore */}
+            {errorMessage && (
+                <Alert
+                    severity="error"
+                    onClose={() => setErrorMessage(null)}
+                    sx={{ mb: 2 }}
+                >
+                    {errorMessage}
+                </Alert>
+            )}
+
+            <Typography variant="h5" gutterBottom sx={{ textAlign: "center", mt: 4 }}>
                 Classi
             </Typography>
 
@@ -291,6 +320,16 @@ export const TeacherDetails = () => {
                                     marginTop: "4px",
                                 }}
                             >
+                                Anno: {schoolClass.year}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: "#64748b",
+                                    marginTop: "4px",
+                                }}
+                            >
+                                {schoolClass.description}
                             </Typography>
                         </Box>
                         <Button
@@ -312,8 +351,6 @@ export const TeacherDetails = () => {
                         >
                             Rimuovi Classe
                         </Button>
-
-
                     </Card>
                 ))}
             </Box>
@@ -322,14 +359,13 @@ export const TeacherDetails = () => {
                 variant="contained"
                 color="primary"
                 fullWidth
-                sx={{marginTop: "16px", textTransform: "none"}}
+                sx={{ marginTop: "16px", textTransform: "none" }}
                 onClick={handleOpenClassModal}
             >
                 Aggiungi a classe
             </Button>
 
-
-            <Typography variant="h5" gutterBottom sx={{textAlign: "center", mt: 4}}>
+            <Typography variant="h5" gutterBottom sx={{ textAlign: "center", mt: 4 }}>
                 Insegnamenti
             </Typography>
             <Box>
@@ -345,16 +381,16 @@ export const TeacherDetails = () => {
                                 boxShadow: 2,
                             }}
                         >
-                            <Typography variant="h6" sx={{color: "#374151", fontWeight: "bold"}}>
+                            <Typography variant="h6" sx={{ color: "#374151", fontWeight: "bold" }}>
                                 {teaching.username}
                             </Typography>
-                            <Typography variant="body2" sx={{color: "#64748b", marginTop: "4px"}}>
+                            <Typography variant="body2" sx={{ color: "#64748b", marginTop: "4px" }}>
                                 {teaching.teaching.join(", ")}
                             </Typography>
                         </Card>
                     ))
                 ) : (
-                    <Typography variant="body2" sx={{textAlign: "center", mt: 2}}>
+                    <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
                         Nessun insegnamento
                     </Typography>
                 )}
@@ -364,13 +400,13 @@ export const TeacherDetails = () => {
                 variant="contained"
                 color="primary"
                 fullWidth
-                sx={{marginTop: "16px", textTransform: "none"}}
+                sx={{ marginTop: "16px", textTransform: "none" }}
                 onClick={handleOpenTeachingModal}
             >
-                Aggiungi insegamento
+                Aggiungi insegnamento
             </Button>
 
-
+            {/* Modale Aggiungi a Classe */}
             <Modal open={classModalOpen} onClose={handleCloseClassModal}>
                 <Box
                     sx={{
@@ -394,6 +430,7 @@ export const TeacherDetails = () => {
                             labelId="class-select-label"
                             value={selectedClassId}
                             onChange={handleClassChange}
+                            label="Seleziona classe"
                         >
                             <MenuItem value="" disabled>
                                 Seleziona una classe
@@ -414,13 +451,36 @@ export const TeacherDetails = () => {
                             <Checkbox
                                 checked={isCoordinator}
                                 onChange={handleCoordinatorChange}
+                                name="isCoordinator"
                             />
                         }
                         label="Coordinatore"
                     />
 
+                    {/* Alert di Errore nel Modale Classe */}
+                    {errorMessage && (
+                        <Alert
+                            severity="error"
+                            onClose={() => setErrorMessage(null)}
+                            sx={{ mt: 2 }}
+                        >
+                            {errorMessage}
+                        </Alert>
+                    )}
+
+                    {/* Alert di Successo nel Modale Classe */}
+                    {successMessage && (
+                        <Alert
+                            severity="success"
+                            onClose={() => setSuccessMessage(null)}
+                            sx={{ mt: 2 }}
+                        >
+                            {successMessage}
+                        </Alert>
+                    )}
+
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseClassModal} sx={{mr: 2}}>
+                        <Button onClick={handleCloseClassModal} sx={{ mr: 2 }}>
                             Chiudi
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleAddClass}>
@@ -430,7 +490,7 @@ export const TeacherDetails = () => {
                 </Box>
             </Modal>
 
-
+            {/* Modale Aggiungi Insegnamento */}
             <Modal open={teachingModalOpen} onClose={handleCloseTeachingModal}>
                 <Box
                     sx={{
@@ -450,17 +510,16 @@ export const TeacherDetails = () => {
                     </Typography>
 
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="subject-select-label"> Materie</InputLabel>
+                        <InputLabel id="subject-select-label">Materie</InputLabel>
                         <Select
                             labelId="subject-select-label"
                             value={teachingFormData.subjectTitle}
                             onChange={handleSubjectChange}
+                            label="Materie"
                         >
                             <MenuItem value="" disabled>
                                 Materie disponibili
                             </MenuItem>
-
-
                             {allSubjects.map((subjectStr, index) => (
                                 <MenuItem key={index} value={subjectStr}>
                                     {subjectStr}
@@ -476,10 +535,33 @@ export const TeacherDetails = () => {
                         value={teachingFormData.activityType}
                         onChange={handleActivityTypeChange}
                         margin="normal"
+                        required
                     />
 
+                    {/* Alert di Errore nel Modale Insegnamento */}
+                    {errorMessage && (
+                        <Alert
+                            severity="error"
+                            onClose={() => setErrorMessage(null)}
+                            sx={{ mt: 2 }}
+                        >
+                            {errorMessage}
+                        </Alert>
+                    )}
+
+                    {/* Alert di Successo nel Modale Insegnamento */}
+                    {successMessage && (
+                        <Alert
+                            severity="success"
+                            onClose={() => setSuccessMessage(null)}
+                            sx={{ mt: 2 }}
+                        >
+                            {successMessage}
+                        </Alert>
+                    )}
+
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseTeachingModal} sx={{mr: 2}}>
+                        <Button onClick={handleCloseTeachingModal} sx={{ mr: 2 }}>
                             Chiudi
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleAddTeaching}>
