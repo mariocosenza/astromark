@@ -12,7 +12,7 @@
 ## Documentation
 AstroMark provides comprehensive documentation to help developers understand and work with the codebase:
 
-- [JavaDoc Documentation](https://mariocosenza.github.io/astromark/javadoc/): Detailed documentation of the Java codebase, including class structures, methods, and their usage. This documentation is automatically generated from code comments and provides a complete reference for the backend implementation.
+- [JavaDoc Documentation](https://mariocosenza.github.io/astromark/): Detailed documentation of the Java codebase, including class structures, methods, and their usage. This documentation is automatically generated from code comments and provides a complete reference for the backend implementation.
 
 - [Swagger API Documentation](https://astromark.it/swagger-ui/index.html): Interactive API documentation that allows you to explore and test the REST endpoints directly through your browser. The Swagger UI provides detailed information about request/response formats, authentication requirements, and available API operations.
 
