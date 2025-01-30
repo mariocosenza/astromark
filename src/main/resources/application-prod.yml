@@ -29,11 +29,11 @@ server:
     include-exception: false
   port: 8443
   ssl:
-      key-store: classpath:keystore/astromark.p12
-      key-store-password: ${KEYSTORE_PASSWORD}
-      keyStoreType: PKCS12
-      keyAlias: astromark
-      enabled: true
+    key-store: classpath:keystore/astromark.p12
+    key-store-password: ${KEYSTORE_PASSWORD}
+    keyStoreType: PKCS12
+    keyAlias: astromark
+    enabled: true
 aws:
   accessKey: ${AWS_ACCESS_KEY}
   secretKey: ${AWS_SECRET_KEY}

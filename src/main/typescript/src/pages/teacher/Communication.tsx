@@ -82,7 +82,8 @@ export const TeacherCommunication: React.FC = () => {
 
                                     <CustomTableCell>
                                         <Stack justifyContent={'center'} alignItems={'center'}>
-                                            <Typography fontWeight={'bold'} fontSize={'xx-large'} color={'textDisabled'}>/</Typography>
+                                            <Typography fontWeight={'bold'} fontSize={'xx-large'}
+                                                        color={'textDisabled'}>/</Typography>
                                         </Stack>
                                     </CustomTableCell>
 

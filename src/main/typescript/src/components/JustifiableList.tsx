@@ -84,7 +84,10 @@ export const JustifiableList: React.FC<JustificationListProp> = (props) => {
                         <Typography variant="h6" ml={"1vw"} mt={"0.8rem"}>
                             {props.absence ? 'Assenza del ' : 'Ritardo del '}
                             {new Date(Date.parse(item.date)).toLocaleDateString()}
-                            {props.absence || ' ' + new Date(Date.parse(item.date)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} {
+                            {props.absence || ' ' + new Date(Date.parse(item.date)).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })} {
                             item.justified && '- Giustifica: ' + item.justificationText
 
                         }

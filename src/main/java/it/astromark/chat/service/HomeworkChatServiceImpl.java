@@ -52,7 +52,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         HomeworkChat chat = homeworkChatRepository.findById(chatId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
 
-        if(chat.getCompleted()) {
+        if (chat.getCompleted()) {
             throw new IllegalArgumentException("Chat is completed");
         }
 
@@ -169,7 +169,7 @@ public class HomeworkChatServiceImpl implements HomeworkChatService {
         var chat = homeworkChatRepository.findById(chatId).orElseThrow();
         if (authenticationService.isTeacher() && !chat.getHomeworkSignedHourTeachingTimeslot().getSignedHour().getTeacher()
                 .getId().equals(authenticationService.getTeacher().orElseThrow().getId())
-        || authenticationService.isStudent() && !chat.getStudent().getId()
+                || authenticationService.isStudent() && !chat.getStudent().getId()
                 .equals(authenticationService.getStudent().orElseThrow().getId())) {
             throw new AccessDeniedException(CHAT_ACCESS_DENIED);
         }

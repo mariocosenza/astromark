@@ -23,7 +23,7 @@ public interface SchoolUserService {
      * Pre-condition: The `parent` and `studentId` must not be null. The student must exist.
      * Post-condition: Returns true if the parent is associated with the specified student.
      */
-    boolean isStudentParent(@NotNull Parent parent,@NotNull  UUID studentId);
+    boolean isStudentParent(@NotNull Parent parent, @NotNull UUID studentId);
 
     /**
      * Checks if the logged-in user is the parent of a specific student.

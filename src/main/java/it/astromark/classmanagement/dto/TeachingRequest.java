@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Schema(description = "Request containing details for adding a teaching activity")
 public record TeachingRequest(
-       @NotEmpty String subjectTitle,
-       @NotEmpty String activityType
+        @NotEmpty String subjectTitle,
+        @NotEmpty String activityType
 ) {
 }

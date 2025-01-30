@@ -45,7 +45,8 @@ export const TeachingMenu: React.FC<Teachings> = ({data}) => {
                 }}
             >
                 {
-                    data.map((teaching: string) => <MenuItem selected={SelectedTeaching.teaching === teaching} key={teaching} onClick={() => {
+                    data.map((teaching: string) => <MenuItem selected={SelectedTeaching.teaching === teaching}
+                                                             key={teaching} onClick={() => {
                         SelectedTeaching.teaching = teaching
                         setToggle(!toggle)
                         handleClose()

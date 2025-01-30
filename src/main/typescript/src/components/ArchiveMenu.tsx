@@ -47,11 +47,12 @@ export const ArchiveMenu: React.FC<Year> = ({data}) => {
                 }}
             >
                 {
-                    data.map((year: number) => <MenuItem selected={SelectedYear.year === year} key={year} onClick={() => {
-                        SelectedYear.year = year
-                        setToggle(!toggle)
-                        handleClose()
-                    }}>{year + '/' + (year + 1)}</MenuItem>)
+                    data.map((year: number) => <MenuItem selected={SelectedYear.year === year} key={year}
+                                                         onClick={() => {
+                                                             SelectedYear.year = year
+                                                             setToggle(!toggle)
+                                                             handleClose()
+                                                         }}>{year + '/' + (year + 1)}</MenuItem>)
                 }
             </Menu>
         </div>

@@ -68,7 +68,7 @@ public interface ClassManagementService {
      *                    Pre-condition: The `teacheruuid` and `teaching` must not be null. The teacher associated with the UUID must exist.
      *                    Post-condition: A new teaching activity is added for the specified teacher.
      */
-    void addTeaching(@NotNull UUID teacheruuid,@NotNull  TeachingRequest teaching);
+    void addTeaching(@NotNull UUID teacheruuid, @NotNull TeachingRequest teaching);
 
     /**
      * Retrieves a list of all subjects.
@@ -102,7 +102,7 @@ public interface ClassManagementService {
     /**
      * Removes a class associated with a specific teacher.
      *
-     * @param uuuid   the UUID of the teacher whose class is to be removed
+     * @param uuuid         the UUID of the teacher whose class is to be removed
      * @param schoolClassId the ID of the class to be removed
      *                      Pre-condition: The `teacheruuid` and `schoolClassId` must not be null. The teacher and class must exist.
      *                      Post-condition: The specified class is removed from the teacher's assignments.
@@ -113,9 +113,8 @@ public interface ClassManagementService {
      * Retrieves the list of teachings associated with a specific class.
      *
      * @param classId the ID of the class for which teachings are to be retrieved
-     * Pre-condition: The `classId` must not be null. The class must exist.
-     * Post-condition: Returns a list of `TeachingResponse` objects containing details about the teachings of the specified class.
-     *
+     *                Pre-condition: The `classId` must not be null. The class must exist.
+     *                Post-condition: Returns a list of `TeachingResponse` objects containing details about the teachings of the specified class.
      * @return a list of `TeachingResponse` objects representing the teachings of the class
      */
     List<TeachingResponse> getClassTeachings(@NotNull Integer classId);

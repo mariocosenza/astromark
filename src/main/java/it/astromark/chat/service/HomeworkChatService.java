@@ -83,7 +83,7 @@ public interface HomeworkChatService {
      * Pre-condition: The `homeworkId` and `studentId` must not be null. The caller must have permission to access the specified student's homework chat.
      * Post-condition: Returns the UUID of the homework chat associated with the specified student and homework, or throws an exception if not found.
      */
-    UUID getStudentHomeworkChatId(@NotNull Integer homeworkId,@NotNull  UUID studentId);
+    UUID getStudentHomeworkChatId(@NotNull Integer homeworkId, @NotNull UUID studentId);
 
     /**
      * Checks if the specific homework chat has been marked as completed.

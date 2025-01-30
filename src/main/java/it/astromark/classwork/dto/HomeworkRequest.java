@@ -11,6 +11,6 @@ public record HomeworkRequest(
         @NotEmpty String title,
         String description,
         @FutureOrPresent LocalDate dueDate,
-        @NotNull  Boolean hasChat
+        @NotNull Boolean hasChat
 ) {
 }

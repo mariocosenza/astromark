@@ -1,6 +1,10 @@
 import {DateObject} from "react-multi-date-picker";
 import {createGlobalState} from "react-use";
-import {ClassActivityResponse, HomeworkBriefResponse, TeachingTimeslotDetailedResponse} from "../entities/TeachingTimeslotDetailedResponse.ts";
+import {
+    ClassActivityResponse,
+    HomeworkBriefResponse,
+    TeachingTimeslotDetailedResponse
+} from "../entities/TeachingTimeslotDetailedResponse.ts";
 
 export class SelectedTeaching {
     private static _teaching: string | null = localStorage.getItem("teaching") ? localStorage.getItem("teaching") as string : null;

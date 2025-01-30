@@ -37,11 +37,12 @@ export const AccordionViewable: React.FC<AccordionViewableProps> = (props: Accor
                             props.description
                         }
                     </Typography>
-                    {!viewed && getRole().toUpperCase() == Role.PARENT &&  <VisibilityOutlinedIcon color={'error'} onClick={(_) => {
-                        setViewed(true);
-                        setViewedColor(true);
-                        props.view();
-                    }}/>
+                    {!viewed && getRole().toUpperCase() == Role.PARENT &&
+                        <VisibilityOutlinedIcon color={'error'} onClick={(_) => {
+                            setViewed(true);
+                            setViewedColor(true);
+                            props.view();
+                        }}/>
                     }
                 </Stack>
             </AccordionDetails>

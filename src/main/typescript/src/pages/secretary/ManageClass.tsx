@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import {
-    Alert,
-    Box,
-    Card,
-    CardContent,
-    CircularProgress,
-    Typography,
-} from "@mui/material";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router";
+import {Alert, Box, Card, CardContent, CircularProgress, Typography,} from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env.ts";
+import {Env} from "../../Env.ts";
 
 interface SchoolClassResponse {
     id: number;
@@ -51,13 +44,13 @@ export const ManageClass = () => {
     if (loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
+                <CircularProgress/>
             </Box>
         );
     }
 
     return (
-        <div style={{ padding: "16px" }}>
+        <div style={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
                 Classi
             </Typography>
@@ -67,7 +60,7 @@ export const ManageClass = () => {
                 <Alert
                     severity="success"
                     onClose={() => setSuccessMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {successMessage}
                 </Alert>
@@ -78,7 +71,7 @@ export const ManageClass = () => {
                 <Alert
                     severity="error"
                     onClose={() => setErrorMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {errorMessage}
                 </Alert>
@@ -88,9 +81,9 @@ export const ManageClass = () => {
                 {schoolClasses.map((schoolClass) => (
                     <Box
                         key={schoolClass.id}
-                        flexBasis={{ xs: "100%", sm: "calc(50% - 24px)", md: "calc(33.33% - 24px)" }}
+                        flexBasis={{xs: "100%", sm: "calc(50% - 24px)", md: "calc(33.33% - 24px)"}}
                         onClick={() => handleCardClick(schoolClass.id)}
-                        style={{ cursor: "pointer" }}
+                        style={{cursor: "pointer"}}
                     >
                         <Card>
                             <CardContent>

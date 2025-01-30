@@ -1,4 +1,4 @@
-package it.astromark.communication.mapping;
+package it.astromark.communication.mapper;
 
 import it.astromark.communication.dto.CommunicationResponse;
 import it.astromark.communication.entity.Communication;

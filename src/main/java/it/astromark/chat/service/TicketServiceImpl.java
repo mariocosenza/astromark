@@ -66,7 +66,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') || hasRole('PARENT') || hasRole('SECRETARY')")
-    public List<MessageResponse> getMessages(@NotNull Ticket ticket) {
+    public List<MessageResponse> getMessageList(@NotNull Ticket ticket) {
 
         var messages = messageRepository.findByTicket(ticket);
         if (!messages.isEmpty())
@@ -127,7 +127,7 @@ public class TicketServiceImpl implements TicketService {
         var secretary = authenticationService.getSecretary().orElseThrow();
         var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        if(ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
+        if (ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
             return closeTicket(ticket, false);
         }
         return false;
@@ -139,7 +139,7 @@ public class TicketServiceImpl implements TicketService {
         var secretary = authenticationService.getSecretary().orElseThrow();
         var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        if(ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
+        if (ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
             return closeTicket(ticket, true);
         }
         return false;

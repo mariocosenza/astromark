@@ -36,7 +36,7 @@ public interface MessageService {
      *                     Pre-condition: The `uuid` and `multipartFile` must not be null. The `multipartFile` must be a valid, non-empty file.
      *                     Post-condition: The file is uploaded and associated with the specified entity. Returns the file path or identifier.
      */
-    String addAttachment(@NotNull UUID uuid,@NotNull  MultipartFile multipartFile) throws IOException;
+    String addAttachment(@NotNull UUID uuid, @NotNull MultipartFile multipartFile) throws IOException;
 
     /**
      * Creates a new message in a specific chat.

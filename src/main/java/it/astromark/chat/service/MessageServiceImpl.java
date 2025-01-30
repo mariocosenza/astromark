@@ -56,7 +56,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageResponse create(@NotEmpty String message, @NotNull  UUID chatId, boolean isHomework) {
+    public MessageResponse create(@NotEmpty String message, @NotNull UUID chatId, boolean isHomework) {
         if (isHomework) {
             var homeworkChat = homeworkChatRepository.findById(chatId).orElseThrow();
             if (homeworkChat.getCompleted()) {
@@ -74,7 +74,7 @@ public class MessageServiceImpl implements MessageService {
             return chatMapper.toMessageResponse(messageRepository.save(save), this);
         } else {
             var ticket = ticketRepository.findById(chatId).orElseThrow();
-            if(ticket.getClosed()) {
+            if (ticket.getClosed()) {
                 throw new IllegalArgumentException("Ticket is closed");
             }
             var save = Message.builder()
@@ -93,7 +93,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT') || hasRole('TEACHER')")
-    public String addAttachment(@NotNull UUID uuid,@NotNull  MultipartFile multipartFile) throws IOException {
+    public String addAttachment(@NotNull UUID uuid, @NotNull MultipartFile multipartFile) throws IOException {
         var message = messageRepository.findById(uuid).orElseThrow();
         Supplier<IllegalArgumentException> exceptionSupplier = () -> new IllegalArgumentException("You can't add an attachment to a message that is not yours");
         if (authenticationService.isStudent() && !authenticationService.getStudent().orElseThrow().getId().equals(message.getStudent().getId())) {

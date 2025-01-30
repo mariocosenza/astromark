@@ -24,7 +24,6 @@ import {formatMark} from "../teacher/Ratings.tsx";
 import {gregorian_it} from "../../services/CalendarService.ts";
 
 
-
 const compareDate = (date: Date, dateObject: DateObject) => {
     return new DateObject(date).unix - dateObject.unix;
 }

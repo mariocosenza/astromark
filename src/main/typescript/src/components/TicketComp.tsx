@@ -99,10 +99,10 @@ export const TicketComp: React.FC = () => {
                 <Box padding={'1rem'}>
                     {loading ? <CircularProgress/> : <TicketList list={ticketData} onTicketClick={fetchMessages}/>}
                 </Box>
-                { getRole().toUpperCase() !== Role.SECRETARY &&
-                <Box padding={'1rem'}>
-                    <TicketCreation/>
-                </Box>
+                {getRole().toUpperCase() !== Role.SECRETARY &&
+                    <Box padding={'1rem'}>
+                        <TicketCreation/>
+                    </Box>
                 }
             </Box>
 
