@@ -60,7 +60,7 @@ it.astromark.commons.service
 it.astromark.communication.controller
 it.astromark.communication.dto
 it.astromark.communication.entity
-it.astromark.communication.mapping
+it.astromark.communication.mapper
 it.astromark.communication.repository
 it.astromark.communication.service
 it.astromark.orientation
