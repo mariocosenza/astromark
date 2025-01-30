@@ -103,7 +103,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }
 
-        if(!receptionBooking.getRefused() && receptionTimeslot.getBooked() > 0) {
+        if (!receptionBooking.getRefused() && receptionTimeslot.getBooked() > 0) {
             receptionTimeslot.setBooked((short) (receptionTimeslot.getBooked() - 1));
             receptionTimeslotRepository.save(receptionTimeslot);
         }
@@ -126,7 +126,7 @@ public class ReceptionAgendaServiceImpl implements ReceptionAgendaService {
                 .findFirst().orElse(null);
 
         if (timetable == null) {
-            timetable = createReceptionTimetable(teacher.getId(), "Orario di Ricevimento di " + teacher.getName() + ' ' +teacher.getSurname());
+            timetable = createReceptionTimetable(teacher.getId(), "Orario di Ricevimento di " + teacher.getName() + ' ' + teacher.getSurname());
         }
 
         return receptionAgendaMapper.toReceptionTimeslotResponse(

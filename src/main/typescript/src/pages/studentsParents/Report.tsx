@@ -38,7 +38,7 @@ export const SemesterReport: React.FC = () => {
     const [secondData, setSecondData] = useState<SemesterReportResponse>();
     const [loading, setLoading] = useState<boolean>(true);
     const [toggle, _] = changeStudentOrYear();
-    const view = async (id: number)=> {
+    const view = async (id: number) => {
         await axiosConfig.patch(Env.API_BASE_URL + '/students' + '/reports/' + id)
         await fetchData()
     }
@@ -124,7 +124,9 @@ export const SemesterReport: React.FC = () => {
                                         <TableCell align="right" style={{color: 'darkgreen'}}>
                                             {
                                                 data?.viewed === false &&
-                                                <RemoveRedEyeOutlinedIcon onClick={() => {view(data.id)}}/>
+                                                <RemoveRedEyeOutlinedIcon onClick={() => {
+                                                    view(data.id)
+                                                }}/>
                                             }
                                         </TableCell>
                                         <TableCell align="right" style={{color: 'darkgreen'}}>

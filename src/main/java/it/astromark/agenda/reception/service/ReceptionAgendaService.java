@@ -121,7 +121,7 @@ public interface ReceptionAgendaService {
      * Creates a reception timetable for a specific teacher with the provided text information.
      *
      * @param teacherId the UUID of the teacher for whom the timetable is being created
-     * @param textInfo the text information about the reception timetable
+     * @param textInfo  the text information about the reception timetable
      * @return the created `ReceptionTimetable` object
      * Pre-condition:
      * - The `teacherId` and `textInfo` must not be null.

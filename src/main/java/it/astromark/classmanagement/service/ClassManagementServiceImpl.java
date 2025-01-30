@@ -159,7 +159,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
     @Override
     @Transactional
-    public void addTeacherToClass(@NotNull UUID uuid,@NotNull  AddToClassRequest addToClassRequest) {
+    public void addTeacherToClass(@NotNull UUID uuid, @NotNull AddToClassRequest addToClassRequest) {
         var teacher = teacherRepository.findById(uuid).orElseThrow();
         var teacherClass = schoolClassRepository.findById(addToClassRequest.classId()).orElseThrow();
         var teacherClassId = new TeacherClassId(teacher.getId(), teacherClass.getId());

@@ -53,7 +53,8 @@ const Absence: React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', marginTop: '1rem'}}>
             {
-                loading ? <div>Caricamento in corso...</div> : <JustifiableList {...toJustificationListProp(data, true)}/>
+                loading ? <div>Caricamento in corso...</div> :
+                    <JustifiableList {...toJustificationListProp(data, true)}/>
             }
         </div>
     )
@@ -82,7 +83,8 @@ const Delay: React.FC = () => {
     return (
         <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', marginTop: '1rem'}}>
             {
-                loading ? <div>Caricamento in corso...</div> : <JustifiableList {...toJustificationListProp(data, false)}/>
+                loading ? <div>Caricamento in corso...</div> :
+                    <JustifiableList {...toJustificationListProp(data, false)}/>
             }
         </div>
     )
@@ -148,7 +150,7 @@ export const AbsenceDelays: React.FC = () => {
                         boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
                     }}>
                         {
-                           !loading && <h1>Totale assenze e ritardi: {totAbsences + totDelays}</h1>
+                            !loading && <h1>Totale assenze e ritardi: {totAbsences + totDelays}</h1>
                         }
                     </Box>
                     <Box bgcolor={'#46483b'} height={'20%'} style={{

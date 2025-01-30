@@ -22,6 +22,7 @@ public interface StudentService {
      * Post-condition: Returns a list of years associated with the specified student.
      */
     List<Integer> getStudentYears(@NotNull UUID studentId);
+
     /**
      * Retrieves a list of school classes for a specific student in a given year.
      *

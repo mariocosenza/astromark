@@ -86,13 +86,13 @@ public class AttendanceServiceImpl implements AttendanceService {
             var delay = delays.stream().findFirst().orElse(null);
 
             if (attendance.isAbsent() && absence == null) {
-                    absence = Absence.builder()
-                            .student(student)
-                            .date(date)
-                            .justified(false)
-                            .needsJustification(true)
-                            .build();
-                    absenceRepository.save(absence);
+                absence = Absence.builder()
+                        .student(student)
+                        .date(date)
+                        .justified(false)
+                        .needsJustification(true)
+                        .build();
+                absenceRepository.save(absence);
             } else if (absence != null) {
                 absenceRepository.delete(absence);
             }

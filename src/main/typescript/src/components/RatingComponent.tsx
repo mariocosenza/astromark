@@ -21,7 +21,11 @@ import {MarkRequest} from "../entities/MarkRequest.ts";
 import {MarkUpdateRequest} from "../entities/MarkUpdateRequest.ts";
 import {SelectedTeaching} from "../services/TeacherService.ts";
 
-export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void, date: DateObject }> = ({row, returnBack, date}) => {
+export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void, date: DateObject }> = ({
+                                                                                                             row,
+                                                                                                             returnBack,
+                                                                                                             date
+                                                                                                         }) => {
     const [mark, setMark] = useState<number | null>(row.mark);
     const [type, setType] = useState<string>(row.type);
     const [note, setNote] = useState<string>(row.desc);
@@ -103,8 +107,9 @@ export const RatingComponent: React.FC<{ row: RatingsRow, returnBack: () => void
             <Card elevation={10} sx={{margin: '2rem 30%', borderRadius: 2}}>
                 <CardContent>
                     <Stack spacing={3}>
-                        <Stack direction="row" justifyContent={'space-around'} alignItems={'center'} margin={2} spacing={10}>
-                            <Box sx={{width:'30%'}}>
+                        <Stack direction="row" justifyContent={'space-around'} alignItems={'center'} margin={2}
+                               spacing={10}>
+                            <Box sx={{width: '30%'}}>
                                 <Typography variant="subtitle1">Voto:</Typography>
                                 <Autocomplete
                                     options={marksList}

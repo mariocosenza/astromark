@@ -103,7 +103,7 @@ public interface MarkService {
      * Pre-condition: The `mark` and `studentId` must not be null. The student and mark must exist.
      * Post-condition: The specified mark is updated and returned.
      */
-    MarkResponse update(@NotNull MarkUpdateRequest mark,@NotNull  UUID studentId);
+    MarkResponse update(@NotNull MarkUpdateRequest mark, @NotNull UUID studentId);
 
     /**
      * Deletes a mark by its ID.

@@ -2,7 +2,10 @@ package it.astromark.agenda.schoolclass.mapper;
 
 import it.astromark.agenda.schoolclass.dto.TeachingTimeslotDetailedResponse;
 import it.astromark.agenda.schoolclass.entity.TeachingTimeslot;
-import org.mapstruct.*;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 

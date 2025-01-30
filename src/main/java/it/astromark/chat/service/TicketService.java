@@ -55,6 +55,7 @@ public interface TicketService extends CrudService<Ticket, Ticket, TicketRespons
     void createTicket(@NotEmpty String title);
 
     boolean closeUnsolved(@NotNull UUID ticketId);
+
     boolean closeAndSolve(@NotNull UUID ticketId);
 
 }

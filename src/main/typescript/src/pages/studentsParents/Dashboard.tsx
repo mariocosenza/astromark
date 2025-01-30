@@ -42,8 +42,7 @@ export const Dashboard: React.FC = () => {
             if (!isRole(Role.STUDENT)) {
                 await axiosConfig.get<SchoolUserDetail[]>(Env.API_BASE_URL + '/parents/students')
                     .then((response) => {
-                        if(firstFetch)
-                        {
+                        if (firstFetch) {
                             SelectedStudent.id = response.data[0].id;
                         }
                         getStudentYears().then((response) => {
@@ -146,7 +145,7 @@ export const Dashboard: React.FC = () => {
                         }}
                     >
                         <Typography variant="h3" textAlign="center" color="white">
-                            {(user?.name === undefined? "" : user.name) + " " + (user?.surname === undefined? "" : user.surname)}
+                            {(user?.name === undefined ? "" : user.name) + " " + (user?.surname === undefined ? "" : user.surname)}
                         </Typography>
                     </Paper>
                     <Paper

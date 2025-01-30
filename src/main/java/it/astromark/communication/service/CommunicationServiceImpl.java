@@ -64,7 +64,7 @@ public class CommunicationServiceImpl implements CommunicationService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public CommunicationResponse update(@NotNull Integer integer,@NotNull  CommunicationRequest communicationRequest) {
+    public CommunicationResponse update(@NotNull Integer integer, @NotNull CommunicationRequest communicationRequest) {
         if (!schoolUserService.isLoggedTeacherClass(communicationRequest.classId())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
         }

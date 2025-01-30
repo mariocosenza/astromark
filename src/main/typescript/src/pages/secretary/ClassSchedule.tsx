@@ -1,5 +1,5 @@
-import { useParams } from "react-router";
-import React, { useEffect, useState } from "react";
+import {useParams} from "react-router";
+import React, {useEffect, useState} from "react";
 import {
     Alert,
     Box,
@@ -16,9 +16,9 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
+import {SelectChangeEvent} from "@mui/material/Select";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env.ts";
+import {Env} from "../../Env.ts";
 
 interface TeachingTimeslotResponse {
     hour: number;
@@ -42,7 +42,7 @@ interface TimeTableResponse {
 }
 
 export const ClassSchedule = () => {
-    const { classId } = useParams<{ classId: string }>();
+    const {classId} = useParams<{ classId: string }>();
     const [schedule, setSchedule] = useState<TeachingTimeslotResponse[]>([]);
     const [teachings, setTeachings] = useState<TeachingResponse[]>([]);
     const [timetables, setTimetables] = useState<TimeTableResponse[]>([]);
@@ -121,19 +121,19 @@ export const ClassSchedule = () => {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
 
         // Reset field error on change
-        setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+        setFieldErrors((prev) => ({...prev, [name]: undefined}));
     };
 
     const handleSelectChange = (e: SelectChangeEvent<string>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
 
         // Reset field error on change
-        setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+        setFieldErrors((prev) => ({...prev, [name]: undefined}));
     };
 
     const handleSubmit = async () => {
@@ -206,7 +206,7 @@ export const ClassSchedule = () => {
     if (loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
+                <CircularProgress/>
             </Box>
         );
     }
@@ -220,7 +220,7 @@ export const ClassSchedule = () => {
     }
 
     return (
-        <Box sx={{ padding: "16px" }}>
+        <Box sx={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
                 Orario della classe
             </Typography>
@@ -230,7 +230,7 @@ export const ClassSchedule = () => {
                 <Alert
                     severity="success"
                     onClose={() => setSuccessMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {successMessage}
                 </Alert>
@@ -241,7 +241,7 @@ export const ClassSchedule = () => {
                 <Alert
                     severity="error"
                     onClose={() => setSubmitError(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {submitError}
                 </Alert>
@@ -252,13 +252,13 @@ export const ClassSchedule = () => {
                 <Alert
                     severity="warning"
                     onClose={() => setValidationError(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {validationError}
                 </Alert>
             )}
 
-            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{mb: 2}}>
                 Aggiungi ora
             </Button>
 
@@ -344,7 +344,7 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{ min: 1, max: 6 }}
+                        inputProps={{min: 1, max: 6}}
                         error={Boolean(fieldErrors.dayWeek)}
                         helperText={fieldErrors.dayWeek}
                         required
@@ -357,13 +357,13 @@ export const ClassSchedule = () => {
                         onChange={handleInputChange}
                         margin="normal"
                         type="number"
-                        inputProps={{ min: 1, max: 6 }}
+                        inputProps={{min: 1, max: 6}}
                         error={Boolean(fieldErrors.hour)}
                         helperText={fieldErrors.hour}
                         required
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} sx={{ mr: 2 }}>
+                        <Button onClick={handleCloseModal} sx={{mr: 2}}>
                             Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>

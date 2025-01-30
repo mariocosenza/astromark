@@ -81,7 +81,8 @@ export const Homework: React.FC = () => {
 
 
     return (
-        <Stack flex={'auto'} flexWrap={'wrap'} justifyContent={'space-around'} minWidth={'100%'} direction={'row'} spacing={3}>
+        <Stack flex={'auto'} flexWrap={'wrap'} justifyContent={'space-around'} minWidth={'100%'} direction={'row'}
+               spacing={3}>
             <Box style={{
                 justifyContent: 'center',
                 marginTop: '1rem',

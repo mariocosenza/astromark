@@ -50,7 +50,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     }
 
     @Override
-    public boolean isStudentParent(@NotNull Parent parent,@NotNull  UUID studentId) {
+    public boolean isStudentParent(@NotNull Parent parent, @NotNull UUID studentId) {
         return parent.getStudents().stream().anyMatch(s -> s.getId().equals(studentId));
     }
 
@@ -72,7 +72,7 @@ public class SchoolUserServiceImpl implements SchoolUserService {
     @Override
     @Transactional
     public boolean isLoggedParentStudentClass(@NotNull Integer classId) {
-        return !authenticationService.isParent() ||authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
+        return !authenticationService.isParent() || authenticationService.getParent().orElseThrow().getStudents().stream().anyMatch(s -> s.getSchoolClasses().stream().anyMatch(c -> c.getId() == classId.intValue()));
     }
 
     @Override

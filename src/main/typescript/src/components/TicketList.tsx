@@ -1,26 +1,26 @@
-import React, { useState, useMemo } from "react";
+import React, {useMemo, useState} from "react";
 import {
     Alert,
     Avatar,
     Box,
-    IconButton,
-    Select,
-    Typography,
+    Button,
     FormControl,
+    IconButton,
     InputLabel,
     MenuItem,
+    Select,
     SelectChangeEvent,
-    Button,
     Snackbar,
+    Typography,
 } from "@mui/material";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { SelectedTicket } from "../services/TicketService.ts";
-import { getRole } from "../services/AuthService.ts";
-import { TicketResponse } from "../entities/TicketResponse.ts";
-import { Role } from "./route/ProtectedRoute.tsx";
+import {SelectedTicket} from "../services/TicketService.ts";
+import {getRole} from "../services/AuthService.ts";
+import {TicketResponse} from "../entities/TicketResponse.ts";
+import {Role} from "./route/ProtectedRoute.tsx";
 import axiosConfig from "../services/AxiosConfig.ts";
-import { Env } from "../Env.ts";
-import { AxiosError } from "axios";
+import {Env} from "../Env.ts";
+import {AxiosError} from "axios";
 
 export type TicketCard = {
     id: string;
@@ -47,7 +47,7 @@ interface ApiErrorResponse {
     detail?: string;
 }
 
-export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }) => {
+export const TicketList: React.FC<Props> = ({list: initialList, onTicketClick}) => {
     const [list, setList] = useState<TicketCard[]>(initialList);
     const [selectedCategory, setSelectedCategory] = useState<string>("Tutte le categorie");
     const [alertState, setAlertState] = useState<AlertState>({
@@ -68,7 +68,7 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
     }, [list]);
 
     const handleCloseAlert = () => {
-        setAlertState(prev => ({ ...prev, open: false }));
+        setAlertState(prev => ({...prev, open: false}));
     };
 
     const showAlert = (message: string, severity: 'error' | 'success') => {
@@ -162,25 +162,25 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{width: '100%'}}>
             <Snackbar
                 open={alertState.open}
                 autoHideDuration={6000}
                 onClose={handleCloseAlert}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
             >
                 <Alert
                     onClose={handleCloseAlert}
                     severity={alertState.severity}
                     variant="filled"
-                    sx={{ width: '100%' }}
+                    sx={{width: '100%'}}
                 >
                     {alertState.message}
                 </Alert>
             </Snackbar>
 
             {getRole().toUpperCase() === Role.SECRETARY &&
-                <FormControl variant="standard" fullWidth sx={{ marginBottom: '1rem' }}>
+                <FormControl variant="standard" fullWidth sx={{marginBottom: '1rem'}}>
                     <InputLabel id="category-select-label">Categoria</InputLabel>
                     <Select
                         labelId="category-select-label"
@@ -215,7 +215,7 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
                     }}
                 >
                     <Box display={'flex'} alignItems={'center'}>
-                        <Avatar sx={{ bgcolor: item.hexColor, marginRight: '1rem' }}>{item.avatar}</Avatar>
+                        <Avatar sx={{bgcolor: item.hexColor, marginRight: '1rem'}}>{item.avatar}</Avatar>
                         <Box>
                             <Typography variant='subtitle1' fontWeight={'bold'}>
                                 {item.title} {getRole().toUpperCase() === Role.SECRETARY ? ' - ' + (item.ticket.isTeacher ? 'Docente' : 'Genitore') : ''}
@@ -227,7 +227,7 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
                                 {item.description}
                             </Typography>
                             {!item.ticket.closed && getRole().toUpperCase() == Role.SECRETARY && (
-                                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                                <Box sx={{mt: 2, display: 'flex', gap: 2}}>
                                     <Button
                                         variant="contained"
                                         color="error"
@@ -250,7 +250,7 @@ export const TicketList: React.FC<Props> = ({ list: initialList, onTicketClick }
                     </Box>
 
                     <IconButton>
-                        <ArrowForwardIosIcon />
+                        <ArrowForwardIosIcon/>
                     </IconButton>
                 </Box>
             ))}

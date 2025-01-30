@@ -210,7 +210,7 @@ public class MarkServiceImpl implements MarkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public MarkResponse update(@NotNull MarkUpdateRequest mark,@NotNull  UUID studentId) {
+    public MarkResponse update(@NotNull MarkUpdateRequest mark, @NotNull UUID studentId) {
         if (mark.mark() < 0 || mark.mark() > 10) {
             throw new IllegalArgumentException("Mark must be between 0 and 10");
         }

@@ -127,7 +127,7 @@ public class TicketServiceImpl implements TicketService {
         var secretary = authenticationService.getSecretary().orElseThrow();
         var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        if(ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
+        if (ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
             return closeTicket(ticket, false);
         }
         return false;
@@ -139,7 +139,7 @@ public class TicketServiceImpl implements TicketService {
         var secretary = authenticationService.getSecretary().orElseThrow();
         var school = schoolRepository.findBySecretariesContains(Set.of(secretary));
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        if(ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
+        if (ticketRepository.existsByIdAndTeacher_SchoolOrParent_School(ticketId, school, school)) {
             return closeTicket(ticket, true);
         }
         return false;

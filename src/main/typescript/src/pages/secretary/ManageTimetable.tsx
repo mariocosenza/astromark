@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Alert,
     Box,
@@ -15,9 +15,9 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import {useNavigate} from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env.ts";
+import {Env} from "../../Env.ts";
 
 interface SchoolClassResponse {
     id: number;
@@ -69,16 +69,16 @@ export const ManageTimetable = () => {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
     const handleClassChange = (e: SelectChangeEvent) => {
-        setFormData({ ...formData, schoolClassId: e.target.value });
+        setFormData({...formData, schoolClassId: e.target.value});
     };
 
     const handleSubmit = async () => {
 
-        if(new Date(formData.endDate).getTime() < new Date(formData.startDate).getTime()) {
+        if (new Date(formData.endDate).getTime() < new Date(formData.startDate).getTime()) {
             setSubmitError("Inserisci data validata");
             return
         }
@@ -94,11 +94,11 @@ export const ManageTimetable = () => {
         }
     };
 
-    if (loading) return <CircularProgress />;
+    if (loading) return <CircularProgress/>;
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <div style={{ padding: "16px" }}>
+        <div style={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
                 Classi
             </Typography>
@@ -108,7 +108,7 @@ export const ManageTimetable = () => {
                 <Alert
                     severity="success"
                     onClose={() => setSuccessMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {successMessage}
                 </Alert>
@@ -119,7 +119,7 @@ export const ManageTimetable = () => {
                 <Alert
                     severity="error"
                     onClose={() => setSubmitError(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {submitError}
                 </Alert>
@@ -129,7 +129,7 @@ export const ManageTimetable = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleOpenModal}
-                style={{ marginBottom: "16px" }}
+                style={{marginBottom: "16px"}}
             >
                 Crea orario
             </Button>
@@ -173,7 +173,7 @@ export const ManageTimetable = () => {
                         value={formData.startDate}
                         onChange={handleInputChange}
                         margin="normal"
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={{shrink: true}}
                     />
                     <TextField
                         fullWidth
@@ -183,7 +183,7 @@ export const ManageTimetable = () => {
                         value={formData.endDate}
                         onChange={handleInputChange}
                         margin="normal"
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={{shrink: true}}
                     />
                     <TextField
                         fullWidth
@@ -193,10 +193,10 @@ export const ManageTimetable = () => {
                         value={formData.expectedHours}
                         onChange={handleInputChange}
                         margin="normal"
-                        InputProps={{ inputProps: { min: 0, max: 40 } }}
+                        InputProps={{inputProps: {min: 0, max: 40}}}
                     />
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} style={{ marginRight: "8px" }}>
+                        <Button onClick={handleCloseModal} style={{marginRight: "8px"}}>
                             Esci
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
@@ -210,9 +210,9 @@ export const ManageTimetable = () => {
                 {schoolClasses.map((schoolClass) => (
                     <Box
                         key={schoolClass.id}
-                        flexBasis={{ xs: "100%", sm: "calc(50% - 24px)", md: "calc(33.33% - 24px)" }}
+                        flexBasis={{xs: "100%", sm: "calc(50% - 24px)", md: "calc(33.33% - 24px)"}}
                         onClick={() => handleCardClick(schoolClass.id)}
-                        style={{ cursor: "pointer" }}
+                        style={{cursor: "pointer"}}
                     >
                         <Card>
                             <CardContent>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Alert,
     Box,
@@ -12,9 +12,9 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import {useNavigate} from "react-router";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env";
+import {Env} from "../../Env";
 
 // Interface for Teacher response
 interface TeacherResponse {
@@ -91,15 +91,15 @@ export const ManageTeacher = () => {
     const handleCloseModal = () => setModalOpen(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
 
         // Reset field error on change
-        setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+        setFieldErrors((prev) => ({...prev, [name]: undefined}));
     };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, male: e.target.checked });
+        setFormData({...formData, male: e.target.checked});
     };
 
     const handleSubmit = async () => {
@@ -171,7 +171,7 @@ export const ManageTeacher = () => {
     if (loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                <CircularProgress />
+                <CircularProgress/>
             </Box>
         );
     }
@@ -185,7 +185,7 @@ export const ManageTeacher = () => {
     }
 
     return (
-        <Box sx={{ padding: "16px" }}>
+        <Box sx={{padding: "16px"}}>
             <Typography variant="h4" gutterBottom>
                 Professori
             </Typography>
@@ -195,7 +195,7 @@ export const ManageTeacher = () => {
                 <Alert
                     severity="success"
                     onClose={() => setSuccessMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {successMessage}
                 </Alert>
@@ -206,13 +206,13 @@ export const ManageTeacher = () => {
                 <Alert
                     severity="error"
                     onClose={() => setErrorMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {errorMessage}
                 </Alert>
             )}
 
-            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ mb: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{mb: 2}}>
                 Aggiungi professore
             </Button>
 
@@ -285,7 +285,7 @@ export const ManageTeacher = () => {
                             value={formData.birthDate}
                             onChange={handleInputChange}
                             margin="normal"
-                            InputLabelProps={{ shrink: true }}
+                            InputLabelProps={{shrink: true}}
                             required
                             error={Boolean(fieldErrors.birthDate)}
                             helperText={fieldErrors.birthDate}
@@ -318,7 +318,7 @@ export const ManageTeacher = () => {
                         <Alert
                             severity="error"
                             onClose={() => setErrorMessage(null)}
-                            sx={{ mt: 2 }}
+                            sx={{mt: 2}}
                         >
                             {errorMessage}
                         </Alert>
@@ -329,14 +329,14 @@ export const ManageTeacher = () => {
                         <Alert
                             severity="success"
                             onClose={() => setSuccessMessage(null)}
-                            sx={{ mt: 2 }}
+                            sx={{mt: 2}}
                         >
                             {successMessage}
                         </Alert>
                     )}
 
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseModal} sx={{ mr: 2 }} disabled={loading}>
+                        <Button onClick={handleCloseModal} sx={{mr: 2}} disabled={loading}>
                             Chiudi
                         </Button>
                         <Button
@@ -363,7 +363,7 @@ export const ManageTeacher = () => {
                             borderRadius: "12px",
                         }}
                         onClick={() => handleCardClick(teacher.uuid)}
-                        style={{ cursor: "pointer" }}
+                        style={{cursor: "pointer"}}
                     >
                         <CardContent>
                             <Typography variant="h6" gutterBottom>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Alert,
     Box,
@@ -17,8 +17,8 @@ import {
     Typography,
 } from "@mui/material";
 import axiosConfig from "../../services/AxiosConfig";
-import { Env } from "../../Env";
-import { useParams } from "react-router";
+import {Env} from "../../Env";
+import {useParams} from "react-router";
 
 interface SchoolClassResponse {
     id: number;
@@ -38,7 +38,7 @@ interface SubjectResponse {
 }
 
 export const TeacherDetails = () => {
-    const { teacheruuid } = useParams<{ teacheruuid: string }>();
+    const {teacheruuid} = useParams<{ teacheruuid: string }>();
 
     const [classes, setClasses] = useState<SchoolClassResponse[]>([]);
     const [teachings, setTeachings] = useState<TeachingResponse>();
@@ -119,13 +119,13 @@ export const TeacherDetails = () => {
     };
 
     const handleOpenTeachingModal = () => {
-        setTeachingFormData({ subjectTitle: "", activityType: "" });
+        setTeachingFormData({subjectTitle: "", activityType: ""});
         setErrorMessage(null);
         setSuccessMessage(null);
         setTeachingModalOpen(true);
     };
     const handleCloseTeachingModal = () => {
-        setTeachingFormData({ subjectTitle: "", activityType: "" });
+        setTeachingFormData({subjectTitle: "", activityType: ""});
         setTeachingModalOpen(false);
     };
 
@@ -187,7 +187,7 @@ export const TeacherDetails = () => {
 
     // Funzione per aggiungere un insegnamento
     const handleAddTeaching = async () => {
-        const { subjectTitle, activityType } = teachingFormData;
+        const {subjectTitle, activityType} = teachingFormData;
         if (!subjectTitle || !activityType) {
             setErrorMessage("Riempi tutti i campi.");
             setSuccessMessage(null);
@@ -241,23 +241,23 @@ export const TeacherDetails = () => {
 
     if (loading) {
         return (
-            <CircularProgress sx={{ display: "block", margin: "auto", mt: 4 }} />
+            <CircularProgress sx={{display: "block", margin: "auto", mt: 4}}/>
         );
     }
     if (error) {
         return (
-            <Alert severity="error" sx={{ maxWidth: "600px", margin: "auto", mt: 4 }}>
+            <Alert severity="error" sx={{maxWidth: "600px", margin: "auto", mt: 4}}>
                 {error}
             </Alert>
         );
     }
 
     return (
-        <Box sx={{ padding: "16px" }}>
+        <Box sx={{padding: "16px"}}>
             <Typography
                 variant="h4"
                 gutterBottom
-                sx={{ textAlign: "center", fontWeight: "bold" }}
+                sx={{textAlign: "center", fontWeight: "bold"}}
             >
                 Dettagli professore
             </Typography>
@@ -267,7 +267,7 @@ export const TeacherDetails = () => {
                 <Alert
                     severity="success"
                     onClose={() => setSuccessMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {successMessage}
                 </Alert>
@@ -278,13 +278,13 @@ export const TeacherDetails = () => {
                 <Alert
                     severity="error"
                     onClose={() => setErrorMessage(null)}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2}}
                 >
                     {errorMessage}
                 </Alert>
             )}
 
-            <Typography variant="h5" gutterBottom sx={{ textAlign: "center", mt: 4 }}>
+            <Typography variant="h5" gutterBottom sx={{textAlign: "center", mt: 4}}>
                 Classi
             </Typography>
 
@@ -359,13 +359,13 @@ export const TeacherDetails = () => {
                 variant="contained"
                 color="primary"
                 fullWidth
-                sx={{ marginTop: "16px", textTransform: "none" }}
+                sx={{marginTop: "16px", textTransform: "none"}}
                 onClick={handleOpenClassModal}
             >
                 Aggiungi a classe
             </Button>
 
-            <Typography variant="h5" gutterBottom sx={{ textAlign: "center", mt: 4 }}>
+            <Typography variant="h5" gutterBottom sx={{textAlign: "center", mt: 4}}>
                 Insegnamenti
             </Typography>
             <Box>
@@ -379,15 +379,15 @@ export const TeacherDetails = () => {
                             boxShadow: 2,
                         }}
                     >
-                        <Typography variant="h6" sx={{ color: "#374151", fontWeight: "bold" }}>
+                        <Typography variant="h6" sx={{color: "#374151", fontWeight: "bold"}}>
                             {teachings.username}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "#64748b", marginTop: "4px" }}>
+                        <Typography variant="body2" sx={{color: "#64748b", marginTop: "4px"}}>
                             {teachings.teaching.join(", ")}
                         </Typography>
                     </Card>
                 ) : (
-                    <Typography variant="body2" sx={{ textAlign: "center", mt: 2 }}>
+                    <Typography variant="body2" sx={{textAlign: "center", mt: 2}}>
                         Nessun insegnamento
                     </Typography>
                 )}
@@ -397,7 +397,7 @@ export const TeacherDetails = () => {
                 variant="contained"
                 color="primary"
                 fullWidth
-                sx={{ marginTop: "16px", textTransform: "none" }}
+                sx={{marginTop: "16px", textTransform: "none"}}
                 onClick={handleOpenTeachingModal}
             >
                 Aggiungi insegnamento
@@ -459,7 +459,7 @@ export const TeacherDetails = () => {
                         <Alert
                             severity="error"
                             onClose={() => setErrorMessage(null)}
-                            sx={{ mt: 2 }}
+                            sx={{mt: 2}}
                         >
                             {errorMessage}
                         </Alert>
@@ -470,14 +470,14 @@ export const TeacherDetails = () => {
                         <Alert
                             severity="success"
                             onClose={() => setSuccessMessage(null)}
-                            sx={{ mt: 2 }}
+                            sx={{mt: 2}}
                         >
                             {successMessage}
                         </Alert>
                     )}
 
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseClassModal} sx={{ mr: 2 }}>
+                        <Button onClick={handleCloseClassModal} sx={{mr: 2}}>
                             Chiudi
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleAddClass}>
@@ -540,7 +540,7 @@ export const TeacherDetails = () => {
                         <Alert
                             severity="error"
                             onClose={() => setErrorMessage(null)}
-                            sx={{ mt: 2 }}
+                            sx={{mt: 2}}
                         >
                             {errorMessage}
                         </Alert>
@@ -551,14 +551,14 @@ export const TeacherDetails = () => {
                         <Alert
                             severity="success"
                             onClose={() => setSuccessMessage(null)}
-                            sx={{ mt: 2 }}
+                            sx={{mt: 2}}
                         >
                             {successMessage}
                         </Alert>
                     )}
 
                     <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleCloseTeachingModal} sx={{ mr: 2 }}>
+                        <Button onClick={handleCloseTeachingModal} sx={{mr: 2}}>
                             Chiudi
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleAddTeaching}>

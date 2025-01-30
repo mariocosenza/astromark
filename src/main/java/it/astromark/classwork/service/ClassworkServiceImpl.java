@@ -3,7 +3,10 @@ package it.astromark.classwork.service;
 import it.astromark.agenda.schoolclass.entity.SignedHour;
 import it.astromark.authentication.service.AuthenticationService;
 import it.astromark.chat.service.HomeworkChatService;
-import it.astromark.classwork.dto.*;
+import it.astromark.classwork.dto.ClassActivityRequest;
+import it.astromark.classwork.dto.ClassworkResponse;
+import it.astromark.classwork.dto.HomeworkRequest;
+import it.astromark.classwork.dto.HomeworkResponse;
 import it.astromark.classwork.entity.ClassActivity;
 import it.astromark.classwork.entity.Homework;
 import it.astromark.classwork.mapper.ClassworkMapper;
@@ -82,7 +85,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public void createActivity(@NotNull ClassActivityRequest request, @NotNull  SignedHour signedHour) {
+    public void createActivity(@NotNull ClassActivityRequest request, @NotNull SignedHour signedHour) {
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
                 || (request.title().isEmpty())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
@@ -107,7 +110,7 @@ public class ClassworkServiceImpl implements ClassworkService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public void createHomework(@NotNull HomeworkRequest request,@NotNull  SignedHour signedHour) {
+    public void createHomework(@NotNull HomeworkRequest request, @NotNull SignedHour signedHour) {
         if (!signedHour.getTeacher().getId().equals(authenticationService.getTeacher().orElseThrow().getId())
                 || (request.title().isEmpty()) || request.dueDate().isBefore(LocalDate.now())) {
             throw new AccessDeniedException(GlobalExceptionHandler.AUTHORIZATION_DENIED);
