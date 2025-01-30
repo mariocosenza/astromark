@@ -43,7 +43,7 @@ public class TicketController {
             return null;
 
         var ticket = ticketRepository.findById(ticketId).orElseThrow();
-        return ticketService.getMessages(ticket);
+        return ticketService.getMessageList(ticket);
     }
 
     @Operation(

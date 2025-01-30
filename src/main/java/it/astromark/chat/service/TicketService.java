@@ -32,7 +32,7 @@ public interface TicketService extends CrudService<Ticket, Ticket, TicketRespons
      * Pre-condition: The `ticket` must not be null and must refer to an existing ticket.
      * Post-condition: Returns a list of messages associated with the specified ticket.
      */
-    List<MessageResponse> getMessages(Ticket ticket);
+    List<MessageResponse> getMessageList(Ticket ticket);
 
     /**
      * Sends a message related to a specific ticket.

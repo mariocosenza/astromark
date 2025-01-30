@@ -6,7 +6,7 @@ import it.astromark.commons.exception.GlobalExceptionHandler;
 import it.astromark.communication.dto.CommunicationRequest;
 import it.astromark.communication.dto.CommunicationResponse;
 import it.astromark.communication.entity.Communication;
-import it.astromark.communication.mapping.CommunicationMapper;
+import it.astromark.communication.mapper.CommunicationMapper;
 import it.astromark.communication.repository.CommunicationRepository;
 import it.astromark.user.commons.service.SchoolUserService;
 import it.astromark.user.student.repository.StudentRepository;
