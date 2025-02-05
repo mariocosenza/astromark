@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { decode } from "he";
 import {Box, CircularProgress, Paper, Stack, Typography} from '@mui/material';
 import {blue, red} from '@mui/material/colors';
 import {changeStudentOrYear, SelectedStudent, SelectedYear} from "../../services/StateService.ts";
@@ -90,7 +91,7 @@ export const Dashboard: React.FC = () => {
             // Fetch attitude
             const responseAttitude: AxiosResponse<string> =
                 await axiosConfig.get(`${Env.API_BASE_URL}/students/${SelectedStudent.id}/attitude`);
-            setAttitude(responseAttitude.data);
+            setAttitude(decode(responseAttitude.data));
         } catch (error) {
             console.error(error);
         }
@@ -356,7 +357,7 @@ export const Dashboard: React.FC = () => {
                         <Typography variant="h3" textAlign="center" mt="1rem" mb="1rem" color={blue[800]}>
                             Orientamento
                         </Typography>
-                        <Typography variant="body1" sx={{ml: '2%'}}>
+                        <Typography variant="body1" sx={{ml: '2%'}} textAlign={'justify'} style={{overflowY: 'auto'}}>
                             {attitude}
                         </Typography>
                     </Paper>
