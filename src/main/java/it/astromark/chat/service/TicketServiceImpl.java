@@ -14,9 +14,16 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.*;
@@ -25,6 +32,7 @@ import java.util.*;
 @Slf4j
 public class TicketServiceImpl implements TicketService {
 
+    private final static String ticketServiceUrl = "http://127.0.0.1:5000/ai/ticket";
     private final TicketRepository ticketRepository;
     private final AuthenticationService authenticationService;
     private final MessageRepository messageRepository;
@@ -98,7 +106,30 @@ public class TicketServiceImpl implements TicketService {
             throw new AccessDeniedException("Cannot send ticket");
         }
 
-        return messageRepository.save(message).getId();
+        var id = messageRepository.save(message).getId();
+
+
+        if(ticket.getCategory().equals("Category")) {
+            ticket.setCategory(callTicketService(ticket.getTitle(), text));
+            ticketRepository.save(ticket);
+        }
+
+        return id;
+    }
+
+    private String callTicketService(String title, String message) {
+        var restTemplate = new RestTemplate();
+        var formData = new LinkedMultiValueMap<String, String>();
+        formData.add("title", title);
+        formData.add("message", message);
+
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        var requestEntity = new HttpEntity<MultiValueMap<String, String>>(formData, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(ticketServiceUrl, requestEntity, String.class);
+        return response.getBody();
     }
 
     @Override
