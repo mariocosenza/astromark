@@ -12,6 +12,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,11 +37,13 @@ public class OrientationServiceImpl implements OrientationService {
             student = studentRepository.findById(student.getId())
                     .orElseThrow(() -> new ServiceException("Student not found"));
             // Convert marks to MarkOrientationRequest list
-            List<MarkOrientationRequest> markOrientationRequests = markMapper.toMarkOrientationRequestList(student.getMarks().stream().toList());
+            List<MarkOrientationRequest> markOrientationRequests = markMapper.toMarkOrientationRequestList(
+                    student.getMarks().stream().toList());
 
-            // Set up headers to specify JSON content type
+            // Set up headers with JSON content type and UTF-8 encoding
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            MediaType mediaType = new MediaType("application", "json", StandardCharsets.UTF_8);
+            headers.setContentType(mediaType);
 
             // Create HttpEntity with JSON body
             HttpEntity<List<MarkOrientationRequest>> requestEntity =
