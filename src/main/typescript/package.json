@@ -13,7 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/titillium-web": "^5.1.1",
-    "@mui/icons-material": "^6.4.1",
+    "@mui/icons-material": "^6.4.8",
     "@mui/material": "^6.4.1",
     "@mui/styles": "^6.4.1",
     "@mui/x-charts": "^8.0.0-alpha.7",
