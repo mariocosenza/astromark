@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.14.0",
     "@fontsource/titillium-web": "^5.1.1",
     "@mui/icons-material": "^6.4.1",
-    "@mui/material": "^6.4.1",
+    "@mui/material": "^7.3.9",
     "@mui/styles": "^6.5.0",
     "@mui/x-charts": "^8.28.0",
     "@mui/x-data-grid": "^8.27.1",
